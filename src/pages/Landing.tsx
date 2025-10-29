@@ -175,7 +175,7 @@ const Landing = () => {
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
   return (
-    <div className="group p-8 rounded-2xl card-premium border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01] bg-gradient-to-br from-background to-background/80">
+    <div className="group p-8 rounded-2xl card-premium border border-border shadow-premium hover:border-primary/50 hover:shadow-glow transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01] bg-gradient-to-br from-background to-background/80">
       <div className="relative mb-4">
         <div className="text-primary group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">{icon}</div>
         <div className="absolute inset-0 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
