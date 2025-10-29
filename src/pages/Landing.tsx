@@ -14,9 +14,8 @@ const Landing = () => {
               <img src={atomLogo} alt="Atom LMS" className="h-10 w-10 relative z-10" />
               <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
             </div>
-            <span className="text-2xl font-display font-bold">
-              <span className="text-gradient">Atom</span>{" "}
-              <span className="text-foreground">LMS</span>
+            <span className="text-2xl font-display font-bold text-black">
+              Atom LMS
             </span>
           </div>
           <div className="flex items-center gap-3">
