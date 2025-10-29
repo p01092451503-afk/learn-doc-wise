@@ -173,7 +173,7 @@ const StatsCard = ({
       <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
     <CardContent className="space-y-1 min-w-0">
-      <div className="text-2xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">{value}</div>
+      <div className="text-xl font-bold break-all">{value}</div>
       <p className={`text-xs whitespace-nowrap ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
       </p>
