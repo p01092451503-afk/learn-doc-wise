@@ -42,9 +42,11 @@ const Landing = () => {
                   지금 시작하기
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="text-lg px-8">
-                데모 보기
-              </Button>
+              <Link to="/demo">
+                <Button size="lg" variant="outline" className="text-lg px-8">
+                  데모 보기
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

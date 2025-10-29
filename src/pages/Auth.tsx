@@ -21,6 +21,7 @@ const Auth = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirm, setSignupConfirm] = useState("");
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,14 +29,24 @@ const Auth = () => {
     // Check if user is already logged in
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        // Redirect based on user role (default to student for now)
-        navigate("/student");
+        // Check if user is in demo mode
+        const isDemo = session.user.user_metadata?.is_demo;
+        if (isDemo) {
+          navigate("/demo");
+        } else {
+          navigate("/student");
+        }
       }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/student");
+        const isDemo = session.user.user_metadata?.is_demo;
+        if (isDemo) {
+          navigate("/demo");
+        } else {
+          navigate("/student");
+        }
       }
     });
 
@@ -150,6 +161,7 @@ const Auth = () => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             name: signupName,
+            is_demo: isDemoMode,
           },
         },
       });
@@ -347,8 +359,20 @@ const Auth = () => {
                       required
                     />
                   </div>
+                  <div className="flex items-center space-x-2 p-4 rounded-lg bg-muted/50">
+                    <input
+                      type="checkbox"
+                      id="demo-mode"
+                      checked={isDemoMode}
+                      onChange={(e) => setIsDemoMode(e.target.checked)}
+                      className="h-4 w-4 rounded border-primary text-primary focus:ring-primary"
+                    />
+                    <Label htmlFor="demo-mode" className="text-sm font-normal cursor-pointer">
+                      데모 모드로 가입 (모든 기능을 미리 체험해볼 수 있습니다)
+                    </Label>
+                  </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "가입 중..." : "회원가입"}
+                    {isLoading ? "가입 중..." : isDemoMode ? "데모 체험 시작" : "회원가입"}
                   </Button>
                 </form>
               </TabsContent>
