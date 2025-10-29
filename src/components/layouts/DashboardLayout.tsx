@@ -19,7 +19,7 @@ import {
   DollarSign,
   FolderOpen,
 } from "lucide-react";
-
+import logoIcon from "@/assets/logo-icon.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -96,7 +96,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Link to="/" className="flex items-center group">
+          <Link to="/" className="flex items-center gap-2 group">
+            <img src={logoIcon} alt="Logo" className="h-8 w-8" />
             <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
           </Link>
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoIcon from "@/assets/logo-icon.png";
 
 import StudentDashboard from "./StudentDashboard";
 import TeacherDashboard from "./TeacherDashboard";
@@ -42,7 +43,8 @@ const DemoPreview = () => {
       <div className="border-b sticky top-0 bg-background/98 backdrop-blur-xl z-[60] shadow-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center gap-2">
+              <img src={logoIcon} alt="Logo" className="h-8 w-8" />
               <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
             </Link>
             <Badge variant="secondary" className="text-xs">

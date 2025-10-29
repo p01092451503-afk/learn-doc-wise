@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
+import logoIcon from "@/assets/logo-icon.png";
 
 
 const Landing = () => {
@@ -9,7 +10,8 @@ const Landing = () => {
       {/* Navigation */}
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logoIcon} alt="Logo" className="h-8 w-8" />
             <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
           </Link>
           <div className="flex items-center gap-3">
