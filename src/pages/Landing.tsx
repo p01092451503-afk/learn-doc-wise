@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 
 const Landing = () => {
   return (
@@ -10,7 +11,7 @@ const Landing = () => {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Bot className="h-9 w-9 text-primary relative z-10" />
+              <img src={atomLogo} alt="Atom LMS" className="h-10 w-10 relative z-10" />
               <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
             </div>
             <span className="text-2xl font-display font-bold">
