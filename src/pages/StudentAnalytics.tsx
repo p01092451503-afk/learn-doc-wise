@@ -49,17 +49,17 @@ const StudentAnalytics = () => {
         <div className="grid gap-6 md:grid-cols-4">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
                     이번 주 학습
                   </p>
-                  <p className="text-3xl font-bold mt-2">19시간</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">19시간</p>
+                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
                     지난 주 대비 +15%
                   </p>
                 </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Clock className="h-6 w-6 text-primary" />
                 </div>
               </div>
@@ -68,17 +68,17 @@ const StudentAnalytics = () => {
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
                     평균 점수
                   </p>
-                  <p className="text-3xl font-bold mt-2">92점</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">92점</p>
+                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
                     전체 평균: 85점
                   </p>
                 </div>
-                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Target className="h-6 w-6 text-accent" />
                 </div>
               </div>
@@ -87,17 +87,17 @@ const StudentAnalytics = () => {
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
                     완료율
                   </p>
-                  <p className="text-3xl font-bold mt-2">68%</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">68%</p>
+                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
                     28/41 레슨 완료
                   </p>
                 </div>
-                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                   <TrendingUp className="h-6 w-6 text-secondary" />
                 </div>
               </div>
@@ -106,17 +106,17 @@ const StudentAnalytics = () => {
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
                     획득 뱃지
                   </p>
-                  <p className="text-3xl font-bold mt-2">7개</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">7개</p>
+                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
                     다음 뱃지까지 3일
                   </p>
                 </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Award className="h-6 w-6 text-primary" />
                 </div>
               </div>

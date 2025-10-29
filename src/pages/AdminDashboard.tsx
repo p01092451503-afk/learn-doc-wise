@@ -209,14 +209,14 @@ const StatsCard = ({
   description: string; 
   trend?: "up" | "down";
 }) => (
-  <Card>
+  <Card className="overflow-hidden">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <div className="text-muted-foreground">{icon}</div>
+      <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
+      <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p className={`text-xs ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
+    <CardContent className="space-y-1">
+      <div className="text-2xl font-bold break-words overflow-hidden">{value}</div>
+      <p className={`text-xs break-words ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
       </p>
     </CardContent>

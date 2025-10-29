@@ -145,14 +145,14 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
 };
 
 const StatsCard = ({ title, value, icon, description }: { title: string; value: string; icon: React.ReactNode; description: string }) => (
-  <Card className="card-premium border-border/50 hover:border-primary/30 transition-all duration-300">
+  <Card className="card-premium border-border/50 hover:border-primary/30 transition-all duration-300 overflow-hidden">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-      <div className="text-primary p-2 bg-primary/10 rounded-xl">{icon}</div>
+      <CardTitle className="text-sm font-medium text-muted-foreground whitespace-nowrap">{title}</CardTitle>
+      <div className="text-primary p-2 bg-primary/10 rounded-xl flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent>
-      <div className="text-3xl font-display font-bold text-gradient">{value}</div>
-      <p className="text-xs text-muted-foreground mt-1">{description}</p>
+    <CardContent className="space-y-1">
+      <div className="text-3xl font-display font-bold text-gradient break-words overflow-hidden">{value}</div>
+      <p className="text-xs text-muted-foreground break-words">{description}</p>
     </CardContent>
   </Card>
 );
