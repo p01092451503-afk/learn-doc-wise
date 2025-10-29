@@ -19,7 +19,7 @@ import {
   DollarSign,
   FolderOpen,
 } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
+
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -96,15 +96,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Link to="/" className="flex items-center gap-3 font-semibold group">
-            <div className="relative">
-              <img src={atomLogo} alt="Atom LMS" className="h-9 w-9 group-hover:scale-110 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </div>
-            <span className="hidden sm:inline-block font-display text-xl">
-              <span className="text-gradient">Atom</span>{" "}
-              <span className="text-foreground font-semibold">LMS</span>
-            </span>
+          <Link to="/" className="flex items-center font-semibold group">
+            <span className="text-2xl font-bold text-foreground">atomLMS</span>
           </Link>
 
           <div className="flex-1 flex items-center gap-4 ml-4">

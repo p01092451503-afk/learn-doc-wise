@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
+
 
 const Landing = () => {
   return (
@@ -9,15 +9,9 @@ const Landing = () => {
       {/* Navigation */}
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <img src={atomLogo} alt="Atom LMS" className="h-10 w-10 relative z-10" />
-              <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
-            </div>
-            <span className="text-2xl font-display font-bold text-black">
-              Atom LMS
-            </span>
-          </div>
+          <Link to="/" className="flex items-center">
+            <span className="text-2xl font-bold text-foreground">atomLMS</span>
+          </Link>
           <div className="flex items-center gap-3">
             <Link to="/auth">
               <Button variant="ghost" size="default">로그인</Button>

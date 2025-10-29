@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot } from "lucide-react";
 import { Link } from "react-router-dom";
-import atomLogo from "@/assets/atom-logo.png";
+
 import StudentDashboard from "./StudentDashboard";
 import TeacherDashboard from "./TeacherDashboard";
 import AdminDashboard from "./AdminDashboard";
@@ -42,9 +42,8 @@ const DemoPreview = () => {
       <div className="border-b sticky top-0 bg-background/98 backdrop-blur-xl z-[60] shadow-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={atomLogo} alt="Atom LMS" className="h-9 w-9" />
-              <span className="text-xl font-bold text-foreground">Atom LMS</span>
+            <Link to="/" className="flex items-center">
+              <span className="text-2xl font-bold text-foreground">atomLMS</span>
             </Link>
             <Badge variant="secondary" className="text-xs">
               데모 모드
