@@ -147,8 +147,8 @@ const Landing = () => {
                 지능형 학습의 세계로 초대합니다
               </h2>
               <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백,<br />
-                콘텐츠 추천까지 — <span className="font-logo font-semibold">AtomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
+                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
+                — <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
                 복잡한 등록 절차나 결제 정보는 필요 없습니다.
               </p>
               <Link to="/auth">
