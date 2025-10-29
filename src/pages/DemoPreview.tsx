@@ -44,7 +44,7 @@ const DemoPreview = () => {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoIcon} alt="Logo" className="h-8 w-8" />
+              <img src={logoIcon} alt="Logo" className="h-11 w-11" />
               <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
             </Link>
             <Badge variant="secondary" className="text-xs">
