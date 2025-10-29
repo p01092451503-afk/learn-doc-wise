@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
+import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -231,7 +232,8 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="w-full max-w-md relative z-10">
-        <Link to="/" className="flex items-center justify-center mb-8 group">
+        <Link to="/" className="flex items-center justify-center mb-8 gap-3 group">
+          <img src={logoIcon} alt="atom Logo" className="h-14 w-14 transition-transform group-hover:scale-110" />
           <span className="text-4xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
         </Link>
 
