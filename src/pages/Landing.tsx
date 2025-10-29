@@ -143,12 +143,13 @@ const Landing = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
             <div className="relative z-10">
               <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                <span className="text-gradient">프리미엄 학습</span>을<br />
-                지금 바로 시작하세요
+                <span className="text-gradient">AI가 설계한</span><br />
+                지능형 학습의 세계로 초대합니다
               </h2>
-              <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-                14일 무료 체험으로 모든 프리미엄 기능을 경험해보세요.<br />
-                신용카드 필요 없습니다.
+              <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백,<br />
+                콘텐츠 추천까지 — <span className="font-logo font-semibold">AtomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
+                복잡한 등록 절차나 결제 정보는 필요 없습니다.
               </p>
               <Link to="/auth">
                 <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
