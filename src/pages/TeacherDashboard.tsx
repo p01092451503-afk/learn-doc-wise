@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
@@ -11,7 +12,10 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">강사 대시보드</h1>
-            <p className="text-muted-foreground">학생들의 학습을 관리하고 분석하세요</p>
+            <p className="text-muted-foreground flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+              학생들의 학습을 관리하고 분석하세요
+            </p>
           </div>
           <Button className="gap-2">
             <Plus className="h-4 w-4" />

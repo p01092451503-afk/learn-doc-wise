@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
@@ -10,7 +11,10 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">관리자 대시보드</h1>
-          <p className="text-muted-foreground">플랫폼 전체를 관리하고 모니터링하세요</p>
+          <p className="text-muted-foreground flex items-center gap-2">
+            <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            플랫폼 전체를 관리하고 모니터링하세요
+          </p>
         </div>
 
         {/* Stats Grid */}

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
@@ -14,7 +15,10 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             <h1 className="text-4xl font-display font-bold mb-2">
               <span className="text-gradient">학습 대시보드</span>
             </h1>
-            <p className="text-muted-foreground text-lg">안녕하세요! 오늘도 열심히 학습해봅시다 🎓</p>
+            <p className="text-muted-foreground text-lg flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-6 w-6" />
+              안녕하세요! 오늘도 열심히 학습해봅시다
+            </p>
           </div>
         </div>
 
