@@ -150,12 +150,18 @@ All colors MUST be HSL.
   
   .card-premium::before {
     content: '';
-    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none;
     background: var(--gradient-primary);
     opacity: 0.03;
+    z-index: 0;
   }
   
   .card-premium:hover::before {
-    @apply opacity-100;
+    opacity: 0.08;
+  }
+  
+  .card-premium > * {
+    position: relative;
+    z-index: 1;
   }
 }
