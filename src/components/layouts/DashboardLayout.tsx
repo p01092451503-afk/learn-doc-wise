@@ -41,39 +41,39 @@ const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
 
   const getMenuItems = () => {
     const baseItems = [
-      { icon: LayoutDashboard, label: "대시보드", path: `/${userRole}` },
+      { icon: LayoutDashboard, label: "대시보드", path: `/${userRole}`, enabled: true },
     ];
 
     if (userRole === "student") {
       return [
         ...baseItems,
-        { icon: BookOpen, label: "내 강의", path: "/student/courses" },
-        { icon: FileText, label: "과제", path: "/student/assignments" },
-        { icon: MessageSquare, label: "커뮤니티", path: "/student/community" },
-        { icon: BarChart3, label: "학습 통계", path: "/student/analytics" },
+        { icon: BookOpen, label: "내 강의", path: "#", enabled: false },
+        { icon: FileText, label: "과제", path: "#", enabled: false },
+        { icon: MessageSquare, label: "커뮤니티", path: "#", enabled: false },
+        { icon: BarChart3, label: "학습 통계", path: "#", enabled: false },
       ];
     }
 
     if (userRole === "teacher") {
       return [
         ...baseItems,
-        { icon: BookOpen, label: "강의 관리", path: "/teacher/courses" },
-        { icon: FileText, label: "과제 관리", path: "/teacher/assignments" },
-        { icon: Users, label: "학생 관리", path: "/teacher/students" },
-        { icon: BarChart3, label: "통계", path: "/teacher/analytics" },
-        { icon: DollarSign, label: "수익", path: "/teacher/revenue" },
+        { icon: BookOpen, label: "강의 관리", path: "#", enabled: false },
+        { icon: FileText, label: "과제 관리", path: "#", enabled: false },
+        { icon: Users, label: "학생 관리", path: "#", enabled: false },
+        { icon: BarChart3, label: "통계", path: "#", enabled: false },
+        { icon: DollarSign, label: "수익", path: "#", enabled: false },
       ];
     }
 
     // admin
     return [
       ...baseItems,
-      { icon: Users, label: "사용자 관리", path: "/admin/users" },
-      { icon: BookOpen, label: "강좌 관리", path: "/admin/courses" },
-      { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content" },
-      { icon: BarChart3, label: "분석", path: "/admin/analytics" },
-      { icon: DollarSign, label: "매출 관리", path: "/admin/revenue" },
-      { icon: Settings, label: "시스템 설정", path: "/admin/settings" },
+      { icon: Users, label: "사용자 관리", path: "#", enabled: false },
+      { icon: BookOpen, label: "강좌 관리", path: "#", enabled: false },
+      { icon: FolderOpen, label: "콘텐츠 관리", path: "#", enabled: false },
+      { icon: BarChart3, label: "분석", path: "#", enabled: false },
+      { icon: DollarSign, label: "매출 관리", path: "#", enabled: false },
+      { icon: Settings, label: "시스템 설정", path: "#", enabled: false },
     ];
   };
 
@@ -152,15 +152,31 @@ const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
         >
           <nav className="flex flex-col gap-2 p-4">
             {menuItems.map((item) => (
-              <Link key={item.path} to={item.path}>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2 hover:bg-primary/10 hover:text-primary"
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.label}
-                </Button>
-              </Link>
+              item.enabled ? (
+                <Link key={item.path} to={item.path}>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 hover:bg-primary/10 hover:text-primary"
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Button>
+                </Link>
+              ) : (
+                <div key={item.label} className="relative">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2 opacity-50 cursor-not-allowed"
+                    disabled
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Button>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                    준비중
+                  </span>
+                </div>
+              )
             ))}
           </nav>
         </aside>
