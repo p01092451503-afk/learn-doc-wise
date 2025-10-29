@@ -27,7 +27,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 md:py-20">
+      <section className="relative overflow-hidden py-8 md:py-12">
         <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         <div className="container mx-auto px-4 relative">
