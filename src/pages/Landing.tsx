@@ -59,18 +59,18 @@ const Landing = () => {
             </div>
             
             {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-accent" />
-                <span>업계 최고 평점 4.9</span>
+            <div className="flex flex-wrap items-center justify-center gap-10 mt-16">
+              <div className="flex items-center gap-3">
+                <Award className="h-7 w-7 text-accent" />
+                <span className="text-base font-semibold text-foreground">업계 최고 평점 4.9</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-accent" />
-                <span>10,000+ 활성 사용자</span>
+              <div className="flex items-center gap-3">
+                <Users className="h-7 w-7 text-accent" />
+                <span className="text-base font-semibold text-foreground">10,000+ 활성 사용자</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-accent" />
-                <span>99.9% 업타임 보장</span>
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-7 w-7 text-accent" />
+                <span className="text-base font-semibold text-foreground">99.9% 업타임 보장</span>
               </div>
             </div>
           </div>
