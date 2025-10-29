@@ -150,9 +150,9 @@ const StatsCard = ({ title, value, icon, description }: { title: string; value: 
       <CardTitle className="text-sm font-medium text-muted-foreground whitespace-nowrap">{title}</CardTitle>
       <div className="text-primary p-2 bg-primary/10 rounded-xl flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent className="space-y-1">
-      <div className="text-3xl font-display font-bold text-gradient break-words overflow-hidden">{value}</div>
-      <p className="text-xs text-muted-foreground break-words">{description}</p>
+    <CardContent className="space-y-1 min-w-0">
+      <div className="text-3xl font-display font-bold text-gradient whitespace-nowrap overflow-x-auto scrollbar-hide">{value}</div>
+      <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
     </CardContent>
   </Card>
 );
