@@ -62,11 +62,11 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     if (userRole === "teacher") {
       return [
         ...baseItems,
-        { icon: BookOpen, label: "강의 관리", path: "#", enabled: false },
-        { icon: FileText, label: "과제 관리", path: "#", enabled: false },
-        { icon: Users, label: "학생 관리", path: "#", enabled: false },
-        { icon: BarChart3, label: "통계", path: "#", enabled: false },
-        { icon: DollarSign, label: "수익", path: "#", enabled: false },
+        { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
+        { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true },
+        { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
+        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
+        { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
       ];
     }
 

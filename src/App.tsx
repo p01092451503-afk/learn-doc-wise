@@ -12,6 +12,11 @@ import StudentAssignments from "./pages/StudentAssignments";
 import StudentCommunity from "./pages/StudentCommunity";
 import StudentAnalytics from "./pages/StudentAnalytics";
 import TeacherDashboard from "./pages/TeacherDashboard";
+import TeacherCourses from "./pages/TeacherCourses";
+import TeacherStudents from "./pages/TeacherStudents";
+import TeacherRevenue from "./pages/TeacherRevenue";
+import TeacherAnalytics from "./pages/TeacherAnalytics";
+import TeacherAssignments from "./pages/TeacherAssignments";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminCourses from "./pages/AdminCourses";
@@ -39,6 +44,11 @@ const App = () => (
           <Route path="/student/community" element={<StudentCommunity />} />
           <Route path="/student/analytics" element={<StudentAnalytics />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
+          <Route path="/teacher/courses" element={<TeacherCourses />} />
+          <Route path="/teacher/students" element={<TeacherStudents />} />
+          <Route path="/teacher/revenue" element={<TeacherRevenue />} />
+          <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
+          <Route path="/teacher/assignments" element={<TeacherAssignments />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
