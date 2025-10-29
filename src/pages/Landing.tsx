@@ -34,7 +34,7 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 md:py-40">
+      <section className="relative overflow-hidden py-12 md:py-20">
         <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         <div className="container mx-auto px-4 relative">
@@ -88,7 +88,7 @@ const Landing = () => {
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-            왜 WebHeads LMS인가?
+            왜 Atom LMS인가?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <FeatureCard
@@ -155,7 +155,7 @@ const Landing = () => {
       <footer className="border-t py-8 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>© 2024 WebHeads LMS. All rights reserved.</p>
+            <p>© 2024 Atom LMS. All rights reserved.</p>
           </div>
         </div>
       </footer>
