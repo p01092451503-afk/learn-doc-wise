@@ -136,7 +136,7 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12">
+      <section className="py-8 md:py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto text-center relative overflow-hidden rounded-3xl p-16 border border-primary/20 shadow-elegant">
             <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
