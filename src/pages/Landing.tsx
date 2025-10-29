@@ -114,6 +114,21 @@ const Landing = () => {
               title="AI 기반 학습"
               description="Atom AI가 개인화된 학습 경로를 제공하고 실시간으로 피드백합니다"
             />
+            <FeatureCard
+              icon={<Sparkles className="h-10 w-10" />}
+              title="스마트 출석"
+              description="자동 출석 체크와 학습 참여도를 실시간으로 모니터링합니다"
+            />
+            <FeatureCard
+              icon={<TrendingUp className="h-10 w-10" />}
+              title="진도 관리"
+              description="학습 진행 상황을 한눈에 파악하고 목표 달성을 지원합니다"
+            />
+            <FeatureCard
+              icon={<Award className="h-10 w-10" />}
+              title="성취 보상"
+              description="학습 목표 달성 시 배지와 포인트로 동기부여를 제공합니다"
+            />
           </div>
         </div>
       </section>
@@ -158,10 +173,10 @@ const Landing = () => {
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
   return (
-    <div className="group p-8 rounded-2xl card-premium border border-border hover:border-primary/50 hover:shadow-elegant transition-all duration-500 transform hover:-translate-y-1">
+    <div className="group p-8 rounded-2xl card-premium border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] bg-gradient-to-br from-background to-background/80">
       <div className="relative mb-4">
-        <div className="text-primary group-hover:scale-110 transition-transform duration-300">{icon}</div>
-        <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="text-primary group-hover:scale-125 transition-transform duration-300 drop-shadow-lg">{icon}</div>
+        <div className="absolute inset-0 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
       <h3 className="text-xl font-display font-semibold mb-3 text-card-foreground group-hover:text-primary transition-colors">{title}</h3>
       <p className="text-muted-foreground leading-relaxed">{description}</p>
