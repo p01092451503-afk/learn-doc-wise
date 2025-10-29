@@ -33,9 +33,10 @@ import {
 interface DashboardLayoutProps {
   children: React.ReactNode;
   userRole: "student" | "teacher" | "admin";
+  isDemo?: boolean;
 }
 
-const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
+const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
@@ -81,8 +82,9 @@ const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
+      {/* Top Navigation - Hidden in demo mode */}
+      {!isDemo && (
+        <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
         <div className="flex h-20 items-center gap-4 px-6">
           <Button
             variant="ghost"
@@ -146,12 +148,14 @@ const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
           </div>
         </div>
       </header>
+      )}
 
       <div className="flex">
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed left-0 top-20 z-30 h-[calc(100vh-5rem)] w-72 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300",
+            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300",
+            isDemo ? "left-0 top-0 h-screen w-72" : "left-0 top-20 h-[calc(100vh-5rem)] w-72",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
@@ -198,14 +202,16 @@ const DashboardLayout = ({ children, userRole }: DashboardLayoutProps) => {
         </main>
       </div>
 
-      {/* AI Chatbot Button */}
-      <Button
-        size="icon"
-        variant="premium"
-        className="fixed bottom-8 right-8 h-16 w-16 rounded-2xl shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
-      >
-        <MessageSquare className="h-7 w-7" />
-      </Button>
+      {/* AI Chatbot Button - Hidden in demo mode */}
+      {!isDemo && (
+        <Button
+          size="icon"
+          variant="premium"
+          className="fixed bottom-8 right-8 h-16 w-16 rounded-2xl shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
+        >
+          <MessageSquare className="h-7 w-7" />
+        </Button>
+      )}
     </div>
   );
 };

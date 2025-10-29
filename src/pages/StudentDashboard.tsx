@@ -4,9 +4,9 @@ import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText } from "lucide-react";
 
-const StudentDashboard = () => {
+const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
-    <DashboardLayout userRole="student">
+    <DashboardLayout userRole="student" isDemo={isDemo}>
       <div className="space-y-8">
         {/* Welcome Section */}
         <div className="flex items-center justify-between">

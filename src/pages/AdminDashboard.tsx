@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
-    <DashboardLayout userRole="admin">
+    <DashboardLayout userRole="admin" isDemo={isDemo}>
       <div className="space-y-6">
         {/* Welcome Section */}
         <div>

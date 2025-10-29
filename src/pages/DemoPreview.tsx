@@ -20,15 +20,18 @@ const DemoPreview = () => {
   const [activeRole, setActiveRole] = useState<DemoRole>("student");
 
   const renderDashboard = () => {
+    // Pass isDemo prop to prevent header/chatbot conflicts
+    const demoProps = { isDemo: true };
+    
     switch (activeRole) {
       case "student":
-        return <StudentDashboard />;
+        return <StudentDashboard {...demoProps} />;
       case "teacher":
-        return <TeacherDashboard />;
+        return <TeacherDashboard {...demoProps} />;
       case "admin":
-        return <AdminDashboard />;
+        return <AdminDashboard {...demoProps} />;
       default:
-        return <StudentDashboard />;
+        return <StudentDashboard {...demoProps} />;
     }
   };
 
@@ -70,8 +73,8 @@ const DemoPreview = () => {
 
       {/* Dashboard Content */}
       <div className="relative">
-        {/* Info Banner - Fixed below header */}
-        <div className="fixed top-20 left-0 right-0 bg-primary/10 border-b border-primary/20 z-50 shadow-sm">
+        {/* Info Banner - Static below header */}
+        <div className="bg-primary/10 border-b border-primary/20 shadow-sm">
           <div className="container mx-auto px-4 py-3.5">
             <p className="text-sm text-center font-medium">
               💡 <strong>{activeRole === "student" ? "학생" : activeRole === "teacher" ? "강사" : "관리자"}</strong> 
@@ -80,16 +83,16 @@ const DemoPreview = () => {
           </div>
         </div>
 
-        {/* Dashboard with proper spacing */}
-        <div className="pt-[60px]">
+        {/* Dashboard */}
+        <div>
           {renderDashboard()}
         </div>
       </div>
 
-      {/* Floating CTA */}
-      <div className="fixed bottom-6 right-6 z-40">
+      {/* Floating CTA - Positioned to avoid overlap */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
         <Link to="/auth">
-          <Button size="lg" className="shadow-lg hover:shadow-xl transition-shadow">
+          <Button size="lg" variant="gold" className="shadow-glow hover:shadow-elegant transition-all">
             실제 서비스 시작하기
           </Button>
         </Link>

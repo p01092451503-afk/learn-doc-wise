@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit } from "lucide-react";
 
-const TeacherDashboard = () => {
+const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
-    <DashboardLayout userRole="teacher">
+    <DashboardLayout userRole="teacher" isDemo={isDemo}>
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
