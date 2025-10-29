@@ -18,6 +18,8 @@ import {
   BarChart3,
   DollarSign,
   FolderOpen,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { cn } from "@/lib/utils";
@@ -39,6 +41,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
 
   const getMenuItems = () => {
@@ -149,41 +152,71 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300 shadow-sm",
-            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)] w-80" : "left-0 top-20 h-[calc(100vh-5rem)] w-80",
+            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
+            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
+            sidebarCollapsed ? "w-20" : "w-80",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
         >
-          <nav className="flex flex-col gap-2 p-6 overflow-y-auto h-full">
+          {/* Collapse Toggle Button - Desktop Only */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="hidden md:flex absolute -right-3 top-6 z-50 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-primary/10"
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </Button>
+
+          <nav className={cn(
+            "flex flex-col gap-2 overflow-y-auto h-full transition-all duration-300",
+            sidebarCollapsed ? "p-3" : "p-6"
+          )}>
             {menuItems.map((item) => (
               item.enabled ? (
                 <Link key={item.path} to={item.path}>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-4 h-14 text-base rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group"
+                    className={cn(
+                      "w-full h-14 text-base rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-4"
+                    )}
                   >
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
                       <item.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <span className="font-semibold">{item.label}</span>
+                    {!sidebarCollapsed && (
+                      <span className="font-semibold">{item.label}</span>
+                    )}
                   </Button>
                 </Link>
               ) : (
                 <div key={item.label} className="relative">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-4 h-14 text-base rounded-xl opacity-40 cursor-not-allowed"
+                    className={cn(
+                      "w-full h-14 text-base rounded-xl opacity-40 cursor-not-allowed",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-4"
+                    )}
                     disabled
                   >
-                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                       <item.icon className="h-5 w-5 text-muted-foreground" />
                     </div>
-                    <span className="font-semibold">{item.label}</span>
+                    {!sidebarCollapsed && (
+                      <span className="font-semibold">{item.label}</span>
+                    )}
                   </Button>
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
-                    준비중
-                  </span>
+                  {!sidebarCollapsed && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
+                      준비중
+                    </span>
+                  )}
                 </div>
               )
             ))}
@@ -194,7 +227,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <main
           className={cn(
             "flex-1 p-8 transition-all duration-300",
-            sidebarOpen ? "md:ml-80" : "md:ml-0"
+            sidebarOpen && !sidebarCollapsed ? "md:ml-80" : sidebarCollapsed ? "md:ml-20" : "md:ml-0"
           )}
         >
           <div className="mx-auto max-w-7xl">{children}</div>
