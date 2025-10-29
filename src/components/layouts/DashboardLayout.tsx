@@ -154,7 +154,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           className={cn(
             "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
             isDemo ? "left-0 top-20 h-[calc(100vh-5rem)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
-            sidebarCollapsed ? "w-20" : "w-80",
+            sidebarCollapsed ? "w-16" : "w-64",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
@@ -174,8 +174,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           </Button>
 
           <nav className={cn(
-            "flex flex-col gap-2 overflow-y-auto h-full transition-all duration-300",
-            sidebarCollapsed ? "p-3" : "p-6"
+            "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
+            sidebarCollapsed ? "p-2" : "p-4"
           )}>
             {menuItems.map((item) => (
               item.enabled ? (
@@ -183,15 +183,15 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-14 text-base rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-4"
+                      "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                     )}
                   >
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                      <item.icon className="h-5 w-5 text-primary" />
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                      <item.icon className="h-4 w-4 text-primary" />
                     </div>
                     {!sidebarCollapsed && (
-                      <span className="font-semibold">{item.label}</span>
+                      <span className="font-medium">{item.label}</span>
                     )}
                   </Button>
                 </Link>
@@ -200,16 +200,16 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-14 text-base rounded-xl opacity-40 cursor-not-allowed",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-4"
+                      "w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                     )}
                     disabled
                   >
-                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                      <item.icon className="h-5 w-5 text-muted-foreground" />
+                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                      <item.icon className="h-4 w-4 text-muted-foreground" />
                     </div>
                     {!sidebarCollapsed && (
-                      <span className="font-semibold">{item.label}</span>
+                      <span className="font-medium">{item.label}</span>
                     )}
                   </Button>
                   {!sidebarCollapsed && (
@@ -227,7 +227,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <main
           className={cn(
             "flex-1 p-8 transition-all duration-300",
-            sidebarOpen && !sidebarCollapsed ? "md:ml-80" : sidebarCollapsed ? "md:ml-20" : "md:ml-0"
+            sidebarOpen && !sidebarCollapsed ? "md:ml-64" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
           )}
         >
           <div className="mx-auto max-w-7xl">{children}</div>
