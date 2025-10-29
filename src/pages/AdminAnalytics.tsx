@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, TrendingUp, Users, BookOpen, DollarSign, Activity } from "lucide-react";
+import { BarChart3, TrendingUp, Users, BookOpen, DollarSign, Activity, Eye, Clock } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const AdminAnalytics = () => {
@@ -28,80 +28,62 @@ const AdminAnalytics = () => {
         {/* 주요 지표 */}
         <div className="grid gap-6 md:grid-cols-4">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    총 매출
-                  </p>
-                  <p className="text-3xl font-bold overflow-x-auto scrollbar-hide">
-                    ₩45,230,000
-                  </p>
-                  <p className="text-xs text-green-600">
-                    +5.2% 전월 대비
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <DollarSign className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                총 방문자
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Users className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">45,230</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">+12.5% 전월 대비</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    신규 사용자
-                  </p>
-                  <p className="text-3xl font-bold">180</p>
-                  <p className="text-xs text-green-600">
-                    +12% 전월 대비
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-accent" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                페이지뷰
+              </CardTitle>
+              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Eye className="h-5 w-5 text-accent" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">128,450</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">평균 2.8 페이지/세션</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    신규 강좌
-                  </p>
-                  <p className="text-3xl font-bold">12</p>
-                  <p className="text-xs text-green-600">
-                    +8.3% 전월 대비
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="h-6 w-6 text-secondary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                평균 세션 시간
+              </CardTitle>
+              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="h-5 w-5 text-secondary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">5:32</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">+0:45 증가</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    활성 세션
-                  </p>
-                  <p className="text-3xl font-bold">1,234</p>
-                  <p className="text-xs text-muted-foreground">
-                    현재 접속 중
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Activity className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                전환율
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <TrendingUp className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">3.2%</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">+0.5% 증가</p>
             </CardContent>
           </Card>
         </div>

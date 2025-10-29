@@ -96,78 +96,62 @@ const AdminContent = () => {
         {/* 통계 카드 */}
         <div className="grid gap-6 md:grid-cols-4">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    전체 콘텐츠
-                  </p>
-                  <p className="text-3xl font-bold">1,234</p>
-                  <p className="text-xs text-muted-foreground">
-                    이번 달 +42
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FolderOpen className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                전체 콘텐츠
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <FolderOpen className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">1,234</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +42</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    동영상
-                  </p>
-                  <p className="text-3xl font-bold">456</p>
-                  <p className="text-xs text-muted-foreground">
-                    125 GB
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Video className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                동영상
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Video className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">456</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">125 GB</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    문서
-                  </p>
-                  <p className="text-3xl font-bold">567</p>
-                  <p className="text-xs text-muted-foreground">
-                    12 GB
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-6 w-6 text-accent" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                문서
+              </CardTitle>
+              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <FileText className="h-5 w-5 text-accent" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">567</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">12 GB</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    이미지
-                  </p>
-                  <p className="text-3xl font-bold">211</p>
-                  <p className="text-xs text-muted-foreground">
-                    3.2 GB
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <ImageIcon className="h-6 w-6 text-secondary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                이미지
+              </CardTitle>
+              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <ImageIcon className="h-5 w-5 text-secondary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">211</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">3.2 GB</p>
             </CardContent>
           </Card>
         </div>

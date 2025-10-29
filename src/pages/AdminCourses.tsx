@@ -76,78 +76,62 @@ const AdminCourses = () => {
         {/* 통계 카드 */}
         <div className="grid gap-6 md:grid-cols-4">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    전체 강좌
-                  </p>
-                  <p className="text-3xl font-bold">156</p>
-                  <p className="text-xs text-muted-foreground">
-                    이번 달 +12
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                전체 강좌
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <BookOpen className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">156</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +12</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    활성 강좌
-                  </p>
-                  <p className="text-3xl font-bold">138</p>
-                  <p className="text-xs text-muted-foreground">
-                    전체의 88%
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="h-6 w-6 text-accent" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                활성 강좌
+              </CardTitle>
+              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <BookOpen className="h-5 w-5 text-accent" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">138</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">전체의 88%</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    검토 대기
-                  </p>
-                  <p className="text-3xl font-bold">12</p>
-                  <p className="text-xs text-muted-foreground">
-                    승인 필요
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <BookOpen className="h-6 w-6 text-secondary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                검토 대기
+              </CardTitle>
+              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <BookOpen className="h-5 w-5 text-secondary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">12</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">승인 필요</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    총 수강생
-                  </p>
-                  <p className="text-3xl font-bold">2,456</p>
-                  <p className="text-xs text-muted-foreground">
-                    평균 18명/강좌
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                총 수강생
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Users className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,456</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">평균 18명/강좌</p>
             </CardContent>
           </Card>
         </div>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Users, UserPlus, Search, MoreVertical, Mail, Calendar } from "lucide-react";
+import { Users, UserPlus, Search, MoreVertical, Mail, Calendar, GraduationCap, UserCheck, Shield } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import {
   DropdownMenu,
@@ -45,78 +45,62 @@ const AdminUsers = () => {
         {/* 통계 카드 */}
         <div className="grid gap-6 md:grid-cols-4">
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    전체 사용자
-                  </p>
-                  <p className="text-3xl font-bold">2,847</p>
-                  <p className="text-xs text-muted-foreground">
-                    이번 달 +180
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                전체 사용자
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Users className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,847</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +180</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    학생
-                  </p>
-                  <p className="text-3xl font-bold">2,456</p>
-                  <p className="text-xs text-muted-foreground">
-                    전체의 86%
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-accent" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                학생
+              </CardTitle>
+              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <GraduationCap className="h-5 w-5 text-accent" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,456</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">86%</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    강사
-                  </p>
-                  <p className="text-3xl font-bold">342</p>
-                  <p className="text-xs text-muted-foreground">
-                    전체의 12%
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-secondary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                강사
+              </CardTitle>
+              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <UserCheck className="h-5 w-5 text-secondary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">342</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">12%</p>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between gap-6">
-                <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
-                    관리자
-                  </p>
-                  <p className="text-3xl font-bold">49</p>
-                  <p className="text-xs text-muted-foreground">
-                    전체의 2%
-                  </p>
-                </div>
-                <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
+                관리자
+              </CardTitle>
+              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Shield className="h-5 w-5 text-primary" />
               </div>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">49</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">2%</p>
             </CardContent>
           </Card>
         </div>
