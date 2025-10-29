@@ -37,8 +37,8 @@ const Landing = () => {
               <span className="text-sm font-semibold text-primary">AI 기반 혁신 학습</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-foreground leading-tight animate-slide-up">
-              차세대 AI 학습<br />
-              <span className="text-gradient">관리 플랫폼</span>
+              차세대<br />
+              <span className="text-gradient">AI 학습관리시스템</span>
             </h1>
             <p className="text-lg md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.1s' }}>
               강사와 학습자를 위한 프리미엄 LMS. AI 튜터, 자동 평가, 
