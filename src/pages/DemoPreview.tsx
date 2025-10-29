@@ -35,8 +35,8 @@ const DemoPreview = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Demo Mode Header */}
-      <div className="border-b sticky top-0 bg-background/95 backdrop-blur-md z-50 shadow-sm">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="border-b sticky top-0 bg-background/98 backdrop-blur-xl z-[60] shadow-sm">
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
@@ -70,18 +70,20 @@ const DemoPreview = () => {
 
       {/* Dashboard Content */}
       <div className="relative">
-        {/* Info Banner */}
-        <div className="bg-primary/10 border-b border-primary/20">
-          <div className="container mx-auto px-4 py-3">
-            <p className="text-sm text-center">
+        {/* Info Banner - Fixed below header */}
+        <div className="fixed top-20 left-0 right-0 bg-primary/10 border-b border-primary/20 z-50 shadow-sm">
+          <div className="container mx-auto px-4 py-3.5">
+            <p className="text-sm text-center font-medium">
               💡 <strong>{activeRole === "student" ? "학생" : activeRole === "teacher" ? "강사" : "관리자"}</strong> 
               {" "}대시보드의 모든 기능을 자유롭게 체험해보세요. 실제 작동하는 UI로 구성되어 있습니다.
             </p>
           </div>
         </div>
 
-        {/* Render the actual dashboard */}
-        {renderDashboard()}
+        {/* Dashboard with proper spacing */}
+        <div className="pt-[60px]">
+          {renderDashboard()}
+        </div>
       </div>
 
       {/* Floating CTA */}
