@@ -228,17 +228,24 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)]">
-      <div className="w-full max-w-md">
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <GraduationCap className="h-10 w-10 text-primary" />
-          <span className="text-2xl font-bold text-foreground">WebHeads LMS</span>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="w-full max-w-md relative z-10">
+        <Link to="/" className="flex items-center justify-center gap-3 mb-8 group">
+          <div className="relative">
+            <GraduationCap className="h-12 w-12 text-primary group-hover:scale-110 transition-transform duration-300" />
+            <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
+          </div>
+          <span className="text-3xl font-display font-bold">
+            <span className="text-gradient">WebHeads</span>{" "}
+            <span className="text-foreground">LMS</span>
+          </span>
         </Link>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>환영합니다</CardTitle>
-            <CardDescription>계정에 로그인하거나 새로 가입하세요</CardDescription>
+        <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
+          <CardHeader className="space-y-3">
+            <CardTitle className="text-center">환영합니다</CardTitle>
+            <CardDescription className="text-center text-base">계정에 로그인하거나 새로 가입하세요</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">
@@ -270,7 +277,7 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
                     {isLoading ? "로그인 중..." : "로그인"}
                   </Button>
                 </form>
@@ -371,7 +378,7 @@ const Auth = () => {
                       데모 모드로 가입 (모든 기능을 미리 체험해볼 수 있습니다)
                     </Label>
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
                     {isLoading ? "가입 중..." : isDemoMode ? "데모 체험 시작" : "회원가입"}
                   </Button>
                 </form>

@@ -7,37 +7,41 @@ import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText } from "lucide
 const StudentDashboard = () => {
   return (
     <DashboardLayout userRole="student">
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* Welcome Section */}
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">학습 대시보드</h1>
-          <p className="text-muted-foreground">안녕하세요! 오늘도 열심히 학습해봅시다 🎓</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-display font-bold mb-2">
+              <span className="text-gradient">학습 대시보드</span>
+            </h1>
+            <p className="text-muted-foreground text-lg">안녕하세요! 오늘도 열심히 학습해봅시다 🎓</p>
+          </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="수강 중인 강의"
             value="5"
-            icon={<BookOpen className="h-4 w-4" />}
+            icon={<BookOpen className="h-5 w-5" />}
             description="+2 this month"
           />
           <StatsCard
             title="학습 시간"
             value="24.5h"
-            icon={<Clock className="h-4 w-4" />}
+            icon={<Clock className="h-5 w-5" />}
             description="이번 주"
           />
           <StatsCard
             title="완료한 과제"
             value="12"
-            icon={<FileText className="h-4 w-4" />}
+            icon={<FileText className="h-5 w-5" />}
             description="전체 15개 중"
           />
           <StatsCard
             title="획득 뱃지"
             value="8"
-            icon={<Award className="h-4 w-4" />}
+            icon={<Award className="h-5 w-5" />}
             description="+3 new"
           />
         </div>
@@ -137,36 +141,36 @@ const StudentDashboard = () => {
 };
 
 const StatsCard = ({ title, value, icon, description }: { title: string; value: string; icon: React.ReactNode; description: string }) => (
-  <Card>
+  <Card className="card-premium border-border/50 hover:border-primary/30 transition-all duration-300">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      <div className="text-muted-foreground">{icon}</div>
+      <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+      <div className="text-primary p-2 bg-primary/10 rounded-xl">{icon}</div>
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p className="text-xs text-muted-foreground">{description}</p>
+      <div className="text-3xl font-display font-bold text-gradient">{value}</div>
+      <p className="text-xs text-muted-foreground mt-1">{description}</p>
     </CardContent>
   </Card>
 );
 
 const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => (
-  <div className="space-y-2 p-4 rounded-lg border hover:border-primary/50 transition-colors">
+  <div className="space-y-3 p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
     <div className="flex justify-between items-start">
       <div>
-        <h4 className="font-semibold">{title}</h4>
-        <p className="text-sm text-muted-foreground">{instructor}</p>
+        <h4 className="font-display font-semibold text-lg">{title}</h4>
+        <p className="text-sm text-muted-foreground mt-1">{instructor}</p>
       </div>
-      <Button size="sm" variant="outline">
+      <Button size="sm" variant="outline" className="rounded-xl">
         <PlayCircle className="h-4 w-4 mr-1" />
         계속하기
       </Button>
     </div>
     <div>
-      <div className="flex justify-between mb-1 text-sm">
+      <div className="flex justify-between mb-2 text-sm">
         <span className="text-muted-foreground">진행률</span>
-        <span className="font-medium">{progress}%</span>
+        <span className="font-semibold text-primary">{progress}%</span>
       </div>
-      <Progress value={progress} />
+      <Progress value={progress} className="h-2" />
     </div>
     <p className="text-sm text-muted-foreground">다음: {nextLesson}</p>
   </div>
