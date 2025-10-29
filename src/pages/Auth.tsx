@@ -267,9 +267,9 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="w-full max-w-md relative z-10">
-        <Link to="/" className="flex items-center justify-center mb-8 gap-3 group">
-          <img src={logoIcon} alt="atom Logo" className="h-14 w-14 transition-transform group-hover:scale-110" />
-          <span className="text-4xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
+        <Link to="/" className="flex items-center justify-center mb-8 gap-2">
+          <img src={logoIcon} alt="Logo" className="h-12 w-12" />
+          <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
         </Link>
 
         <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
