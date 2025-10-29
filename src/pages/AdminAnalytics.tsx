@@ -37,7 +37,7 @@ const AdminAnalytics = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">45,230</div>
+              <div className="text-xl font-bold break-all">45,230</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">+12.5% 전월 대비</p>
             </CardContent>
           </Card>
@@ -52,7 +52,7 @@ const AdminAnalytics = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">128,450</div>
+              <div className="text-xl font-bold break-all">128,450</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">평균 2.8 페이지/세션</p>
             </CardContent>
           </Card>
@@ -67,7 +67,7 @@ const AdminAnalytics = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">5:32</div>
+              <div className="text-xl font-bold break-all">5:32</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">+0:45 증가</p>
             </CardContent>
           </Card>
@@ -82,7 +82,7 @@ const AdminAnalytics = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">3.2%</div>
+              <div className="text-xl font-bold break-all">3.2%</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">+0.5% 증가</p>
             </CardContent>
           </Card>

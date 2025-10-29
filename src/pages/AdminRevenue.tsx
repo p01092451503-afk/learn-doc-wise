@@ -46,7 +46,7 @@ const AdminRevenue = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">₩45,230,000</div>
+              <div className="text-xl font-bold break-all">₩45,230,000</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">+5.2% 전월 대비</p>
             </CardContent>
           </Card>
@@ -61,7 +61,7 @@ const AdminRevenue = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">₩12,450,000</div>
+              <div className="text-xl font-bold break-all">₩12,450,000</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">+12.3%</p>
             </CardContent>
           </Card>
@@ -76,7 +76,7 @@ const AdminRevenue = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">₩158,900</div>
+              <div className="text-xl font-bold break-all">₩158,900</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">거래당</p>
             </CardContent>
           </Card>
@@ -91,7 +91,7 @@ const AdminRevenue = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">1,234</div>
+              <div className="text-xl font-bold break-all">1,234</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +89</p>
             </CardContent>
           </Card>

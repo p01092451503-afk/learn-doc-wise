@@ -54,7 +54,7 @@ const AdminUsers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,847</div>
+              <div className="text-xl font-bold break-all">2,847</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +180</p>
             </CardContent>
           </Card>
@@ -69,7 +69,7 @@ const AdminUsers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,456</div>
+              <div className="text-xl font-bold break-all">2,456</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">86%</p>
             </CardContent>
           </Card>
@@ -84,7 +84,7 @@ const AdminUsers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">342</div>
+              <div className="text-xl font-bold break-all">342</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">12%</p>
             </CardContent>
           </Card>
@@ -99,7 +99,7 @@ const AdminUsers = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">49</div>
+              <div className="text-xl font-bold break-all">49</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">2%</p>
             </CardContent>
           </Card>

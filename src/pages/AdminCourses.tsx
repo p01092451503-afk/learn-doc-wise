@@ -85,7 +85,7 @@ const AdminCourses = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">156</div>
+              <div className="text-xl font-bold break-all">156</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +12</p>
             </CardContent>
           </Card>
@@ -100,7 +100,7 @@ const AdminCourses = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">138</div>
+              <div className="text-xl font-bold break-all">138</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">전체의 88%</p>
             </CardContent>
           </Card>
@@ -115,7 +115,7 @@ const AdminCourses = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">12</div>
+              <div className="text-xl font-bold break-all">12</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">승인 필요</p>
             </CardContent>
           </Card>
@@ -130,7 +130,7 @@ const AdminCourses = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-1">
-              <div className="text-3xl font-bold whitespace-nowrap overflow-x-auto scrollbar-hide">2,456</div>
+              <div className="text-xl font-bold break-all">2,456</div>
               <p className="text-xs text-muted-foreground whitespace-nowrap">평균 18명/강좌</p>
             </CardContent>
           </Card>
