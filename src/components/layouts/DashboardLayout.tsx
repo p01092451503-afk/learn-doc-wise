@@ -240,7 +240,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <Button
           size="icon"
           variant="premium"
-          className="fixed bottom-8 right-8 h-16 w-16 rounded-2xl shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
+          className="fixed bottom-8 right-8 h-16 w-16 rounded-full shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
         >
           <img src={chatbotIcon} alt="AI Chatbot" className="h-8 w-8" />
         </Button>
