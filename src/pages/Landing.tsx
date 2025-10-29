@@ -83,7 +83,7 @@ const Landing = () => {
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
-            왜 atomLMS인가?
+            왜 <span className="font-logo">atomLMS</span>인가?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <FeatureCard
