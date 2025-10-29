@@ -28,23 +28,58 @@ const Auth = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        // Check if user is in demo mode
-        const isDemo = session.user.user_metadata?.is_demo;
-        if (isDemo) {
-          navigate("/demo");
+        // Check user role and redirect accordingly
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .limit(1)
+          .single();
+
+        if (roles) {
+          switch (roles.role) {
+            case 'admin':
+              navigate("/admin");
+              break;
+            case 'teacher':
+              navigate("/teacher");
+              break;
+            case 'student':
+            default:
+              navigate("/student");
+              break;
+          }
         } else {
+          // Default to student if no role found
           navigate("/student");
         }
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        const isDemo = session.user.user_metadata?.is_demo;
-        if (isDemo) {
-          navigate("/demo");
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .limit(1)
+          .single();
+
+        if (roles) {
+          switch (roles.role) {
+            case 'admin':
+              navigate("/admin");
+              break;
+            case 'teacher':
+              navigate("/teacher");
+              break;
+            case 'student':
+            default:
+              navigate("/student");
+              break;
+          }
         } else {
           navigate("/student");
         }
@@ -162,7 +197,6 @@ const Auth = () => {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             name: signupName,
-            is_demo: isDemoMode,
           },
         },
       });
@@ -361,20 +395,8 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <div className="flex items-center space-x-2 p-4 rounded-lg bg-muted/50">
-                    <input
-                      type="checkbox"
-                      id="demo-mode"
-                      checked={isDemoMode}
-                      onChange={(e) => setIsDemoMode(e.target.checked)}
-                      className="h-4 w-4 rounded border-primary text-primary focus:ring-primary"
-                    />
-                    <Label htmlFor="demo-mode" className="text-sm font-normal cursor-pointer">
-                      데모 모드로 가입 (모든 기능을 미리 체험해볼 수 있습니다)
-                    </Label>
-                  </div>
                   <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
-                    {isLoading ? "가입 중..." : isDemoMode ? "데모 체험 시작" : "회원가입"}
+                    {isLoading ? "가입 중..." : "회원가입"}
                   </Button>
                 </form>
               </TabsContent>

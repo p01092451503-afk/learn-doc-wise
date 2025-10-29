@@ -25,6 +25,8 @@ import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,6 +46,27 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "로그아웃 완료",
+        description: "성공적으로 로그아웃되었습니다.",
+      });
+      
+      navigate("/");
+    } catch (error) {
+      toast({
+        title: "로그아웃 실패",
+        description: "로그아웃 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const getMenuItems = () => {
     const baseItems = [
@@ -138,7 +161,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   <Settings className="mr-2 h-4 w-4" />
                   설정
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/")} className="rounded-lg">
+                <DropdownMenuItem onClick={handleLogout} className="rounded-lg">
                   <LogOut className="mr-2 h-4 w-4" />
                   로그아웃
                 </DropdownMenuItem>
