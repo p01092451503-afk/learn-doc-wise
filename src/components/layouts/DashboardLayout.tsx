@@ -155,12 +155,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <aside
           className={cn(
             "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300",
-            isDemo ? "left-0 top-0 h-screen w-72" : "left-0 top-20 h-[calc(100vh-5rem)] w-72",
+            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)] w-72" : "left-0 top-20 h-[calc(100vh-5rem)] w-72",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
         >
-          <nav className="flex flex-col gap-1.5 p-4">
+          <nav className="flex flex-col gap-1.5 p-4 overflow-y-auto h-full">
             {menuItems.map((item) => (
               item.enabled ? (
                 <Link key={item.path} to={item.path}>
