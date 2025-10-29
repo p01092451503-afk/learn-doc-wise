@@ -36,17 +36,17 @@ const AdminRevenue = () => {
 
         {/* 매출 통계 */}
         <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     이번 달 총 매출
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
+                  <p className="text-3xl font-bold overflow-x-auto scrollbar-hide">
                     ₩45,230,000
                   </p>
-                  <p className="text-xs text-green-600 mt-1 whitespace-nowrap">
+                  <p className="text-xs text-green-600">
                     +24% 전월 대비
                   </p>
                 </div>
@@ -57,17 +57,17 @@ const AdminRevenue = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     정산 대기
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
+                  <p className="text-3xl font-bold overflow-x-auto scrollbar-hide">
                     ₩8,500,000
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-xs text-muted-foreground">
                     15건
                   </p>
                 </div>
@@ -78,15 +78,15 @@ const AdminRevenue = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     평균 거래액
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">₩158,900</p>
-                  <p className="text-xs text-green-600 mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">₩158,900</p>
+                  <p className="text-xs text-green-600">
                     +5.2% 증가
                   </p>
                 </div>
@@ -97,15 +97,15 @@ const AdminRevenue = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     환불액
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">₩820,000</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">₩820,000</p>
+                  <p className="text-xs text-muted-foreground">
                     전체의 1.8%
                   </p>
                 </div>

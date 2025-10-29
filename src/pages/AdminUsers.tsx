@@ -44,15 +44,15 @@ const AdminUsers = () => {
 
         {/* 통계 카드 */}
         <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     전체 사용자
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">2,847</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">2,847</p>
+                  <p className="text-xs text-muted-foreground">
                     이번 달 +180
                   </p>
                 </div>
@@ -63,15 +63,15 @@ const AdminUsers = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     학생
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">2,456</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">2,456</p>
+                  <p className="text-xs text-muted-foreground">
                     전체의 86%
                   </p>
                 </div>
@@ -82,15 +82,15 @@ const AdminUsers = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     강사
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">342</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">342</p>
+                  <p className="text-xs text-muted-foreground">
                     전체의 12%
                   </p>
                 </div>
@@ -101,15 +101,15 @@ const AdminUsers = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     관리자
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">49</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">49</p>
+                  <p className="text-xs text-muted-foreground">
                     전체의 2%
                   </p>
                 </div>

@@ -95,15 +95,15 @@ const AdminContent = () => {
 
         {/* 통계 카드 */}
         <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     전체 콘텐츠
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">1,234</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">1,234</p>
+                  <p className="text-xs text-muted-foreground">
                     이번 달 +42
                   </p>
                 </div>
@@ -114,15 +114,15 @@ const AdminContent = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     동영상
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">456</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">456</p>
+                  <p className="text-xs text-muted-foreground">
                     125 GB
                   </p>
                 </div>
@@ -133,15 +133,15 @@ const AdminContent = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     문서
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">567</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">567</p>
+                  <p className="text-xs text-muted-foreground">
                     12 GB
                   </p>
                 </div>
@@ -152,15 +152,15 @@ const AdminContent = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     이미지
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">211</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">211</p>
+                  <p className="text-xs text-muted-foreground">
                     3.2 GB
                   </p>
                 </div>

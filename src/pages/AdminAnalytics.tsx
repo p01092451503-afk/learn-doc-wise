@@ -27,17 +27,17 @@ const AdminAnalytics = () => {
 
         {/* 주요 지표 */}
         <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     총 매출
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap overflow-x-auto scrollbar-hide">
+                  <p className="text-3xl font-bold overflow-x-auto scrollbar-hide">
                     ₩45,230,000
                   </p>
-                  <p className="text-xs text-green-600 mt-1 whitespace-nowrap">
+                  <p className="text-xs text-green-600">
                     +5.2% 전월 대비
                   </p>
                 </div>
@@ -48,15 +48,15 @@ const AdminAnalytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     신규 사용자
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">180</p>
-                  <p className="text-xs text-green-600 mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">180</p>
+                  <p className="text-xs text-green-600">
                     +12% 전월 대비
                   </p>
                 </div>
@@ -67,15 +67,15 @@ const AdminAnalytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     신규 강좌
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">12</p>
-                  <p className="text-xs text-green-600 mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">12</p>
+                  <p className="text-xs text-green-600">
                     +8.3% 전월 대비
                   </p>
                 </div>
@@ -86,15 +86,15 @@ const AdminAnalytics = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
                     활성 세션
                   </p>
-                  <p className="text-3xl font-bold mt-2 whitespace-nowrap">1,234</p>
-                  <p className="text-xs text-muted-foreground mt-1 whitespace-nowrap">
+                  <p className="text-3xl font-bold">1,234</p>
+                  <p className="text-xs text-muted-foreground">
                     현재 접속 중
                   </p>
                 </div>
