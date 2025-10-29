@@ -149,35 +149,39 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300",
-            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)] w-72" : "left-0 top-20 h-[calc(100vh-5rem)] w-72",
+            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-transform duration-300 shadow-sm",
+            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)] w-80" : "left-0 top-20 h-[calc(100vh-5rem)] w-80",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
         >
-          <nav className="flex flex-col gap-1.5 p-4 overflow-y-auto h-full">
+          <nav className="flex flex-col gap-2 p-6 overflow-y-auto h-full">
             {menuItems.map((item) => (
               item.enabled ? (
                 <Link key={item.path} to={item.path}>
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 h-12 rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-sm transition-all duration-300"
+                    className="w-full justify-start gap-4 h-14 text-base rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group"
                   >
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold">{item.label}</span>
                   </Button>
                 </Link>
               ) : (
                 <div key={item.label} className="relative">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start gap-3 h-12 rounded-xl opacity-50 cursor-not-allowed"
+                    className="w-full justify-start gap-4 h-14 text-base rounded-xl opacity-40 cursor-not-allowed"
                     disabled
                   >
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                      <item.icon className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <span className="font-semibold">{item.label}</span>
                   </Button>
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
                     준비중
                   </span>
                 </div>
@@ -190,7 +194,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <main
           className={cn(
             "flex-1 p-8 transition-all duration-300",
-            sidebarOpen ? "md:ml-72" : "md:ml-0"
+            sidebarOpen ? "md:ml-80" : "md:ml-0"
           )}
         >
           <div className="mx-auto max-w-7xl">{children}</div>
