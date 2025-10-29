@@ -96,8 +96,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Link to="/" className="flex items-center font-semibold group">
-            <span className="text-2xl font-bold text-foreground">atomLMS</span>
+          <Link to="/" className="flex items-center group">
+            <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
           </Link>
 
           <div className="flex-1 flex items-center gap-4 ml-4">

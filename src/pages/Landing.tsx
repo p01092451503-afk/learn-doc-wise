@@ -10,7 +10,7 @@ const Landing = () => {
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-foreground">atomLMS</span>
+            <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/auth">

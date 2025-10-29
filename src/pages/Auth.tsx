@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { Bot } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
+
 
 const emailSchema = z.string().email("유효한 이메일 주소를 입력하세요");
 const passwordSchema = z.string().min(6, "비밀번호는 최소 6자 이상이어야 합니다");
@@ -233,15 +233,8 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="w-full max-w-md relative z-10">
-        <Link to="/" className="flex items-center justify-center gap-3 mb-8 group">
-          <div className="relative">
-            <img src={atomLogo} alt="Atom LMS" className="h-14 w-14 group-hover:scale-110 transition-transform duration-300" />
-            <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
-          </div>
-          <span className="text-3xl font-display font-bold">
-            <span className="text-gradient">Atom</span>{" "}
-            <span className="text-foreground">LMS</span>
-          </span>
+        <Link to="/" className="flex items-center justify-center mb-8 group">
+          <span className="text-4xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
         </Link>
 
         <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
