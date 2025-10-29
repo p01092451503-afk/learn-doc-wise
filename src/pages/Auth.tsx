@@ -22,7 +22,6 @@ const Auth = () => {
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirm, setSignupConfirm] = useState("");
-  const [isDemoMode, setIsDemoMode] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -36,7 +35,7 @@ const Auth = () => {
           .select('role')
           .eq('user_id', session.user.id)
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (roles) {
           switch (roles.role) {
@@ -65,7 +64,7 @@ const Auth = () => {
           .select('role')
           .eq('user_id', session.user.id)
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (roles) {
           switch (roles.role) {
@@ -141,6 +140,8 @@ const Auth = () => {
           title: "로그인 성공",
           description: "환영합니다!",
         });
+        
+        // Role-based redirect will be handled by useEffect
       }
     } catch (error) {
       toast({
