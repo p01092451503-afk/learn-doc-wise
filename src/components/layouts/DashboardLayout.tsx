@@ -73,12 +73,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     // admin
     return [
       ...baseItems,
-      { icon: Users, label: "사용자 관리", path: "#", enabled: false },
-      { icon: BookOpen, label: "강좌 관리", path: "#", enabled: false },
-      { icon: FolderOpen, label: "콘텐츠 관리", path: "#", enabled: false },
-      { icon: BarChart3, label: "분석", path: "#", enabled: false },
-      { icon: DollarSign, label: "매출 관리", path: "#", enabled: false },
-      { icon: Settings, label: "시스템 설정", path: "#", enabled: false },
+      { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
+      { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
+      { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
+      { icon: BarChart3, label: "분석", path: "/admin/analytics", enabled: true },
+      { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
+      { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
     ];
   };
 
