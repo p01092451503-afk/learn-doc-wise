@@ -98,7 +98,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
           <Link to="/" className="flex items-center gap-2 group">
             <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-            <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
+            <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
           </Link>
 
           <div className="flex-1 flex items-center gap-4 ml-4">

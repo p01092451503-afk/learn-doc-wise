@@ -45,7 +45,7 @@ const DemoPreview = () => {
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-              <span className="text-2xl font-display font-extrabold text-foreground tracking-tight">atomLMS</span>
+              <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             </Link>
             <Badge variant="secondary" className="text-xs">
               데모 모드
