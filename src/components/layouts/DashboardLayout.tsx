@@ -18,6 +18,7 @@ import {
   BarChart3,
   DollarSign,
   FolderOpen,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -97,11 +98,11 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
           <Link to="/" className="flex items-center gap-3 font-semibold group">
             <div className="relative">
-              <GraduationCap className="h-7 w-7 text-primary group-hover:scale-110 transition-transform duration-300" />
+              <Bot className="h-7 w-7 text-primary group-hover:scale-110 transition-transform duration-300" />
               <div className="absolute inset-0 bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
             <span className="hidden sm:inline-block font-display text-xl">
-              <span className="text-gradient">WebHeads</span>{" "}
+              <span className="text-gradient">Atom</span>{" "}
               <span className="text-foreground font-semibold">LMS</span>
             </span>
           </Link>

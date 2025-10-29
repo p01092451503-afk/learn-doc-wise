@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { GraduationCap, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
+import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
 
 const Landing = () => {
   return (
@@ -10,11 +10,11 @@ const Landing = () => {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <GraduationCap className="h-9 w-9 text-primary relative z-10" />
+              <Bot className="h-9 w-9 text-primary relative z-10" />
               <div className="absolute inset-0 bg-primary/20 blur-xl"></div>
             </div>
             <span className="text-2xl font-display font-bold">
-              <span className="text-gradient">WebHeads</span>{" "}
+              <span className="text-gradient">Atom</span>{" "}
               <span className="text-foreground">LMS</span>
             </span>
           </div>
@@ -116,9 +116,9 @@ const Landing = () => {
               description="코스 완료 시 자동으로 수료증이 발급됩니다"
             />
             <FeatureCard
-              icon={<GraduationCap className="h-10 w-10" />}
-              title="멀티 테넌트"
-              description="기관별로 독립적인 환경에서 안전하게 운영하세요"
+              icon={<Bot className="h-10 w-10" />}
+              title="AI 기반 학습"
+              description="Atom AI가 개인화된 학습 경로를 제공하고 실시간으로 피드백합니다"
             />
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap } from "lucide-react";
+import { Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import StudentDashboard from "./StudentDashboard";
 import TeacherDashboard from "./TeacherDashboard";
@@ -42,8 +42,8 @@ const DemoPreview = () => {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold text-foreground">WebHeads LMS</span>
+              <Bot className="h-8 w-8 text-primary" />
+              <span className="text-xl font-bold text-foreground">Atom LMS</span>
             </Link>
             <Badge variant="secondary" className="text-xs">
               데모 모드
