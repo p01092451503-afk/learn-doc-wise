@@ -22,6 +22,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import chatbotIcon from "@/assets/chatbot-icon.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
@@ -241,7 +242,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           variant="premium"
           className="fixed bottom-8 right-8 h-16 w-16 rounded-2xl shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
         >
-          <MessageSquare className="h-7 w-7" />
+          <img src={chatbotIcon} alt="AI Chatbot" className="h-8 w-8" />
         </Button>
       )}
     </div>
