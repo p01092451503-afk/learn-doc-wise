@@ -82,7 +82,7 @@ const OperatorAILogs = () => {
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
-            <img src={atomLogo} alt="AI" className="h-11 w-11" />
+            <img src={atomLogo} alt="AI" className="h-14 w-14" />
           </div>
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
