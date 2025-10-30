@@ -1,80 +1,163 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FolderOpen, FileText, Video, Image as ImageIcon, Upload, Search, MoreVertical } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 const AdminContent = () => {
-  const contents = [
-    {
-      id: 1,
-      name: "React Hooks 강의 영상",
-      type: "video",
-      size: "245 MB",
-      course: "React 완벽 가이드",
-      uploadDate: "2024-10-25",
-      status: "published",
-    },
-    {
-      id: 2,
-      name: "TypeScript 실습 자료.pdf",
-      type: "document",
-      size: "12 MB",
-      course: "TypeScript 마스터클래스",
-      uploadDate: "2024-10-24",
-      status: "published",
-    },
-    {
-      id: 3,
-      name: "디자인 시스템 예제 이미지",
-      type: "image",
-      size: "5.2 MB",
-      course: "디자인 시스템 구축",
-      uploadDate: "2024-10-23",
-      status: "draft",
-    },
-    {
-      id: 4,
-      name: "데이터 분석 코드 예제",
-      type: "document",
-      size: "2.1 MB",
-      course: "파이썬 데이터 분석",
-      uploadDate: "2024-10-22",
-      status: "published",
-    },
-  ];
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    course_id: "",
+    title: "",
+    description: "",
+    video_url: "",
+    video_provider: "youtube" as "youtube" | "vimeo",
+    duration_minutes: "",
+  });
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Video className="h-5 w-5 text-primary" />;
-      case "document":
-        return <FileText className="h-5 w-5 text-accent" />;
-      case "image":
-        return <ImageIcon className="h-5 w-5 text-secondary" />;
-      default:
-        return <FileText className="h-5 w-5" />;
+  // Fetch courses for dropdown
+  const { data: courses } = useQuery({
+    queryKey: ["admin-courses-list"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("courses")
+        .select("id, title")
+        .order("title");
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch course contents
+  const { data: contents, refetch: refetchContents } = useQuery({
+    queryKey: ["admin-course-contents"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("course_contents")
+        .select(`
+          *,
+          courses(title)
+        `)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const detectVideoProvider = (url: string): "youtube" | "vimeo" | null => {
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      return "youtube";
+    } else if (url.includes("vimeo.com")) {
+      return "vimeo";
+    }
+    return null;
+  };
+
+  const handleUrlChange = (url: string) => {
+    setFormData({ ...formData, video_url: url });
+    const provider = detectVideoProvider(url);
+    if (provider) {
+      setFormData((prev) => ({ ...prev, video_url: url, video_provider: provider }));
     }
   };
 
-  const getTypeBadge = (type: string) => {
-    switch (type) {
-      case "video":
-        return <Badge className="bg-primary/10 text-primary">동영상</Badge>;
-      case "document":
-        return <Badge className="bg-accent/10 text-accent">문서</Badge>;
-      case "image":
-        return <Badge className="bg-secondary/10 text-secondary">이미지</Badge>;
-      default:
-        return <Badge>기타</Badge>;
+  const handleCreateContent = async () => {
+    try {
+      if (!formData.course_id || !formData.title || !formData.video_url) {
+        toast({
+          title: "입력 오류",
+          description: "필수 항목을 모두 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.from("course_contents").insert([
+        {
+          course_id: formData.course_id,
+          title: formData.title,
+          description: formData.description,
+          video_url: formData.video_url,
+          video_provider: formData.video_provider,
+          duration_minutes: parseInt(formData.duration_minutes) || 0,
+          content_type: "video",
+          is_published: true,
+        },
+      ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "콘텐츠 생성 완료",
+        description: "새 비디오 콘텐츠가 생성되었습니다.",
+      });
+
+      setIsDialogOpen(false);
+      setFormData({
+        course_id: "",
+        title: "",
+        description: "",
+        video_url: "",
+        video_provider: "youtube",
+        duration_minutes: "",
+      });
+      refetchContents();
+    } catch (error: any) {
+      toast({
+        title: "콘텐츠 생성 실패",
+        description: error.message,
+        variant: "destructive",
+      });
     }
+  };
+
+  const getProviderBadge = (provider: string) => {
+    const variants: Record<string, { icon: any; label: string; color: string }> = {
+      youtube: { icon: Youtube, label: "YouTube", color: "text-red-500" },
+      vimeo: { icon: PlayCircle, label: "Vimeo", color: "text-blue-500" },
+    };
+    const config = variants[provider] || variants.youtube;
+    const Icon = config.icon;
+    
+    return (
+      <Badge variant="outline" className="gap-1">
+        <Icon className={`h-3 w-3 ${config.color}`} />
+        {config.label}
+      </Badge>
+    );
   };
 
   return (
@@ -82,170 +165,161 @@ const AdminContent = () => {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">콘텐츠 관리</h1>
+            <h1 className="text-4xl font-logo font-bold tracking-tight">콘텐츠 관리</h1>
             <p className="text-muted-foreground mt-2">
-              강의 자료와 콘텐츠를 관리하세요
+              비디오 강의 콘텐츠를 등록하고 관리합니다
             </p>
           </div>
-          <Button className="gap-2">
-            <Upload className="h-4 w-4" />
-            콘텐츠 업로드
-          </Button>
-        </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="lg" className="gap-2">
+                <Plus className="h-5 w-5" />
+                비디오 콘텐츠 추가
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>새 비디오 콘텐츠 추가</DialogTitle>
+                <DialogDescription>
+                  YouTube 또는 Vimeo 링크를 입력하여 강의 콘텐츠를 추가하세요
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="course_id">강좌 선택</Label>
+                  <Select
+                    value={formData.course_id}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, course_id: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="강좌를 선택하세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses?.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          {course.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-        {/* 통계 카드 */}
-        <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                전체 콘텐츠
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FolderOpen className="h-5 w-5 text-primary" />
+                <div>
+                  <Label htmlFor="title">콘텐츠 제목</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    placeholder="예: React Hooks 기초"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="video_url">비디오 URL</Label>
+                  <Input
+                    id="video_url"
+                    value={formData.video_url}
+                    onChange={(e) => handleUrlChange(e.target.value)}
+                    placeholder="YouTube 또는 Vimeo 링크를 입력하세요"
+                  />
+                  {formData.video_provider && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">감지된 플랫폼:</span>
+                      {getProviderBadge(formData.video_provider)}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="duration_minutes">영상 길이 (분)</Label>
+                  <Input
+                    id="duration_minutes"
+                    type="number"
+                    value={formData.duration_minutes}
+                    onChange={(e) =>
+                      setFormData({ ...formData, duration_minutes: e.target.value })
+                    }
+                    placeholder="예: 45"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="description">설명 (선택사항)</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
+                    placeholder="강의 내용에 대한 설명을 입력하세요"
+                    rows={3}
+                  />
+                </div>
+
+                <Button onClick={handleCreateContent} className="w-full">
+                  콘텐츠 추가
+                </Button>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">1,234</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +42</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                동영상
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Video className="h-5 w-5 text-primary" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">456</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">125 GB</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                문서
-              </CardTitle>
-              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FileText className="h-5 w-5 text-accent" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">567</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">12 GB</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                이미지
-              </CardTitle>
-              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <ImageIcon className="h-5 w-5 text-secondary" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">211</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">3.2 GB</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 검색 */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="콘텐츠 이름, 강좌명으로 검색..."
-            className="pl-10 rounded-xl border-border/50"
-          />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* 콘텐츠 목록 */}
-        <Card className="border-border/50 shadow-sm">
+        <Card>
           <CardHeader>
-            <CardTitle>최근 업로드된 콘텐츠</CardTitle>
+            <CardTitle>비디오 콘텐츠 목록</CardTitle>
+            <CardDescription>
+              등록된 모든 비디오 강의 콘텐츠를 확인합니다
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {contents.map((content) => (
-                <div
-                  key={content.id}
-                  className="flex items-center justify-between p-4 rounded-xl border hover:border-primary/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
-                      {getTypeIcon(content.type)}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        {getTypeBadge(content.type)}
-                        <Badge
-                          variant={
-                            content.status === "published" ? "default" : "secondary"
-                          }
-                        >
-                          {content.status === "published" ? "게시됨" : "임시저장"}
-                        </Badge>
-                      </div>
-                      <h4 className="font-semibold">{content.name}</h4>
-                      <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
-                        <span>{content.course}</span>
-                        <span>·</span>
-                        <span>{content.size}</span>
-                        <span>·</span>
-                        <span>{content.uploadDate}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem>다운로드</DropdownMenuItem>
-                      <DropdownMenuItem>정보 수정</DropdownMenuItem>
-                      <DropdownMenuItem>링크 복사</DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
-                        삭제
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 저장 공간 사용량 */}
-        <Card className="border-border/50 shadow-sm">
-          <CardHeader>
-            <CardTitle>저장 공간 사용량</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2 text-sm">
-                  <span className="text-muted-foreground">사용 중</span>
-                  <span className="font-medium">140.2 GB / 500 GB</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-3">
-                  <div
-                    className="bg-gradient-to-r from-primary to-primary-glow h-3 rounded-full transition-all duration-300"
-                    style={{ width: "28%" }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  남은 용량: 359.8 GB
-                </p>
-              </div>
-            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>제목</TableHead>
+                  <TableHead>강좌</TableHead>
+                  <TableHead>플랫폼</TableHead>
+                  <TableHead>길이</TableHead>
+                  <TableHead>상태</TableHead>
+                  <TableHead>등록일</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {contents?.map((content) => (
+                  <TableRow key={content.id}>
+                    <TableCell className="font-medium">{content.title}</TableCell>
+                    <TableCell>{(content.courses as any)?.title || "-"}</TableCell>
+                    <TableCell>
+                      {content.video_provider &&
+                        getProviderBadge(content.video_provider)}
+                    </TableCell>
+                    <TableCell>{content.duration_minutes}분</TableCell>
+                    <TableCell>
+                      <Badge variant={content.is_published ? "default" : "secondary"}>
+                        {content.is_published ? "게시됨" : "비공개"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(content.created_at).toLocaleDateString("ko-KR")}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {!contents?.length && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={6}
+                      className="text-center text-muted-foreground py-8"
+                    >
+                      등록된 콘텐츠가 없습니다
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>

@@ -273,6 +273,110 @@ export type Database = {
           },
         ]
       }
+      content_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          content_id: string
+          id: string
+          last_accessed_at: string
+          last_position_seconds: number | null
+          progress_percentage: number
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          content_id: string
+          id?: string
+          last_accessed_at?: string
+          last_position_seconds?: number | null
+          progress_percentage?: number
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          content_id?: string
+          id?: string
+          last_accessed_at?: string
+          last_position_seconds?: number | null
+          progress_percentage?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_progress_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "course_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      course_contents: {
+        Row: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          course_id: string
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_preview: boolean
+          is_published: boolean
+          order_index: number
+          title: string
+          updated_at: string
+          video_provider: Database["public"]["Enums"]["video_provider"] | null
+          video_url: string | null
+        }
+        Insert: {
+          content_type?: Database["public"]["Enums"]["content_type"]
+          course_id: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_preview?: boolean
+          is_published?: boolean
+          order_index?: number
+          title: string
+          updated_at?: string
+          video_provider?: Database["public"]["Enums"]["video_provider"] | null
+          video_url?: string | null
+        }
+        Update: {
+          content_type?: Database["public"]["Enums"]["content_type"]
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_preview?: boolean
+          is_published?: boolean
+          order_index?: number
+          title?: string
+          updated_at?: string
+          video_provider?: Database["public"]["Enums"]["video_provider"] | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_contents_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_progress: {
         Row: {
           completed: boolean
@@ -1039,17 +1143,28 @@ export type Database = {
         }
         Returns: string
       }
+      update_content_progress: {
+        Args: {
+          p_content_id: string
+          p_last_position_seconds: number
+          p_progress_percentage: number
+          p_user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "student" | "teacher" | "admin"
       approval_status: "pending" | "approved" | "rejected" | "suspended"
       assignment_status: "draft" | "published" | "closed"
       billing_cycle: "monthly" | "yearly"
+      content_type: "video" | "document" | "quiz" | "assignment"
       course_level: "beginner" | "intermediate" | "advanced" | "all"
       course_status: "draft" | "published" | "scheduled" | "archived"
       payment_status: "pending" | "completed" | "failed" | "refunded"
       submission_status: "submitted" | "graded" | "returned" | "late"
       subscription_plan_type: "starter" | "standard" | "professional"
+      video_provider: "youtube" | "vimeo" | "direct"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1181,11 +1296,13 @@ export const Constants = {
       approval_status: ["pending", "approved", "rejected", "suspended"],
       assignment_status: ["draft", "published", "closed"],
       billing_cycle: ["monthly", "yearly"],
+      content_type: ["video", "document", "quiz", "assignment"],
       course_level: ["beginner", "intermediate", "advanced", "all"],
       course_status: ["draft", "published", "scheduled", "archived"],
       payment_status: ["pending", "completed", "failed", "refunded"],
       submission_status: ["submitted", "graded", "returned", "late"],
       subscription_plan_type: ["starter", "standard", "professional"],
+      video_provider: ["youtube", "vimeo", "direct"],
     },
   },
 } as const
