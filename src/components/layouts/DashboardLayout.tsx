@@ -181,22 +181,22 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       {/* Top Navigation - Hidden in demo mode */}
       {!isDemo && (
         <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
-        <div className="flex h-20 items-center gap-4 px-6">
+        <div className="flex h-16 md:h-20 items-center gap-2 md:gap-4 px-3 md:px-6">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden rounded-xl"
+            className="md:hidden rounded-xl flex-shrink-0"
           >
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Link to="/" className="flex items-center gap-2 group">
-            <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-            <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+          <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
+            <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
+            <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
           </Link>
 
-          <div className="flex-1 flex items-center gap-4 ml-4">
+          <div className="hidden lg:flex flex-1 items-center gap-4 ml-4">
             <div className="relative w-full max-w-lg">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -206,20 +206,20 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="relative rounded-xl hover:bg-primary/10">
+          <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
+            <Button variant="ghost" size="icon" className="relative rounded-xl hover:bg-primary/10 flex-shrink-0">
               <Bell className="h-5 w-5" />
               <span className="absolute top-2 right-2 h-2 w-2 bg-accent rounded-full ring-2 ring-background" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2 rounded-xl hover:bg-primary/10">
-                  <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-premium">
-                    <span className="text-sm font-semibold text-primary-foreground">홍</span>
+                <Button variant="ghost" className="gap-1.5 md:gap-2 rounded-xl hover:bg-primary/10 flex-shrink-0">
+                  <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-premium">
+                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">홍</span>
                   </div>
-                  <span className="hidden sm:inline-block font-medium">홍길동</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">홍길동</span>
+                  <ChevronDown className="h-4 w-4 hidden sm:block" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/50">
@@ -365,7 +365,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         {/* Main Content */}
         <main
           className={cn(
-            "flex-1 p-8 transition-all duration-300",
+            "flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300",
             sidebarOpen && !sidebarCollapsed ? "md:ml-48" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
           )}
         >
@@ -378,9 +378,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <Button
           size="icon"
           variant="premium"
-          className="fixed bottom-8 right-8 h-16 w-16 rounded-full shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
+          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 h-14 w-14 md:h-16 md:w-16 rounded-full shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
         >
-          <img src={chatbotIcon} alt="AI Chatbot" className="h-8 w-8" />
+          <img src={chatbotIcon} alt="AI Chatbot" className="h-7 w-7 md:h-8 md:w-8" />
         </Button>
       )}
     </div>

@@ -11,8 +11,8 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <div className="space-y-6">
         {/* Welcome Section */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">관리자 대시보드</h1>
-          <p className="text-muted-foreground flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">관리자 대시보드</h1>
+          <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
             <img src={atomLogo} alt="atom" className="h-5 w-5" />
             플랫폼 전체를 관리하고 모니터링하세요
           </p>
@@ -167,31 +167,31 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>빠른 작업</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              <Button variant="outline" className="h-20 flex-col gap-2">
-                <Users className="h-5 w-5" />
-                사용자 추가
-              </Button>
-              <Button variant="outline" className="h-20 flex-col gap-2">
-                <BookOpen className="h-5 w-5" />
-                강의 승인
-              </Button>
-              <Button variant="outline" className="h-20 flex-col gap-2">
-                <DollarSign className="h-5 w-5" />
-                정산 처리
-              </Button>
-              <Button variant="outline" className="h-20 flex-col gap-2">
-                <TrendingUp className="h-5 w-5" />
-                리포트 생성
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>빠른 작업</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                  <Users className="h-4 w-4 md:h-5 md:w-5" />
+                  사용자 추가
+                </Button>
+                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                  <BookOpen className="h-4 w-4 md:h-5 md:w-5" />
+                  강의 승인
+                </Button>
+                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                  <DollarSign className="h-4 w-4 md:h-5 md:w-5" />
+                  정산 처리
+                </Button>
+                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                  <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
+                  리포트 생성
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
       </div>
 
       {/* 챗봇 - 숨김 */}
@@ -265,12 +265,12 @@ const AlertItem = ({
   description: string; 
   action: string;
 }) => (
-  <div className="flex items-start justify-between p-3 rounded-lg border">
-    <div className="flex-1">
+  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
+    <div className="flex-1 min-w-0">
       <h4 className="text-sm font-medium mb-1">{title}</h4>
       <p className="text-xs text-muted-foreground">{description}</p>
     </div>
-    <Button size="sm" variant={level === "warning" ? "destructive" : "outline"}>
+    <Button size="sm" variant={level === "warning" ? "destructive" : "outline"} className="w-full sm:w-auto flex-shrink-0">
       {action}
     </Button>
   </div>

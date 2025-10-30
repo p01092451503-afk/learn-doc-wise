@@ -9,15 +9,15 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
     <DashboardLayout userRole="teacher" isDemo={isDemo}>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">강사 대시보드</h1>
-            <p className="text-muted-foreground flex items-center gap-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">강사 대시보드</h1>
+            <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
               <img src={atomLogo} alt="atom" className="h-5 w-5" />
               학생들의 학습을 관리하고 분석하세요
             </p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2 w-full sm:w-auto flex-shrink-0">
             <Plus className="h-4 w-4" />
             새 강의 만들기
           </Button>
@@ -194,21 +194,21 @@ const CourseItem = ({
   revenue: string; 
   status: string;
 }) => (
-  <div className="flex items-center justify-between p-4 rounded-lg border hover:border-primary/50 transition-colors">
-    <div>
-      <h4 className="font-semibold">{title}</h4>
-      <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-lg border hover:border-primary/50 transition-colors">
+    <div className="flex-1 min-w-0">
+      <h4 className="font-semibold text-sm md:text-base truncate">{title}</h4>
+      <div className="flex items-center gap-2 md:gap-4 mt-1 text-xs md:text-sm text-muted-foreground flex-wrap">
         <span>{students} 학생</span>
         <span>⭐ {rating}</span>
-        <span>{revenue}</span>
+        <span className="truncate">{revenue}</span>
       </div>
     </div>
-    <div className="flex gap-2">
-      <Button size="sm" variant="outline">
+    <div className="flex gap-2 w-full sm:w-auto">
+      <Button size="sm" variant="outline" className="flex-1 sm:flex-none">
         <Eye className="h-4 w-4 mr-1" />
         보기
       </Button>
-      <Button size="sm" variant="outline">
+      <Button size="sm" variant="outline" className="flex-1 sm:flex-none">
         <Edit className="h-4 w-4 mr-1" />
         편집
       </Button>
@@ -227,18 +227,18 @@ const ActivityItem = ({
   course: string; 
   time: string;
 }) => (
-  <div className="flex items-start gap-3">
+  <div className="flex items-start gap-2 md:gap-3">
     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
       <span className="text-xs font-medium text-primary">{student[0]}</span>
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-sm">
+      <p className="text-xs md:text-sm">
         <span className="font-medium">{student}</span>
         <span className="text-muted-foreground"> {action}</span>
       </p>
       <p className="text-xs text-muted-foreground truncate">{course}</p>
     </div>
-    <span className="text-xs text-muted-foreground">{time}</span>
+    <span className="text-xs text-muted-foreground whitespace-nowrap">{time}</span>
   </div>
 );
 

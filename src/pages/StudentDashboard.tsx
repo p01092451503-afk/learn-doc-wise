@@ -13,12 +13,12 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-display font-bold mb-2">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-2">
               <span className="text-gradient">학습 대시보드</span>
             </h1>
-            <p className="text-muted-foreground text-lg flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-6 w-6" />
-              안녕하세요! 오늘도 열심히 학습해봅시다
+            <p className="text-muted-foreground text-sm md:text-base lg:text-lg flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5 md:h-6 md:w-6" />
+              <span className="hidden sm:inline">안녕하세요! </span>오늘도 열심히 학습해봅시다
             </p>
           </div>
         </div>
@@ -162,39 +162,39 @@ const StatsCard = ({ title, value, icon, description }: { title: string; value: 
 );
 
 const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => (
-  <div className="space-y-3 p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
-    <div className="flex justify-between items-start">
-      <div>
-        <h4 className="font-display font-semibold text-lg">{title}</h4>
-        <p className="text-sm text-muted-foreground mt-1">{instructor}</p>
+  <div className="space-y-3 p-4 md:p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div className="flex-1 min-w-0">
+        <h4 className="font-display font-semibold text-base md:text-lg truncate">{title}</h4>
+        <p className="text-xs md:text-sm text-muted-foreground mt-1">{instructor}</p>
       </div>
-      <Button size="sm" variant="outline" className="rounded-xl">
+      <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
         <PlayCircle className="h-4 w-4 mr-1" />
         계속하기
       </Button>
     </div>
     <div>
-      <div className="flex justify-between mb-2 text-sm">
+      <div className="flex justify-between mb-2 text-xs md:text-sm">
         <span className="text-muted-foreground">진행률</span>
         <span className="font-semibold text-primary">{progress}%</span>
       </div>
       <Progress value={progress} className="h-2" />
     </div>
-    <p className="text-sm text-muted-foreground">다음: {nextLesson}</p>
+    <p className="text-xs md:text-sm text-muted-foreground truncate">다음: {nextLesson}</p>
   </div>
 );
 
 const RecommendedCourse = ({ title, instructor, rating, students }: { title: string; instructor: string; rating: number; students: number }) => (
-  <div className="flex justify-between items-center p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
-    <div>
-      <h4 className="font-medium text-sm">{title}</h4>
-      <p className="text-xs text-muted-foreground">{instructor}</p>
-      <div className="flex items-center gap-2 mt-1">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
+    <div className="flex-1 min-w-0">
+      <h4 className="font-medium text-sm truncate">{title}</h4>
+      <p className="text-xs text-muted-foreground truncate">{instructor}</p>
+      <div className="flex items-center gap-2 mt-1 flex-wrap">
         <span className="text-xs">⭐ {rating}</span>
         <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
       </div>
     </div>
-    <Button size="sm">보기</Button>
+    <Button size="sm" className="w-full sm:w-auto flex-shrink-0">보기</Button>
   </div>
 );
 
