@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +45,32 @@ interface DashboardLayoutProps {
   isDemo?: boolean;
 }
 
+interface MenuItem {
+  icon: any;
+  label: string;
+  path: string;
+  enabled: boolean;
+}
+
+const iconMap: { [key: string]: any } = {
+  LayoutDashboard,
+  BookOpen,
+  FileText,
+  Users,
+  MessageSquare,
+  Settings,
+  BarChart3,
+  DollarSign,
+  FolderOpen,
+  Building2,
+  Brain,
+  Shield,
+};
+
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -71,7 +94,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     }
   };
 
-  const getMenuItems = () => {
+  const getDefaultMenuItems = () => {
     const baseItems = [
       { icon: LayoutDashboard, label: "대시보드", path: `/${userRole}`, enabled: true },
     ];
@@ -112,7 +135,35 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     ];
   };
 
-  const menuItems = getMenuItems();
+  useEffect(() => {
+    fetchMenuOrder();
+  }, [userRole]);
+
+  const fetchMenuOrder = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("menu_order")
+        .select("menu_items")
+        .eq("user_role", userRole)
+        .single();
+
+      if (error && error.code !== "PGRST116") throw error;
+
+      if (data && data.menu_items) {
+        // Convert string icons to actual icon components
+        const items = (data.menu_items as any[]).map((item: any) => ({
+          ...item,
+          icon: iconMap[item.icon] || LayoutDashboard,
+        }));
+        setMenuItems(items);
+      } else {
+        setMenuItems(getDefaultMenuItems());
+      }
+    } catch (error) {
+      console.error("Error fetching menu order:", error);
+      setMenuItems(getDefaultMenuItems());
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">

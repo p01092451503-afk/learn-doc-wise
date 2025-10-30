@@ -696,6 +696,30 @@ export type Database = {
           },
         ]
       }
+      menu_order: {
+        Row: {
+          created_at: string
+          id: string
+          menu_items: Json
+          updated_at: string
+          user_role: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          menu_items: Json
+          updated_at?: string
+          user_role: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          menu_items?: Json
+          updated_at?: string
+          user_role?: string
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           created_at: string
