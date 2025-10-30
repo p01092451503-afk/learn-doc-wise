@@ -194,8 +194,8 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </Card>
       </div>
 
-      {/* 챗봇 */}
-      <Chatbot userRole="admin" />
+      {/* 챗봇 - 숨김 */}
+      {/* <Chatbot userRole="admin" /> */}
     </DashboardLayout>
   );
 };

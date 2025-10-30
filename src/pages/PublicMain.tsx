@@ -353,8 +353,8 @@ const PublicMain = () => {
         </div>
       </footer>
 
-      {/* 챗봇 */}
-      <Chatbot userRole="user" />
+      {/* 챗봇 - 숨김 */}
+      {/* <Chatbot userRole="user" /> */}
     </div>
   );
 };

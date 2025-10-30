@@ -142,8 +142,8 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
       </div>
 
-      {/* 챗봇 */}
-      <Chatbot userRole="user" />
+      {/* 챗봇 - 숨김 */}
+      {/* <Chatbot userRole="user" /> */}
     </DashboardLayout>
   );
 };
