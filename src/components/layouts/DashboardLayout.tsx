@@ -137,12 +137,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       // 운영자(SaaS 플랫폼 소유주) 메뉴
       return [
         ...baseItems,
-        { icon: Building2, label: "고객사 관리", path: "/admin/tenants", enabled: true },
-        { icon: BarChart3, label: "사용량 관리", path: "/admin/usage", enabled: true },
-        { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true },
-        { icon: DollarSign, label: "전체 매출", path: "/admin/revenue", enabled: true },
-        { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
-        { icon: Settings, label: "플랫폼 설정", path: "/admin/settings", enabled: true },
+        { icon: Building2, label: "고객사 관리", path: "/operator/tenants", enabled: true },
+        { icon: BarChart3, label: "사용량 관리", path: "/operator/usage", enabled: true },
+        { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", enabled: true },
+        { icon: DollarSign, label: "전체 매출", path: "/operator/revenue", enabled: true },
+        { icon: Shield, label: "시스템 모니터링", path: "/operator/monitoring", enabled: true },
+        { icon: Settings, label: "플랫폼 설정", path: "/operator/settings", enabled: true },
       ];
     }
 
