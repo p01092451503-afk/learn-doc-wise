@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle, Tag, Folder } from "lucide-react";
+import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle, Tag, Folder, Pencil } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +40,7 @@ const AdminContent = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [tagDialogOpen, setTagDialogOpen] = useState(false);
+  const [editingContent, setEditingContent] = useState<any>(null);
   
   const [formData, setFormData] = useState({
     course_id: "",
@@ -137,6 +138,19 @@ const AdminContent = () => {
     }
   };
 
+  const handleEditContent = (content: any) => {
+    setEditingContent(content);
+    setFormData({
+      course_id: content.course_id,
+      title: content.title,
+      description: content.description || "",
+      video_url: content.video_url,
+      video_provider: content.video_provider,
+      duration_minutes: content.duration_minutes.toString(),
+    });
+    setIsDialogOpen(true);
+  };
+
   const handleCreateContent = async () => {
     try {
       if (!formData.course_id || !formData.title || !formData.video_url) {
@@ -148,27 +162,51 @@ const AdminContent = () => {
         return;
       }
 
-      const { error } = await supabase.from("course_contents").insert([
-        {
-          course_id: formData.course_id,
-          title: formData.title,
-          description: formData.description,
-          video_url: formData.video_url,
-          video_provider: formData.video_provider,
-          duration_minutes: parseInt(formData.duration_minutes) || 0,
-          content_type: "video",
-          is_published: true,
-        },
-      ]);
+      if (editingContent) {
+        // Update existing content
+        const { error } = await supabase
+          .from("course_contents")
+          .update({
+            course_id: formData.course_id,
+            title: formData.title,
+            description: formData.description,
+            video_url: formData.video_url,
+            video_provider: formData.video_provider,
+            duration_minutes: parseInt(formData.duration_minutes) || 0,
+          })
+          .eq("id", editingContent.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "콘텐츠 생성 완료",
-        description: "새 비디오 콘텐츠가 생성되었습니다.",
-      });
+        toast({
+          title: "콘텐츠 수정 완료",
+          description: "비디오 콘텐츠가 수정되었습니다.",
+        });
+      } else {
+        // Create new content
+        const { error } = await supabase.from("course_contents").insert([
+          {
+            course_id: formData.course_id,
+            title: formData.title,
+            description: formData.description,
+            video_url: formData.video_url,
+            video_provider: formData.video_provider,
+            duration_minutes: parseInt(formData.duration_minutes) || 0,
+            content_type: "video",
+            is_published: true,
+          },
+        ]);
+
+        if (error) throw error;
+
+        toast({
+          title: "콘텐츠 생성 완료",
+          description: "새 비디오 콘텐츠가 생성되었습니다.",
+        });
+      }
 
       setIsDialogOpen(false);
+      setEditingContent(null);
       setFormData({
         course_id: "",
         title: "",
@@ -180,7 +218,7 @@ const AdminContent = () => {
       refetchContents();
     } catch (error: any) {
       toast({
-        title: "콘텐츠 생성 실패",
+        title: editingContent ? "콘텐츠 수정 실패" : "콘텐츠 생성 실패",
         description: error.message,
         variant: "destructive",
       });
@@ -479,7 +517,20 @@ const AdminContent = () => {
           {/* Course Contents Tab */}
           <TabsContent value="contents">
             <div className="flex items-center justify-between mb-6">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) {
+              setEditingContent(null);
+              setFormData({
+                course_id: "",
+                title: "",
+                description: "",
+                video_url: "",
+                video_provider: "youtube",
+                duration_minutes: "",
+              });
+            }
+          }}>
             <DialogTrigger asChild>
               <Button size="lg" className="gap-2">
                 <Plus className="h-5 w-5" />
@@ -488,9 +539,11 @@ const AdminContent = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
               <DialogHeader>
-                <DialogTitle>새 비디오 콘텐츠 추가</DialogTitle>
+                <DialogTitle>{editingContent ? "비디오 콘텐츠 수정" : "새 비디오 콘텐츠 추가"}</DialogTitle>
                 <DialogDescription>
-                  YouTube 또는 Vimeo 링크를 입력하여 강의 콘텐츠를 추가하세요
+                  {editingContent 
+                    ? "비디오 콘텐츠 정보를 수정합니다" 
+                    : "YouTube 또는 Vimeo 링크를 입력하여 강의 콘텐츠를 추가하세요"}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
@@ -570,7 +623,7 @@ const AdminContent = () => {
                 </div>
 
                 <Button onClick={handleCreateContent} className="w-full">
-                  콘텐츠 추가
+                  {editingContent ? "콘텐츠 수정" : "콘텐츠 추가"}
                 </Button>
               </div>
             </DialogContent>
@@ -595,6 +648,7 @@ const AdminContent = () => {
                   <TableHead>길이</TableHead>
                   <TableHead>상태</TableHead>
                   <TableHead>등록일</TableHead>
+                  <TableHead className="text-right">작업</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -615,12 +669,21 @@ const AdminContent = () => {
                     <TableCell>
                       {new Date(content.created_at).toLocaleDateString("ko-KR")}
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditContent(content)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {!contents?.length && (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       className="text-center text-muted-foreground py-8"
                     >
                       등록된 콘텐츠가 없습니다
