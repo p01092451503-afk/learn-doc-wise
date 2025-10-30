@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
+import Player from "@vimeo/player";
 
 interface VideoPlayerProps {
   contentId: string;
@@ -19,7 +19,7 @@ const VideoPlayer = ({
   const [lastPosition, setLastPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { toast } = useToast();
+  const vimeoPlayerRef = useRef<Player | null>(null);
 
   // Extract video ID from URL
   const getVideoId = (url: string, provider: string) => {
@@ -27,7 +27,6 @@ const VideoPlayer = ({
       const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
       return match ? match[1] : null;
     } else if (provider === "vimeo") {
-      // Support both vimeo.com/VIDEO_ID and player.vimeo.com/video/VIDEO_ID formats
       const match = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
       return match ? match[1] : null;
     }
@@ -77,7 +76,71 @@ const VideoPlayer = ({
     }
   };
 
-  // YouTube player integration
+  // Vimeo Player SDK integration
+  useEffect(() => {
+    if (videoProvider !== "vimeo" || !iframeRef.current) return;
+
+    console.log("🎬 Initializing Vimeo Player SDK");
+    
+    const player = new Player(iframeRef.current);
+    vimeoPlayerRef.current = player;
+
+    // Get duration
+    player.getDuration().then((dur) => {
+      console.log("📏 Video duration:", dur);
+      setDuration(dur);
+    });
+
+    // Handle timeupdate
+    player.on('timeupdate', (data) => {
+      const currentTime = data.seconds;
+      const videoDuration = data.duration;
+      const progressPercentage = (currentTime / videoDuration) * 100;
+
+      console.log("📹 Vimeo timeupdate:", { currentTime, videoDuration, progressPercentage });
+
+      setDuration(videoDuration);
+      setProgress(progressPercentage);
+      setLastPosition(currentTime);
+
+      // Save progress every 10 seconds
+      if (Math.floor(currentTime) % 10 === 0 && currentTime > 0) {
+        saveProgress(progressPercentage, currentTime);
+      }
+    });
+
+    // Handle play event
+    player.on('play', () => {
+      console.log("▶️ Video started playing");
+    });
+
+    // Handle pause event
+    player.on('pause', (data) => {
+      console.log("⏸️ Video paused at:", data.seconds);
+      // Save progress when paused
+      const progressPercentage = (data.seconds / data.duration) * 100;
+      saveProgress(progressPercentage, data.seconds);
+    });
+
+    // Handle ended event
+    player.on('ended', () => {
+      console.log("✅ Video ended");
+      saveProgress(100, duration);
+    });
+
+    return () => {
+      // Save final progress before cleanup
+      if (progress > 0) {
+        saveProgress(progress, lastPosition);
+      }
+      player.off('timeupdate');
+      player.off('play');
+      player.off('pause');
+      player.off('ended');
+    };
+  }, [videoProvider, contentId]);
+
+  // YouTube player integration (kept for compatibility)
   useEffect(() => {
     if (videoProvider !== "youtube") return;
 
@@ -109,108 +172,6 @@ const VideoPlayer = ({
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, [videoProvider, contentId]);
-
-  // Vimeo player integration
-  useEffect(() => {
-    if (videoProvider !== "vimeo") return;
-
-    let isSubscribed = false;
-
-    const handleMessage = (event: MessageEvent) => {
-      // Accept messages from Vimeo
-      if (!event.data || typeof event.data !== 'string') return;
-
-      try {
-        const data = JSON.parse(event.data);
-        
-        // Handle ready event
-        if (data.event === "ready" && !isSubscribed) {
-          console.log("✅ Vimeo player ready");
-          isSubscribed = true;
-          
-          // Subscribe to all relevant events
-          const iframe = iframeRef.current;
-          if (iframe && iframe.contentWindow) {
-            console.log("📡 Subscribing to events");
-            
-            // Subscribe to timeupdate
-            iframe.contentWindow.postMessage(JSON.stringify({
-              method: "addEventListener",
-              value: "timeupdate"
-            }), "*");
-            
-            // Also subscribe to play event to ensure we're tracking
-            iframe.contentWindow.postMessage(JSON.stringify({
-              method: "addEventListener", 
-              value: "play"
-            }), "*");
-          } else {
-            console.error("❌ iframe or contentWindow not available");
-          }
-        }
-        
-        // Handle play event
-        if (data.event === "play") {
-          console.log("▶️ Video started playing");
-        }
-        
-        // Handle timeupdate event
-        if (data.event === "timeupdate" && data.data) {
-          const currentTime = data.data.seconds;
-          const videoDuration = data.data.duration;
-          const progressPercentage = (currentTime / videoDuration) * 100;
-
-          console.log("📹 Vimeo timeupdate:", { currentTime, videoDuration, progressPercentage });
-
-          setDuration(videoDuration);
-          setProgress(progressPercentage);
-          setLastPosition(currentTime);
-
-          // Save progress every 10 seconds
-          if (Math.floor(currentTime) % 10 === 0 && currentTime > 0) {
-            saveProgress(progressPercentage, currentTime);
-          }
-        }
-      } catch (e) {
-        console.error("Error handling Vimeo message:", e);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    // Initialize player after iframe loads
-    const initPlayer = () => {
-      const iframe = iframeRef.current;
-      if (iframe && iframe.contentWindow) {
-        console.log("🎬 Initializing Vimeo player");
-        // Ping the player to trigger ready event
-        iframe.contentWindow.postMessage(JSON.stringify({
-          method: "ping"
-        }), "*");
-      } else {
-        console.warn("⚠️ iframe not ready, retrying...");
-        // Retry after a short delay
-        setTimeout(initPlayer, 500);
-      }
-    };
-
-    // Wait for iframe to be fully loaded
-    const timeout = setTimeout(initPlayer, 1000);
-
-    return () => {
-      clearTimeout(timeout);
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [videoProvider, contentId]);
-
-  // Save final progress on unmount
-  useEffect(() => {
-    return () => {
-      if (progress > 0) {
-        saveProgress(progress, lastPosition);
-      }
-    };
-  }, [progress, lastPosition]);
 
   if (!videoId) {
     return (
