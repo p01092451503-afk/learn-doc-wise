@@ -9,7 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Download, TrendingUp, TrendingDown, AlertTriangle, BookOpen, Award, BarChart3, Brain, Search } from "lucide-react";
+import { Download, TrendingUp, TrendingDown, AlertTriangle, BookOpen, Award, BarChart3, Brain, Search, FileDown } from "lucide-react";
+import * as XLSX from "xlsx";
 
 interface Enrollment {
   id: string;
@@ -44,6 +45,7 @@ const AdminLearning = () => {
   const [analytics, setAnalytics] = useState<LearningAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [analyzingAI, setAnalyzingAI] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -154,12 +156,152 @@ const AdminLearning = () => {
     }
   };
 
-  const handleExportReport = () => {
-    toast({
-      title: "리포트 다운로드",
-      description: "리포트를 준비 중입니다...",
-    });
-    // CSV/XLSX export logic would go here
+  const handleExportReport = (format: 'csv' | 'xlsx' = 'xlsx') => {
+    try {
+      // Prepare data for export
+      const exportData = enrollments.map((enrollment) => ({
+        '학생명': enrollment.profiles?.full_name || '이름 없음',
+        '강좌명': enrollment.courses?.title || '강좌명 없음',
+        '진도율': `${Math.round(enrollment.calculated_progress || parseFloat(enrollment.progress.toString()))}%`,
+        '수강시작일': new Date(enrollment.enrolled_at).toLocaleDateString('ko-KR'),
+        '완료일': enrollment.completed_at ? new Date(enrollment.completed_at).toLocaleDateString('ko-KR') : '미완료',
+        '상태': enrollment.completed_at ? '완료' : '진행중',
+      }));
+
+      if (format === 'csv') {
+        // CSV Export
+        const headers = Object.keys(exportData[0] || {});
+        const csvContent = [
+          headers.join(','),
+          ...exportData.map(row => 
+            headers.map(header => `"${row[header as keyof typeof row] || ''}"`).join(',')
+          )
+        ].join('\n');
+
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `학습리포트_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+      } else {
+        // XLSX Export
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, '학습 리포트');
+        
+        // Set column widths
+        ws['!cols'] = [
+          { wch: 15 }, // 학생명
+          { wch: 30 }, // 강좌명
+          { wch: 10 }, // 진도율
+          { wch: 15 }, // 수강시작일
+          { wch: 15 }, // 완료일
+          { wch: 10 }, // 상태
+        ];
+
+        XLSX.writeFile(wb, `학습리포트_${new Date().toISOString().split('T')[0]}.xlsx`);
+      }
+
+      toast({
+        title: "다운로드 완료",
+        description: `${format.toUpperCase()} 파일이 다운로드되었습니다.`,
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "오류",
+        description: "리포트 다운로드 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const runAIAnalysis = async () => {
+    if (enrollments.length === 0) {
+      toast({
+        title: "알림",
+        description: "분석할 데이터가 없습니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setAnalyzingAI(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    try {
+      toast({
+        title: "AI 분석 시작",
+        description: `${enrollments.length}명의 학습 데이터를 분석합니다...`,
+      });
+
+      // 각 수강생에 대해 AI 분석 실행
+      for (const enrollment of enrollments) {
+        try {
+          const enrollmentDays = Math.floor(
+            (new Date().getTime() - new Date(enrollment.enrolled_at).getTime()) / (1000 * 60 * 60 * 24)
+          );
+
+          // content_progress에서 학습 시간과 완료 레슨 계산
+          const { data: progressData } = await supabase
+            .from('content_progress')
+            .select('completed, last_accessed_at')
+            .eq('user_id', enrollment.user_id);
+
+          const completedLessons = progressData?.filter(p => p.completed).length || 0;
+          const lastActivity = progressData?.[0]?.last_accessed_at 
+            ? Math.floor((new Date().getTime() - new Date(progressData[0].last_accessed_at).getTime()) / (1000 * 60 * 60 * 24))
+            : enrollmentDays;
+
+          const learningData = {
+            user_id: enrollment.user_id,
+            course_id: enrollment.course_id,
+            total_time_minutes: 0, // 실제 학습 시간은 tracking이 필요
+            lessons_completed: completedLessons,
+            last_activity_days_ago: lastActivity,
+            progress_percentage: enrollment.calculated_progress || parseFloat(enrollment.progress.toString()),
+            enrollment_days: enrollmentDays,
+          };
+
+          const { error } = await supabase.functions.invoke('analyze-learning', {
+            body: { learningData }
+          });
+
+          if (error) {
+            console.error(`Analysis failed for user ${enrollment.user_id}:`, error);
+            errorCount++;
+          } else {
+            successCount++;
+          }
+
+          // Rate limit 방지를 위한 지연
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+        } catch (error) {
+          console.error(`Error analyzing enrollment ${enrollment.id}:`, error);
+          errorCount++;
+        }
+      }
+
+      // 분석 완료 후 데이터 새로고침
+      await fetchData();
+
+      toast({
+        title: "AI 분석 완료",
+        description: `성공: ${successCount}건, 실패: ${errorCount}건`,
+      });
+
+    } catch (error) {
+      console.error('AI Analysis error:', error);
+      toast({
+        title: "오류",
+        description: "AI 분석 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzingAI(false);
+    }
   };
 
   const getProgressBadge = (progress: number) => {
@@ -195,10 +337,16 @@ const AdminLearning = () => {
             <h1 className="text-3xl font-display font-bold">학습 관리</h1>
             <p className="text-muted-foreground mt-2">진도율, 성적, 학습 분석 및 이수 관리</p>
           </div>
-          <Button onClick={handleExportReport}>
-            <Download className="h-4 w-4 mr-2" />
-            리포트 다운로드
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => handleExportReport('xlsx')}>
+              <FileDown className="h-4 w-4 mr-2" />
+              XLSX 다운로드
+            </Button>
+            <Button variant="outline" onClick={() => handleExportReport('csv')}>
+              <Download className="h-4 w-4 mr-2" />
+              CSV 다운로드
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -316,10 +464,29 @@ const AdminLearning = () => {
           <TabsContent value="analytics" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  AI 학습 분석 및 이탈 예측
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    AI 학습 분석 및 이탈 예측
+                  </CardTitle>
+                  <Button 
+                    onClick={runAIAnalysis} 
+                    disabled={analyzingAI || enrollments.length === 0}
+                    variant="default"
+                  >
+                    {analyzingAI ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        분석 중...
+                      </>
+                    ) : (
+                      <>
+                        <Brain className="h-4 w-4 mr-2" />
+                        AI 분석 실행
+                      </>
+                    )}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <Table>
