@@ -33,6 +33,8 @@ import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
 import PublicCourseDetail from "./pages/PublicCourseDetail";
 import StudentCourseDetail from "./pages/StudentCourseDetail";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFail from "./pages/PaymentFail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +76,8 @@ const App = () => (
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/usage" element={<AdminUsageManagement />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/fail" element={<PaymentFail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
