@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Player from "@vimeo/player";
 import { Button } from "@/components/ui/button";
-import { Play } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Play, Maximize2, X } from "lucide-react";
 
 // YouTube IFrame API types
 declare global {
@@ -31,6 +32,7 @@ const VideoPlayer = ({
   const [savedPosition, setSavedPosition] = useState<number | null>(null);
   const [showResumePrompt, setShowResumePrompt] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<Player | null>(null);
   const youtubePlayerRef = useRef<any>(null);
@@ -408,7 +410,7 @@ const VideoPlayer = ({
 
   return (
     <div className="space-y-4">
-      <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
+      <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden group">
         {videoProvider === "youtube" ? (
           <div ref={containerRef} className="absolute inset-0 w-full h-full" />
         ) : (
@@ -421,6 +423,16 @@ const VideoPlayer = ({
             allowFullScreen
           />
         )}
+
+        {/* Maximize button */}
+        <Button
+          variant="secondary"
+          size="icon"
+          className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+          onClick={() => setIsPopupOpen(true)}
+        >
+          <Maximize2 className="h-4 w-4" />
+        </Button>
 
         {/* Resume prompt overlay */}
         {showResumePrompt && savedPosition !== null && isPlayerReady && (
@@ -477,6 +489,46 @@ const VideoPlayer = ({
           </div>
         )}
       </div>
+
+      {/* Popup Dialog */}
+      <Dialog open={isPopupOpen} onOpenChange={setIsPopupOpen}>
+        <DialogContent className="max-w-7xl w-[95vw] h-[90vh] p-0 border-0 bg-black">
+          <div className="relative w-full h-full flex flex-col">
+            {/* Close button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-2 right-2 z-30 text-white hover:bg-white/10"
+              onClick={() => setIsPopupOpen(false)}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+
+            {/* Video in popup */}
+            <div className="flex-1 flex items-center justify-center p-4">
+              <div className="w-full h-full max-h-full flex items-center justify-center">
+                {videoProvider === "youtube" ? (
+                  <div className="w-full h-full">
+                    <iframe
+                      src={getEmbedUrl()}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <iframe
+                    src={getEmbedUrl()}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
