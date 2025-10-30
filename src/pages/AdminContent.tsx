@@ -328,17 +328,17 @@ const AdminContent = () => {
 
         <Tabs defaultValue="categories" className="space-y-6">
           <TabsList className="grid w-full max-w-md grid-cols-3">
-            <TabsTrigger value="categories">
-              <Folder className="h-4 w-4 mr-2" />
+            <TabsTrigger value="categories" className="text-base">
+              <Folder className="h-5 w-5 mr-2" />
               카테고리
             </TabsTrigger>
-            <TabsTrigger value="tags">
-              <Tag className="h-4 w-4 mr-2" />
-              태그
-            </TabsTrigger>
-            <TabsTrigger value="contents">
-              <Video className="h-4 w-4 mr-2" />
+            <TabsTrigger value="contents" className="text-base font-semibold">
+              <Video className="h-5 w-5 mr-2" />
               강좌 콘텐츠
+            </TabsTrigger>
+            <TabsTrigger value="tags" className="text-base">
+              <Tag className="h-5 w-5 mr-2" />
+              태그
             </TabsTrigger>
           </TabsList>
 
@@ -443,73 +443,6 @@ const AdminContent = () => {
                     )}
                   </TableBody>
                 </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Tags Tab */}
-          <TabsContent value="tags">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>태그 관리</CardTitle>
-                    <CardDescription>강좌 태그를 생성하고 관리합니다</CardDescription>
-                  </div>
-                  <Dialog open={tagDialogOpen} onOpenChange={setTagDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button size="sm">
-                        <Plus className="h-4 w-4 mr-2" />
-                        태그 추가
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>새 태그 생성</DialogTitle>
-                        <DialogDescription>새로운 태그를 생성합니다</DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4">
-                        <div>
-                          <Label htmlFor="tag_name">이름</Label>
-                          <Input
-                            id="tag_name"
-                            value={tagFormData.name}
-                            onChange={(e) =>
-                              setTagFormData({ ...tagFormData, name: e.target.value })
-                            }
-                            placeholder="태그 이름"
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="tag_slug">Slug (선택사항)</Label>
-                          <Input
-                            id="tag_slug"
-                            value={tagFormData.slug}
-                            onChange={(e) =>
-                              setTagFormData({ ...tagFormData, slug: e.target.value })
-                            }
-                            placeholder="자동 생성"
-                          />
-                        </div>
-                        <Button onClick={handleCreateTag} className="w-full">
-                          생성
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {tags?.map((tag) => (
-                    <Badge key={tag.id} variant="outline" className="text-sm py-2 px-4">
-                      {tag.name}
-                    </Badge>
-                  ))}
-                  {!tags?.length && (
-                    <p className="text-muted-foreground text-sm">태그가 없습니다</p>
-                  )}
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -694,6 +627,73 @@ const AdminContent = () => {
             </Table>
           </CardContent>
         </Card>
+          </TabsContent>
+
+          {/* Tags Tab */}
+          <TabsContent value="tags">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>태그 관리</CardTitle>
+                    <CardDescription>강좌 태그를 생성하고 관리합니다</CardDescription>
+                  </div>
+                  <Dialog open={tagDialogOpen} onOpenChange={setTagDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        태그 추가
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>새 태그 생성</DialogTitle>
+                        <DialogDescription>새로운 태그를 생성합니다</DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="tag_name">이름</Label>
+                          <Input
+                            id="tag_name"
+                            value={tagFormData.name}
+                            onChange={(e) =>
+                              setTagFormData({ ...tagFormData, name: e.target.value })
+                            }
+                            placeholder="태그 이름"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="tag_slug">Slug (선택사항)</Label>
+                          <Input
+                            id="tag_slug"
+                            value={tagFormData.slug}
+                            onChange={(e) =>
+                              setTagFormData({ ...tagFormData, slug: e.target.value })
+                            }
+                            placeholder="자동 생성"
+                          />
+                        </div>
+                        <Button onClick={handleCreateTag} className="w-full">
+                          생성
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {tags?.map((tag) => (
+                    <Badge key={tag.id} variant="outline" className="text-sm py-2 px-4">
+                      {tag.name}
+                    </Badge>
+                  ))}
+                  {!tags?.length && (
+                    <p className="text-muted-foreground text-sm">태그가 없습니다</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
