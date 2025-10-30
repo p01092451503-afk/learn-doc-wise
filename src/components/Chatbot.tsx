@@ -175,7 +175,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-white hover:bg-white/90 shadow-elegant hover:shadow-glow p-0 z-50 border-2 border-primary/10"
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-white hover:bg-white/90 shadow-elegant hover:shadow-glow p-0 z-50 border-2 border-primary"
           size="icon"
         >
           <img src={chatbotIcon} alt="챗봇" className="h-10 w-10" />
@@ -184,7 +184,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
 
       {/* 챗봇 창 */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-[400px] h-[600px] shadow-elegant z-50 flex flex-col">
+        <Card className="fixed bottom-6 right-6 w-[400px] h-[600px] shadow-elegant z-50 flex flex-col border-2 border-primary">
           <CardHeader className="border-b">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
