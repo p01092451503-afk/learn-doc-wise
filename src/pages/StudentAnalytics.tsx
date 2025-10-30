@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -11,6 +12,9 @@ import {
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const StudentAnalytics = () => {
+  const [searchParams] = useSearchParams();
+  const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
+
   const weeklyActivity = [
     { day: "월", hours: 2.5 },
     { day: "화", hours: 3.0 },

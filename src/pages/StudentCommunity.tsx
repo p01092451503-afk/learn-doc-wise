@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,9 @@ import { MessageSquare, ThumbsUp, Search, Plus } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const StudentCommunity = () => {
+  const [searchParams] = useSearchParams();
+  const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
+
   const posts = [
     {
       id: 1,

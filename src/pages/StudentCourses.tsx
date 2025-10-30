@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,14 +28,26 @@ interface Enrollment {
 }
 
 const StudentCourses = () => {
+  const [searchParams] = useSearchParams();
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<"student" | "teacher" | "admin">("student");
 
+  // Check if in demo mode
+  const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
+  const isDemo = !!demoRole;
+
   useEffect(() => {
-    checkUserRole();
-    fetchEnrollments();
-  }, []);
+    if (isDemo) {
+      // Demo mode: use role from URL param
+      setUserRole(demoRole);
+      setLoading(false);
+    } else {
+      // Real mode: check user role
+      checkUserRole();
+      fetchEnrollments();
+    }
+  }, [isDemo, demoRole]);
 
   const checkUserRole = async () => {
     try {

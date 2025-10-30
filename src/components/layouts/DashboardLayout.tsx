@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   GraduationCap,
@@ -75,11 +75,15 @@ const iconMap: { [key: string]: any } = {
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
+  const [searchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Check if we're in demo mode from URL params
+  const isDemoMode = isDemo || searchParams.has('role');
 
   const handleLogout = async () => {
     try {
@@ -144,13 +148,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
-    if (isDemo) {
+    if (isDemoMode) {
       // 데모 모드에서는 데이터베이스 호출 없이 기본 메뉴만 사용
       setMenuItems(getDefaultMenuItems());
     } else {
       fetchMenuOrder();
     }
-  }, [userRole, isDemo]);
+  }, [userRole, isDemoMode]);
 
   const fetchMenuOrder = async () => {
     try {
@@ -181,7 +185,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   return (
     <div className="min-h-screen bg-background">
       {/* Top Navigation - Hidden in demo mode */}
-      {!isDemo && (
+      {!isDemoMode && (
         <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
         <div className="flex h-16 md:h-20 items-center gap-2 md:gap-4 px-3 md:px-6">
           <Button
@@ -256,7 +260,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <aside
           className={cn(
             "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
-            isDemo ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
+            isDemoMode ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
             sidebarCollapsed ? "w-16" : "w-48",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
@@ -285,29 +289,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                 item.enabled ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
-                      {isDemo ? (
+                      <Link to={isDemoMode ? `/demo?role=${userRole}&page=${item.path.split('/').pop()}` : item.path}>
                         <Button
                           variant="ghost"
                           className={cn(
                             "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
                             sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                           )}
-                          onClick={() => {
-                            toast({
-                              title: "데모 모드",
-                              description: "데모 모드에서는 대시보드만 체험하실 수 있습니다.",
-                              action: (
-                                <Button
-                                  size="sm"
-                                  onClick={() => {
-                                    navigate("/auth?from=demo");
-                                  }}
-                                >
-                                  회원가입
-                                </Button>
-                              ),
-                            });
-                          }}
                         >
                           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
                             <item.icon className="h-4 w-4 text-primary" />
@@ -316,24 +304,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                             <span className="font-medium">{item.label}</span>
                           )}
                         </Button>
-                      ) : (
-                        <Link to={item.path}>
-                          <Button
-                            variant="ghost"
-                            className={cn(
-                              "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
-                              sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                            )}
-                          >
-                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                              <item.icon className="h-4 w-4 text-primary" />
-                            </div>
-                            {!sidebarCollapsed && (
-                              <span className="font-medium">{item.label}</span>
-                            )}
-                          </Button>
-                        </Link>
-                      )}
+                      </Link>
                     </TooltipTrigger>
                     {sidebarCollapsed && (
                       <TooltipContent side="right">
@@ -391,7 +362,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       </div>
 
       {/* AI Chatbot Button - Hidden in demo mode */}
-      {!isDemo && (
+      {!isDemoMode && (
         <Button
           size="icon"
           variant="premium"

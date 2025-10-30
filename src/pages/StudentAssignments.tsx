@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ interface Submission {
 }
 
 const StudentAssignments = () => {
+  const [searchParams] = useSearchParams();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,9 +47,16 @@ const StudentAssignments = () => {
   const [submissionText, setSubmissionText] = useState("");
   const { toast } = useToast();
 
+  const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
+  const isDemo = !!demoRole;
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!isDemo) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+  }, [isDemo]);
 
   const fetchData = async () => {
     try {

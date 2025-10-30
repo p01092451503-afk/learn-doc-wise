@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot } from "lucide-react";
@@ -6,8 +7,27 @@ import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 
 import StudentDashboard from "./StudentDashboard";
+import StudentCourses from "./StudentCourses";
+import StudentAssignments from "./StudentAssignments";
+import StudentCommunity from "./StudentCommunity";
+import StudentAnalytics from "./StudentAnalytics";
 import TeacherDashboard from "./TeacherDashboard";
+import TeacherCourses from "./TeacherCourses";
+import TeacherAssignments from "./TeacherAssignments";
+import TeacherStudents from "./TeacherStudents";
+import TeacherAnalytics from "./TeacherAnalytics";
+import TeacherRevenue from "./TeacherRevenue";
 import AdminDashboard from "./AdminDashboard";
+import AdminUsers from "./AdminUsers";
+import AdminCourses from "./AdminCourses";
+import AdminContent from "./AdminContent";
+import AdminLearning from "./AdminLearning";
+import AdminTenants from "./AdminTenants";
+import AdminRevenue from "./AdminRevenue";
+import AdminUsageManagement from "./AdminUsageManagement";
+import AdminAILogs from "./AdminAILogs";
+import AdminMonitoring from "./AdminMonitoring";
+import AdminSettings from "./AdminSettings";
 import {
   Select,
   SelectContent,
@@ -19,22 +39,78 @@ import {
 type DemoRole = "student" | "teacher" | "admin";
 
 const DemoPreview = () => {
-  const [activeRole, setActiveRole] = useState<DemoRole>("student");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeRole = (searchParams.get("role") as DemoRole) || "student";
+  const activePage = searchParams.get("page") || "dashboard";
 
-  const renderDashboard = () => {
-    // Pass isDemo prop to prevent header/chatbot conflicts
-    const demoProps = { isDemo: true };
-    
-    switch (activeRole) {
-      case "student":
-        return <StudentDashboard {...demoProps} />;
-      case "teacher":
-        return <TeacherDashboard {...demoProps} />;
-      case "admin":
-        return <AdminDashboard {...demoProps} />;
-      default:
-        return <StudentDashboard {...demoProps} />;
+  const setActiveRole = (role: DemoRole) => {
+    setSearchParams({ role, page: "dashboard" });
+  };
+
+  const renderContent = () => {
+    // Student pages
+    if (activeRole === "student") {
+      switch (activePage) {
+        case "courses":
+          return <StudentCourses />;
+        case "assignments":
+          return <StudentAssignments />;
+        case "community":
+          return <StudentCommunity />;
+        case "analytics":
+          return <StudentAnalytics />;
+        default:
+          return <StudentDashboard isDemo={true} />;
+      }
     }
+    
+    // Teacher pages
+    if (activeRole === "teacher") {
+      switch (activePage) {
+        case "courses":
+          return <TeacherCourses />;
+        case "assignments":
+          return <TeacherAssignments />;
+        case "students":
+          return <TeacherStudents />;
+        case "analytics":
+          return <TeacherAnalytics />;
+        case "revenue":
+          return <TeacherRevenue />;
+        default:
+          return <TeacherDashboard isDemo={true} />;
+      }
+    }
+    
+    // Admin pages
+    if (activeRole === "admin") {
+      switch (activePage) {
+        case "users":
+          return <AdminUsers />;
+        case "courses":
+          return <AdminCourses />;
+        case "content":
+          return <AdminContent />;
+        case "learning":
+          return <AdminLearning />;
+        case "tenants":
+          return <AdminTenants />;
+        case "revenue":
+          return <AdminRevenue />;
+        case "usage":
+          return <AdminUsageManagement />;
+        case "ai-logs":
+          return <AdminAILogs />;
+        case "monitoring":
+          return <AdminMonitoring />;
+        case "settings":
+          return <AdminSettings />;
+        default:
+          return <AdminDashboard isDemo={true} />;
+      }
+    }
+    
+    return <StudentDashboard isDemo={true} />;
   };
 
   return (
@@ -88,7 +164,7 @@ const DemoPreview = () => {
 
         {/* Dashboard */}
         <div>
-          {renderDashboard()}
+          {renderContent()}
         </div>
       </div>
 
