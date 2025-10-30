@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp } from "lucide-react";
+import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 
 
@@ -162,6 +162,83 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
+              <span className="text-gradient">합리적인 가격</span>으로<br />
+              시작하세요
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              모든 요금제는 부가세 별도입니다. 연간 결제 시 20% 할인 혜택을 제공합니다.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {/* 무료 체험 */}
+            <PricingCard
+              title="무료 체험"
+              description="AI 브릿팅과 기본 기능 체험"
+              price="₩0"
+              period="/영구 무료"
+              aiTokens="AI 토큰 10,000개/월"
+              features={[
+                "AI 노무 상담 브리핑",
+                "기본 노무 정보 제공",
+                "월 1건 신고서 작성",
+                "텍스트 파일 다운로드",
+                "커뮤니티 지원"
+              ]}
+              buttonText="무료 시작하기"
+              buttonVariant="outline"
+            />
+
+            {/* 베이직 (인기) */}
+            <PricingCard
+              title="베이직"
+              description="일반 노동자를 위한 필수 기능"
+              price="₩9,900"
+              period="/월"
+              aiTokens="AI 토큰 30,000개/월"
+              features={[
+                "무제한 신고서 작성",
+                "AI 노무 분석 엔진",
+                "PDF 전문 다운로드",
+                "문서 템플릿 제공",
+                "이메일 지원",
+                "노무 가이드 제공",
+                "클라우드 저장소"
+              ]}
+              buttonText="베이직 시작하기"
+              buttonVariant="default"
+              isPopular={true}
+            />
+
+            {/* 프리미엄 */}
+            <PricingCard
+              title="프리미엄"
+              description="무제한 이용이 필요한 사용자"
+              price="₩29,000"
+              period="/월"
+              aiTokens="AI 토큰 무제한"
+              features={[
+                "베이직 플랜의 모든 기능",
+                "무제한 신고서 작성",
+                "우선 노무사 매칭",
+                "24시간 우선 지원",
+                "전담 계정 관리자",
+                "맞춤 교육 제공",
+                "전용 상담 채널",
+                "API 연동 지원"
+              ]}
+              buttonText="프리미엄 시작하기"
+              buttonVariant="premium"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t py-8 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -183,6 +260,80 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; titl
       </div>
       <h3 className="text-xl font-display font-semibold mb-3 text-card-foreground group-hover:text-primary transition-colors">{title}</h3>
       <p className="text-muted-foreground leading-relaxed">{description}</p>
+    </div>
+  );
+};
+
+interface PricingCardProps {
+  title: string;
+  description: string;
+  price: string;
+  period: string;
+  aiTokens: string;
+  features: string[];
+  buttonText: string;
+  buttonVariant?: "default" | "outline" | "premium";
+  isPopular?: boolean;
+}
+
+const PricingCard = ({ 
+  title, 
+  description, 
+  price, 
+  period, 
+  aiTokens, 
+  features, 
+  buttonText, 
+  buttonVariant = "outline",
+  isPopular = false 
+}: PricingCardProps) => {
+  return (
+    <div className={`relative rounded-2xl bg-card p-8 shadow-premium transition-all duration-500 hover:shadow-elegant ${
+      isPopular 
+        ? 'border-2 border-primary scale-105 hover:scale-[1.07]' 
+        : 'border border-border hover:border-primary/50 hover:scale-105'
+    }`}>
+      {isPopular && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+          <div className="flex items-center gap-1 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-glow">
+            <Star className="h-3.5 w-3.5 fill-current" />
+            <span>인기</span>
+            <Star className="h-3.5 w-3.5 fill-current" />
+          </div>
+        </div>
+      )}
+      
+      <div className="text-center mb-6">
+        <h3 className="text-2xl font-display font-bold mb-2 text-card-foreground">{title}</h3>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+
+      <div className="text-center mb-6 pb-6 border-b border-border">
+        <div className="flex items-baseline justify-center gap-1">
+          <span className="text-4xl md:text-5xl font-display font-bold text-foreground">{price}</span>
+          <span className="text-muted-foreground text-sm">{period}</span>
+        </div>
+        <p className="text-sm text-muted-foreground mt-2">{aiTokens}</p>
+      </div>
+
+      <ul className="space-y-3 mb-8">
+        {features.map((feature, index) => (
+          <li key={index} className="flex items-start gap-3">
+            <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <span className="text-sm text-card-foreground">{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Link to="/auth" className="block">
+        <Button 
+          variant={buttonVariant} 
+          className="w-full"
+          size="lg"
+        >
+          {buttonText}
+        </Button>
+      </Link>
     </div>
   );
 };
