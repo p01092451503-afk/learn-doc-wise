@@ -285,13 +285,19 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                 item.enabled ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
-                      <Link to={item.path}>
+                      {isDemo ? (
                         <Button
                           variant="ghost"
                           className={cn(
                             "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
                             sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                           )}
+                          onClick={() => {
+                            toast({
+                              title: "데모 모드",
+                              description: "데모 모드에서는 대시보드만 체험하실 수 있습니다. 회원가입 후 모든 기능을 이용하세요.",
+                            });
+                          }}
                         >
                           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
                             <item.icon className="h-4 w-4 text-primary" />
@@ -300,7 +306,24 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                             <span className="font-medium">{item.label}</span>
                           )}
                         </Button>
-                      </Link>
+                      ) : (
+                        <Link to={item.path}>
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                              sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                            )}
+                          >
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                              <item.icon className="h-4 w-4 text-primary" />
+                            </div>
+                            {!sidebarCollapsed && (
+                              <span className="font-medium">{item.label}</span>
+                            )}
+                          </Button>
+                        </Link>
+                      )}
                     </TooltipTrigger>
                     {sidebarCollapsed && (
                       <TooltipContent side="right">
