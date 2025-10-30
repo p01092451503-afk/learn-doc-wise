@@ -24,10 +24,11 @@ import AdminUsers from "./AdminUsers";
 import AdminCourses from "./AdminCourses";
 import AdminContent from "./AdminContent";
 import AdminLearning from "./AdminLearning";
+import AdminAILogs from "./AdminAILogs";
+import AdminTemplates from "./AdminTemplates";
 import AdminTenants from "./AdminTenants";
 import AdminRevenue from "./AdminRevenue";
 import AdminUsageManagement from "./AdminUsageManagement";
-import AdminAILogs from "./AdminAILogs";
 import AdminMonitoring from "./AdminMonitoring";
 import AdminSettings from "./AdminSettings";
 import {
@@ -97,6 +98,10 @@ const DemoPreview = () => {
           return <AdminContent />;
         case "learning":
           return <AdminLearning />;
+        case "ai-logs":
+          return <AdminAILogs />;
+        case "templates":
+          return <AdminTemplates />;
         case "revenue":
           return <AdminRevenue />;
         case "monitoring":
