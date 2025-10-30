@@ -191,6 +191,48 @@ export type Database = {
           },
         ]
       }
+      attendance: {
+        Row: {
+          attendance_date: string
+          check_in_time: string | null
+          content_id: string | null
+          course_id: string
+          created_at: string
+          id: string
+          ip_address: unknown
+          notes: string | null
+          status: Database["public"]["Enums"]["attendance_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attendance_date?: string
+          check_in_time?: string | null
+          content_id?: string | null
+          course_id: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          notes?: string | null
+          status?: Database["public"]["Enums"]["attendance_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attendance_date?: string
+          check_in_time?: string | null
+          content_id?: string | null
+          course_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown
+          notes?: string | null
+          status?: Database["public"]["Enums"]["attendance_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -272,6 +314,147 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      community_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          is_deleted: boolean
+          likes_count: number
+          parent_comment_id: string | null
+          post_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean
+          likes_count?: number
+          parent_comment_id?: string | null
+          post_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean
+          likes_count?: number
+          parent_comment_id?: string | null
+          post_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_likes: {
+        Row: {
+          comment_id: string | null
+          created_at: string
+          id: string
+          post_id: string | null
+          user_id: string
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id: string
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "community_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          author_id: string
+          comments_count: number
+          content: string
+          course_id: string
+          created_at: string
+          id: string
+          is_pinned: boolean
+          likes_count: number
+          post_type: Database["public"]["Enums"]["post_type"]
+          status: Database["public"]["Enums"]["post_status"]
+          tags: string[] | null
+          title: string
+          updated_at: string
+          views_count: number
+        }
+        Insert: {
+          author_id: string
+          comments_count?: number
+          content: string
+          course_id: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          post_type?: Database["public"]["Enums"]["post_type"]
+          status?: Database["public"]["Enums"]["post_status"]
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          views_count?: number
+        }
+        Update: {
+          author_id?: string
+          comments_count?: number
+          content?: string
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          post_type?: Database["public"]["Enums"]["post_type"]
+          status?: Database["public"]["Enums"]["post_status"]
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          views_count?: number
+        }
+        Relationships: []
       }
       content_progress: {
         Row: {
@@ -919,6 +1102,48 @@ export type Database = {
         }
         Relationships: []
       }
+      storage_usage: {
+        Row: {
+          created_at: string
+          document_bytes: number
+          file_count: number
+          id: string
+          image_bytes: number
+          last_calculated_at: string
+          tenant_id: string | null
+          total_bytes: number
+          updated_at: string
+          user_id: string | null
+          video_bytes: number
+        }
+        Insert: {
+          created_at?: string
+          document_bytes?: number
+          file_count?: number
+          id?: string
+          image_bytes?: number
+          last_calculated_at?: string
+          tenant_id?: string | null
+          total_bytes?: number
+          updated_at?: string
+          user_id?: string | null
+          video_bytes?: number
+        }
+        Update: {
+          created_at?: string
+          document_bytes?: number
+          file_count?: number
+          id?: string
+          image_bytes?: number
+          last_calculated_at?: string
+          tenant_id?: string | null
+          total_bytes?: number
+          updated_at?: string
+          user_id?: string | null
+          video_bytes?: number
+        }
+        Relationships: []
+      }
       system_logs: {
         Row: {
           created_at: string
@@ -1216,6 +1441,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_storage_limit: {
+        Args: { p_file_size: number; p_tenant_id: string }
+        Returns: boolean
+      }
       get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -1263,11 +1492,14 @@ export type Database = {
       app_role: "student" | "teacher" | "admin" | "operator"
       approval_status: "pending" | "approved" | "rejected" | "suspended"
       assignment_status: "draft" | "published" | "closed"
+      attendance_status: "present" | "late" | "absent" | "excused"
       billing_cycle: "monthly" | "yearly"
       content_type: "video" | "document" | "quiz" | "assignment"
       course_level: "beginner" | "intermediate" | "advanced" | "all"
       course_status: "draft" | "published" | "scheduled" | "archived"
       payment_status: "pending" | "completed" | "failed" | "refunded"
+      post_status: "active" | "closed" | "pinned" | "deleted"
+      post_type: "discussion" | "question" | "announcement" | "notice"
       submission_status: "submitted" | "graded" | "returned" | "late"
       subscription_plan_type: "starter" | "standard" | "professional"
       video_provider: "youtube" | "vimeo" | "direct"
@@ -1401,11 +1633,14 @@ export const Constants = {
       app_role: ["student", "teacher", "admin", "operator"],
       approval_status: ["pending", "approved", "rejected", "suspended"],
       assignment_status: ["draft", "published", "closed"],
+      attendance_status: ["present", "late", "absent", "excused"],
       billing_cycle: ["monthly", "yearly"],
       content_type: ["video", "document", "quiz", "assignment"],
       course_level: ["beginner", "intermediate", "advanced", "all"],
       course_status: ["draft", "published", "scheduled", "archived"],
       payment_status: ["pending", "completed", "failed", "refunded"],
+      post_status: ["active", "closed", "pinned", "deleted"],
+      post_type: ["discussion", "question", "announcement", "notice"],
       submission_status: ["submitted", "graded", "returned", "late"],
       subscription_plan_type: ["starter", "standard", "professional"],
       video_provider: ["youtube", "vimeo", "direct"],
