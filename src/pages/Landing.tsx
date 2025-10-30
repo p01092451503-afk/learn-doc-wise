@@ -135,6 +135,173 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* AI Features Section */}
+      <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+              <Brain className="h-5 w-5 text-primary" />
+              <span className="text-sm font-semibold text-primary">AI 파워드</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+              <span className="text-gradient">AI가 탑재된</span><br />
+              7가지 핵심 기능
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              최신 AI 기술로 학습 효율을 극대화하고, 강사의 업무 부담을 줄이며,<br />
+              학습자에게 개인화된 경험을 제공합니다
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {/* AI 튜터 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Bot className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 튜터</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    24시간 상시 대기하는 AI 튜터가 질문에 즉시 답변하고, 개념 설명과 퀴즈를 제공합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 답변</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">개념 설명</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 자동 채점 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <CheckCircle className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 자동 채점</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    과제와 시험을 AI가 자동으로 채점하고 상세한 피드백을 즉시 제공합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">즉시 채점</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">상세 피드백</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 피드백 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 피드백</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    과제와 문법을 AI가 분석하여 개선점과 맞춤형 피드백을 제공합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">과제 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">문법 교정</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 번역 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Brain className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 번역</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습 자료와 콘텐츠를 다국어로 실시간 번역하여 글로벌 학습을 지원합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 번역</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">다국어 지원</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 학습 분석 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 분석</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습 패턴을 분석하여 취약점을 파악하고 맞춤형 학습 경로를 제안합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">패턴 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">맞춤 경로</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 리포트 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 리포트 생성</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습 데이터를 기반으로 상세한 분석 리포트를 자동으로 생성합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">자동 생성</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">상세 분석</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 챗봇 */}
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-3">
+              <div className="flex items-start gap-4 max-w-2xl mx-auto">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Bot className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 챗봇</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습자와 강사를 위한 지능형 챗봇이 학습 관련 질문에 실시간으로 답변하고, 코스 추천, 일정 관리, 학습 조언을 제공합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2 flex-wrap">
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 상담</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">코스 추천</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">일정 관리</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-16 text-center">
+            <Link to="/auth">
+              <Button size="lg" variant="premium" className="gap-2">
+                <Sparkles className="h-5 w-5" />
+                AI 기능 체험하기
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
