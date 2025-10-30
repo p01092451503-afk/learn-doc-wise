@@ -175,7 +175,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-glow hover:shadow-elegant p-0 z-50"
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-white hover:bg-white/90 shadow-elegant hover:shadow-glow p-0 z-50 border-2 border-primary/10"
           size="icon"
         >
           <img src={chatbotIcon} alt="챗봇" className="h-10 w-10" />
