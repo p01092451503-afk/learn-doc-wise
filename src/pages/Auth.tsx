@@ -268,7 +268,7 @@ const Auth = () => {
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="w-full max-w-md relative z-10">
         <Link to="/" className="flex items-center justify-center mb-8 gap-2">
-          <img src={logoIcon} alt="Logo" className="h-12 w-12" />
+          <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
           <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
         </Link>
 
