@@ -17,6 +17,7 @@ import TeacherAssignments from "./TeacherAssignments";
 import TeacherStudents from "./TeacherStudents";
 import TeacherAnalytics from "./TeacherAnalytics";
 import TeacherRevenue from "./TeacherRevenue";
+import TeacherAttendance from "./TeacherAttendance";
 import AdminDashboard from "./AdminDashboard";
 import OperatorDashboard from "./OperatorDashboard";
 import AdminUsers from "./AdminUsers";
@@ -74,6 +75,8 @@ const DemoPreview = () => {
           return <TeacherAssignments />;
         case "students":
           return <TeacherStudents />;
+        case "attendance":
+          return <TeacherAttendance />;
         case "analytics":
           return <TeacherAnalytics />;
         case "revenue":
