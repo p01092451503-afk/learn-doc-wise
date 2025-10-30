@@ -184,6 +184,10 @@ const VideoPlayer = ({
 
       console.log("🎥 Creating YouTube Player instance");
 
+      // Get container dimensions
+      const containerWidth = containerRef.current.offsetWidth;
+      const containerHeight = containerRef.current.offsetHeight;
+
       // Create a unique div for the player
       const playerDiv = document.createElement('div');
       playerDiv.id = `youtube-player-${contentId}`;
@@ -192,6 +196,8 @@ const VideoPlayer = ({
 
       youtubePlayerRef.current = new window.YT.Player(playerDiv, {
         videoId: videoId,
+        width: containerWidth || '100%',
+        height: containerHeight || '100%',
         playerVars: {
           autoplay: 0,
           controls: 1,
@@ -204,6 +210,16 @@ const VideoPlayer = ({
             const videoDuration = event.target.getDuration();
             setDuration(videoDuration);
             console.log("📏 Video duration:", videoDuration);
+
+            // Ensure iframe takes full size
+            const iframe = event.target.getIframe();
+            if (iframe) {
+              iframe.style.width = '100%';
+              iframe.style.height = '100%';
+              iframe.style.position = 'absolute';
+              iframe.style.top = '0';
+              iframe.style.left = '0';
+            }
 
             // Start polling for progress
             startProgressTracking();
