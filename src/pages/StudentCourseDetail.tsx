@@ -311,9 +311,10 @@ const StudentCourseDetail = () => {
                   ) : (
                     contents.map((content, index) => (
                       <div key={content.id}>
-                        <Button
-                          variant={currentContent?.id === content.id ? "default" : "ghost"}
-                          className="w-full justify-start h-auto py-3 px-3"
+                        <div
+                          className={`w-full py-3 px-3 rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
+                            currentContent?.id === content.id ? "bg-primary/10" : ""
+                          }`}
                           onClick={() => setCurrentContent(content)}
                         >
                           <div className="flex items-start gap-3 w-full">
@@ -325,7 +326,11 @@ const StudentCourseDetail = () => {
                               )}
                             </div>
                             <div className="flex-1 text-left">
-                              <p className="text-sm font-medium line-clamp-2">{content.title}</p>
+                              <p className={`text-sm font-medium line-clamp-2 ${
+                                currentContent?.id === content.id ? "text-primary" : ""
+                              }`}>
+                                {content.title}
+                              </p>
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="text-xs text-muted-foreground">
                                   {content.duration_minutes}분
@@ -338,7 +343,7 @@ const StudentCourseDetail = () => {
                               </div>
                             </div>
                           </div>
-                        </Button>
+                        </div>
                         {index < contents.length - 1 && <Separator className="my-2" />}
                       </div>
                     ))
