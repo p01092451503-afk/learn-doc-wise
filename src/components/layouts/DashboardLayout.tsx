@@ -38,6 +38,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -259,73 +265,101 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             )}
           </Button>
 
-          <nav className={cn(
-            "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
-            sidebarCollapsed ? "p-2" : "p-4"
-          )}>
-            {menuItems.map((item) => (
-              item.enabled ? (
-                isDemo ? (
-                  <Button
-                    key={item.path}
-                    variant="ghost"
-                    className={cn(
-                      "w-full h-11 text-sm rounded-xl opacity-50 cursor-not-allowed transition-all duration-300",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                    )}
-                    disabled
-                  >
-                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                      <item.icon className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    {!sidebarCollapsed && (
-                      <span className="font-medium text-muted-foreground">{item.label}</span>
-                    )}
-                  </Button>
+          <TooltipProvider>
+            <nav className={cn(
+              "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
+              sidebarCollapsed ? "p-2" : "p-4"
+            )}>
+              {menuItems.map((item) => (
+                item.enabled ? (
+                  isDemo ? (
+                    <Tooltip key={item.path}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className={cn(
+                            "w-full h-11 text-sm rounded-xl opacity-50 cursor-not-allowed transition-all duration-300",
+                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                          )}
+                          disabled
+                        >
+                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <item.icon className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          {!sidebarCollapsed && (
+                            <span className="font-medium text-muted-foreground">{item.label}</span>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      {sidebarCollapsed && (
+                        <TooltipContent side="right">
+                          <p>{item.label}</p>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  ) : (
+                    <Tooltip key={item.path}>
+                      <TooltipTrigger asChild>
+                        <Link to={item.path}>
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                              sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                            )}
+                          >
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                              <item.icon className="h-4 w-4 text-primary" />
+                            </div>
+                            {!sidebarCollapsed && (
+                              <span className="font-medium">{item.label}</span>
+                            )}
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      {sidebarCollapsed && (
+                        <TooltipContent side="right">
+                          <p>{item.label}</p>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  )
                 ) : (
-                  <Link key={item.path} to={item.path}>
-                    <Button
-                      variant="ghost"
-                      className={cn(
-                        "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
-                        sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                      )}
-                    >
-                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                        <item.icon className="h-4 w-4 text-primary" />
+                  <Tooltip key={item.label}>
+                    <TooltipTrigger asChild>
+                      <div className="relative">
+                        <Button
+                          variant="ghost"
+                          className={cn(
+                            "w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed",
+                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                          )}
+                          disabled
+                        >
+                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <item.icon className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          {!sidebarCollapsed && (
+                            <span className="font-medium">{item.label}</span>
+                          )}
+                        </Button>
+                        {!sidebarCollapsed && (
+                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
+                            준비중
+                          </span>
+                        )}
                       </div>
-                      {!sidebarCollapsed && (
-                        <span className="font-medium">{item.label}</span>
-                      )}
-                    </Button>
-                  </Link>
+                    </TooltipTrigger>
+                    {sidebarCollapsed && (
+                      <TooltipContent side="right">
+                        <p>{item.label} (준비중)</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 )
-              ) : (
-                <div key={item.label} className="relative">
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                    )}
-                    disabled
-                  >
-                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                      <item.icon className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    {!sidebarCollapsed && (
-                      <span className="font-medium">{item.label}</span>
-                    )}
-                  </Button>
-                  {!sidebarCollapsed && (
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
-                      준비중
-                    </span>
-                  )}
-                </div>
-              )
-            ))}
-          </nav>
+              ))}
+            </nav>
+          </TooltipProvider>
         </aside>
 
         {/* Main Content */}
