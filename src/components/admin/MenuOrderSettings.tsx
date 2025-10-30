@@ -95,9 +95,10 @@ const defaultMenuItems = {
 
 interface SortableItemProps {
   item: MenuItem;
+  onToggle: (id: string) => void;
 }
 
-function SortableItem({ item }: SortableItemProps) {
+function SortableItem({ item, onToggle }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -134,9 +135,13 @@ function SortableItem({ item }: SortableItemProps) {
         </div>
         <span className="font-medium">{item.label}</span>
       </div>
-      <Badge variant={item.enabled ? "default" : "secondary"}>
+      <Button
+        variant={item.enabled ? "default" : "secondary"}
+        size="sm"
+        onClick={() => onToggle(item.id)}
+      >
         {item.enabled ? "활성" : "비활성"}
-      </Badge>
+      </Button>
     </div>
   );
 }
@@ -231,6 +236,14 @@ const MenuOrderSettings = () => {
     });
   };
 
+  const handleToggleEnabled = (id: string) => {
+    setMenuItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, enabled: !item.enabled } : item
+      )
+    );
+  };
+
   return (
     <Card className="border-border/50 shadow-sm">
       <CardHeader>
@@ -272,7 +285,7 @@ const MenuOrderSettings = () => {
             >
               <div className="space-y-2">
                 {menuItems.map((item) => (
-                  <SortableItem key={item.id} item={item} />
+                  <SortableItem key={item.id} item={item} onToggle={handleToggleEnabled} />
                 ))}
               </div>
             </SortableContext>
