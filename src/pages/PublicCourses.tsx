@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Clock, Search } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import { getVideoThumbnail } from "@/lib/utils";
 
 interface Course {
   id: string;
@@ -18,6 +19,7 @@ interface Course {
   level: string;
   duration_hours: number;
   status: string;
+  videoThumbnail?: string;
 }
 
 const PublicCourses = () => {
@@ -39,7 +41,30 @@ const PublicCourses = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setCourses(data || []);
+      
+      // 각 코스의 첫 번째 콘텐츠에서 비디오 썸네일 추출
+      const coursesWithThumbnails = await Promise.all(
+        (data || []).map(async (course) => {
+          if (!course.thumbnail_url) {
+            // 첫 번째 콘텐츠 가져오기
+            const { data: contents } = await supabase
+              .from("course_contents")
+              .select("video_url, video_provider")
+              .eq("course_id", course.id)
+              .eq("is_published", true)
+              .order("order_index", { ascending: true })
+              .limit(1);
+            
+            if (contents && contents.length > 0) {
+              const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
+              return { ...course, videoThumbnail: thumbnail };
+            }
+          }
+          return course;
+        })
+      );
+      
+      setCourses(coursesWithThumbnails);
     } catch (error) {
       console.error("Error fetching courses:", error);
     } finally {
@@ -165,9 +190,9 @@ const PublicCourses = () => {
                   <Link key={course.id} to={`/courses/${course.id}`}>
                     <Card className="group overflow-hidden hover:shadow-elegant transition-all duration-300 hover:-translate-y-1">
                       <div className="aspect-video overflow-hidden bg-muted">
-                        {course.thumbnail_url ? (
+                        {course.thumbnail_url || course.videoThumbnail ? (
                           <img
-                            src={course.thumbnail_url}
+                            src={course.thumbnail_url || course.videoThumbnail}
                             alt={course.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           />
