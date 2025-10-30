@@ -41,9 +41,19 @@ const Auth = () => {
   }, []);
 
   useEffect(() => {
+    // Check if coming from demo mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromDemo = urlParams.get('from') === 'demo';
+
     // Check if user is already logged in
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
+        // If from demo, always return to demo
+        if (fromDemo) {
+          navigate("/demo");
+          return;
+        }
+
         // Check user role and redirect accordingly
         const { data: roles } = await supabase
           .from('user_roles')
@@ -74,6 +84,12 @@ const Auth = () => {
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
+        // If from demo, always return to demo
+        if (fromDemo) {
+          navigate("/demo");
+          return;
+        }
+
         const { data: roles } = await supabase
           .from('user_roles')
           .select('role')
