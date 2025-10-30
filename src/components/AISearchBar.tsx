@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   role: "user" | "assistant";
@@ -120,28 +120,28 @@ export const AISearchBar = () => {
   return (
     <div className="relative w-full max-w-2xl">
       {/* Search Input */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="relative shadow-lg">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
         <Input
           type="text"
-          placeholder="무엇을 도와드릴까요? (강좌, 콘텐츠, 문의사항 등)"
+          placeholder="AI 어시스턴트에게 질문하세요 (강좌, 콘텐츠, CS 문의 등)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyPress={handleKeyPress}
           onFocus={() => messages.length > 0 && setIsOpen(true)}
-          className="pl-10 pr-12 h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary transition-colors"
+          className="pl-12 pr-14 h-14 text-base bg-background border-2 border-primary/20 hover:border-primary/40 focus:border-primary shadow-md transition-all placeholder:text-muted-foreground/70 font-medium"
         />
         <Button
           size="icon"
           variant="ghost"
           onClick={handleSearch}
           disabled={isLoading || !query.trim()}
-          className="absolute right-1 top-1/2 -translate-y-1/2 h-9 w-9"
+          className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 hover:bg-primary/10"
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin text-primary" />
           ) : (
-            <Sparkles className="h-4 w-4 text-primary" />
+            <Sparkles className="h-5 w-5 text-primary" />
           )}
         </Button>
       </div>
@@ -150,10 +150,10 @@ export const AISearchBar = () => {
       {isOpen && messages.length > 0 && (
         <>
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 bg-black/20"
             onClick={handleClose}
           />
-          <Card className="absolute top-full mt-2 w-full z-50 max-h-[500px] shadow-elegant border border-border/50">
+          <Card className="absolute top-full mt-2 w-full z-50 max-h-[500px] shadow-2xl border-2 border-primary/20 bg-background">
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />

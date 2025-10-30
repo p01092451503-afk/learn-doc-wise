@@ -84,9 +84,9 @@ const PublicMain = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-3">
+        <div className="container mx-auto px-4 py-4">
           {/* Top Row - Logo and Navigation */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
               <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
@@ -125,7 +125,7 @@ const PublicMain = () => {
           </div>
           
           {/* Bottom Row - AI Search Bar */}
-          <div className="flex justify-center">
+          <div className="flex justify-center pb-2">
             <AISearchBar />
           </div>
         </div>
