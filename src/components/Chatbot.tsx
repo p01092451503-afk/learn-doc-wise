@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, X, Loader2 } from "lucide-react";
-import chatbotIcon from "@/assets/chatbot-icon-new.png";
+import chatbotIcon from "@/assets/chatbot-icon.png";
 
 type Message = {
   role: "user" | "assistant";
@@ -36,11 +36,12 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
     setIsLoading(true);
 
     try {
+      console.log("🤖 Calling chatbot with role:", userRole);
+      
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ 
           messages: newMessages,
@@ -48,8 +49,11 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
         }),
       });
 
+      console.log("📡 Response status:", response.status);
+
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ error: "응답을 받는데 실패했습니다." }));
+        console.error("❌ Error response:", errorData);
         throw new Error(errorData.error || "응답을 받는데 실패했습니다.");
       }
 
