@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.analyze-learning]
 verify_jwt = true
+
+[functions.ai-tutor]
+verify_jwt = true
+
+[functions.ai-feedback]
+verify_jwt = true
+
+[functions.ai-translate]
+verify_jwt = false

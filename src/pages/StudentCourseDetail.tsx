@@ -8,9 +8,12 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock, MessageCircle, FileCheck, Languages } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import VideoPlayer from "@/components/video/VideoPlayer";
+import { AITutorDialog } from "@/components/ai/AITutorDialog";
+import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
+import { AITranslateDialog } from "@/components/ai/AITranslateDialog";
 
 interface Course {
   id: string;
@@ -48,6 +51,9 @@ const StudentCourseDetail = () => {
   const [progress, setProgress] = useState<ContentProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<"student" | "teacher" | "admin">("student");
+  const [aiTutorOpen, setAiTutorOpen] = useState(false);
+  const [aiFeedbackOpen, setAiFeedbackOpen] = useState(false);
+  const [aiTranslateOpen, setAiTranslateOpen] = useState(false);
 
   useEffect(() => {
     checkUserRole();
@@ -266,6 +272,42 @@ const StudentCourseDetail = () => {
           </CardContent>
         </Card>
 
+        {/* AI 기능 버튼 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">AI 학습 도우미</CardTitle>
+            <CardDescription>AI 기반 학습 지원 기능을 활용해보세요</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Button 
+                variant="outline" 
+                onClick={() => setAiTutorOpen(true)}
+                className="w-full justify-start"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                AI 튜터
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setAiFeedbackOpen(true)}
+                className="w-full justify-start"
+              >
+                <FileCheck className="h-4 w-4 mr-2" />
+                AI 피드백
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setAiTranslateOpen(true)}
+                className="w-full justify-start"
+              >
+                <Languages className="h-4 w-4 mr-2" />
+                AI 번역
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Video Player */}
           <div className="lg:col-span-2 space-y-4">
@@ -388,6 +430,21 @@ const StudentCourseDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* AI 다이얼로그들 */}
+      <AITutorDialog 
+        open={aiTutorOpen} 
+        onOpenChange={setAiTutorOpen} 
+        courseContext={course?.title}
+      />
+      <AIFeedbackDialog 
+        open={aiFeedbackOpen} 
+        onOpenChange={setAiFeedbackOpen} 
+      />
+      <AITranslateDialog 
+        open={aiTranslateOpen} 
+        onOpenChange={setAiTranslateOpen} 
+      />
     </DashboardLayout>
   );
 };
