@@ -81,9 +81,7 @@ const OperatorAILogs = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
-            <img src={atomLogo} alt="AI" className="h-14 w-14" />
-          </div>
+          <img src={atomLogo} alt="AI" className="h-20 w-20" />
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
             <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
