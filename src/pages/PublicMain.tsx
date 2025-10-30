@@ -8,6 +8,7 @@ import { BookOpen, Clock, Users, Star, TrendingUp, Award, User } from "lucide-re
 import logoIcon from "@/assets/logo-icon.png";
 import { Chatbot } from "@/components/Chatbot";
 import { Session } from "@supabase/supabase-js";
+import { AISearchBar } from "@/components/AISearchBar";
 
 interface Course {
   id: string;
@@ -83,41 +84,50 @@ const PublicMain = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link to="/main" className="flex items-center gap-2">
-            <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-            <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/main" className="text-foreground hover:text-primary transition-colors">
-              홈
+        <div className="container mx-auto px-4 py-3">
+          {/* Top Row - Logo and Navigation */}
+          <div className="flex items-center justify-between mb-3">
+            <Link to="/main" className="flex items-center gap-2">
+              <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
+              <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             </Link>
-            <Link to="/courses" className="text-foreground hover:text-primary transition-colors">
-              전체 강좌
-            </Link>
-            {!session && (
-              <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
-                로그인
+            <nav className="hidden md:flex items-center gap-6">
+              <Link to="/main" className="text-foreground hover:text-primary transition-colors">
+                홈
+              </Link>
+              <Link to="/courses" className="text-foreground hover:text-primary transition-colors">
+                전체 강좌
+              </Link>
+              {!session && (
+                <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
+                  로그인
+                </Link>
+              )}
+            </nav>
+            {session ? (
+              <Button 
+                variant="premium" 
+                size="default"
+                onClick={() => navigate('/student/courses')}
+                className="gap-2"
+              >
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">마이페이지</span>
+              </Button>
+            ) : (
+              <Link to="/auth">
+                <Button variant="premium" size="default">
+                  <span className="hidden sm:inline">수강 신청</span>
+                  <span className="sm:hidden">가입</span>
+                </Button>
               </Link>
             )}
-          </nav>
-          {session ? (
-            <Button 
-              variant="premium" 
-              size="default"
-              onClick={() => navigate('/student/courses')}
-              className="gap-2"
-            >
-              <User className="h-4 w-4" />
-              마이페이지
-            </Button>
-          ) : (
-            <Link to="/auth">
-              <Button variant="premium" size="default">
-                수강 신청
-              </Button>
-            </Link>
-          )}
+          </div>
+          
+          {/* Bottom Row - AI Search Bar */}
+          <div className="flex justify-center">
+            <AISearchBar />
+          </div>
         </div>
       </header>
 
