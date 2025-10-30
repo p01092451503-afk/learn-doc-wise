@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
@@ -6,8 +7,11 @@ import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server
 import atomLogo from "@/assets/atom-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  const navigate = useNavigate();
+  const { role, isOperator, loading } = useUserRole();
   const [stats, setStats] = useState({
     totalTenants: 0,
     activeTenants: 0,
@@ -17,10 +21,36 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!isDemo) {
+    // Check authentication and authorization
+    if (!isDemo && !loading) {
+      if (!isOperator) {
+        toast({
+          title: "접근 권한 없음",
+          description: "운영자 권한이 필요합니다.",
+          variant: "destructive",
+        });
+        navigate("/");
+        return;
+      }
       fetchStats();
+    } else if (isDemo) {
+      // Demo mode doesn't need auth check
     }
-  }, [isDemo]);
+  }, [isDemo, loading, isOperator, navigate]);
+
+  // Show loading state while checking auth
+  if (!isDemo && loading) {
+    return (
+      <DashboardLayout userRole="operator" isDemo={isDemo}>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">로딩 중...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const fetchStats = async () => {
     try {
