@@ -26,6 +26,7 @@ import {
   Eye,
   CalendarCheck,
   Sparkles,
+  Palette,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -75,6 +76,7 @@ const iconMap: { [key: string]: any } = {
   Building2,
   Brain,
   Shield,
+  Palette,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -156,7 +158,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
       { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true, hasAI: true },
-      { icon: Sparkles, label: "템플릿 관리", path: "/admin/templates", enabled: true },
+      { icon: Palette, label: "디자인 템플릿", path: "/admin/templates", enabled: true },
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
