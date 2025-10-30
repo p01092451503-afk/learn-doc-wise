@@ -131,20 +131,28 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       ];
     }
 
-    // admin
-    return [
+    // admin - hide certain menus in demo mode
+    const adminItems = [
       ...baseItems,
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
       { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true },
-      { icon: Building2, label: "고객사 관리", path: "/admin/tenants", enabled: true },
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
-      { icon: BarChart3, label: "사용량 관리", path: "/admin/usage", enabled: true },
-      { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
     ];
+
+    // Only add these menus if NOT in demo mode
+    if (!isDemoMode) {
+      adminItems.splice(5, 0, 
+        { icon: Building2, label: "고객사 관리", path: "/admin/tenants", enabled: true },
+        { icon: BarChart3, label: "사용량 관리", path: "/admin/usage", enabled: true },
+        { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true }
+      );
+    }
+
+    return adminItems;
   };
 
   useEffect(() => {
