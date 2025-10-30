@@ -295,7 +295,19 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                           onClick={() => {
                             toast({
                               title: "데모 모드",
-                              description: "데모 모드에서는 대시보드만 체험하실 수 있습니다. 회원가입 후 모든 기능을 이용하세요.",
+                              description: "데모 모드에서는 대시보드만 체험하실 수 있습니다.",
+                              action: (
+                                <Button
+                                  size="sm"
+                                  onClick={async () => {
+                                    // 기존 세션 로그아웃 후 회원가입 페이지로 이동
+                                    await supabase.auth.signOut();
+                                    navigate("/auth");
+                                  }}
+                                >
+                                  회원가입
+                                </Button>
+                              ),
                             });
                           }}
                         >
