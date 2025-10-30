@@ -12,6 +12,7 @@ import { FileText, Clock, CheckCircle, AlertCircle, Plus, Eye } from "lucide-rea
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AIGradingButton } from "@/components/assignments/AIGradingButton";
 
 interface Assignment {
   id: string;
@@ -449,6 +450,13 @@ const TeacherAssignments = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">채점 대기</Badge>
+                      {submission.submission_text && (
+                        <AIGradingButton
+                          submissionId={submission.id}
+                          submissionText={submission.submission_text}
+                          onGradingComplete={fetchData}
+                        />
+                      )}
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button

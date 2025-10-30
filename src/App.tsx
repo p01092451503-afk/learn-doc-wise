@@ -18,6 +18,7 @@ import TeacherStudents from "./pages/TeacherStudents";
 import TeacherRevenue from "./pages/TeacherRevenue";
 import TeacherAnalytics from "./pages/TeacherAnalytics";
 import TeacherAssignments from "./pages/TeacherAssignments";
+import TeacherAttendance from "./pages/TeacherAttendance";
 import AdminDashboard from "./pages/AdminDashboard";
 import OperatorDashboard from "./pages/OperatorDashboard";
 import AdminUsers from "./pages/AdminUsers";
@@ -79,6 +80,7 @@ const App = () => {
           <Route path="/teacher/revenue" element={<TeacherRevenue />} />
           <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
           <Route path="/teacher/assignments" element={<TeacherAssignments />} />
+          <Route path="/teacher/attendance" element={<TeacherAttendance />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/operator/tenants" element={<OperatorTenants />} />

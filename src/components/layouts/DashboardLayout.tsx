@@ -24,6 +24,7 @@ import {
   Brain,
   Shield,
   Eye,
+  CalendarCheck,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -125,6 +126,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         ...baseItems,
         { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true },
+        { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
         { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
