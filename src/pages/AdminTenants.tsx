@@ -60,7 +60,7 @@ const AdminTenants = () => {
     } catch (error) {
       toast({
         title: "오류",
-        description: "테넌트 목록을 불러오는데 실패했습니다.",
+        description: "고객사 목록을 불러오는데 실패했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -85,7 +85,7 @@ const AdminTenants = () => {
 
       toast({
         title: "성공",
-        description: "테넌트가 생성되었습니다.",
+        description: "고객사가 생성되었습니다.",
       });
 
       setIsDialogOpen(false);
@@ -100,7 +100,7 @@ const AdminTenants = () => {
     } catch (error: any) {
       toast({
         title: "오류",
-        description: error.message || "테넌트 생성에 실패했습니다.",
+        description: error.message || "고객사 생성에 실패했습니다.",
         variant: "destructive",
       });
     }
@@ -117,7 +117,7 @@ const AdminTenants = () => {
 
       toast({
         title: "성공",
-        description: "테넌트 상태가 변경되었습니다.",
+        description: "고객사 상태가 변경되었습니다.",
       });
 
       fetchTenants();
@@ -144,19 +144,19 @@ const AdminTenants = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold">테넌트 관리</h1>
+            <h1 className="text-3xl font-display font-bold">고객사 관리</h1>
             <p className="text-muted-foreground mt-2">기관별 생성 및 사용량 관리</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
-                테넌트 추가
+                고객사 추가
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>새 테넌트 생성</DialogTitle>
+                <DialogTitle>새 고객사 생성</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
@@ -220,7 +220,7 @@ const AdminTenants = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">전체 테넌트</CardTitle>
+              <CardTitle className="text-sm font-medium">전체 고객사</CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -274,7 +274,7 @@ const AdminTenants = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>테넌트 목록</CardTitle>
+            <CardTitle>고객사 목록</CardTitle>
             <CardDescription>전체 기관 목록 및 상태 관리</CardDescription>
           </CardHeader>
           <CardContent>
