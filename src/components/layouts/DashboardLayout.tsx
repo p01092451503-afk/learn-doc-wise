@@ -23,6 +23,7 @@ import {
   Building2,
   Brain,
   Shield,
+  Eye,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -208,6 +209,15 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
+            {userRole === "admin" && (
+              <Link to="/demo">
+                <Button variant="outline" size="sm" className="gap-2 rounded-xl border-primary/30 hover:bg-primary/10">
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden sm:inline">데모 모드</span>
+                </Button>
+              </Link>
+            )}
+            
             <Button variant="ghost" size="icon" className="relative rounded-xl hover:bg-primary/10 flex-shrink-0">
               <Bell className="h-5 w-5" />
               <span className="absolute top-2 right-2 h-2 w-2 bg-accent rounded-full ring-2 ring-background" />
