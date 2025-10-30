@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Search } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
 
 interface AILog {
   id: string;
@@ -80,12 +79,9 @@ const OperatorAILogs = () => {
   return (
     <OperatorLayout>
       <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <img src={atomLogo} alt="AI" className="h-20 w-20" />
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
-            <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
+          <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
         </div>
 
         {/* Summary */}
