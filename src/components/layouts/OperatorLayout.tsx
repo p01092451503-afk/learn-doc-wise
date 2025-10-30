@@ -158,7 +158,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         <aside
           className={cn(
             "fixed left-0 top-16 bottom-0 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl transition-all duration-300 z-40",
-            sidebarCollapsed ? "w-16" : "w-64",
+            sidebarCollapsed ? "w-16" : "w-52",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           )}
         >
@@ -170,8 +170,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-12 transition-all duration-200",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-4",
+                      "w-full h-11 transition-all duration-200",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
                       isActive
                         ? "bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 border-l-2 border-violet-500"
                         : "text-slate-400 hover:text-white hover:bg-slate-800/50"
@@ -179,7 +179,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     {!sidebarCollapsed && (
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-medium text-base">{item.label}</span>
                     )}
                     {!sidebarCollapsed && isActive && (
                       <ChevronRight className="h-4 w-4 ml-auto" />
@@ -214,7 +214,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         <main
           className={cn(
             "flex-1 transition-all duration-300 min-h-[calc(100vh-4rem)]",
-            sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
+            sidebarCollapsed ? "lg:ml-16" : "lg:ml-52"
           )}
         >
           <div className="p-6 lg:p-8">
