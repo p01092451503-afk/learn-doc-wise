@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Player from "@vimeo/player";
+import { Button } from "@/components/ui/button";
+import { Play } from "lucide-react";
 
 // YouTube IFrame API types
 declare global {
@@ -26,11 +28,15 @@ const VideoPlayer = ({
   const [progress, setProgress] = useState(0);
   const [lastPosition, setLastPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [savedPosition, setSavedPosition] = useState<number | null>(null);
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<Player | null>(null);
   const youtubePlayerRef = useRef<any>(null);
   const youtubeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasResumedRef = useRef(false);
 
   // Extract video ID from URL
   const getVideoId = (url: string, provider: string) => {
@@ -45,6 +51,65 @@ const VideoPlayer = ({
   };
 
   const videoId = getVideoId(videoUrl, videoProvider);
+
+  // Load saved progress on mount
+  useEffect(() => {
+    const loadSavedProgress = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from("content_progress")
+          .select("last_position_seconds, progress_percentage")
+          .eq("user_id", user.id)
+          .eq("content_id", contentId)
+          .maybeSingle();
+
+        if (error) {
+          console.error("Failed to load saved progress:", error);
+          return;
+        }
+
+        if (data && data.last_position_seconds > 10) {
+          // 저장된 위치가 10초 이상이면 이어보기 옵션 표시
+          const resumePosition = Math.max(0, data.last_position_seconds - 10);
+          setSavedPosition(resumePosition);
+          setShowResumePrompt(true);
+          console.log("📺 Found saved position:", data.last_position_seconds, "Resume from:", resumePosition);
+        }
+      } catch (error) {
+        console.error("Error loading saved progress:", error);
+      }
+    };
+
+    loadSavedProgress();
+    hasResumedRef.current = false;
+  }, [contentId]);
+
+  // Resume video at saved position
+  const handleResume = () => {
+    if (savedPosition === null) return;
+
+    console.log("▶️ Resuming video at:", savedPosition);
+
+    if (videoProvider === "youtube" && youtubePlayerRef.current) {
+      youtubePlayerRef.current.seekTo(savedPosition, true);
+    } else if (videoProvider === "vimeo" && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.setCurrentTime(savedPosition);
+    }
+
+    setShowResumePrompt(false);
+    hasResumedRef.current = true;
+  };
+
+  // Start from beginning
+  const handleStartFromBeginning = () => {
+    console.log("🔄 Starting from beginning");
+    setShowResumePrompt(false);
+    setSavedPosition(null);
+    hasResumedRef.current = true;
+  };
 
   // Get embed URL
   const getEmbedUrl = () => {
@@ -100,6 +165,16 @@ const VideoPlayer = ({
     player.getDuration().then((dur) => {
       console.log("📏 Video duration:", dur);
       setDuration(dur);
+      setIsPlayerReady(true);
+
+      // Auto-resume if saved position exists and user hasn't chosen yet
+      if (savedPosition !== null && !hasResumedRef.current && showResumePrompt) {
+        setTimeout(() => {
+          if (!hasResumedRef.current) {
+            handleResume();
+          }
+        }, 1000);
+      }
     });
 
     // Handle timeupdate
@@ -209,6 +284,7 @@ const VideoPlayer = ({
             console.log("▶️ YouTube player ready");
             const videoDuration = event.target.getDuration();
             setDuration(videoDuration);
+            setIsPlayerReady(true);
             console.log("📏 Video duration:", videoDuration);
 
             // Ensure iframe takes full size
@@ -219,6 +295,15 @@ const VideoPlayer = ({
               iframe.style.position = 'absolute';
               iframe.style.top = '0';
               iframe.style.left = '0';
+            }
+
+            // Auto-resume if saved position exists and user hasn't chosen yet
+            if (savedPosition !== null && !hasResumedRef.current && showResumePrompt) {
+              setTimeout(() => {
+                if (!hasResumedRef.current) {
+                  handleResume();
+                }
+              }, 1000);
             }
 
             // Start polling for progress
@@ -335,6 +420,39 @@ const VideoPlayer = ({
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
+        )}
+
+        {/* Resume prompt overlay */}
+        {showResumePrompt && savedPosition !== null && isPlayerReady && (
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10">
+            <div className="bg-card rounded-xl p-6 shadow-elegant max-w-md mx-4 border">
+              <div className="text-center space-y-4">
+                <Play className="h-12 w-12 mx-auto text-primary" />
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">이어보기</h3>
+                  <p className="text-sm text-muted-foreground">
+                    마지막으로 시청한 위치({Math.floor(savedPosition / 60)}분 {Math.floor(savedPosition % 60)}초)부터 이어서 볼까요?
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={handleStartFromBeginning}
+                    className="flex-1"
+                  >
+                    처음부터
+                  </Button>
+                  <Button
+                    variant="premium"
+                    onClick={handleResume}
+                    className="flex-1"
+                  >
+                    이어보기
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
