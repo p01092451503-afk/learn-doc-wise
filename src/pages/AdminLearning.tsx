@@ -50,27 +50,48 @@ const AdminLearning = () => {
 
   const fetchData = async () => {
     try {
-      const [enrollmentsResult, analyticsResult] = await Promise.all([
-        supabase
-          .from("enrollments")
-          .select(`
-            *,
-            courses(title),
-            profiles!enrollments_user_id_fkey(full_name)
-          `)
-          .order("enrolled_at", { ascending: false })
-          .limit(100),
-        supabase
-          .from("learning_analytics")
-          .select("*")
-          .order("last_activity_at", { ascending: false })
-          .limit(100),
-      ]);
+      // Fetch enrollments with courses
+      const enrollmentsResult = await supabase
+        .from("enrollments")
+        .select(`
+          *,
+          courses(title)
+        `)
+        .order("enrolled_at", { ascending: false })
+        .limit(100);
 
       if (enrollmentsResult.error) throw enrollmentsResult.error;
+
+      // Fetch profiles separately
+      const userIds = [...new Set(enrollmentsResult.data.map((e: any) => e.user_id))];
+      const profilesResult = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+
+      if (profilesResult.error) throw profilesResult.error;
+
+      // Create a map of user_id to profile
+      const profilesMap = new Map(
+        profilesResult.data.map((p) => [p.user_id, p])
+      );
+
+      // Combine enrollments with profiles
+      const enrichedEnrollments = enrollmentsResult.data.map((enrollment: any) => ({
+        ...enrollment,
+        profiles: profilesMap.get(enrollment.user_id),
+      }));
+
+      // Fetch analytics
+      const analyticsResult = await supabase
+        .from("learning_analytics")
+        .select("*")
+        .order("last_activity_at", { ascending: false })
+        .limit(100);
+
       if (analyticsResult.error) throw analyticsResult.error;
 
-      setEnrollments(enrollmentsResult.data as any || []);
+      setEnrollments(enrichedEnrollments as any || []);
       setAnalytics(analyticsResult.data || []);
     } catch (error: any) {
       toast({
