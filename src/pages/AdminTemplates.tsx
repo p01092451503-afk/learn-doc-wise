@@ -132,15 +132,15 @@ const AdminTemplates = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-8 max-w-[1400px] mx-auto">
+      <div className="px-2">
         <h1 className="text-3xl font-display font-bold text-foreground mb-2">디자인 템플릿</h1>
         <p className="text-muted-foreground">
           사용자에게 보여질 메인 페이지 디자인을 선택하세요
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-2">
         {templates.map((template) => {
           const isSelected = currentTemplate === template.id;
           
