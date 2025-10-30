@@ -159,8 +159,8 @@ const PublicCourseDetail = () => {
       <section className="py-8 md:py-12 bg-muted/30">
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
           <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-            <div className="lg:col-span-2 space-y-6">
-              <div className="flex flex-wrap items-center gap-3">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="flex flex-wrap items-center gap-3 mb-2">
                 <Badge variant="default" className="text-sm px-3 py-1">{getLevelText(course.level)}</Badge>
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
@@ -173,15 +173,17 @@ const PublicCourseDetail = () => {
               </div>
               
               <div>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4 text-foreground leading-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 text-foreground leading-tight">
                   {course.title}
                 </h1>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                  {course.description || "강좌 설명이 없습니다."}
-                </p>
+                <div className="bg-background/60 backdrop-blur-sm rounded-xl p-5 border border-border/50">
+                  <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-medium">
+                    {course.description || "강좌 설명이 없습니다."}
+                  </p>
+                </div>
               </div>
               
-              <div className="flex flex-wrap items-center gap-6 pt-2">
+              <div className="flex flex-wrap items-center gap-6 pt-3">
                 <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 text-accent fill-accent" />
                   <span className="font-semibold text-lg">4.8</span>
