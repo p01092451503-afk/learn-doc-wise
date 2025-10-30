@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -65,6 +66,32 @@ serve(async (req) => {
 
     const data = await response.json();
     const translatedText = data.choices?.[0]?.message?.content;
+
+    // AI 사용 로그 저장
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+      const authHeader = req.headers.get("authorization");
+      let userId = null;
+      if (authHeader) {
+        const token = authHeader.replace("Bearer ", "");
+        const { data: { user } } = await supabase.auth.getUser(token);
+        userId = user?.id;
+      }
+
+      await supabase.from("ai_usage_logs").insert({
+        tenant_id: "00000000-0000-0000-0000-000000000000",
+        user_id: userId,
+        prompt_text: text,
+        response_text: translatedText,
+        tokens_used: data.usage?.total_tokens || 0,
+        model_name: "google/gemini-2.5-flash",
+      });
+    } catch (logError) {
+      console.error("Failed to log AI usage:", logError);
+    }
 
     return new Response(JSON.stringify({ translatedText }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

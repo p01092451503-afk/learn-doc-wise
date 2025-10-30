@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,6 +14,18 @@ serve(async (req) => {
   try {
     const { messages, userRole } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    
+    const authHeader = req.headers.get("authorization");
+    let userId = null;
+    if (authHeader) {
+      const token = authHeader.replace("Bearer ", "");
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id;
+    }
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -125,6 +138,21 @@ serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
+    }
+
+    // 스트리밍 응답이므로 로깅은 간단히 처리
+    const lastUserMessage = messages[messages.length - 1]?.content || "";
+    try {
+      await supabase.from("ai_usage_logs").insert({
+        tenant_id: "00000000-0000-0000-0000-000000000000",
+        user_id: userId,
+        prompt_text: lastUserMessage,
+        response_text: "[Streaming Response]",
+        tokens_used: 0,
+        model_name: "google/gemini-2.5-flash",
+      });
+    } catch (logError) {
+      console.error("Failed to log AI usage:", logError);
     }
 
     return new Response(response.body, {

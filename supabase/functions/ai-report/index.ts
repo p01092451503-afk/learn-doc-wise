@@ -141,6 +141,20 @@ serve(async (req) => {
     
     console.log('✅ AI Report generated successfully');
 
+    // AI 사용 로그 저장
+    try {
+      await supabase.from("ai_usage_logs").insert({
+        tenant_id: "00000000-0000-0000-0000-000000000000",
+        user_id: null,
+        prompt_text: reportPrompt,
+        response_text: report,
+        tokens_used: aiResponse.usage?.total_tokens || 0,
+        model_name: "google/gemini-2.5-flash",
+      });
+    } catch (logError) {
+      console.error("Failed to log AI usage:", logError);
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 

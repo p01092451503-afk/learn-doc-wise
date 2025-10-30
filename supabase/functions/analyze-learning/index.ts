@@ -95,6 +95,11 @@ serve(async (req) => {
     
     console.log('🤖 AI Response:', analysisText);
 
+    // Supabase 클라이언트는 이미 위에서 초기화됨
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     // JSON 추출 (마크다운 코드 블록 제거)
     let jsonText = analysisText;
     const jsonMatch = analysisText.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
@@ -104,11 +109,21 @@ serve(async (req) => {
 
     const analysis = JSON.parse(jsonText);
 
-    // Supabase에 분석 결과 저장
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    // AI 사용 로그 저장
+    try {
+      await supabase.from("ai_usage_logs").insert({
+        tenant_id: "00000000-0000-0000-0000-000000000000",
+        user_id: learningData.user_id,
+        prompt_text: analysisPrompt,
+        response_text: analysisText,
+        tokens_used: aiResponse.usage?.total_tokens || 0,
+        model_name: "google/gemini-2.5-flash",
+      });
+    } catch (logError) {
+      console.error("Failed to log AI usage:", logError);
+    }
 
+    // Supabase에 분석 결과 저장
     const { error: updateError } = await supabase
       .from('learning_analytics')
       .upsert({
