@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp, Users, BookOpen, DollarSign, Activity, Eye, Clock } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { AIReportGenerator } from "@/components/admin/AIReportGenerator";
 
 const AdminAnalytics = () => {
   const monthlyData = [
@@ -24,6 +25,9 @@ const AdminAnalytics = () => {
             플랫폼의 성과와 트렌드를 분석하세요
           </p>
         </div>
+
+        {/* AI 리포트 생성기 */}
+        <AIReportGenerator />
 
         {/* 주요 지표 */}
         <div className="grid gap-6 md:grid-cols-4">
