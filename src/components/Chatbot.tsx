@@ -175,21 +175,23 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-white hover:bg-white/90 shadow-elegant hover:shadow-glow p-0 z-50 border-2 border-primary"
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-primary hover:bg-primary/90 shadow-elegant hover:shadow-glow p-0 z-50 border-2 border-primary-glow transition-all duration-300"
           size="icon"
         >
-          <img src={chatbotIcon} alt="챗봇" className="h-10 w-10" />
+          <img src={chatbotIcon} alt="챗봇" className="h-9 w-9 drop-shadow-sm" />
         </Button>
       )}
 
       {/* 챗봇 창 */}
       {isOpen && (
         <Card className="fixed bottom-6 right-6 w-[400px] h-[600px] shadow-elegant z-50 flex flex-col border-2 border-primary">
-          <CardHeader className="border-b">
+          <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-transparent">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img src={chatbotIcon} alt="챗봇" className="h-8 w-8" />
-                <CardTitle className="font-logo">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <img src={chatbotIcon} alt="챗봇" className="h-6 w-6" />
+                </div>
+                <CardTitle className="font-sans text-xl font-semibold">
                   {userRole === "admin" ? "관리자 도우미" : "atomLMS 도우미"}
                 </CardTitle>
               </div>
@@ -197,6 +199,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
+                className="hover:bg-destructive/10 hover:text-destructive"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -206,9 +209,11 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
           <CardContent className="flex-1 flex flex-col p-0">
             <ScrollArea className="flex-1 p-4" ref={scrollRef}>
               {messages.length === 0 && (
-                <div className="text-center text-muted-foreground py-8">
-                  <img src={chatbotIcon} alt="챗봇" className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p>
+                <div className="text-center text-muted-foreground py-12">
+                  <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <img src={chatbotIcon} alt="챗봇" className="h-12 w-12" />
+                  </div>
+                  <p className="font-sans text-base">
                     {userRole === "admin"
                       ? "관리자 기능에 대해 무엇이든 물어보세요!"
                       : "플랫폼 사용법이나 요금제에 대해 물어보세요!"}
@@ -224,20 +229,20 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
                     }`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                      className={`max-w-[80%] rounded-lg px-4 py-2.5 ${
                         message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
+                          ? "bg-primary text-primary-foreground shadow-sm"
+                          : "bg-muted/50 border border-border"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm font-sans whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </ScrollArea>
 
-            <div className="border-t p-4">
+            <div className="border-t p-4 bg-muted/20">
               <div className="flex gap-2">
                 <Input
                   value={input}
@@ -245,12 +250,13 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
                   onKeyPress={handleKeyPress}
                   placeholder="메시지를 입력하세요..."
                   disabled={isLoading}
-                  className="flex-1"
+                  className="flex-1 font-sans"
                 />
                 <Button
                   onClick={handleSend}
                   disabled={!input.trim() || isLoading}
                   size="icon"
+                  className="shadow-sm"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
