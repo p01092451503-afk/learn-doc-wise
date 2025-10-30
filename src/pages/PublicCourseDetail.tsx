@@ -156,58 +156,62 @@ const PublicCourseDetail = () => {
       </div>
 
       {/* Course Header */}
-      <section className="py-6 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <Badge variant="default">{getLevelText(course.level)}</Badge>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+      <section className="py-8 md:py-12 bg-muted/30">
+        <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+            <div className="lg:col-span-2 space-y-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <Badge variant="default" className="text-sm px-3 py-1">{getLevelText(course.level)}</Badge>
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   <span>{course.duration_hours}시간</span>
                 </div>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <PlayCircle className="h-4 w-4" />
                   <span>{contents.length}개 차시</span>
                 </div>
               </div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold mb-3 text-foreground">
-                {course.title}
-              </h1>
-              <p className="text-base text-muted-foreground mb-4">
-                {course.description || "강좌 설명이 없습니다."}
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
+              
+              <div>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4 text-foreground leading-tight">
+                  {course.title}
+                </h1>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  {course.description || "강좌 설명이 없습니다."}
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-6 pt-2">
+                <div className="flex items-center gap-2">
                   <Star className="h-5 w-5 text-accent fill-accent" />
-                  <span className="font-semibold">4.8</span>
-                  <span className="text-muted-foreground">(245명 평가)</span>
+                  <span className="font-semibold text-lg">4.8</span>
+                  <span className="text-sm text-muted-foreground">(245명 평가)</span>
                 </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
+                <div className="flex items-center gap-2 text-muted-foreground">
                   <Users className="h-5 w-5" />
-                  <span>1,234명 수강 중</span>
+                  <span className="text-sm">1,234명 수강 중</span>
                 </div>
               </div>
             </div>
 
             {/* Enrollment Card */}
             <div className="lg:col-span-1">
-              <Card className="p-5 sticky top-20">
+              <Card className="p-6 sticky top-20 shadow-elegant">
                 {previewContent && (
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold mb-2 text-muted-foreground">미리보기</p>
+                  <div className="mb-5">
+                    <p className="text-xs font-semibold mb-2 text-muted-foreground uppercase tracking-wide">미리보기</p>
                     <VideoPreview
                       videoUrl={previewContent.video_url}
                       videoProvider={previewContent.video_provider as "youtube" | "vimeo"}
                     />
                   </div>
                 )}
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-foreground mb-1">
+                <div className="text-center mb-6 py-4 border-y">
+                  <div className="text-4xl font-bold text-foreground mb-2">
                     {course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}
                   </div>
                   {course.price > 0 && (
-                    <p className="text-xs text-muted-foreground">부가세 포함</p>
+                    <p className="text-sm text-muted-foreground">부가세 포함</p>
                   )}
                 </div>
                 <Link to="/auth" className="block">
@@ -236,9 +240,9 @@ const PublicCourseDetail = () => {
       </section>
 
       {/* Course Details */}
-      <section className="py-8">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl">
+      <section className="py-8 md:py-12">
+        <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
+          <div className="max-w-5xl">
             <Tabs defaultValue="curriculum" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="curriculum">커리큘럼</TabsTrigger>
