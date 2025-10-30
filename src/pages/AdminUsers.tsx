@@ -1,249 +1,573 @@
+import { useState, useEffect } from "react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Users, UserPlus, Search, MoreVertical, Mail, Calendar, GraduationCap, UserCheck, Shield } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Users, UserPlus, Search, CheckCircle, XCircle, Clock, Ban, Eye, Building2 } from "lucide-react";
+
+interface User {
+  id: string;
+  user_id: string;
+  email: string | undefined;
+  full_name: string | null;
+  approval_status: string;
+  approved_at: string | null;
+  rejection_reason: string | null;
+  suspended_until: string | null;
+  created_at: string;
+  role?: string;
+}
+
+interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  is_active: boolean;
+  max_members: number | null;
+  created_at: string;
+}
 
 const AdminUsers = () => {
-  const students = [
-    { id: 1, name: "김학생", email: "student1@example.com", courses: 3, joinDate: "2024-09-15", status: "active" },
-    { id: 2, name: "이수강", email: "student2@example.com", courses: 5, joinDate: "2024-08-20", status: "active" },
-    { id: 3, name: "박공부", email: "student3@example.com", courses: 2, joinDate: "2024-10-01", status: "active" },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOrgDialogOpen, setIsOrgDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const { toast } = useToast();
 
-  const teachers = [
-    { id: 1, name: "김교수", email: "teacher1@example.com", courses: 8, students: 342, joinDate: "2023-05-10" },
-    { id: 2, name: "이강사", email: "teacher2@example.com", courses: 5, students: 156, joinDate: "2023-08-15" },
-    { id: 3, name: "박선생", email: "teacher3@example.com", courses: 3, students: 89, joinDate: "2024-01-20" },
-  ];
+  const [orgForm, setOrgForm] = useState({
+    name: "",
+    slug: "",
+    description: "",
+    max_members: 100,
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [profilesResult, rolesResult, orgsResult] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("user_roles")
+          .select("user_id, role"),
+        supabase
+          .from("organizations")
+          .select("*")
+          .order("created_at", { ascending: false }),
+      ]);
+
+      if (profilesResult.error) throw profilesResult.error;
+      if (rolesResult.error) throw rolesResult.error;
+      if (orgsResult.error) throw orgsResult.error;
+
+      // Get user emails
+      const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
+      
+      const usersWithEmailsAndRoles = (profilesResult.data || []).map((profile: any) => {
+        const userRole = rolesResult.data?.find((r: any) => r.user_id === profile.user_id);
+        return {
+          ...profile,
+          email: authUsers?.find((u: any) => u.id === profile.user_id)?.email,
+          role: userRole?.role || "student",
+        };
+      });
+
+      setUsers(usersWithEmailsAndRoles);
+      setOrganizations(orgsResult.data || []);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "데이터를 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleApproveUser = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          approval_status: "approved",
+          approved_at: new Date().toISOString(),
+        })
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "사용자가 승인되었습니다.",
+      });
+
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "승인에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRejectUser = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          approval_status: "rejected",
+          rejection_reason: rejectionReason,
+        })
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "사용자 가입이 거절되었습니다.",
+      });
+
+      setSelectedUser(null);
+      setRejectionReason("");
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "거절 처리에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSuspendUser = async (userId: string, days: number) => {
+    try {
+      const suspendUntil = new Date();
+      suspendUntil.setDate(suspendUntil.getDate() + days);
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          approval_status: "suspended",
+          suspended_until: suspendUntil.toISOString(),
+        })
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: `사용자가 ${days}일간 정지되었습니다.`,
+      });
+
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "정지 처리에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateOrganization = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from("organizations").insert([{
+        name: orgForm.name,
+        slug: orgForm.slug || orgForm.name.toLowerCase().replace(/\s+/g, "-"),
+        description: orgForm.description,
+        max_members: orgForm.max_members,
+        created_by: user?.id,
+      }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "조직이 생성되었습니다.",
+      });
+
+      setIsOrgDialogOpen(false);
+      fetchData();
+      setOrgForm({ name: "", slug: "", description: "", max_members: 100 });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "조직 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      approved: "default",
+      pending: "outline",
+      rejected: "destructive",
+      suspended: "secondary",
+    };
+    const labels: Record<string, string> = {
+      approved: "승인됨",
+      pending: "대기중",
+      rejected: "거절됨",
+      suspended: "정지됨",
+    };
+    return <Badge variant={variants[status] || "outline"}>{labels[status] || status}</Badge>;
+  };
+
+  const getRoleBadge = (role?: string) => {
+    if (!role) return <Badge variant="secondary">역할 없음</Badge>;
+    const labels: Record<string, string> = {
+      student: "학생",
+      teacher: "강사",
+      admin: "관리자",
+    };
+    return <Badge variant="outline">{labels[role] || role}</Badge>;
+  };
+
+  const filteredUsers = users.filter(user =>
+    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const pendingUsers = filteredUsers.filter(u => u.approval_status === "pending");
+  const approvedUsers = filteredUsers.filter(u => u.approval_status === "approved");
+  const suspendedUsers = filteredUsers.filter(u => u.approval_status === "suspended");
 
   return (
     <DashboardLayout userRole="admin">
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">사용자 관리</h1>
-            <p className="text-muted-foreground mt-2">
-              플랫폼의 모든 사용자를 관리하세요
-            </p>
+            <h1 className="text-3xl font-display font-bold">사용자 관리</h1>
+            <p className="text-muted-foreground mt-2">회원 승인, 권한 설정 및 조직 관리</p>
           </div>
-          <Button className="gap-2">
-            <UserPlus className="h-4 w-4" />
-            사용자 추가
-          </Button>
         </div>
 
-        {/* 통계 카드 */}
-        <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                전체 사용자
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
+              <CardTitle className="text-sm font-medium">전체 사용자</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">2,847</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +180</p>
+            <CardContent>
+              <div className="text-2xl font-bold">{users.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">등록된 사용자</p>
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                학생
-              </CardTitle>
-              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <GraduationCap className="h-5 w-5 text-accent" />
-              </div>
+              <CardTitle className="text-sm font-medium">승인 대기</CardTitle>
+              <Clock className="h-4 w-4 text-yellow-600" />
             </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">2,456</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">86%</p>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">{pendingUsers.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">처리 필요</p>
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                강사
-              </CardTitle>
-              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <UserCheck className="h-5 w-5 text-secondary" />
-              </div>
+              <CardTitle className="text-sm font-medium">활성 사용자</CardTitle>
+              <CheckCircle className="h-4 w-4 text-green-600" />
             </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">342</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">12%</p>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{approvedUsers.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">승인된 사용자</p>
             </CardContent>
           </Card>
 
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                관리자
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Shield className="h-5 w-5 text-primary" />
-              </div>
+              <CardTitle className="text-sm font-medium">정지된 사용자</CardTitle>
+              <Ban className="h-4 w-4 text-red-600" />
             </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">49</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">2%</p>
+            <CardContent>
+              <div className="text-2xl font-bold text-red-600">{suspendedUsers.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">일시 정지</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* 검색 */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="이름, 이메일로 검색..."
-            className="pl-10 rounded-xl border-border/50"
-          />
-        </div>
-
-        {/* 사용자 목록 */}
-        <Tabs defaultValue="students" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="students">학생</TabsTrigger>
-            <TabsTrigger value="teachers">강사</TabsTrigger>
+        <Tabs defaultValue="all" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="all">전체 사용자</TabsTrigger>
+            <TabsTrigger value="pending">승인 대기 ({pendingUsers.length})</TabsTrigger>
+            <TabsTrigger value="organizations">조직 관리</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="students" className="mt-6">
-            <Card className="border-border/50 shadow-sm">
+          <TabsContent value="all" className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="이름 또는 이메일로 검색..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Card>
               <CardHeader>
-                <CardTitle>학생 목록</CardTitle>
+                <CardTitle>사용자 목록 ({filteredUsers.length}명)</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {students.map((student) => (
-                    <div
-                      key={student.id}
-                      className="flex items-center justify-between p-4 rounded-xl border hover:border-primary/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                            {student.name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h4 className="font-semibold">{student.name}</h4>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Mail className="h-3 w-3" />
-                              {student.email}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {student.joinDate}
-                            </span>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>이름</TableHead>
+                      <TableHead>이메일</TableHead>
+                      <TableHead>역할</TableHead>
+                      <TableHead>상태</TableHead>
+                      <TableHead>가입일</TableHead>
+                      <TableHead>작업</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.full_name || "이름 없음"}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{getRoleBadge(user.role)}</TableCell>
+                        <TableCell>{getStatusBadge(user.approval_status)}</TableCell>
+                        <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {user.approval_status === "pending" && (
+                              <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleApproveUser(user.user_id)}
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1 text-green-600" />
+                                  승인
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setSelectedUser(user)}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1 text-red-600" />
+                                  거절
+                                </Button>
+                              </>
+                            )}
+                            {user.approval_status === "approved" && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleSuspendUser(user.user_id, 7)}
+                              >
+                                <Ban className="h-4 w-4 mr-1" />
+                                정지
+                              </Button>
+                            )}
                           </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-sm font-medium">{student.courses}개 수강</p>
-                          <Badge variant="default" className="mt-1">
-                            {student.status === "active" ? "활성" : "비활성"}
-                          </Badge>
-                        </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>상세 보기</DropdownMenuItem>
-                            <DropdownMenuItem>정보 수정</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              계정 정지
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="teachers" className="mt-6">
-            <Card className="border-border/50 shadow-sm">
+          <TabsContent value="pending" className="space-y-4">
+            <Card>
               <CardHeader>
-                <CardTitle>강사 목록</CardTitle>
+                <CardTitle>승인 대기 중인 사용자</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {teachers.map((teacher) => (
-                    <div
-                      key={teacher.id}
-                      className="flex items-center justify-between p-4 rounded-xl border hover:border-primary/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-12 w-12">
-                          <AvatarFallback className="bg-accent/10 text-accent font-semibold">
-                            {teacher.name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h4 className="font-semibold">{teacher.name}</h4>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Mail className="h-3 w-3" />
-                              {teacher.email}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
-                              {teacher.joinDate}
-                            </span>
+                {pendingUsers.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">승인 대기 중인 사용자가 없습니다.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {pendingUsers.map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-4">
+                          <Avatar className="h-12 w-12">
+                            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                              {user.full_name?.[0] || user.email?.[0] || "?"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-semibold">{user.full_name || "이름 없음"}</h4>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              신청일: {new Date(user.created_at).toLocaleDateString()}
+                            </p>
                           </div>
                         </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right text-sm">
-                          <p className="font-medium">{teacher.courses}개 강의</p>
-                          <p className="text-muted-foreground">
-                            {teacher.students}명 학생
-                          </p>
+                        <div className="flex items-center gap-2">
+                          <Button onClick={() => handleApproveUser(user.user_id)}>
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            승인
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={() => setSelectedUser(user)}
+                          >
+                            <XCircle className="h-4 w-4 mr-2" />
+                            거절
+                          </Button>
                         </div>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>상세 보기</DropdownMenuItem>
-                            <DropdownMenuItem>정보 수정</DropdownMenuItem>
-                            <DropdownMenuItem>강의 관리</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                              계정 정지
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
                       </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="organizations" className="space-y-4">
+            <div className="flex justify-end">
+              <Dialog open={isOrgDialogOpen} onOpenChange={setIsOrgDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Building2 className="h-4 w-4 mr-2" />
+                    조직 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>새 조직 생성</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>조직명 *</Label>
+                      <Input
+                        value={orgForm.name}
+                        onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })}
+                        placeholder="예: 서울대학교"
+                      />
                     </div>
-                  ))}
-                </div>
+                    <div className="space-y-2">
+                      <Label>슬러그</Label>
+                      <Input
+                        value={orgForm.slug}
+                        onChange={(e) => setOrgForm({ ...orgForm, slug: e.target.value })}
+                        placeholder="자동 생성"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>설명</Label>
+                      <Textarea
+                        value={orgForm.description}
+                        onChange={(e) => setOrgForm({ ...orgForm, description: e.target.value })}
+                        placeholder="조직 설명"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>최대 멤버 수</Label>
+                      <Input
+                        type="number"
+                        value={orgForm.max_members}
+                        onChange={(e) => setOrgForm({ ...orgForm, max_members: parseInt(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsOrgDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={handleCreateOrganization}>생성</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>조직 목록 ({organizations.length}개)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>조직명</TableHead>
+                      <TableHead>슬러그</TableHead>
+                      <TableHead>최대 멤버</TableHead>
+                      <TableHead>상태</TableHead>
+                      <TableHead>생성일</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {organizations.map((org) => (
+                      <TableRow key={org.id}>
+                        <TableCell className="font-medium">{org.name}</TableCell>
+                        <TableCell className="font-mono text-sm">{org.slug}</TableCell>
+                        <TableCell>{org.max_members || "무제한"}</TableCell>
+                        <TableCell>
+                          <Badge variant={org.is_active ? "default" : "secondary"}>
+                            {org.is_active ? "활성" : "비활성"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(org.created_at).toLocaleDateString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Rejection Dialog */}
+        <Dialog open={!!selectedUser} onOpenChange={(open) => !open && setSelectedUser(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>가입 거절</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <p>사용자: {selectedUser?.full_name || selectedUser?.email}</p>
+              <div className="space-y-2">
+                <Label>거절 사유 *</Label>
+                <Textarea
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  placeholder="거절 사유를 입력하세요"
+                  rows={4}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedUser(null)}>
+                취소
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => selectedUser && handleRejectUser(selectedUser.user_id)}
+                disabled={!rejectionReason}
+              >
+                거절
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

@@ -27,6 +27,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminTenants from "./pages/AdminTenants";
 import AdminAILogs from "./pages/AdminAILogs";
 import AdminMonitoring from "./pages/AdminMonitoring";
+import AdminLearning from "./pages/AdminLearning";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/ai-logs" element={<AdminAILogs />} />
           <Route path="/admin/monitoring" element={<AdminMonitoring />} />
+          <Route path="/admin/learning" element={<AdminLearning />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

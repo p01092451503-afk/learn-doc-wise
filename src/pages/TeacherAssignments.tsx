@@ -1,93 +1,198 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { FileText, Clock, CheckCircle, AlertCircle, Plus, Eye } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+interface Assignment {
+  id: string;
+  title: string;
+  description: string | null;
+  due_date: string | null;
+  max_score: number;
+  status: string;
+  course_id: string;
+  courses: {
+    title: string;
+  };
+}
+
+interface Submission {
+  id: string;
+  assignment_id: string;
+  student_id: string;
+  submission_text: string | null;
+  submitted_at: string;
+  status: string;
+  score: number | null;
+  profiles: {
+    full_name: string | null;
+  };
+}
 
 const TeacherAssignments = () => {
-  const assignments = [
-    {
-      id: 1,
-      title: "React 컴포넌트 설계 과제",
-      course: "React 완벽 가이드",
-      dueDate: "2024-11-05",
-      submitted: 89,
-      total: 145,
-      pending: 12,
-      graded: 77,
-      status: "active",
-    },
-    {
-      id: 2,
-      title: "TypeScript 타입 시스템 실습",
-      course: "TypeScript 마스터클래스",
-      dueDate: "2024-11-08",
-      submitted: 65,
-      total: 98,
-      pending: 15,
-      graded: 50,
-      status: "active",
-    },
-    {
-      id: 3,
-      title: "Next.js 라우팅 프로젝트",
-      course: "Next.js 풀스택 개발",
-      dueDate: "2024-11-12",
-      submitted: 45,
-      total: 76,
-      pending: 8,
-      graded: 37,
-      status: "active",
-    },
-    {
-      id: 4,
-      title: "상태 관리 구현",
-      course: "React 완벽 가이드",
-      dueDate: "2024-10-28",
-      submitted: 145,
-      total: 145,
-      pending: 0,
-      graded: 145,
-      status: "closed",
-    },
-  ];
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
+  const [gradeScore, setGradeScore] = useState<number>(0);
+  const [gradeFeedback, setGradeFeedback] = useState("");
+  const { toast } = useToast();
 
-  const recentSubmissions = [
-    {
-      id: 1,
-      student: "김철수",
-      assignment: "React 컴포넌트 설계 과제",
-      submittedAt: "2024-10-28 14:30",
-      status: "pending",
-    },
-    {
-      id: 2,
-      student: "이영희",
-      assignment: "TypeScript 타입 시스템 실습",
-      submittedAt: "2024-10-28 13:45",
-      status: "pending",
-    },
-    {
-      id: 3,
-      student: "박지민",
-      assignment: "Next.js 라우팅 프로젝트",
-      submittedAt: "2024-10-28 11:20",
-      status: "pending",
-    },
-  ];
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    instructions: "",
+    course_id: "",
+    max_score: 100,
+    due_date: "",
+    status: "draft",
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const [assignmentsResult, coursesResult, submissionsResult] = await Promise.all([
+        supabase
+          .from("assignments")
+          .select(`
+            *,
+            courses(title)
+          `)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("courses")
+          .select("id, title")
+          .eq("instructor_id", user.id),
+        supabase
+          .from("assignment_submissions")
+          .select(`
+            *,
+            profiles:student_id(full_name)
+          `)
+          .order("submitted_at", { ascending: false })
+          .limit(20),
+      ]);
+
+      if (assignmentsResult.error) throw assignmentsResult.error;
+      if (coursesResult.error) throw coursesResult.error;
+      if (submissionsResult.error) throw submissionsResult.error;
+
+      setAssignments(assignmentsResult.data as any || []);
+      setCourses(coursesResult.data || []);
+      setSubmissions(submissionsResult.data as any || []);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "데이터를 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateAssignment = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase.from("assignments").insert([{
+        title: formData.title,
+        description: formData.description,
+        instructions: formData.instructions,
+        course_id: formData.course_id,
+        max_score: formData.max_score,
+        due_date: formData.due_date || null,
+        status: formData.status as "draft" | "published" | "closed",
+        created_by: user?.id,
+      }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "과제가 생성되었습니다.",
+      });
+
+      setIsDialogOpen(false);
+      fetchData();
+      setFormData({
+        title: "",
+        description: "",
+        instructions: "",
+        course_id: "",
+        max_score: 100,
+        due_date: "",
+        status: "draft",
+      });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "과제 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGradeSubmission = async () => {
+    if (!selectedSubmission) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const { error } = await supabase
+        .from("assignment_submissions")
+        .update({
+          score: gradeScore,
+          feedback: gradeFeedback,
+          status: "graded",
+          graded_by: user?.id,
+          graded_at: new Date().toISOString(),
+        })
+        .eq("id", selectedSubmission.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "채점이 완료되었습니다.",
+      });
+
+      setSelectedSubmission(null);
+      setGradeScore(0);
+      setGradeFeedback("");
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "채점에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const pendingSubmissions = submissions.filter(s => s.status === "submitted");
 
   return (
     <DashboardLayout userRole="teacher">
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">과제 관리</h1>
@@ -95,45 +200,168 @@ const TeacherAssignments = () => {
               과제를 생성하고 학생들의 제출물을 평가하세요
             </p>
           </div>
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            새 과제 만들기
-          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                새 과제 만들기
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>새 과제 생성</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>과제명 *</Label>
+                  <Input
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="예: React Hooks 실습"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>강좌 선택 *</Label>
+                  <Select value={formData.course_id} onValueChange={(value) => setFormData({ ...formData, course_id: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="강좌를 선택하세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>{course.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>설명</Label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="과제 설명"
+                    rows={3}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>지시사항</Label>
+                  <Textarea
+                    value={formData.instructions}
+                    onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
+                    placeholder="과제 지시사항"
+                    rows={4}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>배점</Label>
+                    <Input
+                      type="number"
+                      value={formData.max_score}
+                      onChange={(e) => setFormData({ ...formData, max_score: parseInt(e.target.value) })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>마감일</Label>
+                    <Input
+                      type="datetime-local"
+                      value={formData.due_date}
+                      onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>상태</Label>
+                  <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">초안</SelectItem>
+                      <SelectItem value="published">공개</SelectItem>
+                      <SelectItem value="closed">마감</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                  취소
+                </Button>
+                <Button onClick={handleCreateAssignment}>생성</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-4">
-          <StatsCard
-            title="전체 과제"
-            value="24"
-            icon={<FileText className="h-4 w-4" />}
-            description="4 활성 과제"
-          />
-          <StatsCard
-            title="채점 대기"
-            value="35"
-            icon={<Clock className="h-4 w-4" />}
-            description="검토 필요"
-          />
-          <StatsCard
-            title="채점 완료"
-            value="309"
-            icon={<CheckCircle className="h-4 w-4" />}
-            description="이번 달"
-          />
-          <StatsCard
-            title="마감 임박"
-            value="2"
-            icon={<AlertCircle className="h-4 w-4" />}
-            description="3일 이내"
-          />
+          <Card className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap">전체 과제</CardTitle>
+              <div className="text-muted-foreground flex-shrink-0">
+                <FileText className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-1 min-w-0">
+              <div className="text-xl font-bold break-all">{assignments.length}</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">생성된 과제</p>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap">채점 대기</CardTitle>
+              <div className="text-muted-foreground flex-shrink-0">
+                <Clock className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-1 min-w-0">
+              <div className="text-xl font-bold break-all">{pendingSubmissions.length}</div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">검토 필요</p>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap">채점 완료</CardTitle>
+              <div className="text-muted-foreground flex-shrink-0">
+                <CheckCircle className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-1 min-w-0">
+              <div className="text-xl font-bold break-all">
+                {submissions.filter(s => s.status === "graded").length}
+              </div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">총 채점</p>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium whitespace-nowrap">평균 점수</CardTitle>
+              <div className="text-muted-foreground flex-shrink-0">
+                <AlertCircle className="h-4 w-4" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-1 min-w-0">
+              <div className="text-xl font-bold break-all">
+                {submissions.filter(s => s.score).length > 0
+                  ? Math.round(
+                      submissions
+                        .filter(s => s.score)
+                        .reduce((sum, s) => sum + (s.score || 0), 0) /
+                        submissions.filter(s => s.score).length
+                    )
+                  : 0}점
+              </div>
+              <p className="text-xs text-muted-foreground whitespace-nowrap">전체 평균</p>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Active Assignments */}
         <Card>
           <CardHeader>
-            <CardTitle>활성 과제</CardTitle>
-            <CardDescription>현재 진행중인 과제 목록</CardDescription>
+            <CardTitle>과제 목록</CardTitle>
+            <CardDescription>생성된 모든 과제</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -142,8 +370,7 @@ const TeacherAssignments = () => {
                   <TableHead>과제명</TableHead>
                   <TableHead>강의</TableHead>
                   <TableHead>마감일</TableHead>
-                  <TableHead className="text-center">제출률</TableHead>
-                  <TableHead className="text-center">채점 대기</TableHead>
+                  <TableHead>배점</TableHead>
                   <TableHead>상태</TableHead>
                   <TableHead className="text-right">관리</TableHead>
                 </TableRow>
@@ -153,42 +380,24 @@ const TeacherAssignments = () => {
                   <TableRow key={assignment.id}>
                     <TableCell className="font-medium">{assignment.title}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {assignment.course}
+                      {assignment.courses?.title}
                     </TableCell>
-                    <TableCell className="text-sm">{assignment.dueDate}</TableCell>
-                    <TableCell className="text-center">
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-sm font-medium">
-                          {assignment.submitted}/{assignment.total}
-                        </span>
-                        <div className="w-16 bg-secondary rounded-full h-1.5">
-                          <div
-                            className="bg-primary h-1.5 rounded-full"
-                            style={{
-                              width: `${(assignment.submitted / assignment.total) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
+                    <TableCell className="text-sm">
+                      {assignment.due_date
+                        ? new Date(assignment.due_date).toLocaleDateString()
+                        : "-"}
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant="secondary">{assignment.pending}</Badge>
-                    </TableCell>
+                    <TableCell>{assignment.max_score}점</TableCell>
                     <TableCell>
-                      <Badge
-                        variant={assignment.status === "active" ? "default" : "secondary"}
-                      >
-                        {assignment.status === "active" ? "진행중" : "마감"}
+                      <Badge variant={assignment.status === "published" ? "default" : "secondary"}>
+                        {assignment.status === "published" ? "공개" : assignment.status === "closed" ? "마감" : "초안"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-4 w-4 mr-1" />
-                          보기
-                        </Button>
-                        <Button size="sm">채점하기</Button>
-                      </div>
+                      <Button size="sm" variant="outline">
+                        <Eye className="h-4 w-4 mr-1" />
+                        보기
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -197,41 +406,95 @@ const TeacherAssignments = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Submissions */}
         <Card>
           <CardHeader>
             <CardTitle>최근 제출</CardTitle>
-            <CardDescription>가장 최근에 제출된 과제</CardDescription>
+            <CardDescription>채점이 필요한 제출물</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentSubmissions.map((submission) => (
-                <div
-                  key={submission.id}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:border-primary/50 transition-colors"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-sm font-medium text-primary">
-                        {submission.student[0]}
-                      </span>
+              {pendingSubmissions.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">채점 대기 중인 제출물이 없습니다.</p>
+              ) : (
+                pendingSubmissions.map((submission) => (
+                  <div
+                    key={submission.id}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:border-primary/50 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-medium text-primary">
+                          {submission.profiles?.full_name?.[0] || "?"}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="font-medium">{submission.profiles?.full_name || "이름 없음"}</p>
+                        <p className="text-sm text-muted-foreground">
+                          제출: {new Date(submission.submitted_at).toLocaleString()}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">{submission.student}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {submission.assignment}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        제출: {submission.submittedAt}
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">채점 대기</Badge>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedSubmission(submission);
+                              setGradeScore(0);
+                              setGradeFeedback("");
+                            }}
+                          >
+                            채점하기
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>과제 채점</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div>
+                              <Label>학생</Label>
+                              <p className="font-medium mt-1">{submission.profiles?.full_name}</p>
+                            </div>
+                            <div>
+                              <Label>제출 내용</Label>
+                              <div className="mt-2 p-4 bg-muted rounded-lg text-sm">
+                                {submission.submission_text || "제출 내용 없음"}
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>점수 *</Label>
+                              <Input
+                                type="number"
+                                value={gradeScore}
+                                onChange={(e) => setGradeScore(parseInt(e.target.value) || 0)}
+                                placeholder="점수 입력"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>피드백</Label>
+                              <Textarea
+                                value={gradeFeedback}
+                                onChange={(e) => setGradeFeedback(e.target.value)}
+                                placeholder="학생에게 전달할 피드백을 입력하세요"
+                                rows={4}
+                              />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <Button variant="outline" onClick={() => setSelectedSubmission(null)}>
+                              취소
+                            </Button>
+                            <Button onClick={handleGradeSubmission}>채점 완료</Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">채점 대기</Badge>
-                    <Button size="sm">채점하기</Button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
@@ -239,28 +502,5 @@ const TeacherAssignments = () => {
     </DashboardLayout>
   );
 };
-
-const StatsCard = ({ 
-  title, 
-  value, 
-  icon, 
-  description 
-}: { 
-  title: string; 
-  value: string; 
-  icon: React.ReactNode; 
-  description: string; 
-}) => (
-  <Card className="overflow-hidden">
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
-      <div className="text-muted-foreground flex-shrink-0">{icon}</div>
-    </CardHeader>
-    <CardContent className="space-y-1 min-w-0">
-      <div className="text-xl font-bold break-all">{value}</div>
-      <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
-    </CardContent>
-  </Card>
-);
 
 export default TeacherAssignments;

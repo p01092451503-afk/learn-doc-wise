@@ -88,6 +88,109 @@ export type Database = {
           },
         ]
       }
+      assignment_submissions: {
+        Row: {
+          assignment_id: string
+          feedback: string | null
+          file_urls: string[] | null
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          score: number | null
+          status: Database["public"]["Enums"]["submission_status"]
+          student_id: string
+          submission_text: string | null
+          submitted_at: string
+        }
+        Insert: {
+          assignment_id: string
+          feedback?: string | null
+          file_urls?: string[] | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          student_id: string
+          submission_text?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          assignment_id?: string
+          feedback?: string | null
+          file_urls?: string[] | null
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          score?: number | null
+          status?: Database["public"]["Enums"]["submission_status"]
+          student_id?: string
+          submission_text?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignment_submissions_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assignments: {
+        Row: {
+          allow_late_submission: boolean
+          course_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          instructions: string | null
+          max_score: number
+          status: Database["public"]["Enums"]["assignment_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          allow_late_submission?: boolean
+          course_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          max_score?: number
+          status?: Database["public"]["Enums"]["assignment_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          allow_late_submission?: boolean
+          course_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          max_score?: number
+          status?: Database["public"]["Enums"]["assignment_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assignments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -128,6 +231,82 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificates: {
+        Row: {
+          certificate_number: string
+          certificate_url: string | null
+          created_at: string
+          enrollment_id: string
+          id: string
+          issued_at: string
+          metadata: Json | null
+        }
+        Insert: {
+          certificate_number: string
+          certificate_url?: string | null
+          created_at?: string
+          enrollment_id: string
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+        }
+        Update: {
+          certificate_number?: string
+          certificate_url?: string | null
+          created_at?: string
+          enrollment_id?: string
+          id?: string
+          issued_at?: string
+          metadata?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          enrollment_id: string
+          id: string
+          last_accessed_at: string
+          lesson_id: string
+          time_spent_minutes: number | null
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          enrollment_id: string
+          id?: string
+          last_accessed_at?: string
+          lesson_id: string
+          time_spent_minutes?: number | null
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          enrollment_id?: string
+          id?: string
+          last_accessed_at?: string
+          lesson_id?: string
+          time_spent_minutes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_progress_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
             referencedColumns: ["id"]
           },
         ]
@@ -299,6 +478,113 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grades: {
+        Row: {
+          assignment_id: string | null
+          created_at: string
+          enrollment_id: string
+          grade_type: string
+          graded_at: string
+          graded_by: string | null
+          id: string
+          max_score: number
+          notes: string | null
+          percentage: number | null
+          score: number
+        }
+        Insert: {
+          assignment_id?: string | null
+          created_at?: string
+          enrollment_id: string
+          grade_type: string
+          graded_at?: string
+          graded_by?: string | null
+          id?: string
+          max_score: number
+          notes?: string | null
+          percentage?: number | null
+          score: number
+        }
+        Update: {
+          assignment_id?: string | null
+          created_at?: string
+          enrollment_id?: string
+          grade_type?: string
+          graded_at?: string
+          graded_by?: string | null
+          id?: string
+          max_score?: number
+          notes?: string | null
+          percentage?: number | null
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grades_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grades_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_analytics: {
+        Row: {
+          at_risk_score: number | null
+          course_id: string
+          created_at: string
+          engagement_score: number | null
+          id: string
+          last_activity_at: string | null
+          learning_pattern: Json | null
+          lessons_completed: number | null
+          total_time_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          at_risk_score?: number | null
+          course_id: string
+          created_at?: string
+          engagement_score?: number | null
+          id?: string
+          last_activity_at?: string | null
+          learning_pattern?: Json | null
+          lessons_completed?: number | null
+          total_time_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          at_risk_score?: number | null
+          course_id?: string
+          created_at?: string
+          engagement_score?: number | null
+          id?: string
+          last_activity_at?: string | null
+          learning_pattern?: Json | null
+          lessons_completed?: number | null
+          total_time_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_analytics_course_id_fkey"
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
@@ -757,10 +1043,12 @@ export type Database = {
     Enums: {
       app_role: "student" | "teacher" | "admin"
       approval_status: "pending" | "approved" | "rejected" | "suspended"
+      assignment_status: "draft" | "published" | "closed"
       billing_cycle: "monthly" | "yearly"
       course_level: "beginner" | "intermediate" | "advanced" | "all"
       course_status: "draft" | "published" | "scheduled" | "archived"
       payment_status: "pending" | "completed" | "failed" | "refunded"
+      submission_status: "submitted" | "graded" | "returned" | "late"
       subscription_plan_type: "starter" | "standard" | "professional"
     }
     CompositeTypes: {
@@ -891,10 +1179,12 @@ export const Constants = {
     Enums: {
       app_role: ["student", "teacher", "admin"],
       approval_status: ["pending", "approved", "rejected", "suspended"],
+      assignment_status: ["draft", "published", "closed"],
       billing_cycle: ["monthly", "yearly"],
       course_level: ["beginner", "intermediate", "advanced", "all"],
       course_status: ["draft", "published", "scheduled", "archived"],
       payment_status: ["pending", "completed", "failed", "refunded"],
+      submission_status: ["submitted", "graded", "returned", "late"],
       subscription_plan_type: ["starter", "standard", "professional"],
     },
   },
