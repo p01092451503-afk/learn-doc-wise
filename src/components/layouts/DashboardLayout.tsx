@@ -25,6 +25,7 @@ import {
   Shield,
   Eye,
   CalendarCheck,
+  Sparkles,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -58,6 +59,7 @@ interface MenuItem {
   label: string;
   path: string;
   enabled: boolean;
+  hasAI?: boolean;
 }
 
 const iconMap: { [key: string]: any } = {
@@ -115,9 +117,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       return [
         ...baseItems,
         { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true },
-        { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
+        { icon: FileText, label: "과제", path: "/student/assignments", enabled: true, hasAI: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
-        { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
+        { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true, hasAI: true },
       ];
     }
 
@@ -125,10 +127,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       return [
         ...baseItems,
         { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
-        { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true },
+        { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
-        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
+        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true, hasAI: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
       ];
     }
@@ -139,7 +141,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         ...baseItems,
         { icon: Building2, label: "고객사 관리", path: "/operator/tenants", enabled: true },
         { icon: BarChart3, label: "사용량 관리", path: "/operator/usage", enabled: true },
-        { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", enabled: true },
+        { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", enabled: true, hasAI: true },
         { icon: DollarSign, label: "전체 매출", path: "/operator/revenue", enabled: true },
         { icon: Shield, label: "시스템 모니터링", path: "/operator/monitoring", enabled: true },
         { icon: Settings, label: "플랫폼 설정", path: "/operator/settings", enabled: true },
@@ -152,7 +154,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
       { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
-      { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true },
+      { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
@@ -321,7 +323,15 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                             <item.icon className="h-4 w-4 text-primary" />
                           </div>
                           {!sidebarCollapsed && (
-                            <span className="font-medium">{item.label}</span>
+                            <div className="flex items-center gap-2 flex-1">
+                              <span className="font-medium">{item.label}</span>
+                              {item.hasAI && (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                                  <Sparkles className="h-2.5 w-2.5 text-primary" />
+                                  <span className="text-[10px] font-semibold text-primary">AI</span>
+                                </span>
+                              )}
+                            </div>
                           )}
                         </Button>
                       </Link>

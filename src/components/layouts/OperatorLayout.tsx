@@ -14,6 +14,7 @@ import {
   Search,
   ChevronRight,
   Zap,
+  Sparkles,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { cn } from "@/lib/utils";
@@ -37,13 +38,14 @@ interface MenuItem {
   icon: any;
   label: string;
   path: string;
+  hasAI?: boolean;
 }
 
 const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "대시보드", path: "/operator" },
   { icon: Building2, label: "고객사", path: "/operator/tenants" },
   { icon: BarChart3, label: "사용량", path: "/operator/usage" },
-  { icon: Brain, label: "AI 로그", path: "/operator/ai-logs" },
+  { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
   { icon: DollarSign, label: "매출", path: "/operator/revenue" },
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
@@ -186,7 +188,15 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     {!sidebarCollapsed && (
-                      <span className="font-medium text-base">{item.label}</span>
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="font-medium text-base">{item.label}</span>
+                        {item.hasAI && (
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30">
+                            <Sparkles className="h-2.5 w-2.5 text-violet-400" />
+                            <span className="text-[10px] font-semibold text-violet-400">AI</span>
+                          </span>
+                        )}
+                      </div>
                     )}
                     {!sidebarCollapsed && isActive && (
                       <ChevronRight className="h-4 w-4 ml-auto" />
