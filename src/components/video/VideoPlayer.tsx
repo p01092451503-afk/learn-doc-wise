@@ -43,7 +43,7 @@ const VideoPlayer = ({
     if (videoProvider === "youtube") {
       return `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
     } else if (videoProvider === "vimeo") {
-      return `https://player.vimeo.com/video/${videoId}?api=1&player_id=vimeo_player`;
+      return `https://player.vimeo.com/video/${videoId}`;
     }
     return videoUrl;
   };
@@ -114,27 +114,42 @@ const VideoPlayer = ({
   useEffect(() => {
     if (videoProvider !== "vimeo") return;
 
-    let isReady = false;
+    let isSubscribed = false;
 
     const handleMessage = (event: MessageEvent) => {
-      if (!event.origin.includes("vimeo.com")) return;
+      // Accept messages from Vimeo
+      if (!event.data || typeof event.data !== 'string') return;
 
       try {
         const data = JSON.parse(event.data);
         
         // Handle ready event
-        if (data.event === "ready") {
+        if (data.event === "ready" && !isSubscribed) {
           console.log("✅ Vimeo player ready");
-          isReady = true;
+          isSubscribed = true;
           
-          // Subscribe to timeupdate event after ready
-          if (iframeRef.current) {
-            console.log("📡 Subscribing to timeupdate");
-            iframeRef.current.contentWindow?.postMessage(
-              JSON.stringify({ method: "addEventListener", value: "timeupdate" }),
-              "*"
-            );
+          // Subscribe to all relevant events
+          const iframe = iframeRef.current;
+          if (iframe?.contentWindow) {
+            console.log("📡 Subscribing to events");
+            
+            // Subscribe to timeupdate
+            iframe.contentWindow.postMessage(JSON.stringify({
+              method: "addEventListener",
+              value: "timeupdate"
+            }), "*");
+            
+            // Also subscribe to play event to ensure we're tracking
+            iframe.contentWindow.postMessage(JSON.stringify({
+              method: "addEventListener", 
+              value: "play"
+            }), "*");
           }
+        }
+        
+        // Handle play event
+        if (data.event === "play") {
+          console.log("▶️ Video started playing");
         }
         
         // Handle timeupdate event
@@ -150,30 +165,31 @@ const VideoPlayer = ({
           setLastPosition(currentTime);
 
           // Save progress every 10 seconds
-          if (Math.floor(currentTime) % 10 === 0) {
+          if (Math.floor(currentTime) % 10 === 0 && currentTime > 0) {
             saveProgress(progressPercentage, currentTime);
           }
         }
       } catch (e) {
-        // Ignore parsing errors
+        // Ignore non-JSON messages
       }
     };
 
     window.addEventListener("message", handleMessage);
 
-    // Wait for iframe to load, then request ready event
-    const initializePlayer = () => {
-      if (iframeRef.current) {
+    // Initialize player after iframe loads
+    const initPlayer = () => {
+      const iframe = iframeRef.current;
+      if (iframe?.contentWindow) {
         console.log("🎬 Initializing Vimeo player");
-        iframeRef.current.contentWindow?.postMessage(
-          JSON.stringify({ method: "addEventListener", value: "ready" }),
-          "*"
-        );
+        // Ping the player to trigger ready event
+        iframe.contentWindow.postMessage(JSON.stringify({
+          method: "ping"
+        }), "*");
       }
     };
 
-    // Try to initialize after a short delay to ensure iframe is loaded
-    const timeout = setTimeout(initializePlayer, 500);
+    // Wait for iframe to be fully loaded
+    const timeout = setTimeout(initPlayer, 1000);
 
     return () => {
       clearTimeout(timeout);
@@ -203,6 +219,7 @@ const VideoPlayer = ({
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
         <iframe
           ref={iframeRef}
+          id="vimeo-player"
           src={getEmbedUrl()}
           className="absolute inset-0 w-full h-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
