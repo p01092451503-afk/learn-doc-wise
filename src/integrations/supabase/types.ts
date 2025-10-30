@@ -1174,7 +1174,7 @@ export type Database = {
       update_content_progress: {
         Args: {
           p_content_id: string
-          p_last_position_seconds: number
+          p_last_position_seconds?: number
           p_progress_percentage: number
           p_user_id: string
         }

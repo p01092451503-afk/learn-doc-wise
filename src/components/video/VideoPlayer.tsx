@@ -17,6 +17,7 @@ const VideoPlayer = ({
 }: VideoPlayerProps) => {
   const [progress, setProgress] = useState(0);
   const [lastPosition, setLastPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { toast } = useToast();
 
@@ -78,9 +79,10 @@ const VideoPlayer = ({
         
         if (data.event === "infoDelivery" && data.info?.currentTime && data.info?.duration) {
           const currentTime = data.info.currentTime;
-          const duration = data.info.duration;
-          const progressPercentage = (currentTime / duration) * 100;
+          const videoDuration = data.info.duration;
+          const progressPercentage = (currentTime / videoDuration) * 100;
 
+          setDuration(videoDuration);
           setProgress(progressPercentage);
           setLastPosition(currentTime);
 
@@ -110,9 +112,10 @@ const VideoPlayer = ({
         
         if (data.event === "timeupdate") {
           const currentTime = data.data.seconds;
-          const duration = data.data.duration;
-          const progressPercentage = (currentTime / duration) * 100;
+          const videoDuration = data.data.duration;
+          const progressPercentage = (currentTime / videoDuration) * 100;
 
+          setDuration(videoDuration);
           setProgress(progressPercentage);
           setLastPosition(currentTime);
 
@@ -180,6 +183,14 @@ const VideoPlayer = ({
             style={{ width: `${progress}%` }}
           />
         </div>
+        {duration > 0 && (
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <span>재생 시간</span>
+            <span>
+              {Math.floor(lastPosition / 60)}:{String(Math.floor(lastPosition % 60)).padStart(2, '0')} / {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
