@@ -770,6 +770,56 @@ export type Database = {
           },
         ]
       }
+      payment_transactions: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          order_id: string
+          payment_key: string | null
+          payment_method: string | null
+          status: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          order_id: string
+          payment_key?: string | null
+          payment_method?: string | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          order_id?: string
+          payment_key?: string | null
+          payment_method?: string | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -974,9 +1024,11 @@ export type Database = {
       }
       tenants: {
         Row: {
+          billing_status: string | null
           created_at: string
           id: string
           is_active: boolean
+          last_payment_date: string | null
           max_storage_gb: number
           max_students: number
           name: string
@@ -986,9 +1038,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          billing_status?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          last_payment_date?: string | null
           max_storage_gb?: number
           max_students?: number
           name: string
@@ -998,9 +1052,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          billing_status?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
+          last_payment_date?: string | null
           max_storage_gb?: number
           max_students?: number
           name?: string

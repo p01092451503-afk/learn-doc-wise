@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Plus, Users, HardDrive, TrendingUp } from "lucide-react";
+import { Building2, Plus, Users, HardDrive, TrendingUp, CreditCard } from "lucide-react";
+import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 
 interface Tenant {
   id: string;
@@ -34,6 +35,8 @@ const AdminTenants = () => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -137,6 +140,20 @@ const AdminTenants = () => {
       professional: "destructive",
     };
     return <Badge variant={variants[plan] || "default"}>{plan}</Badge>;
+  };
+
+  const getPlanAmount = (plan: string): number => {
+    const amounts: Record<string, number> = {
+      starter: 0,
+      standard: 150000,
+      professional: 300000,
+    };
+    return amounts[plan] || 0;
+  };
+
+  const handlePaymentClick = (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    setPaymentDialogOpen(true);
   };
 
   return (
@@ -306,13 +323,25 @@ const AdminTenants = () => {
                     </TableCell>
                     <TableCell>{new Date(tenant.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => toggleTenantStatus(tenant.id, tenant.is_active)}
-                      >
-                        {tenant.is_active ? "비활성화" : "활성화"}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => toggleTenantStatus(tenant.id, tenant.is_active)}
+                        >
+                          {tenant.is_active ? "비활성화" : "활성화"}
+                        </Button>
+                        {tenant.plan !== "starter" && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => handlePaymentClick(tenant)}
+                          >
+                            <CreditCard className="h-4 w-4 mr-1" />
+                            결제
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -320,6 +349,16 @@ const AdminTenants = () => {
             </Table>
           </CardContent>
         </Card>
+
+        {selectedTenant && (
+          <TossPaymentDialog
+            open={paymentDialogOpen}
+            onOpenChange={setPaymentDialogOpen}
+            tenantId={selectedTenant.id}
+            tenantName={selectedTenant.name}
+            amount={getPlanAmount(selectedTenant.plan)}
+          />
+        )}
       </div>
     </DashboardLayout>
   );
