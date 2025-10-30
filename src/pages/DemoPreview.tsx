@@ -37,7 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type DemoRole = "student" | "teacher" | "admin" | "operator";
+type DemoRole = "student" | "teacher" | "admin";
 
 const DemoPreview = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -105,26 +105,6 @@ const DemoPreview = () => {
       }
     }
     
-    // Operator pages
-    if (activeRole === "operator") {
-      switch (activePage) {
-        case "tenants":
-          return <AdminTenants />;
-        case "usage":
-          return <AdminUsageManagement />;
-        case "ai-logs":
-          return <AdminAILogs />;
-        case "revenue":
-          return <AdminRevenue />;
-        case "monitoring":
-          return <AdminMonitoring />;
-        case "settings":
-          return <AdminSettings />;
-        default:
-          return <OperatorDashboard isDemo={true} />;
-      }
-    }
-    
     return <StudentDashboard isDemo={true} />;
   };
 
@@ -155,7 +135,6 @@ const DemoPreview = () => {
                   <SelectItem value="student">학생</SelectItem>
                   <SelectItem value="teacher">강사</SelectItem>
                   <SelectItem value="admin">관리자</SelectItem>
-                  <SelectItem value="operator">운영자</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -175,9 +154,8 @@ const DemoPreview = () => {
               💡 <strong>
                 {activeRole === "student" ? "학생" : 
                  activeRole === "teacher" ? "강사" : 
-                 activeRole === "admin" ? "관리자" : 
-                 "운영자"}
-              </strong> 
+                 "관리자"}
+              </strong>
               {" "}대시보드를 <span className="hidden sm:inline">자유롭게 </span>체험해보세요<span className="hidden md:inline">. 실제 작동하는 UI로 구성되어 있습니다</span>
             </p>
           </div>
