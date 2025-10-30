@@ -183,7 +183,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
               <div className="flex items-center gap-2">
                 <img src={chatbotIcon} alt="챗봇" className="h-8 w-8" />
                 <CardTitle>
-                  {userRole === "admin" ? "관리자 도우미" : "학습 도우미"}
+                  {userRole === "admin" ? "관리자 도우미" : "atomLMS 도우미"}
                 </CardTitle>
               </div>
               <Button
