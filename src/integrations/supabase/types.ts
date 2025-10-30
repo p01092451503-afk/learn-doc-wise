@@ -88,6 +88,224 @@ export type Database = {
           },
         ]
       }
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          name: string
+          parent_id: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          name: string
+          parent_id?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_tags: {
+        Row: {
+          course_id: string
+          tag_id: string
+        }
+        Insert: {
+          course_id: string
+          tag_id: string
+        }
+        Update: {
+          course_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_tags_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_versions: {
+        Row: {
+          content: Json | null
+          course_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          title: string
+          version: number
+        }
+        Insert: {
+          content?: Json | null
+          course_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          title: string
+          version: number
+        }
+        Update: {
+          content?: Json | null
+          course_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          title?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_versions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          id: string
+          instructor_id: string | null
+          is_featured: boolean
+          level: Database["public"]["Enums"]["course_level"]
+          max_students: number | null
+          price: number | null
+          publish_date: string | null
+          slug: string
+          status: Database["public"]["Enums"]["course_status"]
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          instructor_id?: string | null
+          is_featured?: boolean
+          level?: Database["public"]["Enums"]["course_level"]
+          max_students?: number | null
+          price?: number | null
+          publish_date?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["course_status"]
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          id?: string
+          instructor_id?: string | null
+          is_featured?: boolean
+          level?: Database["public"]["Enums"]["course_level"]
+          max_students?: number | null
+          price?: number | null
+          publish_date?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["course_status"]
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "courses_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enrollments: {
+        Row: {
+          completed_at: string | null
+          course_id: string
+          enrolled_at: string
+          id: string
+          progress: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          course_id: string
+          enrolled_at?: string
+          id?: string
+          progress?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          course_id?: string
+          enrolled_at?: string
+          id?: string
+          progress?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           amount: number
@@ -206,6 +424,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
       }
       tenant_subscriptions: {
         Row: {
@@ -371,6 +610,8 @@ export type Database = {
     Enums: {
       app_role: "student" | "teacher" | "admin"
       billing_cycle: "monthly" | "yearly"
+      course_level: "beginner" | "intermediate" | "advanced" | "all"
+      course_status: "draft" | "published" | "scheduled" | "archived"
       payment_status: "pending" | "completed" | "failed" | "refunded"
       subscription_plan_type: "starter" | "standard" | "professional"
     }
@@ -502,6 +743,8 @@ export const Constants = {
     Enums: {
       app_role: ["student", "teacher", "admin"],
       billing_cycle: ["monthly", "yearly"],
+      course_level: ["beginner", "intermediate", "advanced", "all"],
+      course_status: ["draft", "published", "scheduled", "archived"],
       payment_status: ["pending", "completed", "failed", "refunded"],
       subscription_plan_type: ["starter", "standard", "professional"],
     },

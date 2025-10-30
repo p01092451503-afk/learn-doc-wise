@@ -1,250 +1,667 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Plus, Search, Eye, Edit, Trash2, Users } from "lucide-react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Search, Edit, Trash2, BookOpen, Tag, FolderTree } from "lucide-react";
+
+interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  status: string;
+  level: string;
+  price: number;
+  duration_hours: number;
+  instructor_id: string | null;
+  category_id: string | null;
+  publish_date: string | null;
+  is_featured: boolean;
+  version: number;
+  created_at: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  is_active: boolean;
+}
+
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 const AdminCourses = () => {
-  const activeCourses = [
-    {
-      id: 1,
-      title: "React 완벽 가이드",
-      instructor: "김교수",
-      students: 145,
-      rating: 4.9,
-      category: "프론트엔드",
-      revenue: "₩1,450,000",
-      status: "active",
-    },
-    {
-      id: 2,
-      title: "파이썬 데이터 분석",
-      instructor: "이강사",
-      students: 98,
-      rating: 4.7,
-      category: "데이터 과학",
-      revenue: "₩980,000",
-      status: "active",
-    },
-    {
-      id: 3,
-      title: "디자인 시스템 구축",
-      instructor: "박선생",
-      students: 76,
-      rating: 4.8,
-      category: "디자인",
-      revenue: "₩760,000",
-      status: "active",
-    },
-  ];
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+  const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const { toast } = useToast();
 
-  const pendingCourses = [
-    {
-      id: 4,
-      title: "Vue.js 마스터클래스",
-      instructor: "최개발",
-      submittedDate: "2024-10-28",
-      category: "프론트엔드",
-    },
-    {
-      id: 5,
-      title: "UI/UX 디자인 심화",
-      instructor: "정디자인",
-      submittedDate: "2024-10-27",
-      category: "디자인",
-    },
-  ];
+  const [formData, setFormData] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    status: "draft",
+    level: "beginner",
+    price: 0,
+    duration_hours: 0,
+    category_id: "",
+    publish_date: "",
+  });
+
+  const [categoryForm, setCategoryForm] = useState({
+    name: "",
+    slug: "",
+    description: "",
+  });
+
+  const [tagForm, setTagForm] = useState({
+    name: "",
+    slug: "",
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [coursesResult, categoriesResult, tagsResult] = await Promise.all([
+        supabase.from("courses").select("*").order("created_at", { ascending: false }),
+        supabase.from("categories").select("*").eq("is_active", true),
+        supabase.from("tags").select("*"),
+      ]);
+
+      if (coursesResult.error) throw coursesResult.error;
+      if (categoriesResult.error) throw categoriesResult.error;
+      if (tagsResult.error) throw tagsResult.error;
+
+      setCourses(coursesResult.data || []);
+      setCategories(categoriesResult.data || []);
+      setTags(tagsResult.data || []);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "데이터를 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateCourse = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const courseData: any = {
+        title: formData.title,
+        slug: formData.slug || formData.title.toLowerCase().replace(/\s+/g, "-"),
+        description: formData.description,
+        status: formData.status,
+        level: formData.level,
+        price: formData.price,
+        duration_hours: formData.duration_hours,
+        category_id: formData.category_id || null,
+        publish_date: formData.publish_date || null,
+        instructor_id: user?.id,
+      };
+
+      if (editingCourse) {
+        const { error } = await supabase
+          .from("courses")
+          .update(courseData)
+          .eq("id", editingCourse.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "강좌가 수정되었습니다.",
+        });
+      } else {
+        const { error } = await supabase.from("courses").insert([courseData]);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "강좌가 생성되었습니다.",
+        });
+      }
+
+      setIsDialogOpen(false);
+      setEditingCourse(null);
+      fetchData();
+      resetForm();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "강좌 저장에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditCourse = (course: Course) => {
+    setEditingCourse(course);
+    setFormData({
+      title: course.title,
+      slug: course.slug,
+      description: course.description || "",
+      status: course.status,
+      level: course.level,
+      price: parseFloat(course.price.toString()),
+      duration_hours: course.duration_hours,
+      category_id: course.category_id || "",
+      publish_date: course.publish_date ? new Date(course.publish_date).toISOString().slice(0, 16) : "",
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      const { error } = await supabase.from("courses").delete().eq("id", courseId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "강좌가 삭제되었습니다.",
+      });
+
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateCategory = async () => {
+    try {
+      const { error } = await supabase.from("categories").insert([{
+        name: categoryForm.name,
+        slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, "-"),
+        description: categoryForm.description,
+      }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "카테고리가 생성되었습니다.",
+      });
+
+      setIsCategoryDialogOpen(false);
+      fetchData();
+      setCategoryForm({ name: "", slug: "", description: "" });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "카테고리 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateTag = async () => {
+    try {
+      const { error } = await supabase.from("tags").insert([{
+        name: tagForm.name,
+        slug: tagForm.slug || tagForm.name.toLowerCase().replace(/\s+/g, "-"),
+      }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "태그가 생성되었습니다.",
+      });
+
+      setIsTagDialogOpen(false);
+      fetchData();
+      setTagForm({ name: "", slug: "" });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "태그 생성에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      slug: "",
+      description: "",
+      status: "draft",
+      level: "beginner",
+      price: 0,
+      duration_hours: 0,
+      category_id: "",
+      publish_date: "",
+    });
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      published: "default",
+      draft: "secondary",
+      scheduled: "outline",
+      archived: "destructive",
+    };
+    const labels: Record<string, string> = {
+      published: "공개",
+      draft: "초안",
+      scheduled: "예약",
+      archived: "보관",
+    };
+    return <Badge variant={variants[status] || "default"}>{labels[status] || status}</Badge>;
+  };
+
+  const getLevelBadge = (level: string) => {
+    const labels: Record<string, string> = {
+      beginner: "초급",
+      intermediate: "중급",
+      advanced: "고급",
+      all: "전체",
+    };
+    return <Badge variant="outline">{labels[level] || level}</Badge>;
+  };
+
+  const filteredCourses = courses.filter(course =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <DashboardLayout userRole="admin">
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">강좌 관리</h1>
-            <p className="text-muted-foreground mt-2">
-              플랫폼의 모든 강좌를 관리하고 승인하세요
-            </p>
+            <h1 className="text-3xl font-display font-bold">강좌 관리</h1>
+            <p className="text-muted-foreground mt-2">강좌 생성, 수정, 카테고리 및 태그 관리</p>
           </div>
-          <Button className="gap-2">
-            <Plus className="h-4 w-4" />
-            강좌 추가
-          </Button>
         </div>
 
-        {/* 통계 카드 */}
-        <div className="grid gap-6 md:grid-cols-4">
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                전체 강좌
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <BookOpen className="h-5 w-5 text-primary" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">156</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">이번 달 +12</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                활성 강좌
-              </CardTitle>
-              <div className="h-10 w-10 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <BookOpen className="h-5 w-5 text-accent" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">138</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">전체의 88%</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                검토 대기
-              </CardTitle>
-              <div className="h-10 w-10 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <BookOpen className="h-5 w-5 text-secondary" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">12</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">승인 필요</p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium whitespace-nowrap text-muted-foreground">
-                총 수강생
-              </CardTitle>
-              <div className="h-10 w-10 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Users className="h-5 w-5 text-primary" />
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              <div className="text-xl font-bold break-all">2,456</div>
-              <p className="text-xs text-muted-foreground whitespace-nowrap">평균 18명/강좌</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 검색 */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="강좌명, 강사명으로 검색..."
-            className="pl-10 rounded-xl border-border/50"
-          />
-        </div>
-
-        {/* 강좌 목록 */}
-        <Tabs defaultValue="active" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="active">활성 강좌</TabsTrigger>
-            <TabsTrigger value="pending">검토 대기</TabsTrigger>
+        <Tabs defaultValue="courses" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="courses">
+              <BookOpen className="h-4 w-4 mr-2" />
+              강좌 목록
+            </TabsTrigger>
+            <TabsTrigger value="categories">
+              <FolderTree className="h-4 w-4 mr-2" />
+              카테고리
+            </TabsTrigger>
+            <TabsTrigger value="tags">
+              <Tag className="h-4 w-4 mr-2" />
+              태그
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="active" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {activeCourses.map((course) => (
-                <Card
-                  key={course.id}
-                  className="border-border/50 shadow-sm hover:shadow-lg transition-all duration-300"
-                >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <Badge variant="secondary">{course.category}</Badge>
-                        <CardTitle className="text-lg mt-2">
-                          {course.title}
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground">
-                          {course.instructor}
-                        </p>
+          <TabsContent value="courses" className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="강좌 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                setIsDialogOpen(open);
+                if (!open) {
+                  setEditingCourse(null);
+                  resetForm();
+                }
+              }}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    강좌 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>{editingCourse ? "강좌 수정" : "새 강좌 생성"}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>강좌명 *</Label>
+                        <Input
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="예: React 완벽 가이드"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>슬러그</Label>
+                        <Input
+                          value={formData.slug}
+                          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                          placeholder="자동 생성"
+                        />
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">수강생</p>
-                        <p className="font-semibold">{course.students}명</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">평점</p>
-                        <p className="font-semibold">⭐ {course.rating}</p>
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-muted-foreground">수익</p>
-                        <p className="font-semibold text-primary">
-                          {course.revenue}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Eye className="h-3 w-3 mr-1" />
-                        보기
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Edit className="h-3 w-3 mr-1" />
-                        수정
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
 
-          <TabsContent value="pending" className="mt-6">
-            <Card className="border-border/50 shadow-sm">
+                    <div className="space-y-2">
+                      <Label>설명</Label>
+                      <Textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="강좌 설명을 입력하세요"
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>카테고리</Label>
+                        <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="카테고리 선택" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>난이도</Label>
+                        <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="beginner">초급</SelectItem>
+                            <SelectItem value="intermediate">중급</SelectItem>
+                            <SelectItem value="advanced">고급</SelectItem>
+                            <SelectItem value="all">전체</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>가격 (원)</Label>
+                        <Input
+                          type="number"
+                          value={formData.price}
+                          onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                          placeholder="0"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>총 시간 (시간)</Label>
+                        <Input
+                          type="number"
+                          value={formData.duration_hours}
+                          onChange={(e) => setFormData({ ...formData, duration_hours: parseInt(e.target.value) || 0 })}
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>상태</Label>
+                        <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="draft">초안</SelectItem>
+                            <SelectItem value="published">공개</SelectItem>
+                            <SelectItem value="scheduled">예약 공개</SelectItem>
+                            <SelectItem value="archived">보관</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>공개 예약 일시</Label>
+                        <Input
+                          type="datetime-local"
+                          value={formData.publish_date}
+                          onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={handleCreateCourse}>
+                      {editingCourse ? "수정" : "생성"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
               <CardHeader>
-                <CardTitle>승인 대기 중인 강좌</CardTitle>
+                <CardTitle>강좌 목록 ({filteredCourses.length}개)</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {pendingCourses.map((course) => (
-                    <div
-                      key={course.id}
-                      className="flex items-center justify-between p-4 rounded-xl border hover:border-primary/50 transition-colors"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary">{course.category}</Badge>
-                          <Badge variant="outline">검토 대기</Badge>
-                        </div>
-                        <h4 className="font-semibold text-lg">{course.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {course.instructor} · 제출일: {course.submittedDate}
-                        </p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Eye className="h-3 w-3 mr-1" />
-                          검토
-                        </Button>
-                        <Button size="sm">승인</Button>
-                        <Button size="sm" variant="destructive">
-                          반려
-                        </Button>
-                      </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>강좌명</TableHead>
+                      <TableHead>카테고리</TableHead>
+                      <TableHead>난이도</TableHead>
+                      <TableHead>가격</TableHead>
+                      <TableHead>상태</TableHead>
+                      <TableHead>버전</TableHead>
+                      <TableHead>생성일</TableHead>
+                      <TableHead>작업</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredCourses.map((course) => (
+                      <TableRow key={course.id}>
+                        <TableCell className="font-medium">{course.title}</TableCell>
+                        <TableCell>
+                          {categories.find(c => c.id === course.category_id)?.name || "-"}
+                        </TableCell>
+                        <TableCell>{getLevelBadge(course.level)}</TableCell>
+                        <TableCell>₩{course.price.toLocaleString()}</TableCell>
+                        <TableCell>{getStatusBadge(course.status)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">v{course.version}</Badge>
+                        </TableCell>
+                        <TableCell>{new Date(course.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEditCourse(course)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDeleteCourse(course.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="categories" className="space-y-4">
+            <div className="flex justify-end">
+              <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    카테고리 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>새 카테고리 생성</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>카테고리명 *</Label>
+                      <Input
+                        value={categoryForm.name}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                        placeholder="예: 프로그래밍"
+                      />
                     </div>
+                    <div className="space-y-2">
+                      <Label>슬러그</Label>
+                      <Input
+                        value={categoryForm.slug}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
+                        placeholder="자동 생성"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>설명</Label>
+                      <Textarea
+                        value={categoryForm.description}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
+                        placeholder="카테고리 설명"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={handleCreateCategory}>생성</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>카테고리 목록 ({categories.length}개)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>이름</TableHead>
+                      <TableHead>슬러그</TableHead>
+                      <TableHead>상태</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categories.map((category) => (
+                      <TableRow key={category.id}>
+                        <TableCell className="font-medium">{category.name}</TableCell>
+                        <TableCell className="font-mono text-sm">{category.slug}</TableCell>
+                        <TableCell>
+                          <Badge variant={category.is_active ? "default" : "secondary"}>
+                            {category.is_active ? "활성" : "비활성"}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="tags" className="space-y-4">
+            <div className="flex justify-end">
+              <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    태그 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>새 태그 생성</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>태그명 *</Label>
+                      <Input
+                        value={tagForm.name}
+                        onChange={(e) => setTagForm({ ...tagForm, name: e.target.value })}
+                        placeholder="예: React"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>슬러그</Label>
+                      <Input
+                        value={tagForm.slug}
+                        onChange={(e) => setTagForm({ ...tagForm, slug: e.target.value })}
+                        placeholder="자동 생성"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsTagDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={handleCreateTag}>생성</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>태그 목록 ({tags.length}개)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <Badge key={tag.id} variant="secondary" className="text-sm px-3 py-1">
+                      {tag.name}
+                    </Badge>
                   ))}
                 </div>
               </CardContent>
