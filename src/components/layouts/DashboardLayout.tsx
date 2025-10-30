@@ -112,7 +112,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
   const getDefaultMenuItems = () => {
     const baseItems = [
-      { icon: LayoutDashboard, label: "대시보드", path: `/${userRole}`, enabled: true, hasAI: true },
+      { 
+        icon: LayoutDashboard, 
+        label: "대시보드", 
+        path: `/${userRole}`, 
+        enabled: true,
+        hasAI: userRole === "admin" || userRole === "operator"
+      },
     ];
 
     if (userRole === "student") {
