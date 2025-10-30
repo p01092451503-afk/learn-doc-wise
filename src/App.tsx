@@ -29,6 +29,8 @@ import AdminRevenue from "./pages/AdminRevenue";
 import AdminSettings from "./pages/AdminSettings";
 import AdminMonitoring from "./pages/AdminMonitoring";
 import AdminLearning from "./pages/AdminLearning";
+import AdminAILogs from "./pages/AdminAILogs";
+import AdminTemplates from "./pages/AdminTemplates";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
 import PublicCourseDetail from "./pages/PublicCourseDetail";
@@ -92,6 +94,8 @@ const App = () => {
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/monitoring" element={<AdminMonitoring />} />
           <Route path="/admin/learning" element={<AdminLearning />} />
+          <Route path="/admin/ai-logs" element={<AdminAILogs />} />
+          <Route path="/admin/templates" element={<AdminTemplates />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/payment/success" element={<PaymentSuccess />} />
