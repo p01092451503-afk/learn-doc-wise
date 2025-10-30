@@ -28,6 +28,9 @@ import AdminTenants from "./pages/AdminTenants";
 import AdminAILogs from "./pages/AdminAILogs";
 import AdminMonitoring from "./pages/AdminMonitoring";
 import AdminLearning from "./pages/AdminLearning";
+import PublicMain from "./pages/PublicMain";
+import PublicCourses from "./pages/PublicCourses";
+import PublicCourseDetail from "./pages/PublicCourseDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +43,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/main" element={<PublicMain />} />
+          <Route path="/courses" element={<PublicCourses />} />
+          <Route path="/courses/:id" element={<PublicCourseDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/demo" element={<DemoPreview />} />
           <Route path="/student" element={<StudentDashboard />} />
