@@ -116,15 +116,15 @@ const PublicMain = () => {
               <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
               <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link to="/main" className="text-foreground hover:text-primary transition-colors">
+            <nav className="hidden md:flex items-center gap-8">
+              <Link to="/main" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
                 홈
               </Link>
-              <Link to="/courses" className="text-foreground hover:text-primary transition-colors">
+              <Link to="/courses" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
                 전체 강좌
               </Link>
               {!session && (
-                <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
+                <Link to="/auth" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
                   로그인
                 </Link>
               )}
