@@ -239,7 +239,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <aside
           className={cn(
             "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
-            isDemo ? "left-0 top-20 h-[calc(100vh-5rem)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
+            isDemo ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
             sidebarCollapsed ? "w-16" : "w-48",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
