@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
+import { Chatbot } from "@/components/Chatbot";
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
@@ -140,6 +141,9 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
         </div>
       </div>
+
+      {/* 챗봇 */}
+      <Chatbot userRole="user" />
     </DashboardLayout>
   );
 };

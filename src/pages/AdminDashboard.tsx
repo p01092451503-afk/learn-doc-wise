@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
+import { Chatbot } from "@/components/Chatbot";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   return (
@@ -192,6 +193,9 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* 챗봇 */}
+      <Chatbot userRole="admin" />
     </DashboardLayout>
   );
 };

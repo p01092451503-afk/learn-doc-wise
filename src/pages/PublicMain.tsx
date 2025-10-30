@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, Users, Star, TrendingUp, Award } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import { Chatbot } from "@/components/Chatbot";
 
 interface Course {
   id: string;
@@ -322,6 +323,9 @@ const PublicMain = () => {
           </div>
         </div>
       </footer>
+
+      {/* 챗봇 */}
+      <Chatbot userRole="user" />
     </div>
   );
 };
