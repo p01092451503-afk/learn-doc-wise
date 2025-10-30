@@ -130,7 +130,7 @@ const VideoPlayer = ({
           
           // Subscribe to all relevant events
           const iframe = iframeRef.current;
-          if (iframe?.contentWindow) {
+          if (iframe && iframe.contentWindow) {
             console.log("📡 Subscribing to events");
             
             // Subscribe to timeupdate
@@ -144,6 +144,8 @@ const VideoPlayer = ({
               method: "addEventListener", 
               value: "play"
             }), "*");
+          } else {
+            console.error("❌ iframe or contentWindow not available");
           }
         }
         
@@ -170,7 +172,7 @@ const VideoPlayer = ({
           }
         }
       } catch (e) {
-        // Ignore non-JSON messages
+        console.error("Error handling Vimeo message:", e);
       }
     };
 
@@ -179,12 +181,16 @@ const VideoPlayer = ({
     // Initialize player after iframe loads
     const initPlayer = () => {
       const iframe = iframeRef.current;
-      if (iframe?.contentWindow) {
+      if (iframe && iframe.contentWindow) {
         console.log("🎬 Initializing Vimeo player");
         // Ping the player to trigger ready event
         iframe.contentWindow.postMessage(JSON.stringify({
           method: "ping"
         }), "*");
+      } else {
+        console.warn("⚠️ iframe not ready, retrying...");
+        // Retry after a short delay
+        setTimeout(initPlayer, 500);
       }
     };
 
