@@ -76,7 +76,7 @@ const DemoPreview = () => {
         case "students":
           return <TeacherStudents />;
         case "attendance":
-          return <TeacherAttendance />;
+          return <TeacherAttendance isDemo={true} />;
         case "analytics":
           return <TeacherAnalytics />;
         case "revenue":

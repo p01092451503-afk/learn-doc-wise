@@ -24,7 +24,11 @@ interface AttendanceRecord {
   } | null;
 }
 
-const TeacherAttendance = () => {
+interface TeacherAttendanceProps {
+  isDemo?: boolean;
+}
+
+const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get('courseId');
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
@@ -34,11 +38,49 @@ const TeacherAttendance = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (courseId) {
+    if (isDemo) {
+      // 데모 데이터 설정
+      setStudents([
+        { user_id: 'demo1', profiles: { full_name: '김철수', user_id: 'demo1' } },
+        { user_id: 'demo2', profiles: { full_name: '이영희', user_id: 'demo2' } },
+        { user_id: 'demo3', profiles: { full_name: '박민수', user_id: 'demo3' } },
+        { user_id: 'demo4', profiles: { full_name: '정수진', user_id: 'demo4' } },
+        { user_id: 'demo5', profiles: { full_name: '최동욱', user_id: 'demo5' } },
+      ]);
+      
+      setAttendanceRecords([
+        {
+          id: 'att1',
+          user_id: 'demo1',
+          attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+          check_in_time: format(new Date(selectedDate.setHours(9, 0)), 'yyyy-MM-dd HH:mm:ss'),
+          status: 'present',
+          profiles: { full_name: '김철수' }
+        },
+        {
+          id: 'att2',
+          user_id: 'demo2',
+          attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+          check_in_time: format(new Date(selectedDate.setHours(9, 15)), 'yyyy-MM-dd HH:mm:ss'),
+          status: 'late',
+          profiles: { full_name: '이영희' }
+        },
+        {
+          id: 'att4',
+          user_id: 'demo4',
+          attendance_date: format(selectedDate, 'yyyy-MM-dd'),
+          check_in_time: format(new Date(selectedDate.setHours(9, 5)), 'yyyy-MM-dd HH:mm:ss'),
+          status: 'present',
+          profiles: { full_name: '정수진' }
+        },
+      ]);
+      
+      setLoading(false);
+    } else if (courseId) {
       fetchStudents();
       fetchAttendance();
     }
-  }, [courseId, selectedDate]);
+  }, [courseId, selectedDate, isDemo]);
 
   const fetchStudents = async () => {
     try {
@@ -99,6 +141,21 @@ const TeacherAttendance = () => {
   };
 
   const updateAttendanceStatus = async (recordId: string, newStatus: 'present' | 'late' | 'absent' | 'excused') => {
+    if (isDemo) {
+      // 데모 모드에서는 로컬 상태만 업데이트
+      setAttendanceRecords(prev =>
+        prev.map(record =>
+          record.id === recordId ? { ...record, status: newStatus } : record
+        )
+      );
+      
+      toast({
+        title: "데모 모드",
+        description: "실제 서비스에서는 데이터가 저장됩니다.",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('attendance')
@@ -195,7 +252,7 @@ const TeacherAttendance = () => {
     excused: attendanceRecords.filter(r => r.status === 'excused').length,
   };
 
-  if (!courseId) {
+  if (!courseId && !isDemo) {
     return (
       <DashboardLayout userRole="teacher">
         <div className="text-center py-12">
