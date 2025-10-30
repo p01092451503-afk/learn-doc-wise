@@ -137,7 +137,14 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
         }
       }
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error("❌ Chat error:", error);
+      console.error("Error details:", {
+        message: error instanceof Error ? error.message : "Unknown error",
+        stack: error instanceof Error ? error.stack : undefined,
+        userRole,
+        messageCount: newMessages.length
+      });
+      
       setMessages(prev => [
         ...prev,
         {
