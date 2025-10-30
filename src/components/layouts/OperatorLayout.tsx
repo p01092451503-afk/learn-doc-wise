@@ -167,7 +167,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         <aside
           className={cn(
             "fixed left-0 top-16 bottom-0 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl transition-all duration-300 z-40",
-            sidebarCollapsed ? "w-16" : "w-52",
+            sidebarCollapsed ? "w-16" : "w-64",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           )}
         >
@@ -188,8 +188,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     {!sidebarCollapsed && (
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <span className="font-medium text-base truncate">{item.label}</span>
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="font-medium text-base whitespace-nowrap">{item.label}</span>
                         {item.hasAI && (
                           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 flex-shrink-0">
                             <Sparkles className="h-2.5 w-2.5 text-violet-400" />
@@ -231,7 +231,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         <main
           className={cn(
             "flex-1 transition-all duration-300 min-h-[calc(100vh-4rem)]",
-            sidebarCollapsed ? "lg:ml-16" : "lg:ml-52"
+            sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
           )}
         >
           <div className="p-6 lg:p-8">

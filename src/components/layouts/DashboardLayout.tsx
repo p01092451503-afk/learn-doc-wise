@@ -287,7 +287,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           className={cn(
             "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
             isDemoMode ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
-            sidebarCollapsed ? "w-16" : "w-48",
+            sidebarCollapsed ? "w-16" : "w-64",
             sidebarOpen ? "translate-x-0" : "-translate-x-full",
             "md:translate-x-0"
           )}
@@ -327,8 +327,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                             <item.icon className="h-4 w-4 text-primary" />
                           </div>
                           {!sidebarCollapsed && (
-                            <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <span className="font-medium truncate">{item.label}</span>
+                            <div className="flex items-center gap-2 flex-1">
+                              <span className="font-medium whitespace-nowrap">{item.label}</span>
                               {item.hasAI && (
                                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 flex-shrink-0">
                                   <Sparkles className="h-2.5 w-2.5 text-primary" />
@@ -388,7 +388,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <main
           className={cn(
             "flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300",
-            sidebarOpen && !sidebarCollapsed ? "md:ml-48" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
+            sidebarOpen && !sidebarCollapsed ? "md:ml-64" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
           )}
         >
           <div className="mx-auto max-w-7xl">{children}</div>
