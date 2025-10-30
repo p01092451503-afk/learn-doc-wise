@@ -176,63 +176,66 @@ const Landing = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {/* 무료 체험 */}
+            {/* 스타터 */}
             <PricingCard
-              title="무료 체험"
-              description="AI 브릿팅과 기본 기능 체험"
+              title="스타터"
+              description="개인 강사 및 소규모 학습 그룹"
               price="₩0"
               period="/영구 무료"
-              aiTokens="AI 토큰 10,000개/월"
+              aiTokens="월 최대 수강생 50명"
               features={[
-                "AI 노무 상담 브리핑",
-                "기본 노무 정보 제공",
-                "월 1건 신고서 작성",
-                "텍스트 파일 다운로드",
-                "커뮤니티 지원"
+                "기본 강좌 개설",
+                "동영상 업로드 5GB",
+                "출석 체크 기능",
+                "과제 제출 및 채점",
+                "커뮤니티 게시판",
+                "이메일 지원"
               ]}
               buttonText="무료 시작하기"
               buttonVariant="outline"
             />
 
-            {/* 베이직 (인기) */}
+            {/* 스탠다드 (인기) */}
             <PricingCard
-              title="베이직"
-              description="일반 노동자를 위한 필수 기능"
-              price="₩9,900"
+              title="스탠다드"
+              description="전문 강사 및 중소 교육 기관"
+              price="₩29,000"
               period="/월"
-              aiTokens="AI 토큰 30,000개/월"
+              aiTokens="월 최대 수강생 500명"
               features={[
-                "무제한 신고서 작성",
-                "AI 노무 분석 엔진",
-                "PDF 전문 다운로드",
-                "문서 템플릿 제공",
-                "이메일 지원",
-                "노무 가이드 제공",
-                "클라우드 저장소"
+                "무제한 강좌 개설",
+                "동영상 업로드 100GB",
+                "AI 학습 분석 엔진",
+                "실시간 화상 강의",
+                "자동 채점 시스템",
+                "맞춤형 학습 경로",
+                "우선 고객 지원",
+                "수료증 자동 발급"
               ]}
-              buttonText="베이직 시작하기"
+              buttonText="스탠다드 시작하기"
               buttonVariant="default"
               isPopular={true}
             />
 
-            {/* 프리미엄 */}
+            {/* 프로페셔널 */}
             <PricingCard
-              title="프리미엄"
-              description="무제한 이용이 필요한 사용자"
-              price="₩29,000"
+              title="프로페셔널"
+              description="대형 교육 기관 및 기업 교육"
+              price="₩99,000"
               period="/월"
-              aiTokens="AI 토큰 무제한"
+              aiTokens="월 최대 수강생 무제한"
               features={[
-                "베이직 플랜의 모든 기능",
-                "무제한 신고서 작성",
-                "우선 노무사 매칭",
-                "24시간 우선 지원",
+                "스탠다드의 모든 기능",
+                "동영상 업로드 500GB",
                 "전담 계정 관리자",
-                "맞춤 교육 제공",
-                "전용 상담 채널",
-                "API 연동 지원"
+                "24시간 우선 지원",
+                "맞춤형 브랜딩",
+                "API 연동 지원",
+                "실시간 라이브 강의",
+                "고급 분석 대시보드",
+                "SSO 통합 인증"
               ]}
-              buttonText="프리미엄 시작하기"
+              buttonText="프로페셔널 시작하기"
               buttonVariant="premium"
             />
           </div>
