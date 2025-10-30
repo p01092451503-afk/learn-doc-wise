@@ -51,19 +51,29 @@ const VideoPlayer = ({
   // Save progress to database
   const saveProgress = async (progressPercentage: number, positionSeconds: number) => {
     try {
+      console.log("💾 Saving progress:", { contentId, progressPercentage, positionSeconds });
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log("❌ No user found");
+        return;
+      }
 
-      await supabase.rpc("update_content_progress", {
+      const result = await supabase.rpc("update_content_progress", {
         p_user_id: user.id,
         p_content_id: contentId,
         p_progress_percentage: progressPercentage,
         p_last_position_seconds: Math.floor(positionSeconds),
       });
 
+      if (result.error) {
+        console.error("❌ Failed to save progress:", result.error);
+      } else {
+        console.log("✅ Progress saved successfully");
+      }
+
       onProgressUpdate?.(progressPercentage, positionSeconds);
     } catch (error) {
-      console.error("Failed to save progress:", error);
+      console.error("❌ Failed to save progress:", error);
     }
   };
 
@@ -114,6 +124,8 @@ const VideoPlayer = ({
           const currentTime = data.data.seconds;
           const videoDuration = data.data.duration;
           const progressPercentage = (currentTime / videoDuration) * 100;
+
+          console.log("📹 Vimeo timeupdate:", { currentTime, videoDuration, progressPercentage });
 
           setDuration(videoDuration);
           setProgress(progressPercentage);
