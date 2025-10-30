@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Player from "@vimeo/player";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Play, Maximize2, X } from "lucide-react";
+import { Play, Maximize2, X, SkipBack, SkipForward } from "lucide-react";
 
 // YouTube IFrame API types
 declare global {
@@ -111,6 +111,32 @@ const VideoPlayer = ({
     setShowResumePrompt(false);
     setSavedPosition(null);
     hasResumedRef.current = true;
+  };
+
+  // Skip forward 5 seconds
+  const handleSkipForward = () => {
+    console.log("⏩ Skipping forward 5 seconds");
+    if (videoProvider === "youtube" && youtubePlayerRef.current) {
+      const currentTime = youtubePlayerRef.current.getCurrentTime();
+      youtubePlayerRef.current.seekTo(currentTime + 5, true);
+    } else if (videoProvider === "vimeo" && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.getCurrentTime().then((currentTime) => {
+        vimeoPlayerRef.current?.setCurrentTime(currentTime + 5);
+      });
+    }
+  };
+
+  // Skip backward 5 seconds
+  const handleSkipBackward = () => {
+    console.log("⏪ Skipping backward 5 seconds");
+    if (videoProvider === "youtube" && youtubePlayerRef.current) {
+      const currentTime = youtubePlayerRef.current.getCurrentTime();
+      youtubePlayerRef.current.seekTo(Math.max(0, currentTime - 5), true);
+    } else if (videoProvider === "vimeo" && vimeoPlayerRef.current) {
+      vimeoPlayerRef.current.getCurrentTime().then((currentTime) => {
+        vimeoPlayerRef.current?.setCurrentTime(Math.max(0, currentTime - 5));
+      });
+    }
   };
 
   // Get embed URL
@@ -481,11 +507,35 @@ const VideoPlayer = ({
           />
         </div>
         {duration > 0 && (
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <span>재생 시간</span>
-            <span>
-              {Math.floor(lastPosition / 60)}:{String(Math.floor(lastPosition % 60)).padStart(2, '0')} / {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')}
-            </span>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSkipBackward}
+                disabled={!isPlayerReady}
+                className="h-8 px-3"
+              >
+                <SkipBack className="h-4 w-4 mr-1" />
+                <span className="text-xs">5초</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSkipForward}
+                disabled={!isPlayerReady}
+                className="h-8 px-3"
+              >
+                <span className="text-xs">5초</span>
+                <SkipForward className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>재생 시간</span>
+              <span className="font-mono">
+                {Math.floor(lastPosition / 60)}:{String(Math.floor(lastPosition % 60)).padStart(2, '0')} / {Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, '0')}
+              </span>
+            </div>
           </div>
         )}
       </div>
