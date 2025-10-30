@@ -189,7 +189,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src={chatbotIcon} alt="챗봇" className="h-8 w-8" />
-                <CardTitle>
+                <CardTitle className="font-logo">
                   {userRole === "admin" ? "관리자 도우미" : "atomLMS 도우미"}
                 </CardTitle>
               </div>
