@@ -28,6 +28,7 @@ import AdminTenants from "./pages/AdminTenants";
 import AdminAILogs from "./pages/AdminAILogs";
 import AdminMonitoring from "./pages/AdminMonitoring";
 import AdminLearning from "./pages/AdminLearning";
+import AdminUsageManagement from "./pages/AdminUsageManagement";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
 import PublicCourseDetail from "./pages/PublicCourseDetail";
@@ -71,6 +72,7 @@ const App = () => (
           <Route path="/admin/monitoring" element={<AdminMonitoring />} />
           <Route path="/admin/learning" element={<AdminLearning />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/usage" element={<AdminUsageManagement />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
