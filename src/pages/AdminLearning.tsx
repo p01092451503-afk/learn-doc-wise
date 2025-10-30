@@ -20,10 +20,12 @@ interface Enrollment {
   course_id: string;
   courses: {
     title: string;
+    id: string;
   };
   profiles: {
     full_name: string | null;
   };
+  calculated_progress?: number;
 }
 
 interface LearningAnalytics {
@@ -55,7 +57,7 @@ const AdminLearning = () => {
         .from("enrollments")
         .select(`
           *,
-          courses(title)
+          courses(id, title)
         `)
         .order("enrolled_at", { ascending: false })
         .limit(100);
@@ -76,11 +78,59 @@ const AdminLearning = () => {
         profilesResult.data.map((p) => [p.user_id, p])
       );
 
-      // Combine enrollments with profiles
-      const enrichedEnrollments = enrollmentsResult.data.map((enrollment: any) => ({
-        ...enrollment,
-        profiles: profilesMap.get(enrollment.user_id),
-      }));
+      // Fetch all course contents to calculate total lessons per course
+      const courseIds = [...new Set(enrollmentsResult.data.map((e: any) => e.course_id))];
+      const courseContentsResult = await supabase
+        .from("course_contents")
+        .select("course_id")
+        .in("course_id", courseIds);
+
+      if (courseContentsResult.error) throw courseContentsResult.error;
+
+      // Create a map of course_id to total content count
+      const courseContentCountMap = new Map<string, number>();
+      courseContentsResult.data.forEach((content) => {
+        const count = courseContentCountMap.get(content.course_id) || 0;
+        courseContentCountMap.set(content.course_id, count + 1);
+      });
+
+      // Fetch content progress for all users
+      const contentProgressResult = await supabase
+        .from("content_progress")
+        .select(`
+          user_id,
+          content_id,
+          completed,
+          course_contents(course_id)
+        `)
+        .in("user_id", userIds);
+
+      if (contentProgressResult.error) throw contentProgressResult.error;
+
+      // Calculate progress for each enrollment
+      const userCourseProgressMap = new Map<string, number>();
+      
+      contentProgressResult.data.forEach((cp: any) => {
+        if (cp.completed && cp.course_contents?.course_id) {
+          const key = `${cp.user_id}_${cp.course_contents.course_id}`;
+          const count = userCourseProgressMap.get(key) || 0;
+          userCourseProgressMap.set(key, count + 1);
+        }
+      });
+
+      // Combine enrollments with profiles and calculated progress
+      const enrichedEnrollments = enrollmentsResult.data.map((enrollment: any) => {
+        const key = `${enrollment.user_id}_${enrollment.course_id}`;
+        const completedCount = userCourseProgressMap.get(key) || 0;
+        const totalCount = courseContentCountMap.get(enrollment.course_id) || 1;
+        const calculatedProgress = (completedCount / totalCount) * 100;
+
+        return {
+          ...enrollment,
+          profiles: profilesMap.get(enrollment.user_id),
+          calculated_progress: calculatedProgress,
+        };
+      });
 
       // Fetch analytics
       const analyticsResult = await supabase
@@ -128,7 +178,7 @@ const AdminLearning = () => {
 
   const completedEnrollments = enrollments.filter(e => e.completed_at);
   const avgProgress = enrollments.length > 0
-    ? enrollments.reduce((sum, e) => sum + parseFloat(e.progress.toString()), 0) / enrollments.length
+    ? enrollments.reduce((sum, e) => sum + (e.calculated_progress || parseFloat(e.progress.toString())), 0) / enrollments.length
     : 0;
   const atRiskCount = analytics.filter(a => a.at_risk_score && a.at_risk_score >= 70).length;
 
@@ -244,11 +294,11 @@ const AdminLearning = () => {
                         <TableCell>{enrollment.courses?.title || "강좌명 없음"}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <Progress value={parseFloat(enrollment.progress.toString())} className="w-24" />
-                            <span className="text-sm">{Math.round(parseFloat(enrollment.progress.toString()))}%</span>
+                            <Progress value={enrollment.calculated_progress || parseFloat(enrollment.progress.toString())} className="w-24" />
+                            <span className="text-sm">{Math.round(enrollment.calculated_progress || parseFloat(enrollment.progress.toString()))}%</span>
                           </div>
                         </TableCell>
-                        <TableCell>{getProgressBadge(parseFloat(enrollment.progress.toString()))}</TableCell>
+                        <TableCell>{getProgressBadge(enrollment.calculated_progress || parseFloat(enrollment.progress.toString()))}</TableCell>
                         <TableCell>{new Date(enrollment.enrolled_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           {enrollment.completed_at
