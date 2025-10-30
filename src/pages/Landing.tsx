@@ -167,8 +167,8 @@ const Landing = () => {
                     24시간 상시 대기하는 AI 튜터가 질문에 즉시 답변하고, 개념 설명과 퀴즈를 제공합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 답변</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">개념 설명</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 답변</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">개념 설명</span>
                   </div>
                 </div>
               </div>
@@ -186,8 +186,8 @@ const Landing = () => {
                     과제와 시험을 AI가 자동으로 채점하고 상세한 피드백을 즉시 제공합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">즉시 채점</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">상세 피드백</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">즉시 채점</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">상세 피드백</span>
                   </div>
                 </div>
               </div>
@@ -205,8 +205,8 @@ const Landing = () => {
                     과제와 문법을 AI가 분석하여 개선점과 맞춤형 피드백을 제공합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">과제 분석</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">문법 교정</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">과제 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">문법 교정</span>
                   </div>
                 </div>
               </div>
@@ -224,8 +224,8 @@ const Landing = () => {
                     학습 자료와 콘텐츠를 다국어로 실시간 번역하여 글로벌 학습을 지원합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 번역</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">다국어 지원</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 번역</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">다국어 지원</span>
                   </div>
                 </div>
               </div>
@@ -243,8 +243,8 @@ const Landing = () => {
                     학습 패턴을 분석하여 취약점을 파악하고 맞춤형 학습 경로를 제안합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">패턴 분석</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">맞춤 경로</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">패턴 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 경로</span>
                   </div>
                 </div>
               </div>
@@ -262,8 +262,8 @@ const Landing = () => {
                     학습 데이터를 기반으로 상세한 분석 리포트를 자동으로 생성합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">자동 생성</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">상세 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">자동 생성</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">상세 분석</span>
                   </div>
                 </div>
               </div>
@@ -281,9 +281,9 @@ const Landing = () => {
                     학습자와 강사를 위한 지능형 챗봇이 학습 관련 질문에 실시간으로 답변하고, 코스 추천, 일정 관리, 학습 조언을 제공합니다
                   </p>
                   <div className="mt-3 flex items-center gap-2 flex-wrap">
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">실시간 상담</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">코스 추천</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent font-medium">일정 관리</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 상담</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">코스 추천</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">일정 관리</span>
                   </div>
                 </div>
               </div>
