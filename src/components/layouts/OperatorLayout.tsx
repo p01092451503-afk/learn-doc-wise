@@ -179,8 +179,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-11 transition-all duration-200",
-                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3",
+                      "w-full h-11 transition-all duration-200 overflow-visible",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3 pr-2",
                       isActive
                         ? "bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 border-l-2 border-violet-500"
                         : "text-slate-400 hover:text-white hover:bg-slate-800/50"
@@ -188,18 +188,18 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
                     {!sidebarCollapsed && (
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="font-medium text-base">{item.label}</span>
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="font-medium text-base truncate">{item.label}</span>
                         {item.hasAI && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30">
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 flex-shrink-0">
                             <Sparkles className="h-2.5 w-2.5 text-violet-400" />
-                            <span className="text-[10px] font-semibold text-violet-400">AI</span>
+                            <span className="text-[10px] font-semibold text-violet-400 whitespace-nowrap">AI</span>
                           </span>
                         )}
                       </div>
                     )}
                     {!sidebarCollapsed && isActive && (
-                      <ChevronRight className="h-4 w-4 ml-auto" />
+                      <ChevronRight className="h-4 w-4 ml-auto flex-shrink-0" />
                     )}
                   </Button>
                 </Link>

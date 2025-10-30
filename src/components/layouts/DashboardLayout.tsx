@@ -319,20 +319,20 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                         <Button
                           variant="ghost"
                           className={cn(
-                            "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
-                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                            "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group overflow-visible",
+                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 pr-2"
                           )}
                         >
                           <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
                             <item.icon className="h-4 w-4 text-primary" />
                           </div>
                           {!sidebarCollapsed && (
-                            <div className="flex items-center gap-2 flex-1">
-                              <span className="font-medium">{item.label}</span>
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <span className="font-medium truncate">{item.label}</span>
                               {item.hasAI && (
-                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20">
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 flex-shrink-0">
                                   <Sparkles className="h-2.5 w-2.5 text-primary" />
-                                  <span className="text-[10px] font-semibold text-primary">AI</span>
+                                  <span className="text-[10px] font-semibold text-primary whitespace-nowrap">AI</span>
                                 </span>
                               )}
                             </div>
