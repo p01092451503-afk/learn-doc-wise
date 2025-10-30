@@ -56,7 +56,7 @@ const AdminLearning = () => {
           .select(`
             *,
             courses(title),
-            profiles:user_id(full_name)
+            profiles!enrollments_user_id_fkey(full_name)
           `)
           .order("enrolled_at", { ascending: false })
           .limit(100),
