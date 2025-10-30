@@ -26,7 +26,8 @@ const VideoPlayer = ({
       const match = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
       return match ? match[1] : null;
     } else if (provider === "vimeo") {
-      const match = url.match(/vimeo\.com\/(\d+)/);
+      // Support both vimeo.com/VIDEO_ID and player.vimeo.com/video/VIDEO_ID formats
+      const match = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
       return match ? match[1] : null;
     }
     return url;
