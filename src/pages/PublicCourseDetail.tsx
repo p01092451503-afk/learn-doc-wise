@@ -276,13 +276,14 @@ const PublicCourseDetail = () => {
       {/* Course Details */}
       <section className="py-8 md:py-12">
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
-          <div className="max-w-5xl">
-            <Tabs defaultValue="curriculum" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="curriculum">커리큘럼</TabsTrigger>
-                <TabsTrigger value="instructor">강사 소개</TabsTrigger>
-                <TabsTrigger value="policy">환불 안내</TabsTrigger>
-              </TabsList>
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+            <div className="lg:col-span-2">
+              <Tabs defaultValue="curriculum" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="curriculum">커리큘럼</TabsTrigger>
+                  <TabsTrigger value="instructor">강사 소개</TabsTrigger>
+                  <TabsTrigger value="policy">환불 안내</TabsTrigger>
+                </TabsList>
 
               <TabsContent value="curriculum" className="mt-4">
                 <Card className="p-5">
@@ -385,8 +386,12 @@ const PublicCourseDetail = () => {
               </TabsContent>
             </Tabs>
           </div>
+          
+          {/* Spacer for right column alignment */}
+          <div className="hidden lg:block lg:col-span-1" />
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Footer */}
       <footer className="border-t py-6 bg-muted/30">
