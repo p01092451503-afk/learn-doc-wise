@@ -2,6 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Player from "@vimeo/player";
 
+// YouTube IFrame API types
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
 interface VideoPlayerProps {
   contentId: string;
   videoUrl: string;
@@ -20,6 +28,9 @@ const VideoPlayer = ({
   const [duration, setDuration] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<Player | null>(null);
+  const youtubePlayerRef = useRef<any>(null);
+  const youtubeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Extract video ID from URL
   const getVideoId = (url: string, provider: string) => {
@@ -140,38 +151,151 @@ const VideoPlayer = ({
     };
   }, [videoProvider, contentId]);
 
-  // YouTube player integration (kept for compatibility)
+  // YouTube player integration with IFrame API
   useEffect(() => {
-    if (videoProvider !== "youtube") return;
+    if (videoProvider !== "youtube" || !videoId) return;
 
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== "https://www.youtube.com") return;
+    console.log("🎬 Initializing YouTube Player");
 
-      try {
-        const data = JSON.parse(event.data);
-        
-        if (data.event === "infoDelivery" && data.info?.currentTime && data.info?.duration) {
-          const currentTime = data.info.currentTime;
-          const videoDuration = data.info.duration;
-          const progressPercentage = (currentTime / videoDuration) * 100;
+    // Load YouTube IFrame API
+    const loadYouTubeAPI = () => {
+      if (window.YT && window.YT.Player) {
+        initYouTubePlayer();
+        return;
+      }
 
-          setDuration(videoDuration);
-          setProgress(progressPercentage);
-          setLastPosition(currentTime);
+      // Check if script already exists
+      if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      }
 
-          // Save progress every 10 seconds
-          if (Math.floor(currentTime) % 10 === 0) {
-            saveProgress(progressPercentage, currentTime);
+      // Set callback for when API is ready
+      window.onYouTubeIframeAPIReady = () => {
+        console.log("✅ YouTube API Ready");
+        initYouTubePlayer();
+      };
+    };
+
+    const initYouTubePlayer = () => {
+      if (!containerRef.current) return;
+
+      console.log("🎥 Creating YouTube Player instance");
+
+      // Create a unique div for the player
+      const playerDiv = document.createElement('div');
+      playerDiv.id = `youtube-player-${contentId}`;
+      containerRef.current.innerHTML = '';
+      containerRef.current.appendChild(playerDiv);
+
+      youtubePlayerRef.current = new window.YT.Player(playerDiv, {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event: any) => {
+            console.log("▶️ YouTube player ready");
+            const videoDuration = event.target.getDuration();
+            setDuration(videoDuration);
+            console.log("📏 Video duration:", videoDuration);
+
+            // Start polling for progress
+            startProgressTracking();
+          },
+          onStateChange: (event: any) => {
+            console.log("🔄 Player state changed:", event.data);
+            
+            // -1: unstarted, 0: ended, 1: playing, 2: paused, 3: buffering, 5: cued
+            if (event.data === 1) {
+              // Playing
+              startProgressTracking();
+            } else if (event.data === 2 || event.data === 0) {
+              // Paused or Ended
+              stopProgressTracking();
+              
+              // Save progress when paused or ended
+              if (youtubePlayerRef.current) {
+                const currentTime = youtubePlayerRef.current.getCurrentTime();
+                const videoDuration = youtubePlayerRef.current.getDuration();
+                const progressPercentage = event.data === 0 ? 100 : (currentTime / videoDuration) * 100;
+                
+                console.log("💾 Saving progress on pause/end:", { currentTime, videoDuration, progressPercentage });
+                saveProgress(progressPercentage, currentTime);
+              }
+            }
+          },
+        },
+      });
+    };
+
+    const startProgressTracking = () => {
+      // Clear existing interval
+      if (youtubeIntervalRef.current) {
+        clearInterval(youtubeIntervalRef.current);
+      }
+
+      // Poll for progress every second
+      youtubeIntervalRef.current = setInterval(() => {
+        if (youtubePlayerRef.current && youtubePlayerRef.current.getCurrentTime) {
+          try {
+            const currentTime = youtubePlayerRef.current.getCurrentTime();
+            const videoDuration = youtubePlayerRef.current.getDuration();
+            
+            if (videoDuration > 0) {
+              const progressPercentage = (currentTime / videoDuration) * 100;
+              
+              setProgress(progressPercentage);
+              setLastPosition(currentTime);
+              setDuration(videoDuration);
+
+              // Save progress every 10 seconds
+              if (Math.floor(currentTime) % 10 === 0 && currentTime > 0) {
+                console.log("📊 Progress update:", { currentTime, progressPercentage });
+                saveProgress(progressPercentage, currentTime);
+              }
+            }
+          } catch (error) {
+            console.error("Error tracking progress:", error);
           }
         }
-      } catch (e) {
-        // Ignore parsing errors
+      }, 1000);
+    };
+
+    const stopProgressTracking = () => {
+      if (youtubeIntervalRef.current) {
+        clearInterval(youtubeIntervalRef.current);
+        youtubeIntervalRef.current = null;
       }
     };
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [videoProvider, contentId]);
+    loadYouTubeAPI();
+
+    return () => {
+      console.log("🧹 Cleaning up YouTube player");
+      stopProgressTracking();
+      
+      // Save final progress
+      if (youtubePlayerRef.current && progress > 0) {
+        try {
+          const currentTime = youtubePlayerRef.current.getCurrentTime();
+          saveProgress(progress, currentTime);
+        } catch (error) {
+          console.error("Error saving final progress:", error);
+        }
+      }
+      
+      // Destroy player
+      if (youtubePlayerRef.current && youtubePlayerRef.current.destroy) {
+        youtubePlayerRef.current.destroy();
+      }
+    };
+  }, [videoProvider, videoId, contentId]);
 
   if (!videoId) {
     return (
@@ -184,14 +308,18 @@ const VideoPlayer = ({
   return (
     <div className="space-y-4">
       <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
-        <iframe
-          ref={iframeRef}
-          id="vimeo-player"
-          src={getEmbedUrl()}
-          className="absolute inset-0 w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+        {videoProvider === "youtube" ? (
+          <div ref={containerRef} className="absolute inset-0 w-full h-full" />
+        ) : (
+          <iframe
+            ref={iframeRef}
+            id="vimeo-player"
+            src={getEmbedUrl()}
+            className="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        )}
       </div>
 
       {/* Progress bar */}
