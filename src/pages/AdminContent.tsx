@@ -28,7 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle } from "lucide-react";
+import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle, Tag, Folder } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,6 +38,9 @@ import { useQuery } from "@tanstack/react-query";
 const AdminContent = () => {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [tagDialogOpen, setTagDialogOpen] = useState(false);
+  
   const [formData, setFormData] = useState({
     course_id: "",
     title: "",
@@ -44,6 +48,17 @@ const AdminContent = () => {
     video_url: "",
     video_provider: "youtube" as "youtube" | "vimeo",
     duration_minutes: "",
+  });
+
+  const [categoryFormData, setCategoryFormData] = useState({
+    name: "",
+    description: "",
+    slug: "",
+  });
+
+  const [tagFormData, setTagFormData] = useState({
+    name: "",
+    slug: "",
   });
 
   // Fetch courses for dropdown
@@ -71,6 +86,34 @@ const AdminContent = () => {
           courses(title)
         `)
         .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch categories
+  const { data: categories, refetch: refetchCategories } = useQuery({
+    queryKey: ["admin-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("display_order");
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch tags
+  const { data: tags, refetch: refetchTags } = useQuery({
+    queryKey: ["admin-tags"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tags")
+        .select("*")
+        .order("name");
 
       if (error) throw error;
       return data;
@@ -144,6 +187,81 @@ const AdminContent = () => {
     }
   };
 
+  const handleCreateCategory = async () => {
+    try {
+      if (!categoryFormData.name) {
+        toast({
+          title: "입력 오류",
+          description: "카테고리 이름을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.from("categories").insert([
+        {
+          name: categoryFormData.name,
+          description: categoryFormData.description,
+          slug: categoryFormData.slug || categoryFormData.name.toLowerCase().replace(/\s+/g, "-"),
+        },
+      ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "카테고리 생성 완료",
+        description: "새 카테고리가 생성되었습니다.",
+      });
+
+      setCategoryDialogOpen(false);
+      setCategoryFormData({ name: "", description: "", slug: "" });
+      refetchCategories();
+    } catch (error: any) {
+      toast({
+        title: "카테고리 생성 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateTag = async () => {
+    try {
+      if (!tagFormData.name) {
+        toast({
+          title: "입력 오류",
+          description: "태그 이름을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.from("tags").insert([
+        {
+          name: tagFormData.name,
+          slug: tagFormData.slug || tagFormData.name.toLowerCase().replace(/\s+/g, "-"),
+        },
+      ]);
+
+      if (error) throw error;
+
+      toast({
+        title: "태그 생성 완료",
+        description: "새 태그가 생성되었습니다.",
+      });
+
+      setTagDialogOpen(false);
+      setTagFormData({ name: "", slug: "" });
+      refetchTags();
+    } catch (error: any) {
+      toast({
+        title: "태그 생성 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const getProviderBadge = (provider: string) => {
     const variants: Record<string, { icon: any; label: string; color: string }> = {
       youtube: { icon: Youtube, label: "YouTube", color: "text-red-500" },
@@ -163,13 +281,204 @@ const AdminContent = () => {
   return (
     <DashboardLayout userRole="admin">
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-logo font-bold tracking-tight">콘텐츠 관리</h1>
-            <p className="text-muted-foreground mt-2">
-              비디오 강의 콘텐츠를 등록하고 관리합니다
-            </p>
-          </div>
+        <div>
+          <h1 className="text-4xl font-logo font-bold tracking-tight">콘텐츠 관리</h1>
+          <p className="text-muted-foreground mt-2">
+            카테고리, 태그 및 비디오 강의 콘텐츠를 등록하고 관리합니다
+          </p>
+        </div>
+
+        <Tabs defaultValue="categories" className="space-y-6">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsTrigger value="categories">
+              <Folder className="h-4 w-4 mr-2" />
+              카테고리
+            </TabsTrigger>
+            <TabsTrigger value="tags">
+              <Tag className="h-4 w-4 mr-2" />
+              태그
+            </TabsTrigger>
+            <TabsTrigger value="contents">
+              <Video className="h-4 w-4 mr-2" />
+              강좌 콘텐츠
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Categories Tab */}
+          <TabsContent value="categories">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>카테고리 관리</CardTitle>
+                    <CardDescription>강좌 카테고리를 생성하고 관리합니다</CardDescription>
+                  </div>
+                  <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        카테고리 추가
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>새 카테고리 생성</DialogTitle>
+                        <DialogDescription>새로운 카테고리를 생성합니다</DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="cat_name">이름</Label>
+                          <Input
+                            id="cat_name"
+                            value={categoryFormData.name}
+                            onChange={(e) =>
+                              setCategoryFormData({ ...categoryFormData, name: e.target.value })
+                            }
+                            placeholder="카테고리 이름"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="cat_description">설명</Label>
+                          <Textarea
+                            id="cat_description"
+                            value={categoryFormData.description}
+                            onChange={(e) =>
+                              setCategoryFormData({
+                                ...categoryFormData,
+                                description: e.target.value,
+                              })
+                            }
+                            placeholder="카테고리 설명"
+                            rows={3}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="cat_slug">Slug (선택사항)</Label>
+                          <Input
+                            id="cat_slug"
+                            value={categoryFormData.slug}
+                            onChange={(e) =>
+                              setCategoryFormData({ ...categoryFormData, slug: e.target.value })
+                            }
+                            placeholder="자동 생성"
+                          />
+                        </div>
+                        <Button onClick={handleCreateCategory} className="w-full">
+                          생성
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>이름</TableHead>
+                      <TableHead>Slug</TableHead>
+                      <TableHead>설명</TableHead>
+                      <TableHead>상태</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categories?.map((category) => (
+                      <TableRow key={category.id}>
+                        <TableCell className="font-medium">{category.name}</TableCell>
+                        <TableCell className="font-mono text-sm">{category.slug}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {category.description || "-"}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={category.is_active ? "default" : "secondary"}>
+                            {category.is_active ? "활성" : "비활성"}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {!categories?.length && (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                          카테고리가 없습니다
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tags Tab */}
+          <TabsContent value="tags">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>태그 관리</CardTitle>
+                    <CardDescription>강좌 태그를 생성하고 관리합니다</CardDescription>
+                  </div>
+                  <Dialog open={tagDialogOpen} onOpenChange={setTagDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        태그 추가
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>새 태그 생성</DialogTitle>
+                        <DialogDescription>새로운 태그를 생성합니다</DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="tag_name">이름</Label>
+                          <Input
+                            id="tag_name"
+                            value={tagFormData.name}
+                            onChange={(e) =>
+                              setTagFormData({ ...tagFormData, name: e.target.value })
+                            }
+                            placeholder="태그 이름"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="tag_slug">Slug (선택사항)</Label>
+                          <Input
+                            id="tag_slug"
+                            value={tagFormData.slug}
+                            onChange={(e) =>
+                              setTagFormData({ ...tagFormData, slug: e.target.value })
+                            }
+                            placeholder="자동 생성"
+                          />
+                        </div>
+                        <Button onClick={handleCreateTag} className="w-full">
+                          생성
+                        </Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {tags?.map((tag) => (
+                    <Badge key={tag.id} variant="outline" className="text-sm py-2 px-4">
+                      {tag.name}
+                    </Badge>
+                  ))}
+                  {!tags?.length && (
+                    <p className="text-muted-foreground text-sm">태그가 없습니다</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Course Contents Tab */}
+          <TabsContent value="contents">
+            <div className="flex items-center justify-between mb-6">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button size="lg" className="gap-2">
@@ -322,6 +631,8 @@ const AdminContent = () => {
             </Table>
           </CardContent>
         </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );
