@@ -174,7 +174,7 @@ const StudentAnalytics = () => {
                       {course.progress}%
                     </span>
                   </div>
-                  <Progress value={course.progress} className="h-2" />
+                  <Progress value={course.progress} />
                 </div>
               ))}
             </CardContent>
