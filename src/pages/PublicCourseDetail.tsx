@@ -176,10 +176,42 @@ const PublicCourseDetail = () => {
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 text-foreground leading-tight">
                   {course.title}
                 </h1>
-                <div className="bg-background/60 backdrop-blur-sm rounded-xl p-5 border border-border/50">
+                <div className="bg-background/60 backdrop-blur-sm rounded-xl p-5 border border-border/50 mb-5">
                   <p className="text-base md:text-lg text-foreground/90 leading-relaxed font-medium">
                     {course.description || "강좌 설명이 없습니다."}
                   </p>
+                </div>
+                
+                {/* 학습 목표/혜택 섹션 */}
+                <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-sm mb-1">실무 중심 교육</h4>
+                      <p className="text-xs text-muted-foreground">현장에서 바로 활용 가능한 실전 스킬</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-sm mb-1">체계적 커리큘럼</h4>
+                      <p className="text-xs text-muted-foreground">기초부터 심화까지 단계별 학습</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-sm mb-1">전문가 피드백</h4>
+                      <p className="text-xs text-muted-foreground">강사의 1:1 맞춤 피드백 제공</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold text-sm mb-1">평생 수강</h4>
+                      <p className="text-xs text-muted-foreground">기간 제한 없이 반복 학습 가능</p>
+                    </div>
+                  </div>
                 </div>
               </div>
               
