@@ -41,12 +41,12 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "대시보드", path: "/operator" },
-  { icon: Building2, label: "고객사", path: "/admin/tenants" },
-  { icon: BarChart3, label: "사용량", path: "/admin/usage" },
-  { icon: Brain, label: "AI 로그", path: "/admin/ai-logs" },
-  { icon: DollarSign, label: "매출", path: "/admin/revenue" },
-  { icon: Shield, label: "모니터링", path: "/admin/monitoring" },
-  { icon: Settings, label: "설정", path: "/admin/settings" },
+  { icon: Building2, label: "고객사", path: "/operator/tenants" },
+  { icon: BarChart3, label: "사용량", path: "/operator/usage" },
+  { icon: Brain, label: "AI 로그", path: "/operator/ai-logs" },
+  { icon: DollarSign, label: "매출", path: "/operator/revenue" },
+  { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
+  { icon: Settings, label: "설정", path: "/operator/settings" },
 ];
 
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {

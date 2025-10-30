@@ -38,6 +38,12 @@ import StudentCourseDetail from "./pages/StudentCourseDetail";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
 import NotFound from "./pages/NotFound";
+import OperatorTenants from "./pages/operator/OperatorTenants";
+import OperatorUsage from "./pages/operator/OperatorUsage";
+import OperatorAILogs from "./pages/operator/OperatorAILogs";
+import OperatorRevenue from "./pages/operator/OperatorRevenue";
+import OperatorMonitoring from "./pages/operator/OperatorMonitoring";
+import OperatorSettings from "./pages/operator/OperatorSettings";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -75,6 +81,12 @@ const App = () => {
           <Route path="/teacher/assignments" element={<TeacherAssignments />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
+          <Route path="/operator/tenants" element={<OperatorTenants />} />
+          <Route path="/operator/usage" element={<OperatorUsage />} />
+          <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
+          <Route path="/operator/revenue" element={<OperatorRevenue />} />
+          <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
+          <Route path="/operator/settings" element={<OperatorSettings />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />
