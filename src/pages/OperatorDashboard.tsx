@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
-import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown } from "lucide-react";
+import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -263,15 +263,15 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               <Button 
                 variant="outline" 
                 className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
-                onClick={() => window.location.href = '/admin/tenants'}
+                onClick={() => navigate('/operator/tenants')}
               >
-                <Building2 className="h-5 w-5" />
+                <FileText className="h-5 w-5" />
                 고객사 추가
               </Button>
               <Button 
                 variant="outline" 
                 className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
-                onClick={() => window.location.href = '/admin/usage'}
+                onClick={() => navigate('/operator/usage')}
               >
                 <Activity className="h-5 w-5" />
                 사용량 확인
@@ -279,7 +279,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               <Button 
                 variant="outline" 
                 className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
-                onClick={() => window.location.href = '/admin/revenue'}
+                onClick={() => navigate('/operator/revenue')}
               >
                 <DollarSign className="h-5 w-5" />
                 매출 분석
@@ -287,7 +287,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               <Button 
                 variant="outline" 
                 className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
-                onClick={() => window.location.href = '/admin/monitoring'}
+                onClick={() => navigate('/operator/monitoring')}
               >
                 <TrendingUp className="h-5 w-5" />
                 시스템 상태
