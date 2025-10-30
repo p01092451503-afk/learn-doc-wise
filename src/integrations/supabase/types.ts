@@ -1171,6 +1171,7 @@ export type Database = {
         }
         Returns: string
       }
+      trigger_usage_collection: { Args: never; Returns: undefined }
       update_content_progress: {
         Args: {
           p_content_id: string
