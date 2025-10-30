@@ -216,28 +216,26 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-8 md:py-10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center relative overflow-hidden rounded-3xl p-16 border border-primary/20 shadow-elegant">
-            <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                <span className="text-gradient">AI가 설계한</span><br />
-                지능형 학습의 세계로 초대합니다
-              </h2>
-              <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
-                <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
-                복잡한 등록 절차나 결제 정보는 필요 없습니다.
-              </p>
-              <Link to="/auth">
-                <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
-                  <Sparkles className="h-5 w-5" />
-                  무료로 시작하기
-                </Button>
-              </Link>
-            </div>
+      <section className="relative py-20 md:py-32 overflow-hidden">
+        <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+              <span className="text-gradient">AI가 설계한</span><br />
+              지능형 학습의 세계로 초대합니다
+            </h2>
+            <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+              14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
+              <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
+              복잡한 등록 절차나 결제 정보는 필요 없습니다.
+            </p>
+            <Link to="/auth">
+              <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
+                <Sparkles className="h-5 w-5" />
+                무료로 시작하기
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
