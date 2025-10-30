@@ -127,7 +127,7 @@ const PublicCourses = () => {
 
       {/* Page Header */}
       <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-center">
             전체 <span className="text-gradient">교육 과정</span>
           </h1>
@@ -163,7 +163,7 @@ const PublicCourses = () => {
 
       {/* Courses Grid */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3, 4, 5, 6].map((i) => (
