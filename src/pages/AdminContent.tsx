@@ -41,6 +41,7 @@ const AdminContent = () => {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [tagDialogOpen, setTagDialogOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
   
   const [formData, setFormData] = useState({
     course_id: "",
@@ -225,6 +226,16 @@ const AdminContent = () => {
     }
   };
 
+  const handleEditCategory = (category: any) => {
+    setEditingCategory(category);
+    setCategoryFormData({
+      name: category.name,
+      description: category.description || "",
+      slug: category.slug,
+    });
+    setCategoryDialogOpen(true);
+  };
+
   const handleCreateCategory = async () => {
     try {
       if (!categoryFormData.name) {
@@ -236,27 +247,48 @@ const AdminContent = () => {
         return;
       }
 
-      const { error } = await supabase.from("categories").insert([
-        {
-          name: categoryFormData.name,
-          description: categoryFormData.description,
-          slug: categoryFormData.slug || categoryFormData.name.toLowerCase().replace(/\s+/g, "-"),
-        },
-      ]);
+      if (editingCategory) {
+        // Update existing category
+        const { error } = await supabase
+          .from("categories")
+          .update({
+            name: categoryFormData.name,
+            description: categoryFormData.description,
+            slug: categoryFormData.slug || categoryFormData.name.toLowerCase().replace(/\s+/g, "-"),
+          })
+          .eq("id", editingCategory.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "카테고리 생성 완료",
-        description: "새 카테고리가 생성되었습니다.",
-      });
+        toast({
+          title: "카테고리 수정 완료",
+          description: "카테고리가 수정되었습니다.",
+        });
+      } else {
+        // Create new category
+        const { error } = await supabase.from("categories").insert([
+          {
+            name: categoryFormData.name,
+            description: categoryFormData.description,
+            slug: categoryFormData.slug || categoryFormData.name.toLowerCase().replace(/\s+/g, "-"),
+          },
+        ]);
+
+        if (error) throw error;
+
+        toast({
+          title: "카테고리 생성 완료",
+          description: "새 카테고리가 생성되었습니다.",
+        });
+      }
 
       setCategoryDialogOpen(false);
+      setEditingCategory(null);
       setCategoryFormData({ name: "", description: "", slug: "" });
       refetchCategories();
     } catch (error: any) {
       toast({
-        title: "카테고리 생성 실패",
+        title: editingCategory ? "카테고리 수정 실패" : "카테고리 생성 실패",
         description: error.message,
         variant: "destructive",
       });
@@ -351,7 +383,13 @@ const AdminContent = () => {
                     <CardTitle>카테고리 관리</CardTitle>
                     <CardDescription>강좌 카테고리를 생성하고 관리합니다</CardDescription>
                   </div>
-                  <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
+                  <Dialog open={categoryDialogOpen} onOpenChange={(open) => {
+                    setCategoryDialogOpen(open);
+                    if (!open) {
+                      setEditingCategory(null);
+                      setCategoryFormData({ name: "", description: "", slug: "" });
+                    }
+                  }}>
                     <DialogTrigger asChild>
                       <Button size="sm">
                         <Plus className="h-4 w-4 mr-2" />
@@ -360,8 +398,10 @@ const AdminContent = () => {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>새 카테고리 생성</DialogTitle>
-                        <DialogDescription>새로운 카테고리를 생성합니다</DialogDescription>
+                        <DialogTitle>{editingCategory ? "카테고리 수정" : "새 카테고리 생성"}</DialogTitle>
+                        <DialogDescription>
+                          {editingCategory ? "카테고리 정보를 수정합니다" : "새로운 카테고리를 생성합니다"}
+                        </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4">
                         <div>
@@ -402,7 +442,7 @@ const AdminContent = () => {
                           />
                         </div>
                         <Button onClick={handleCreateCategory} className="w-full">
-                          생성
+                          {editingCategory ? "수정" : "생성"}
                         </Button>
                       </div>
                     </DialogContent>
@@ -417,6 +457,7 @@ const AdminContent = () => {
                       <TableHead>Slug</TableHead>
                       <TableHead>설명</TableHead>
                       <TableHead>상태</TableHead>
+                      <TableHead className="text-right">작업</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -432,11 +473,20 @@ const AdminContent = () => {
                             {category.is_active ? "활성" : "비활성"}
                           </Badge>
                         </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditCategory(category)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {!categories?.length && (
                       <TableRow>
-                        <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                        <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                           카테고리가 없습니다
                         </TableCell>
                       </TableRow>
