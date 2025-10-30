@@ -35,9 +35,10 @@ serve(async (req) => {
       throw new Error(`Failed to fetch analytics: ${analyticsError.message}`);
     }
 
+    // 등록 데이터 조회
     const { data: enrollments, error: enrollmentsError } = await supabase
       .from('enrollments')
-      .select('*, profiles(full_name)');
+      .select('*');
 
     if (enrollmentsError) {
       throw new Error(`Failed to fetch enrollments: ${enrollmentsError.message}`);
