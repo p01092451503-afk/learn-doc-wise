@@ -52,11 +52,45 @@ const StudentCourseDetail = () => {
   useEffect(() => {
     checkUserRole();
     if (id) {
+      ensureEnrollment();
       fetchCourseDetails();
       fetchCourseContents();
       fetchProgress();
     }
   }, [id]);
+
+  const ensureEnrollment = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Check if already enrolled
+      const { data: existingEnrollment } = await supabase
+        .from("enrollments")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("course_id", id)
+        .single();
+
+      // If not enrolled, create enrollment
+      if (!existingEnrollment) {
+        const { error } = await supabase
+          .from("enrollments")
+          .insert({
+            user_id: user.id,
+            course_id: id,
+            enrolled_at: new Date().toISOString(),
+            progress: 0
+          });
+
+        if (error) {
+          console.error("Error creating enrollment:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error ensuring enrollment:", error);
+    }
+  };
 
   const checkUserRole = async () => {
     try {
