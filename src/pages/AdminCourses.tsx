@@ -109,13 +109,49 @@ const AdminCourses = () => {
     }
   };
 
+  const generateUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<string> => {
+    let slug = baseSlug;
+    let counter = 1;
+
+    while (true) {
+      const query = supabase
+        .from("courses")
+        .select("id")
+        .eq("slug", slug);
+
+      // 수정 중인 경우 현재 강좌 ID는 제외
+      if (excludeId) {
+        query.neq("id", excludeId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+
+      // slug가 중복되지 않으면 사용
+      if (!data || data.length === 0) {
+        return slug;
+      }
+
+      // 중복되면 숫자 추가
+      slug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+  };
+
   const handleCreateCourse = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
+      // slug 생성
+      let baseSlug = formData.slug || formData.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      
+      // 고유한 slug 생성
+      const uniqueSlug = await generateUniqueSlug(baseSlug, editingCourse?.id);
+
       const courseData: any = {
         title: formData.title,
-        slug: formData.slug || formData.title.toLowerCase().replace(/\s+/g, "-"),
+        slug: uniqueSlug,
         description: formData.description,
         status: formData.status,
         level: formData.level,
