@@ -79,9 +79,14 @@ const OperatorAILogs = () => {
   return (
     <OperatorLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
-          <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
+        <div className="flex items-center gap-4">
+          <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/30">
+            <Brain className="h-9 w-9 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
+            <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
+          </div>
         </div>
 
         {/* Summary */}
@@ -89,7 +94,7 @@ const OperatorAILogs = () => {
           <Card className="bg-slate-900/50 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">총 요청</CardTitle>
-              <Brain className="h-4 w-4 text-violet-400" />
+              <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{filteredLogs.length.toLocaleString()}</div>
@@ -99,7 +104,7 @@ const OperatorAILogs = () => {
           <Card className="bg-slate-900/50 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">총 토큰</CardTitle>
-              <Brain className="h-4 w-4 text-violet-400" />
+              <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{(totalTokens / 1000).toFixed(1)}K</div>
@@ -109,7 +114,7 @@ const OperatorAILogs = () => {
           <Card className="bg-slate-900/50 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">모델 종류</CardTitle>
-              <Brain className="h-4 w-4 text-violet-400" />
+              <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{uniqueModels.length}</div>
