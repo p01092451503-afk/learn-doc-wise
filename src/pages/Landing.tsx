@@ -135,33 +135,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-8 md:py-10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto text-center relative overflow-hidden rounded-3xl p-16 border border-primary/20 shadow-elegant">
-            <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-                <span className="text-gradient">AI가 설계한</span><br />
-                지능형 학습의 세계로 초대합니다
-              </h2>
-              <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
-                <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
-                복잡한 등록 절차나 결제 정보는 필요 없습니다.
-              </p>
-              <Link to="/auth">
-                <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
-                  <Sparkles className="h-5 w-5" />
-                  무료로 시작하기
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Pricing Section */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
@@ -199,7 +172,7 @@ const Landing = () => {
             <PricingCard
               title="스탠다드"
               description="전문 강사 및 중소 교육 기관"
-              price="₩29,000"
+              price="₩150,000"
               period="/월"
               aiTokens="월 최대 수강생 500명"
               features={[
@@ -221,7 +194,7 @@ const Landing = () => {
             <PricingCard
               title="프로페셔널"
               description="대형 교육 기관 및 기업 교육"
-              price="₩99,000"
+              price="₩300,000"
               period="/월"
               aiTokens="월 최대 수강생 무제한"
               features={[
@@ -238,6 +211,33 @@ const Landing = () => {
               buttonText="프로페셔널 시작하기"
               buttonVariant="premium"
             />
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-8 md:py-10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto text-center relative overflow-hidden rounded-3xl p-16 border border-primary/20 shadow-elegant">
+            <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+                <span className="text-gradient">AI가 설계한</span><br />
+                지능형 학습의 세계로 초대합니다
+              </h2>
+              <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+                14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
+                <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
+                복잡한 등록 절차나 결제 정보는 필요 없습니다.
+              </p>
+              <Link to="/auth">
+                <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
+                  <Sparkles className="h-5 w-5" />
+                  무료로 시작하기
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
