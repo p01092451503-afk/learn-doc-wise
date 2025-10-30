@@ -271,67 +271,69 @@ const StudentCourses = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 {userRole === "admin" ? "전체 강좌 목록" : "수강 중인 강의"}
               </h2>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {enrollments.map((enrollment) => {
-                  const course = enrollment.courses;
-                  if (!course) return null;
-                  
-                  const levelBadge = getLevelBadge(course.level);
-                  
-                  return (
-                    <Link key={enrollment.id} to={`/student/courses/${course.id}`}>
-                      <Card className="border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group">
-                        <div className="relative overflow-hidden">
-                          {course.thumbnail_url ? (
-                            <img
-                              src={course.thumbnail_url}
-                              alt={course.title}
-                              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                              <BookOpen className="h-16 w-16 text-primary/40" />
-                            </div>
-                          )}
-                          <Badge 
-                            variant={levelBadge.variant}
-                            className="absolute top-4 left-4 backdrop-blur-sm"
-                          >
-                            {levelBadge.text}
-                          </Badge>
-                        </div>
-                        <CardHeader>
-                          <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {course.description || "강좌 설명이 없습니다"}
-                          </p>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {userRole !== "admin" && (
-                            <div className="space-y-2">
-                              <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">진행률</span>
-                                <span className="font-medium">{Math.round(enrollment.calculated_progress || enrollment.progress || 0)}%</span>
+              <div className="relative">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                  {enrollments.map((enrollment) => {
+                    const course = enrollment.courses;
+                    if (!course) return null;
+                    
+                    const levelBadge = getLevelBadge(course.level);
+                    
+                    return (
+                      <Link key={enrollment.id} to={`/student/courses/${course.id}`} className="flex-shrink-0">
+                        <Card className="border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group w-[280px]">
+                          <div className="relative overflow-hidden">
+                            {course.thumbnail_url ? (
+                              <img
+                                src={course.thumbnail_url}
+                                alt={course.title}
+                                className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-40 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                                <BookOpen className="h-12 w-12 text-primary/40" />
                               </div>
-                              <Progress value={enrollment.calculated_progress || enrollment.progress || 0} className="h-2" />
-                            </div>
-                          )}
-
-                          <div className="pt-2 border-t">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                              <Clock className="h-4 w-4" />
-                              <span>{course.duration_hours}시간</span>
-                            </div>
-                            <Button className="w-full gap-2">
-                              <PlayCircle className="h-4 w-4" />
-                              {userRole === "admin" ? "강좌 보기" : "이어서 학습하기"}
-                            </Button>
+                            )}
+                            <Badge 
+                              variant={levelBadge.variant}
+                              className="absolute top-3 left-3 backdrop-blur-sm text-xs"
+                            >
+                              {levelBadge.text}
+                            </Badge>
                           </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  );
-                })}
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base line-clamp-1">{course.title}</CardTitle>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {course.description || "강좌 설명이 없습니다"}
+                            </p>
+                          </CardHeader>
+                          <CardContent className="space-y-3 pt-0">
+                            {userRole !== "admin" && (
+                              <div className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-muted-foreground">진행률</span>
+                                  <span className="font-medium">{Math.round(enrollment.calculated_progress || enrollment.progress || 0)}%</span>
+                                </div>
+                                <Progress value={enrollment.calculated_progress || enrollment.progress || 0} className="h-1.5" />
+                              </div>
+                            )}
+
+                            <div className="pt-2 border-t">
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                                <Clock className="h-3.5 w-3.5" />
+                                <span>{course.duration_hours}시간</span>
+                              </div>
+                              <Button className="w-full gap-2 text-xs h-8">
+                                <PlayCircle className="h-3.5 w-3.5" />
+                                {userRole === "admin" ? "강좌 보기" : "학습하기"}
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </>
