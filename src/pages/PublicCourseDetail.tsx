@@ -121,7 +121,7 @@ const PublicCourseDetail = () => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/main" className="flex items-center gap-2">
             <img src={logoIcon} alt="Logo" className="h-12 w-12" />
             <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
@@ -146,9 +146,9 @@ const PublicCourseDetail = () => {
       </header>
 
       {/* Back Button */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-3">
         <Link to="/courses">
-          <Button variant="ghost" className="gap-2">
+          <Button variant="ghost" size="sm" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
             강좌 목록으로
           </Button>
@@ -156,9 +156,9 @@ const PublicCourseDetail = () => {
       </div>
 
       {/* Course Header */}
-      <section className="py-8 bg-muted/30">
+      <section className="py-6 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-4">
                 <Badge variant="default">{getLevelText(course.level)}</Badge>
@@ -171,10 +171,10 @@ const PublicCourseDetail = () => {
                   <span>{contents.length}개 차시</span>
                 </div>
               </div>
-              <h1 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
+              <h1 className="text-2xl md:text-3xl font-display font-bold mb-3 text-foreground">
                 {course.title}
               </h1>
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-base text-muted-foreground mb-4">
                 {course.description || "강좌 설명이 없습니다."}
               </p>
               <div className="flex items-center gap-4">
@@ -192,30 +192,30 @@ const PublicCourseDetail = () => {
 
             {/* Enrollment Card */}
             <div className="lg:col-span-1">
-              <Card className="p-6 sticky top-24">
+              <Card className="p-5 sticky top-20">
                 {previewContent && (
-                  <div className="mb-6">
-                    <p className="text-sm font-semibold mb-2">미리보기</p>
+                  <div className="mb-4">
+                    <p className="text-xs font-semibold mb-2 text-muted-foreground">미리보기</p>
                     <VideoPreview
                       videoUrl={previewContent.video_url}
                       videoProvider={previewContent.video_provider as "youtube" | "vimeo"}
                     />
                   </div>
                 )}
-                <div className="text-center mb-6">
-                  <div className="text-4xl font-bold text-foreground mb-2">
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-foreground mb-1">
                     {course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}
                   </div>
                   {course.price > 0 && (
-                    <p className="text-sm text-muted-foreground">부가세 포함</p>
+                    <p className="text-xs text-muted-foreground">부가세 포함</p>
                   )}
                 </div>
                 <Link to="/auth" className="block">
-                  <Button variant="premium" size="lg" className="w-full mb-3">
+                  <Button variant="premium" size="default" className="w-full mb-3">
                     지금 수강 신청하기
                   </Button>
                 </Link>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-1.5 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="h-4 w-4 text-primary" />
                     <span>평생 소장</span>
@@ -236,7 +236,7 @@ const PublicCourseDetail = () => {
       </section>
 
       {/* Course Details */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             <Tabs defaultValue="curriculum" className="w-full">
@@ -246,36 +246,36 @@ const PublicCourseDetail = () => {
                 <TabsTrigger value="policy">환불 안내</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="curriculum" className="mt-6">
-                <Card className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">강좌 커리큘럼</h3>
-                  <p className="text-muted-foreground mb-6">
+              <TabsContent value="curriculum" className="mt-4">
+                <Card className="p-5">
+                  <h3 className="text-lg font-semibold mb-3">강좌 커리큘럼</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
                     총 {contents.length}개 차시 · {course.duration_hours}시간
                   </p>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {contents.length === 0 ? (
                       <p className="text-center py-8 text-muted-foreground">
                         아직 등록된 차시가 없습니다.
                       </p>
                     ) : (
                       contents.map((content, index) => (
-                        <div key={content.id} className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
-                          <div className="flex items-start gap-4">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                        <div key={content.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+                          <div className="flex items-start gap-3">
+                            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 text-primary font-semibold text-xs">
                               {index + 1}
                             </div>
                             <div>
-                              <h4 className="font-medium mb-1">{content.title}</h4>
+                              <h4 className="font-medium text-sm mb-0.5">{content.title}</h4>
                               {content.description && (
                                 <p className="text-sm text-muted-foreground">{content.description}</p>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
                             {content.is_preview && (
-                              <Badge variant="outline" className="text-xs">미리보기</Badge>
+                              <Badge variant="outline" className="text-xs px-2 py-0">미리보기</Badge>
                             )}
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-xs text-muted-foreground whitespace-nowrap">
                               {content.duration_minutes}분
                             </span>
                           </div>
@@ -286,21 +286,21 @@ const PublicCourseDetail = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="instructor" className="mt-6">
-                <Card className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">강사 소개</h3>
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-2xl font-bold">
+              <TabsContent value="instructor" className="mt-4">
+                <Card className="p-5">
+                  <h3 className="text-lg font-semibold mb-3">강사 소개</h3>
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xl font-bold">
                       A
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold mb-2">전문 강사진</h4>
-                      <p className="text-muted-foreground">
+                      <h4 className="font-semibold mb-1">전문 강사진</h4>
+                      <p className="text-sm text-muted-foreground">
                         10년 이상의 실무 경험을 바탕으로 체계적인 교육을 제공합니다.
                       </p>
                     </div>
                   </div>
-                  <Separator className="my-6" />
+                  <Separator className="my-4" />
                   <div>
                     <h4 className="font-semibold mb-3">경력 사항</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
@@ -312,10 +312,10 @@ const PublicCourseDetail = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="policy" className="mt-6">
-                <Card className="p-6">
-                  <h3 className="text-xl font-semibold mb-4">환불 및 배송 안내</h3>
-                  <div className="space-y-6">
+              <TabsContent value="policy" className="mt-4">
+                <Card className="p-5">
+                  <h3 className="text-lg font-semibold mb-3">환불 및 배송 안내</h3>
+                  <div className="space-y-4">
                     <div>
                       <h4 className="font-semibold mb-3">환불 정책</h4>
                       <ul className="space-y-2 text-sm text-muted-foreground">
@@ -351,9 +351,9 @@ const PublicCourseDetail = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-muted/30">
+      <footer className="border-t py-6 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center text-sm text-muted-foreground">
+          <div className="text-center text-xs text-muted-foreground">
             <p>© 2024 atomLMS. All rights reserved.</p>
           </div>
         </div>
