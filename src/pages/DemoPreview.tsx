@@ -47,9 +47,10 @@ const DemoPreview = () => {
               <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
               <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             </Link>
-            <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+            <Button variant="secondary" size="sm" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">
+              <Bot className="h-3.5 w-3.5" />
               데모 모드
-            </Badge>
+            </Button>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
