@@ -114,13 +114,31 @@ const VideoPlayer = ({
   useEffect(() => {
     if (videoProvider !== "vimeo") return;
 
+    let isReady = false;
+
     const handleMessage = (event: MessageEvent) => {
       if (!event.origin.includes("vimeo.com")) return;
 
       try {
         const data = JSON.parse(event.data);
         
-        if (data.event === "timeupdate") {
+        // Handle ready event
+        if (data.event === "ready") {
+          console.log("✅ Vimeo player ready");
+          isReady = true;
+          
+          // Subscribe to timeupdate event after ready
+          if (iframeRef.current) {
+            console.log("📡 Subscribing to timeupdate");
+            iframeRef.current.contentWindow?.postMessage(
+              JSON.stringify({ method: "addEventListener", value: "timeupdate" }),
+              "*"
+            );
+          }
+        }
+        
+        // Handle timeupdate event
+        if (data.event === "timeupdate" && data.data) {
           const currentTime = data.data.seconds;
           const videoDuration = data.data.duration;
           const progressPercentage = (currentTime / videoDuration) * 100;
@@ -143,15 +161,24 @@ const VideoPlayer = ({
 
     window.addEventListener("message", handleMessage);
 
-    // Subscribe to timeupdate event
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow?.postMessage(
-        JSON.stringify({ method: "addEventListener", value: "timeupdate" }),
-        "*"
-      );
-    }
+    // Wait for iframe to load, then request ready event
+    const initializePlayer = () => {
+      if (iframeRef.current) {
+        console.log("🎬 Initializing Vimeo player");
+        iframeRef.current.contentWindow?.postMessage(
+          JSON.stringify({ method: "addEventListener", value: "ready" }),
+          "*"
+        );
+      }
+    };
 
-    return () => window.removeEventListener("message", handleMessage);
+    // Try to initialize after a short delay to ensure iframe is loaded
+    const timeout = setTimeout(initializePlayer, 500);
+
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener("message", handleMessage);
+    };
   }, [videoProvider, contentId]);
 
   // Save final progress on unmount
