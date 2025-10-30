@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
+import { AddUserDialog } from "@/components/admin/AddUserDialog";
+import { CourseApprovalDialog } from "@/components/admin/CourseApprovalDialog";
+import { SettlementDialog } from "@/components/admin/SettlementDialog";
+import { ReportDialog } from "@/components/admin/ReportDialog";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [courseApprovalOpen, setCourseApprovalOpen] = useState(false);
+  const [settlementOpen, setSettlementOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   return (
     <DashboardLayout userRole="admin" isDemo={isDemo}>
       <div className="space-y-6">
@@ -173,19 +182,35 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                <Button 
+                  variant="outline" 
+                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm"
+                  onClick={() => setAddUserOpen(true)}
+                >
                   <Users className="h-4 w-4 md:h-5 md:w-5" />
                   사용자 추가
                 </Button>
-                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                <Button 
+                  variant="outline" 
+                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm"
+                  onClick={() => setCourseApprovalOpen(true)}
+                >
                   <BookOpen className="h-4 w-4 md:h-5 md:w-5" />
                   강의 승인
                 </Button>
-                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                <Button 
+                  variant="outline" 
+                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm"
+                  onClick={() => setSettlementOpen(true)}
+                >
                   <DollarSign className="h-4 w-4 md:h-5 md:w-5" />
                   정산 처리
                 </Button>
-                <Button variant="outline" className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm">
+                <Button 
+                  variant="outline" 
+                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm"
+                  onClick={() => setReportOpen(true)}
+                >
                   <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
                   리포트 생성
                 </Button>
@@ -193,6 +218,12 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardContent>
           </Card>
       </div>
+
+      {/* Dialogs */}
+      <AddUserDialog open={addUserOpen} onOpenChange={setAddUserOpen} />
+      <CourseApprovalDialog open={courseApprovalOpen} onOpenChange={setCourseApprovalOpen} />
+      <SettlementDialog open={settlementOpen} onOpenChange={setSettlementOpen} />
+      <ReportDialog open={reportOpen} onOpenChange={setReportOpen} />
 
       {/* 챗봇 - 숨김 */}
       {/* <Chatbot userRole="admin" /> */}
