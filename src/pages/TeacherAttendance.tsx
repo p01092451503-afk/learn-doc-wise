@@ -28,9 +28,14 @@ interface TeacherAttendanceProps {
   isDemo?: boolean;
 }
 
+interface Course {
+  id: string;
+  title: string;
+}
+
 const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
-  const [searchParams] = useSearchParams();
-  const courseId = searchParams.get('courseId');
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
   const [students, setStudents] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -38,6 +43,22 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
+    if (isDemo) {
+      // 데모 과목 목록 설정
+      setCourses([
+        { id: 'demo-course-1', title: '부동산 경매 기초' },
+        { id: 'demo-course-2', title: '부동산 경매 실전' },
+        { id: 'demo-course-3', title: '권리분석 특강' },
+      ]);
+      setSelectedCourseId('demo-course-1');
+    } else {
+      fetchCourses();
+    }
+  }, [isDemo]);
+
+  useEffect(() => {
+    if (!selectedCourseId) return;
+
     if (isDemo) {
       // 데모 데이터 설정
       setStudents([
@@ -76,13 +97,36 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
       ]);
       
       setLoading(false);
-    } else if (courseId) {
+    } else {
       fetchStudents();
       fetchAttendance();
     }
-  }, [courseId, selectedDate, isDemo]);
+  }, [selectedCourseId, selectedDate, isDemo]);
+
+  const fetchCourses = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('courses')
+        .select('id, title')
+        .eq('instructor_id', user.id);
+
+      if (error) throw error;
+      
+      setCourses(data || []);
+      if (data && data.length > 0) {
+        setSelectedCourseId(data[0].id);
+      }
+    } catch (error) {
+      console.error('과목 목록 조회 오류:', error);
+    }
+  };
 
   const fetchStudents = async () => {
+    if (!selectedCourseId) return;
+    
     try {
       const { data, error } = await supabase
         .from('enrollments')
@@ -93,7 +137,7 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
             user_id
           )
         `)
-        .eq('course_id', courseId);
+        .eq('course_id', selectedCourseId);
 
       if (error) throw error;
       setStudents(data || []);
@@ -103,13 +147,15 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
   };
 
   const fetchAttendance = async () => {
+    if (!selectedCourseId) return;
+    
     try {
       const dateStr = format(selectedDate, 'yyyy-MM-dd');
       
       const { data, error } = await supabase
         .from('attendance')
         .select('*')
-        .eq('course_id', courseId)
+        .eq('course_id', selectedCourseId)
         .eq('attendance_date', dateStr);
 
       if (error) throw error;
@@ -252,148 +298,172 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
     excused: attendanceRecords.filter(r => r.status === 'excused').length,
   };
 
-  if (!courseId && !isDemo) {
-    return (
-      <DashboardLayout userRole="teacher">
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">강좌를 선택해주세요.</p>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
     <DashboardLayout userRole="teacher">
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-display font-bold">출석 관리</h1>
-            <p className="text-muted-foreground">학생들의 출석 현황을 관리하세요</p>
-          </div>
-          
-          <div className="flex gap-2">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <CalendarIcon className="h-4 w-4" />
-                  {format(selectedDate, 'PPP', { locale: ko })}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
-                  locale={ko}
-                />
-              </PopoverContent>
-            </Popover>
-            
-            <Button onClick={exportToCSV} variant="outline" className="gap-2">
-              <Download className="h-4 w-4" />
-              CSV 다운로드
-            </Button>
-          </div>
+        <div>
+          <h1 className="text-3xl font-display font-bold">출석 관리</h1>
+          <p className="text-muted-foreground">학생들의 출석 현황을 관리하세요</p>
         </div>
 
-        {/* 통계 */}
-        <div className="grid grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>출석</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats.present}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>지각</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{stats.late}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>결석</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">{stats.absent}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardDescription>인정결석</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{stats.excused}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 학생 목록 */}
+        {/* 과목 선택 */}
         <Card>
           <CardHeader>
-            <CardTitle>학생별 출석 현황</CardTitle>
-            <CardDescription>
-              총 {students.length}명의 학생
-            </CardDescription>
+            <CardTitle>과목 선택</CardTitle>
+            <CardDescription>출석을 관리할 과목을 선택하세요</CardDescription>
           </CardHeader>
           <CardContent>
-            {loading ? (
-              <p className="text-center py-6 text-muted-foreground">로딩 중...</p>
-            ) : (
-              <div className="space-y-2">
-                {students.map((student) => {
-                  const attendance = getStudentAttendance(student.user_id);
-                  
-                  return (
-                    <div
-                      key={student.user_id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div>
-                          <p className="font-medium">{student.profiles?.full_name}</p>
-                          {attendance?.check_in_time && (
-                            <p className="text-sm text-muted-foreground">
-                              {format(new Date(attendance.check_in_time), 'HH:mm:ss')}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {attendance ? (
-                          <>
-                            {getStatusBadge(attendance.status)}
-                            <Select
-                              value={attendance.status}
-                              onValueChange={(value) => updateAttendanceStatus(attendance.id, value as 'present' | 'late' | 'absent' | 'excused')}
-                            >
-                              <SelectTrigger className="w-[150px]">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="present">출석</SelectItem>
-                                <SelectItem value="late">지각</SelectItem>
-                                <SelectItem value="absent">결석</SelectItem>
-                                <SelectItem value="excused">인정결석</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </>
-                        ) : (
-                          <Badge variant="outline">미체크</Badge>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <Select value={selectedCourseId} onValueChange={setSelectedCourseId}>
+              <SelectTrigger className="w-full md:w-[400px]">
+                <SelectValue placeholder="과목을 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {courses.map((course) => (
+                  <SelectItem key={course.id} value={course.id}>
+                    {course.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </CardContent>
         </Card>
+
+        {!selectedCourseId ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">과목을 선택해주세요.</p>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <CalendarIcon className="h-4 w-4" />
+                    {format(selectedDate, 'PPP', { locale: ko })}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(date) => date && setSelectedDate(date)}
+                    locale={ko}
+                  />
+                </PopoverContent>
+              </Popover>
+              
+              <Button onClick={exportToCSV} variant="outline" className="gap-2">
+                <Download className="h-4 w-4" />
+                CSV 다운로드
+              </Button>
+            </div>
+          </div>
+
+            {/* 통계 */}
+            <div className="grid grid-cols-4 gap-4">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>출석</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">{stats.present}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>지각</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-yellow-600">{stats.late}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>결석</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-red-600">{stats.absent}</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardDescription>인정결석</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">{stats.excused}</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 학생 목록 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>학생별 출석 현황</CardTitle>
+                <CardDescription>
+                  총 {students.length}명의 학생
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <p className="text-center py-6 text-muted-foreground">로딩 중...</p>
+                ) : students.length === 0 ? (
+                  <p className="text-center py-6 text-muted-foreground">
+                    등록된 학생이 없습니다.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {students.map((student) => {
+                      const attendance = getStudentAttendance(student.user_id);
+                      
+                      return (
+                        <div
+                          key={student.user_id}
+                          className="flex items-center justify-between p-4 border rounded-lg"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <p className="font-medium">{student.profiles?.full_name}</p>
+                              {attendance?.check_in_time && (
+                                <p className="text-sm text-muted-foreground">
+                                  {format(new Date(attendance.check_in_time), 'HH:mm:ss')}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            {attendance ? (
+                              <>
+                                {getStatusBadge(attendance.status)}
+                                <Select
+                                  value={attendance.status}
+                                  onValueChange={(value) => updateAttendanceStatus(attendance.id, value as 'present' | 'late' | 'absent' | 'excused')}
+                                >
+                                  <SelectTrigger className="w-[150px]">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="present">출석</SelectItem>
+                                    <SelectItem value="late">지각</SelectItem>
+                                    <SelectItem value="absent">결석</SelectItem>
+                                    <SelectItem value="excused">인정결석</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </>
+                            ) : (
+                              <Badge variant="outline">미체크</Badge>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
