@@ -22,6 +22,7 @@ interface Enrollment {
   course_id: string;
   progress: number;
   courses: Course;
+  calculated_progress?: number;
 }
 
 const StudentCourses = () => {
@@ -79,7 +80,60 @@ const StudentCourses = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      setEnrollments(data || []);
+
+      // Fetch course contents to calculate total lessons per course
+      const courseIds = data?.map(e => e.course_id) || [];
+      const courseContentsResult = await supabase
+        .from("course_contents")
+        .select("course_id")
+        .in("course_id", courseIds);
+
+      if (courseContentsResult.error) throw courseContentsResult.error;
+
+      // Create a map of course_id to total content count
+      const courseContentCountMap = new Map<string, number>();
+      courseContentsResult.data.forEach((content) => {
+        const count = courseContentCountMap.get(content.course_id) || 0;
+        courseContentCountMap.set(content.course_id, count + 1);
+      });
+
+      // Fetch content progress for the user
+      const contentProgressResult = await supabase
+        .from("content_progress")
+        .select(`
+          user_id,
+          content_id,
+          completed,
+          course_contents(course_id)
+        `)
+        .eq("user_id", user.id);
+
+      if (contentProgressResult.error) throw contentProgressResult.error;
+
+      // Calculate progress for each enrollment
+      const userCourseProgressMap = new Map<string, number>();
+      
+      contentProgressResult.data.forEach((cp: any) => {
+        if (cp.completed && cp.course_contents?.course_id) {
+          const key = cp.course_contents.course_id;
+          const count = userCourseProgressMap.get(key) || 0;
+          userCourseProgressMap.set(key, count + 1);
+        }
+      });
+
+      // Combine enrollments with calculated progress
+      const enrichedEnrollments = (data || []).map((enrollment: any) => {
+        const completedCount = userCourseProgressMap.get(enrollment.course_id) || 0;
+        const totalCount = courseContentCountMap.get(enrollment.course_id) || 1;
+        const calculatedProgress = (completedCount / totalCount) * 100;
+
+        return {
+          ...enrollment,
+          calculated_progress: calculatedProgress,
+        };
+      });
+
+      setEnrollments(enrichedEnrollments);
     } catch (error) {
       console.error("Error fetching enrollments:", error);
     } finally {
@@ -182,7 +236,7 @@ const StudentCourses = () => {
                       </p>
                       <p className="text-3xl font-bold mt-2">
                         {enrollments.length > 0 
-                          ? Math.round(enrollments.reduce((acc, e) => acc + (e.progress || 0), 0) / enrollments.length)
+                          ? Math.round(enrollments.reduce((acc, e) => acc + (e.calculated_progress || e.progress || 0), 0) / enrollments.length)
                           : 0}%
                       </p>
                     </div>
@@ -257,9 +311,9 @@ const StudentCourses = () => {
                             <div className="space-y-2">
                               <div className="flex justify-between text-sm">
                                 <span className="text-muted-foreground">진행률</span>
-                                <span className="font-medium">{Math.round(enrollment.progress || 0)}%</span>
+                                <span className="font-medium">{Math.round(enrollment.calculated_progress || enrollment.progress || 0)}%</span>
                               </div>
-                              <Progress value={enrollment.progress || 0} className="h-2" />
+                              <Progress value={enrollment.calculated_progress || enrollment.progress || 0} className="h-2" />
                             </div>
                           )}
 
