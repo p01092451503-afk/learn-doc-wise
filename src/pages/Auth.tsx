@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,12 +20,25 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [signupName, setSignupName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirm, setSignupConfirm] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Load remembered email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setLoginEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -136,6 +151,13 @@ const Auth = () => {
           });
         }
       } else {
+        // Save email if remember me is checked
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", loginEmail);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
+
         toast({
           title: "로그인 성공",
           description: "환영합니다!",
@@ -238,6 +260,58 @@ const Auth = () => {
     }
   };
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const emailValidation = emailSchema.safeParse(resetEmail);
+    if (!emailValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: emailValidation.error.errors[0].message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsResetLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) {
+        toast({
+          title: "오류 발생",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "이메일 전송 완료",
+          description: "비밀번호 재설정 링크를 이메일로 전송했습니다.",
+        });
+        setIsResetDialogOpen(false);
+        setResetEmail("");
+      }
+    } catch (error) {
+      toast({
+        title: "오류 발생",
+        description: "비밀번호 재설정 중 문제가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetLoading(false);
+    }
+  };
+
+  const handleFindId = () => {
+    toast({
+      title: "아이디 찾기",
+      description: "가입 시 사용한 이메일 주소가 아이디입니다. 기억나지 않으시면 관리자에게 문의해주세요.",
+    });
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -307,6 +381,67 @@ const Auth = () => {
                       required
                     />
                   </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      />
+                      <label
+                        htmlFor="remember"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        아이디 기억하기
+                      </label>
+                    </div>
+                    <div className="flex gap-2 text-sm">
+                      <button
+                        type="button"
+                        onClick={handleFindId}
+                        className="text-primary hover:underline"
+                      >
+                        아이디 찾기
+                      </button>
+                      <span className="text-muted-foreground">|</span>
+                      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+                        <DialogTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-primary hover:underline"
+                          >
+                            비밀번호 찾기
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>비밀번호 재설정</DialogTitle>
+                            <DialogDescription>
+                              가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <form onSubmit={handlePasswordReset} className="space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="reset-email">이메일</Label>
+                              <Input
+                                id="reset-email"
+                                type="email"
+                                placeholder="your@email.com"
+                                value={resetEmail}
+                                onChange={(e) => setResetEmail(e.target.value)}
+                                required
+                              />
+                            </div>
+                            <Button type="submit" className="w-full" disabled={isResetLoading}>
+                              {isResetLoading ? "전송 중..." : "재설정 링크 보내기"}
+                            </Button>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </div>
+
                   <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
                     {isLoading ? "로그인 중..." : "로그인"}
                   </Button>
