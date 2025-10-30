@@ -18,6 +18,7 @@ import TeacherStudents from "./TeacherStudents";
 import TeacherAnalytics from "./TeacherAnalytics";
 import TeacherRevenue from "./TeacherRevenue";
 import AdminDashboard from "./AdminDashboard";
+import OperatorDashboard from "./OperatorDashboard";
 import AdminUsers from "./AdminUsers";
 import AdminCourses from "./AdminCourses";
 import AdminContent from "./AdminContent";
@@ -36,7 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type DemoRole = "student" | "teacher" | "admin";
+type DemoRole = "student" | "teacher" | "admin" | "operator";
 
 const DemoPreview = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -93,20 +94,34 @@ const DemoPreview = () => {
           return <AdminContent />;
         case "learning":
           return <AdminLearning />;
-        case "tenants":
-          return <AdminTenants />;
         case "revenue":
           return <AdminRevenue />;
-        case "usage":
-          return <AdminUsageManagement />;
-        case "ai-logs":
-          return <AdminAILogs />;
         case "monitoring":
           return <AdminMonitoring />;
         case "settings":
           return <AdminSettings />;
         default:
           return <AdminDashboard isDemo={true} />;
+      }
+    }
+    
+    // Operator pages
+    if (activeRole === "operator") {
+      switch (activePage) {
+        case "tenants":
+          return <AdminTenants />;
+        case "usage":
+          return <AdminUsageManagement />;
+        case "ai-logs":
+          return <AdminAILogs />;
+        case "revenue":
+          return <AdminRevenue />;
+        case "monitoring":
+          return <AdminMonitoring />;
+        case "settings":
+          return <AdminSettings />;
+        default:
+          return <OperatorDashboard isDemo={true} />;
       }
     }
     
@@ -140,6 +155,7 @@ const DemoPreview = () => {
                   <SelectItem value="student">학생</SelectItem>
                   <SelectItem value="teacher">강사</SelectItem>
                   <SelectItem value="admin">관리자</SelectItem>
+                  <SelectItem value="operator">운영자</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -156,7 +172,12 @@ const DemoPreview = () => {
         <div className="bg-primary/10 border-b border-primary/20 shadow-sm">
           <div className="container mx-auto px-3 md:px-4 py-2.5 md:py-3.5">
             <p className="text-xs md:text-sm text-center font-medium">
-              💡 <strong>{activeRole === "student" ? "학생" : activeRole === "teacher" ? "강사" : "관리자"}</strong> 
+              💡 <strong>
+                {activeRole === "student" ? "학생" : 
+                 activeRole === "teacher" ? "강사" : 
+                 activeRole === "admin" ? "관리자" : 
+                 "운영자"}
+              </strong> 
               {" "}대시보드를 <span className="hidden sm:inline">자유롭게 </span>체험해보세요<span className="hidden md:inline">. 실제 작동하는 UI로 구성되어 있습니다</span>
             </p>
           </div>

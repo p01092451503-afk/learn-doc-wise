@@ -48,7 +48,7 @@ import {
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
-  userRole: "student" | "teacher" | "admin";
+  userRole: "student" | "teacher" | "admin" | "operator";
   isDemo?: boolean;
 }
 
@@ -131,7 +131,20 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       ];
     }
 
-    // admin - hide certain menus in demo mode
+    if (userRole === "operator") {
+      // 운영자(SaaS 플랫폼 소유주) 메뉴
+      return [
+        ...baseItems,
+        { icon: Building2, label: "고객사 관리", path: "/admin/tenants", enabled: true },
+        { icon: BarChart3, label: "사용량 관리", path: "/admin/usage", enabled: true },
+        { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true },
+        { icon: DollarSign, label: "전체 매출", path: "/admin/revenue", enabled: true },
+        { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
+        { icon: Settings, label: "플랫폼 설정", path: "/admin/settings", enabled: true },
+      ];
+    }
+
+    // admin (교육사업자/기관) - hide certain menus in demo mode
     const adminItems = [
       ...baseItems,
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
@@ -143,13 +156,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
     ];
 
-    // Only add these menus if NOT in demo mode
+    // Only add operator menus if NOT in demo mode (to separate concerns clearly)
     if (!isDemoMode) {
-      adminItems.splice(5, 0, 
-        { icon: Building2, label: "고객사 관리", path: "/admin/tenants", enabled: true },
-        { icon: BarChart3, label: "사용량 관리", path: "/admin/usage", enabled: true },
-        { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true }
-      );
+      // In non-demo mode, we can check if user is actually an operator
+      // For now, we keep admin items as is
     }
 
     return adminItems;

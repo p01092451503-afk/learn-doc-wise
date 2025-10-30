@@ -18,7 +18,7 @@ export const AddUserDialog = ({ open, onOpenChange }: AddUserDialogProps) => {
   const [formData, setFormData] = useState({
     email: "",
     fullName: "",
-    role: "student" as "student" | "teacher" | "admin",
+    role: "student" as "student" | "teacher" | "admin" | "operator",
     password: "",
   });
   const { toast } = useToast();
@@ -123,7 +123,7 @@ export const AddUserDialog = ({ open, onOpenChange }: AddUserDialogProps) => {
             <Label htmlFor="role">역할</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "student" | "teacher" | "admin") =>
+              onValueChange={(value: "student" | "teacher" | "admin" | "operator") =>
                 setFormData({ ...formData, role: value })
               }
             >
@@ -134,6 +134,7 @@ export const AddUserDialog = ({ open, onOpenChange }: AddUserDialogProps) => {
                 <SelectItem value="student">학생</SelectItem>
                 <SelectItem value="teacher">강사</SelectItem>
                 <SelectItem value="admin">관리자</SelectItem>
+                <SelectItem value="operator">운영자</SelectItem>
               </SelectContent>
             </Select>
           </div>
