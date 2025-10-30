@@ -136,8 +136,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
-    fetchMenuOrder();
-  }, [userRole]);
+    if (isDemo) {
+      // 데모 모드에서는 데이터베이스 호출 없이 기본 메뉴만 사용
+      setMenuItems(getDefaultMenuItems());
+    } else {
+      fetchMenuOrder();
+    }
+  }, [userRole, isDemo]);
 
   const fetchMenuOrder = async () => {
     try {
@@ -260,13 +265,15 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           )}>
             {menuItems.map((item) => (
               item.enabled ? (
-                <Link key={item.path} to={item.path}>
+                isDemo ? (
                   <Button
+                    key={item.path}
                     variant="ghost"
                     className={cn(
                       "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
                       sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                     )}
+                    disabled
                   >
                     <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
                       <item.icon className="h-4 w-4 text-primary" />
@@ -275,7 +282,24 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                       <span className="font-medium">{item.label}</span>
                     )}
                   </Button>
-                </Link>
+                ) : (
+                  <Link key={item.path} to={item.path}>
+                    <Button
+                      variant="ghost"
+                      className={cn(
+                        "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                        sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
+                      )}
+                    >
+                      <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                        <item.icon className="h-4 w-4 text-primary" />
+                      </div>
+                      {!sidebarCollapsed && (
+                        <span className="font-medium">{item.label}</span>
+                      )}
+                    </Button>
+                  </Link>
+                )
               ) : (
                 <div key={item.label} className="relative">
                   <Button
