@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -87,9 +88,12 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
     <OperatorLayout>
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">운영자 대시보드</h1>
-          <p className="text-slate-400">SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
+        <div className="mb-8 flex items-center gap-4">
+          <img src={atomLogo} alt="Operator" className="h-20 w-20" />
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">운영자 대시보드</h1>
+            <p className="text-slate-400">SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
+          </div>
         </div>
 
         {/* Stats Grid */}
