@@ -16,6 +16,11 @@ interface ChatbotProps {
 }
 
 export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
+  // 관리자는 챗봇을 사용하지 않음
+  if (userRole === "admin") {
+    return null;
+  }
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -189,9 +194,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src={chatbotIcon} alt="챗봇" className="h-7 w-7" />
-                <CardTitle className="text-base">
-                  {userRole === "admin" ? "관리자 도우미" : "atomLMS 도우미"}
-                </CardTitle>
+                <CardTitle className="text-base">atomLMS 도우미</CardTitle>
               </div>
               <Button
                 variant="ghost"
@@ -209,11 +212,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
               {messages.length === 0 && (
                 <div className="text-center text-muted-foreground py-8">
                   <img src={chatbotIcon} alt="챗봇" className="h-14 w-14 mx-auto mb-3 opacity-60" />
-                  <p className="text-sm">
-                    {userRole === "admin"
-                      ? "관리자 기능에 대해 무엇이든 물어보세요!"
-                      : "플랫폼 사용법이나 요금제에 대해 물어보세요!"}
-                  </p>
+                  <p className="text-sm">플랫폼 사용법이나 요금제에 대해 물어보세요!</p>
                 </div>
               )}
               <div className="space-y-3">
