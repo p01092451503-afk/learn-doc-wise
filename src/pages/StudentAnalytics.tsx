@@ -143,7 +143,7 @@ const StudentAnalytics = () => {
                         {item.hours}시간
                       </span>
                     </div>
-                    <div className="relative h-8 bg-muted rounded-lg overflow-hidden">
+                    <div className="relative h-3 bg-muted rounded-lg overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary-glow rounded-lg transition-all duration-300"
                         style={{
