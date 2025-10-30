@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,10 +50,17 @@ const menuItems: MenuItem[] = [
 ];
 
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem("operator-sidebar-collapsed");
+    return saved === "true";
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    localStorage.setItem("operator-sidebar-collapsed", String(sidebarCollapsed));
+  }, [sidebarCollapsed]);
 
   const handleLogout = async () => {
     try {
