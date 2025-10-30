@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { BookOpen, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
@@ -271,70 +273,97 @@ const StudentCourses = () => {
               <h2 className="text-2xl font-semibold mb-4">
                 {userRole === "admin" ? "전체 강좌 목록" : "수강 중인 강의"}
               </h2>
-              <div className="relative">
-                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                  {enrollments.map((enrollment) => {
-                    const course = enrollment.courses;
-                    if (!course) return null;
-                    
-                    const levelBadge = getLevelBadge(course.level);
-                    
-                    return (
-                      <Link key={enrollment.id} to={`/student/courses/${course.id}`} className="flex-shrink-0">
-                        <Card className="border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group w-[280px]">
-                          <div className="relative overflow-hidden">
-                            {course.thumbnail_url ? (
-                              <img
-                                src={course.thumbnail_url}
-                                alt={course.title}
-                                className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                            ) : (
-                              <div className="w-full h-40 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                                <BookOpen className="h-12 w-12 text-primary/40" />
-                              </div>
-                            )}
-                            <Badge 
-                              variant={levelBadge.variant}
-                              className="absolute top-3 left-3 backdrop-blur-sm text-xs"
-                            >
+              <Card className="border-border/50 shadow-sm">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[300px]">제목</TableHead>
+                      <TableHead>난이도</TableHead>
+                      <TableHead>학습시간</TableHead>
+                      {userRole !== "admin" && <TableHead>진행률</TableHead>}
+                      <TableHead className="text-right">액션</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {enrollments.map((enrollment) => {
+                      const course = enrollment.courses;
+                      if (!course) return null;
+                      
+                      const levelBadge = getLevelBadge(course.level);
+                      
+                      return (
+                        <TableRow key={enrollment.id} className="group">
+                          <TableCell className="font-medium">
+                            <HoverCard>
+                              <HoverCardTrigger asChild>
+                                <Link 
+                                  to={`/student/courses/${course.id}`}
+                                  className="hover:text-primary transition-colors"
+                                >
+                                  {course.title}
+                                </Link>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-80" side="right">
+                                <div className="space-y-2">
+                                  {course.thumbnail_url ? (
+                                    <img
+                                      src={course.thumbnail_url}
+                                      alt={course.title}
+                                      className="w-full h-40 object-cover rounded-lg"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-40 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg flex items-center justify-center">
+                                      <BookOpen className="h-12 w-12 text-primary/40" />
+                                    </div>
+                                  )}
+                                  <div>
+                                    <h4 className="font-semibold">{course.title}</h4>
+                                    <p className="text-sm text-muted-foreground mt-1">
+                                      {course.description || "강좌 설명이 없습니다"}
+                                    </p>
+                                  </div>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={levelBadge.variant}>
                               {levelBadge.text}
                             </Badge>
-                          </div>
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-base line-clamp-1">{course.title}</CardTitle>
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              {course.description || "강좌 설명이 없습니다"}
-                            </p>
-                          </CardHeader>
-                          <CardContent className="space-y-3 pt-0">
-                            {userRole !== "admin" && (
-                              <div className="space-y-1">
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-muted-foreground">진행률</span>
-                                  <span className="font-medium">{Math.round(enrollment.calculated_progress || enrollment.progress || 0)}%</span>
-                                </div>
-                                <Progress value={enrollment.calculated_progress || enrollment.progress || 0} className="h-1.5" />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              <span>{course.duration_hours}시간</span>
+                            </div>
+                          </TableCell>
+                          {userRole !== "admin" && (
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Progress 
+                                  value={enrollment.calculated_progress || enrollment.progress || 0} 
+                                  className="h-2 w-24" 
+                                />
+                                <span className="text-sm font-medium min-w-[40px]">
+                                  {Math.round(enrollment.calculated_progress || enrollment.progress || 0)}%
+                                </span>
                               </div>
-                            )}
-
-                            <div className="pt-2 border-t">
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                                <Clock className="h-3.5 w-3.5" />
-                                <span>{course.duration_hours}시간</span>
-                              </div>
-                              <Button className="w-full gap-2 text-xs h-8">
-                                <PlayCircle className="h-3.5 w-3.5" />
+                            </TableCell>
+                          )}
+                          <TableCell className="text-right">
+                            <Link to={`/student/courses/${course.id}`}>
+                              <Button size="sm" className="gap-2">
+                                <PlayCircle className="h-4 w-4" />
                                 {userRole === "admin" ? "강좌 보기" : "학습하기"}
                               </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </Card>
             </div>
           </>
         )}
