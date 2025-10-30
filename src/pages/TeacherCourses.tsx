@@ -11,9 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 const TeacherCourses = () => {
-  const courses = [
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [courses] = useState([
     {
       id: 1,
       title: "React 완벽 가이드",
@@ -58,7 +63,34 @@ const TeacherCourses = () => {
       progress: 60,
       lessons: 30,
     },
-  ];
+  ]);
+
+  const handlePreview = (courseId: number) => {
+    navigate(`/demo`);
+  };
+
+  const handleView = (courseId: number) => {
+    toast({
+      title: "강의 상세",
+      description: "강의 상세 페이지로 이동합니다.",
+    });
+  };
+
+  const handleEdit = (courseId: number) => {
+    toast({
+      title: "강의 편집",
+      description: "강의 편집 기능을 준비중입니다.",
+    });
+  };
+
+  const handleDelete = (courseId: number) => {
+    if (!confirm("정말 이 강의를 삭제하시겠습니까?")) return;
+    
+    toast({
+      title: "삭제 완료",
+      description: "강의가 삭제되었습니다.",
+    });
+  };
 
   return (
     <DashboardLayout userRole="teacher">
@@ -163,16 +195,16 @@ const TeacherCourses = () => {
                     <TableCell className="text-right font-medium">{course.revenue}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" onClick={() => handlePreview(course.id)} title="미리보기">
                           <PlayCircle className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" onClick={() => handleView(course.id)} title="상세보기">
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" onClick={() => handleEdit(course.id)} title="편집">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" onClick={() => handleDelete(course.id)} title="삭제">
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
