@@ -83,10 +83,7 @@ const TeacherAssignments = () => {
           .eq("instructor_id", user.id),
         supabase
           .from("assignment_submissions")
-          .select(`
-            *,
-            profiles:student_id(full_name)
-          `)
+          .select("*")
           .order("submitted_at", { ascending: false })
           .limit(20),
       ]);
@@ -95,9 +92,25 @@ const TeacherAssignments = () => {
       if (coursesResult.error) throw coursesResult.error;
       if (submissionsResult.error) throw submissionsResult.error;
 
+      // Fetch student profiles separately
+      const submissionsWithProfiles = await Promise.all(
+        (submissionsResult.data || []).map(async (submission: any) => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("user_id", submission.student_id)
+            .single();
+          
+          return {
+            ...submission,
+            profiles: profile || { full_name: null }
+          };
+        })
+      );
+
       setAssignments(assignmentsResult.data as any || []);
       setCourses(coursesResult.data || []);
-      setSubmissions(submissionsResult.data as any || []);
+      setSubmissions(submissionsWithProfiles as any || []);
     } catch (error: any) {
       toast({
         title: "오류",
