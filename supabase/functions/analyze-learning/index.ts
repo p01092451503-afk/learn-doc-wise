@@ -68,7 +68,6 @@ serve(async (req) => {
           },
           { role: "user", content: analysisPrompt }
         ],
-        temperature: 0.3,
       }),
     });
 
