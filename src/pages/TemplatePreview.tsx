@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import PublicMain from "./PublicMain";
+import ModernLayout from "./layouts/ModernLayout";
+import MinimalLayout from "./layouts/MinimalLayout";
+import CardLayout from "./layouts/CardLayout";
 
 interface Template {
   id: string;
@@ -109,6 +111,20 @@ const TemplatePreview = () => {
     );
   }
 
+  // 템플릿 키에 따라 다른 레이아웃 렌더링
+  const renderLayout = () => {
+    switch (template.template_key) {
+      case 'modern':
+        return <ModernLayout />;
+      case 'minimal':
+        return <MinimalLayout />;
+      case 'card':
+        return <CardLayout />;
+      default:
+        return <ModernLayout />;
+    }
+  };
+
   return (
     <div>
       {/* Template Preview Banner */}
@@ -118,8 +134,8 @@ const TemplatePreview = () => {
         </p>
       </div>
       
-      {/* Render the main page with template styles */}
-      <PublicMain />
+      {/* Render the selected layout with template styles */}
+      {renderLayout()}
     </div>
   );
 };
