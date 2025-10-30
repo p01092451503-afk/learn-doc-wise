@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Clock, Users, Star, TrendingUp, Award } from "lucide-react";
+import { BookOpen, Clock, Users, Star, TrendingUp, Award, User } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { Chatbot } from "@/components/Chatbot";
+import { Session } from "@supabase/supabase-js";
 
 interface Course {
   id: string;
@@ -23,9 +24,23 @@ interface Course {
 const PublicMain = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPublishedCourses();
+    
+    // 현재 세션 확인
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // 세션 변경 감지
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchPublishedCourses = async () => {
@@ -80,15 +95,29 @@ const PublicMain = () => {
             <Link to="/courses" className="text-foreground hover:text-primary transition-colors">
               전체 강좌
             </Link>
-            <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
-              로그인
-            </Link>
+            {!session && (
+              <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
+                로그인
+              </Link>
+            )}
           </nav>
-          <Link to="/auth">
-            <Button variant="premium" size="default">
-              수강 신청
+          {session ? (
+            <Button 
+              variant="premium" 
+              size="default"
+              onClick={() => navigate('/student/courses')}
+              className="gap-2"
+            >
+              <User className="h-4 w-4" />
+              마이페이지
             </Button>
-          </Link>
+          ) : (
+            <Link to="/auth">
+              <Button variant="premium" size="default">
+                수강 신청
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
