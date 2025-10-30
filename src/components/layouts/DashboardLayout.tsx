@@ -272,58 +272,31 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             )}>
               {menuItems.map((item) => (
                 item.enabled ? (
-                  isDemo ? (
-                    <Tooltip key={item.path}>
-                      <TooltipTrigger asChild>
+                  <Tooltip key={item.path}>
+                    <TooltipTrigger asChild>
+                      <Link to={item.path}>
                         <Button
                           variant="ghost"
                           className={cn(
-                            "w-full h-11 text-sm rounded-xl opacity-50 cursor-not-allowed transition-all duration-300",
+                            "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
                             sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
                           )}
-                          disabled
                         >
-                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                            <item.icon className="h-4 w-4 text-muted-foreground" />
+                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                            <item.icon className="h-4 w-4 text-primary" />
                           </div>
                           {!sidebarCollapsed && (
-                            <span className="font-medium text-muted-foreground">{item.label}</span>
+                            <span className="font-medium">{item.label}</span>
                           )}
                         </Button>
-                      </TooltipTrigger>
-                      {sidebarCollapsed && (
-                        <TooltipContent side="right">
-                          <p>{item.label}</p>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  ) : (
-                    <Tooltip key={item.path}>
-                      <TooltipTrigger asChild>
-                        <Link to={item.path}>
-                          <Button
-                            variant="ghost"
-                            className={cn(
-                              "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
-                              sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                            )}
-                          >
-                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                              <item.icon className="h-4 w-4 text-primary" />
-                            </div>
-                            {!sidebarCollapsed && (
-                              <span className="font-medium">{item.label}</span>
-                            )}
-                          </Button>
-                        </Link>
-                      </TooltipTrigger>
-                      {sidebarCollapsed && (
-                        <TooltipContent side="right">
-                          <p>{item.label}</p>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  )
+                      </Link>
+                    </TooltipTrigger>
+                    {sidebarCollapsed && (
+                      <TooltipContent side="right">
+                        <p>{item.label}</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
                 ) : (
                   <Tooltip key={item.label}>
                     <TooltipTrigger asChild>
