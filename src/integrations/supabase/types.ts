@@ -1156,6 +1156,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_enrolled_or_admin: {
+        Args: { p_course_id: string; p_user_id: string }
+        Returns: boolean
+      }
       log_user_activity: {
         Args: {
           p_activity_type: string

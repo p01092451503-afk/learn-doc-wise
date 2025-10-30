@@ -31,6 +31,7 @@ import AdminLearning from "./pages/AdminLearning";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
 import PublicCourseDetail from "./pages/PublicCourseDetail";
+import StudentCourseDetail from "./pages/StudentCourseDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
           <Route path="/demo" element={<DemoPreview />} />
           <Route path="/student" element={<StudentDashboard />} />
           <Route path="/student/courses" element={<StudentCourses />} />
+          <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
           <Route path="/student/assignments" element={<StudentAssignments />} />
           <Route path="/student/community" element={<StudentCommunity />} />
           <Route path="/student/analytics" element={<StudentAnalytics />} />
