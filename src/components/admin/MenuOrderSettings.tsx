@@ -38,6 +38,7 @@ import {
   Shield,
   Save,
   RotateCcw,
+  Palette,
 } from "lucide-react";
 
 interface MenuItem {
@@ -61,6 +62,7 @@ const iconMap: { [key: string]: any } = {
   Building2,
   Brain,
   Shield,
+  Palette,
 };
 
 const defaultMenuItems = {
@@ -86,6 +88,7 @@ const defaultMenuItems = {
     { id: "content", icon: "FolderOpen", label: "콘텐츠 관리", path: "/admin/content", enabled: true },
     { id: "learning", icon: "BarChart3", label: "학습 관리", path: "/admin/learning", enabled: true },
     { id: "tenants", icon: "Building2", label: "고객사 관리", path: "/admin/tenants", enabled: true },
+    { id: "templates", icon: "Palette", label: "디자인 템플릿", path: "/admin/templates", enabled: false },
     { id: "revenue", icon: "DollarSign", label: "매출 관리", path: "/admin/revenue", enabled: true },
     { id: "ai-logs", icon: "Brain", label: "AI 로그", path: "/admin/ai-logs", enabled: true },
     { id: "monitoring", icon: "Shield", label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
