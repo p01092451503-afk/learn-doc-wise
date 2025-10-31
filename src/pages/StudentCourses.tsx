@@ -39,8 +39,9 @@ const StudentCourses = () => {
 
   useEffect(() => {
     if (isDemo) {
-      // Demo mode: use role from URL param
+      // Demo mode: use role from URL param and set mock data
       setUserRole(demoRole);
+      setMockDemoData();
       setLoading(false);
     } else {
       // Real mode: check user role
@@ -48,6 +49,68 @@ const StudentCourses = () => {
       fetchEnrollments();
     }
   }, [isDemo, demoRole]);
+
+  const setMockDemoData = () => {
+    const mockEnrollments = [
+      {
+        id: 'demo-1',
+        course_id: 'course-1',
+        progress: 45,
+        calculated_progress: 45,
+        courses: {
+          id: 'course-1',
+          title: 'AI 기반 웹 개발 마스터',
+          description: 'AI 튜터가 함께하는 최신 웹 개발 강좌. 실시간 코드 피드백과 맞춤형 학습 경로를 제공합니다.',
+          thumbnail_url: '',
+          level: 'intermediate',
+          duration_hours: 40,
+        }
+      },
+      {
+        id: 'demo-2',
+        course_id: 'course-2',
+        progress: 78,
+        calculated_progress: 78,
+        courses: {
+          id: 'course-2',
+          title: 'Python AI 프로그래밍',
+          description: 'AI 자동 채점 시스템과 함께하는 Python 학습. 과제 제출 시 즉각적인 AI 피드백을 받아보세요.',
+          thumbnail_url: '',
+          level: 'beginner',
+          duration_hours: 30,
+        }
+      },
+      {
+        id: 'demo-3',
+        course_id: 'course-3',
+        progress: 23,
+        calculated_progress: 23,
+        courses: {
+          id: 'course-3',
+          title: 'AI 데이터 분석 입문',
+          description: 'AI 학습 분석으로 당신의 진도를 추적하고, 맞춤형 학습 추천을 받아보세요.',
+          thumbnail_url: '',
+          level: 'beginner',
+          duration_hours: 25,
+        }
+      },
+      {
+        id: 'demo-4',
+        course_id: 'course-4',
+        progress: 92,
+        calculated_progress: 92,
+        courses: {
+          id: 'course-4',
+          title: '머신러닝 실전 프로젝트',
+          description: 'AI 기반 문법 교정과 코드 리뷰를 통해 더 나은 개발자가 되어보세요.',
+          thumbnail_url: '',
+          level: 'advanced',
+          duration_hours: 50,
+        }
+      },
+    ];
+    setEnrollments(mockEnrollments as any);
+  };
 
   const checkUserRole = async () => {
     try {
@@ -201,6 +264,8 @@ const StudentCourses = () => {
           <p className="text-muted-foreground mt-2">
             {userRole === "admin" 
               ? "관리자 권한으로 모든 강좌에 접근할 수 있습니다" 
+              : isDemo
+              ? "AI 튜터, AI 자동 채점, AI 학습 분석 등 다양한 AI 기능으로 더 스마트하게 학습하세요"
               : "수강 중인 강의를 확인하고 학습을 이어가세요"}
           </p>
         </div>
@@ -225,7 +290,7 @@ const StudentCourses = () => {
         ) : (
           <>
             {/* 학습 진행 현황 */}
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-4">
               <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -246,7 +311,7 @@ const StudentCourses = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                         평균 진행률
                       </p>
                       <p className="text-3xl font-bold mt-2">
@@ -261,6 +326,25 @@ const StudentCourses = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {isDemo && (
+                <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                          AI 학습 분석
+                          <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                        </p>
+                        <p className="text-3xl font-bold mt-2">활성</p>
+                      </div>
+                      <div className="h-12 w-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <BookOpen className="h-6 w-6 text-primary" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
                 <CardContent className="pt-6">
@@ -312,9 +396,12 @@ const StudentCourses = () => {
                               <HoverCardTrigger asChild>
                                 <Link 
                                   to={`/student/courses/${course.id}`}
-                                  className="hover:text-primary transition-colors"
+                                  className="hover:text-primary transition-colors flex items-center gap-2"
                                 >
                                   {course.title}
+                                  {isDemo && (
+                                    <Badge variant="default" className="text-[10px] px-1.5 py-0">AI</Badge>
+                                  )}
                                 </Link>
                               </HoverCardTrigger>
                               <HoverCardContent className="w-80" side="right">
