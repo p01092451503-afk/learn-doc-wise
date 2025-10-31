@@ -2,18 +2,32 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm" role="navigation" aria-label="주요 메뉴">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2" aria-label="Atom LMS 홈페이지">
-            <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" />
-            <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-          </Link>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
+        {/* Navigation */}
+        <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm" role="navigation" aria-label="주요 메뉴">
+          <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/" className="flex items-center gap-2" aria-label="Atom LMS 홈페이지">
+                  <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" />
+                  <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-primary text-primary-foreground border-primary">
+                <p>아톰 안녕?</p>
+              </TooltipContent>
+            </Tooltip>
           <div className="flex items-center gap-3">
             <Link to="/auth">
               <Button variant="ghost" size="default">로그인</Button>
@@ -417,6 +431,7 @@ const Landing = () => {
         </div>
       </footer>
     </div>
+    </TooltipProvider>
   );
 };
 

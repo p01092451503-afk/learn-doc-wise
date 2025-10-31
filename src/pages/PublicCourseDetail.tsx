@@ -9,6 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Clock, Users, PlayCircle, CheckCircle, ArrowLeft, Star } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import VideoPreview from "@/components/video/VideoPreview";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Course {
   id: string;
@@ -118,14 +124,22 @@ const PublicCourseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/main" className="flex items-center gap-2">
-            <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-            <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-          </Link>
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
+          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/main" className="flex items-center gap-2">
+                  <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" />
+                  <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="bg-primary text-primary-foreground border-primary">
+                <p>아톰 안녕?</p>
+              </TooltipContent>
+            </Tooltip>
           <nav className="hidden md:flex items-center gap-6">
             <Link to="/main" className="text-foreground hover:text-primary transition-colors">
               홈
@@ -402,6 +416,7 @@ const PublicCourseDetail = () => {
         </div>
       </footer>
     </div>
+    </TooltipProvider>
   );
 };
 
