@@ -109,7 +109,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   <span className="text-gradient-slate">atom</span>
                   <span className="text-white">LMS</span>
                 </span>
-                <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
+                <span className="ml-2 text-xs font-medium text-slate-300 bg-slate-700/80 px-2 py-0.5 rounded border border-slate-500/30">Operator</span>
               </div>
             </Link>
           </div>

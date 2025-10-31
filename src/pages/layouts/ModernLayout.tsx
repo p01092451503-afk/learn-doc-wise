@@ -112,7 +112,7 @@ const ModernLayout = () => {
                 <span className="text-gradient-slate">atom</span>
                 <span>LMS</span>
               </span>
-              <Badge variant="default" className="ml-2">AI</Badge>
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white text-xs font-bold shadow-lg border border-slate-500/30">AI</span>
             </Link>
             <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
               <Link to="/main" className="text-sm font-medium hover:text-primary transition-colors">홈</Link>
