@@ -923,6 +923,162 @@ export type Database = {
           },
         ]
       }
+      learning_path_steps: {
+        Row: {
+          content_id: string | null
+          content_type: string
+          created_at: string
+          description: string | null
+          estimated_minutes: number
+          id: string
+          is_required: boolean
+          learning_path_id: string
+          step_order: number
+          title: string
+        }
+        Insert: {
+          content_id?: string | null
+          content_type: string
+          created_at?: string
+          description?: string | null
+          estimated_minutes?: number
+          id?: string
+          is_required?: boolean
+          learning_path_id: string
+          step_order: number
+          title: string
+        }
+        Update: {
+          content_id?: string | null
+          content_type?: string
+          created_at?: string
+          description?: string | null
+          estimated_minutes?: number
+          id?: string
+          is_required?: boolean
+          learning_path_id?: string
+          step_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_path_steps_learning_path_id_fkey"
+            columns: ["learning_path_id"]
+            isOneToOne: false
+            referencedRelation: "learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_paths: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          difficulty_level: string
+          estimated_hours: number
+          id: string
+          is_active: boolean
+          learning_objectives: string[] | null
+          prerequisites: Json | null
+          tenant_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty_level: string
+          estimated_hours?: number
+          id?: string
+          is_active?: boolean
+          learning_objectives?: string[] | null
+          prerequisites?: Json | null
+          tenant_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          difficulty_level?: string
+          estimated_hours?: number
+          id?: string
+          is_active?: boolean
+          learning_objectives?: string[] | null
+          prerequisites?: Json | null
+          tenant_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_paths_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_recommendations: {
+        Row: {
+          accepted: boolean | null
+          accepted_at: string | null
+          ai_model: string | null
+          created_at: string
+          id: string
+          reason: string | null
+          recommendation_score: number
+          recommendation_type: string
+          recommended_item_id: string | null
+          recommended_item_type: string | null
+          tenant_id: string | null
+          user_data_snapshot: Json | null
+          user_id: string
+        }
+        Insert: {
+          accepted?: boolean | null
+          accepted_at?: string | null
+          ai_model?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          recommendation_score?: number
+          recommendation_type: string
+          recommended_item_id?: string | null
+          recommended_item_type?: string | null
+          tenant_id?: string | null
+          user_data_snapshot?: Json | null
+          user_id: string
+        }
+        Update: {
+          accepted?: boolean | null
+          accepted_at?: string | null
+          ai_model?: string | null
+          created_at?: string
+          id?: string
+          reason?: string | null
+          recommendation_score?: number
+          recommendation_type?: string
+          recommended_item_id?: string | null
+          recommended_item_type?: string | null
+          tenant_id?: string | null
+          user_data_snapshot?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_recommendations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_order: {
         Row: {
           created_at: string
@@ -1610,6 +1766,123 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_learning_path_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          score: number | null
+          started_at: string | null
+          status: string
+          step_id: string
+          time_spent_minutes: number | null
+          updated_at: string
+          user_learning_path_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          score?: number | null
+          started_at?: string | null
+          status?: string
+          step_id: string
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_learning_path_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          score?: number | null
+          started_at?: string | null
+          status?: string
+          step_id?: string
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_learning_path_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_learning_path_progress_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "learning_path_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_learning_path_progress_user_learning_path_id_fkey"
+            columns: ["user_learning_path_id"]
+            isOneToOne: false
+            referencedRelation: "user_learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_learning_paths: {
+        Row: {
+          ai_recommended: boolean
+          completed_at: string | null
+          created_at: string
+          current_step_id: string | null
+          estimated_completion_date: string | null
+          id: string
+          learning_path_id: string
+          progress_percentage: number
+          recommendation_reason: string | null
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_recommended?: boolean
+          completed_at?: string | null
+          created_at?: string
+          current_step_id?: string | null
+          estimated_completion_date?: string | null
+          id?: string
+          learning_path_id: string
+          progress_percentage?: number
+          recommendation_reason?: string | null
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_recommended?: boolean
+          completed_at?: string | null
+          created_at?: string
+          current_step_id?: string | null
+          estimated_completion_date?: string | null
+          id?: string
+          learning_path_id?: string
+          progress_percentage?: number
+          recommendation_reason?: string | null
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_learning_paths_current_step_id_fkey"
+            columns: ["current_step_id"]
+            isOneToOne: false
+            referencedRelation: "learning_path_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_learning_paths_learning_path_id_fkey"
+            columns: ["learning_path_id"]
+            isOneToOne: false
+            referencedRelation: "learning_paths"
             referencedColumns: ["id"]
           },
         ]
