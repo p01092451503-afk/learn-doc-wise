@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import logoIcon from "@/assets/logo-icon.png";
 import {
   BookOpen,
   Users,
@@ -605,10 +606,11 @@ const OperatorFeatures = () => {
         <div>
           <h1
             className={cn(
-              "text-3xl font-bold mb-2 transition-colors",
+              "text-3xl font-bold mb-2 transition-colors flex items-center gap-2",
               theme === "dark" ? "text-white" : "text-slate-900"
             )}
           >
+            <img src={logoIcon} alt="atom" className="h-8 w-8" />
             기능 목록
           </h1>
           <p

@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
+import logoIcon from "@/assets/logo-icon.png";
 
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
@@ -113,9 +114,12 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className={cn(
-            "text-3xl md:text-4xl font-bold mb-2 transition-colors",
+            "text-3xl md:text-4xl font-bold mb-2 transition-colors flex items-center gap-2",
             theme === "dark" ? "text-white" : "text-slate-900"
-          )}>운영자 대시보드</h1>
+          )}>
+            <img src={logoIcon} alt="atom" className="h-8 w-8 md:h-10 md:w-10" />
+            운영자 대시보드
+          </h1>
           <p className={cn(
             "transition-colors",
             theme === "dark" ? "text-slate-400" : "text-slate-600"

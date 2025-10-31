@@ -7,6 +7,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { DollarSign, TrendingUp, CreditCard, Calendar, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface Payment {
   id: string;
@@ -109,7 +110,10 @@ const AdminRevenue = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold">매출 관리</h1>
+            <h1 className="text-3xl font-display font-bold flex items-center gap-2">
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              매출 관리
+            </h1>
             <p className="text-muted-foreground mt-2">플랫폼 매출 현황 및 정산 관리</p>
           </div>
           <Button>

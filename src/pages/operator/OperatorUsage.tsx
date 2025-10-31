@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/operator/EmptyState";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface TenantUsage {
   tenant_id: string;
@@ -166,9 +167,12 @@ const OperatorUsage = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className={cn(
-              "text-3xl font-bold mb-2 transition-colors",
+              "text-3xl font-bold mb-2 transition-colors flex items-center gap-2",
               theme === "dark" ? "text-white" : "text-slate-900"
-            )}>사용량 관리</h1>
+            )}>
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              사용량 관리
+            </h1>
             <p className={cn(
               "transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"

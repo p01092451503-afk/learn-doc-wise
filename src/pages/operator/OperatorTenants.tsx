@@ -14,6 +14,7 @@ import { Building2, Plus, Search, Filter, CreditCard, X } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { cn } from "@/lib/utils";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface Tenant {
   id: string;
@@ -245,9 +246,12 @@ const OperatorTenants = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className={cn(
-              "text-3xl font-bold mb-2 transition-colors",
+              "text-3xl font-bold mb-2 transition-colors flex items-center gap-2",
               theme === "dark" ? "text-white" : "text-slate-900"
-            )}>고객사 관리</h1>
+            )}>
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              고객사 관리
+            </h1>
             <p className={cn(
               "transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"

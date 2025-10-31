@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Download, TrendingUp, TrendingDown, AlertTriangle, BookOpen, Award, BarChart3, Brain, Search, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface Enrollment {
   id: string;
@@ -334,7 +335,10 @@ const AdminLearning = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold">학습 관리</h1>
+            <h1 className="text-3xl font-display font-bold flex items-center gap-2">
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              학습 관리
+            </h1>
             <p className="text-muted-foreground mt-2">진도율, 성적, 학습 분석 및 이수 관리</p>
           </div>
           <div className="flex gap-2">
