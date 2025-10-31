@@ -17,7 +17,7 @@ export default {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         display: ['Space Grotesk', 'system-ui', 'sans-serif'],
         logo: ['Outfit', 'system-ui', 'sans-serif'],
-        atom: ['Inter Tight', 'system-ui', 'sans-serif'],
+        atom: ['Outfit', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
