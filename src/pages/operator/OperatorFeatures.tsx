@@ -546,7 +546,15 @@ const OperatorFeatures = () => {
               {menu.description}
             </p>
           </div>
-          <Badge variant="outline" className="text-xs">
+          <Badge 
+            variant="outline" 
+            className={cn(
+              "text-xs",
+              theme === "dark" 
+                ? "text-slate-300 border-slate-600" 
+                : "text-slate-700 border-slate-400"
+            )}
+          >
             {menu.features.length}개
           </Badge>
         </div>
