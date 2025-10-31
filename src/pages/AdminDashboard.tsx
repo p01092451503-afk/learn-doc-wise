@@ -3,19 +3,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain } from "lucide-react";
+import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3 } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { CourseApprovalDialog } from "@/components/admin/CourseApprovalDialog";
 import { SettlementDialog } from "@/components/admin/SettlementDialog";
 import { ReportDialog } from "@/components/admin/ReportDialog";
+import { AITutorDialog } from "@/components/ai/AITutorDialog";
+import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [courseApprovalOpen, setCourseApprovalOpen] = useState(false);
   const [settlementOpen, setSettlementOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [aiTutorOpen, setAiTutorOpen] = useState(false);
+  const [aiGradingOpen, setAiGradingOpen] = useState(false);
+  const [aiAnalysisOpen, setAiAnalysisOpen] = useState(false);
   return (
     <DashboardLayout userRole="admin" isDemo={isDemo}>
       <div className="space-y-6">
@@ -191,6 +196,74 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
         </div>
 
+        {/* AI Learning Assistant - Only in Demo */}
+        {isDemo && (
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-primary" />
+                <CardTitle>AI 학습 도우미 기능</CardTitle>
+                <Badge variant="default" className="text-xs">AI</Badge>
+              </div>
+              <CardDescription>AI 기술로더 효과적인 학습을 경험하세요</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiTutorOpen(true)}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <MessageCircle className="h-6 w-6 text-primary" />
+                      </div>
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <h3 className="font-semibold">AI 튜터</h3>
+                    <p className="text-sm text-muted-foreground">24시간 언제든지 질문하고 실시간 답변을 받으세요</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiGradingOpen(true)}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <h3 className="font-semibold">AI 자동 채점</h3>
+                    <p className="text-sm text-muted-foreground">과제 제출 시 즉시 채점 결과와 상세한 피드백 제공</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiAnalysisOpen(true)}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <BarChart3 className="h-6 w-6 text-primary" />
+                      </div>
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <h3 className="font-semibold">AI 학습 분석</h3>
+                    <p className="text-sm text-muted-foreground">학습 패턴 분석으로 맞춤형 학습 경로 추천</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                <p className="text-sm text-yellow-900 dark:text-yellow-200">
+                  <strong>시제 서비스 시작하기</strong> 버튼을 눌러 회원가입하고 모든 AI 기능을 체험해보세요
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Quick Actions */}
           <Card>
             <CardHeader>
@@ -243,6 +316,9 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <CourseApprovalDialog open={courseApprovalOpen} onOpenChange={setCourseApprovalOpen} />
       <SettlementDialog open={settlementOpen} onOpenChange={setSettlementOpen} />
       <ReportDialog open={reportOpen} onOpenChange={setReportOpen} />
+      <AITutorDialog open={aiTutorOpen} onOpenChange={setAiTutorOpen} courseContext="데모 강의 컨텍스트" />
+      <AIFeedbackDialog open={aiGradingOpen} onOpenChange={setAiGradingOpen} />
+      <AIFeedbackDialog open={aiAnalysisOpen} onOpenChange={setAiAnalysisOpen} />
 
       {/* 챗봇 - 숨김 */}
       {/* <Chatbot userRole="admin" /> */}
