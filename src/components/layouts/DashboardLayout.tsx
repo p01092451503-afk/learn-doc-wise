@@ -125,7 +125,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       return [
         ...baseItems,
         { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true },
-        { icon: FileText, label: "과제", path: "/student/assignments", enabled: true, hasAI: true },
+        { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
         { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true, hasAI: true },
       ];
