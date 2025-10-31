@@ -25,7 +25,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className={`grid gap-4 md:grid-cols-2 ${isDemo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
           <StatsCard
             title="전체 학생"
             value="342"
@@ -188,9 +188,9 @@ const StatsCard = ({
       <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
       <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent className="space-y-1 min-w-0">
-      <div className="text-xl font-bold break-all">{value}</div>
-      <p className={`text-xs whitespace-nowrap ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
+    <CardContent className="space-y-1">
+      <div className="text-2xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">{value}</div>
+      <p className={`text-xs whitespace-nowrap overflow-hidden text-ellipsis ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
       </p>
     </CardContent>
