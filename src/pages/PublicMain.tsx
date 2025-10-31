@@ -361,9 +361,6 @@ const PublicMain = () => {
                 <img src={logoIcon} alt="Logo" className="h-10 w-10" />
                 <span className="text-xl font-logo font-bold">atomLMS</span>
               </div>
-              <p className="text-sm text-muted-foreground">
-                전문 온라인 교육 플랫폼
-              </p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">{t('aboutUs')}</h4>
