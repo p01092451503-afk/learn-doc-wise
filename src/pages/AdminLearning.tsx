@@ -468,20 +468,25 @@ const AdminLearning = () => {
                   <CardTitle className="flex items-center gap-2">
                     <Brain className="h-5 w-5" />
                     AI 학습 분석 및 이탈 예측
+                    <Badge variant="default" className="text-xs">AI</Badge>
                   </CardTitle>
                   <Button 
                     onClick={runAIAnalysis} 
                     disabled={analyzingAI || enrollments.length === 0}
                     variant="default"
+                    className="gap-2 relative"
                   >
+                    <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+                      AI
+                    </Badge>
                     {analyzingAI ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                         분석 중...
                       </>
                     ) : (
                       <>
-                        <Brain className="h-4 w-4 mr-2" />
+                        <Brain className="h-4 w-4" />
                         AI 분석 실행
                       </>
                     )}

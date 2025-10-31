@@ -275,7 +275,10 @@ const StudentCourseDetail = () => {
         {/* AI 기능 버튼 */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">AI 학습 도우미</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              AI 학습 도우미
+              <Badge variant="default" className="text-xs">AI</Badge>
+            </CardTitle>
             <CardDescription>AI 기반 학습 지원 기능을 활용해보세요</CardDescription>
           </CardHeader>
           <CardContent>
@@ -283,25 +286,34 @@ const StudentCourseDetail = () => {
               <Button 
                 variant="outline" 
                 onClick={() => setAiTutorOpen(true)}
-                className="w-full justify-start"
+                className="w-full justify-start gap-2 relative"
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
+                <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+                  AI
+                </Badge>
+                <MessageCircle className="h-4 w-4" />
                 AI 튜터
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setAiFeedbackOpen(true)}
-                className="w-full justify-start"
+                className="w-full justify-start gap-2 relative"
               >
-                <FileCheck className="h-4 w-4 mr-2" />
+                <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+                  AI
+                </Badge>
+                <FileCheck className="h-4 w-4" />
                 AI 피드백
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setAiTranslateOpen(true)}
-                className="w-full justify-start"
+                className="w-full justify-start gap-2 relative"
               >
-                <Languages className="h-4 w-4 mr-2" />
+                <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+                  AI
+                </Badge>
+                <Languages className="h-4 w-4" />
                 AI 번역
               </Button>
             </div>

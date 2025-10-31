@@ -124,10 +124,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     if (userRole === "student") {
       return [
         ...baseItems,
-        { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true },
+        { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
-        { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true, hasAI: true },
+        { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
       ];
     }
 
@@ -138,7 +138,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
-        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true, hasAI: true },
+        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
       ];
     }
@@ -149,7 +149,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         ...baseItems,
         { icon: Building2, label: "고객사 관리", path: "/operator/tenants", enabled: true },
         { icon: BarChart3, label: "사용량 관리", path: "/operator/usage", enabled: true },
-        { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", enabled: true, hasAI: true },
+        { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", enabled: true },
         { icon: DollarSign, label: "전체 매출", path: "/operator/revenue", enabled: true },
         { icon: Shield, label: "시스템 모니터링", path: "/operator/monitoring", enabled: true },
         { icon: Settings, label: "플랫폼 설정", path: "/operator/settings", enabled: true },
@@ -163,7 +163,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
-      { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true, hasAI: true },
+      { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true },
       { icon: Palette, label: "디자인 템플릿", path: "/admin/templates", enabled: true },
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
