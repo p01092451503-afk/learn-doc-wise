@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, Check, Palette } from "lucide-react";
+import { Eye, Check, Palette, Layout, Paintbrush } from "lucide-react";
 import { Link } from "react-router-dom";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 interface Template {
   id: string;
@@ -123,129 +124,164 @@ const AdminTemplates = () => {
     }
   };
 
+  const getLayoutBadge = (templateKey: string) => {
+    switch (templateKey) {
+      case "modern":
+        return { label: "모던 레이아웃", variant: "default" as const, icon: Layout };
+      case "minimal":
+        return { label: "미니멀 레이아웃", variant: "secondary" as const, icon: Layout };
+      case "card":
+        return { label: "카드 레이아웃", variant: "outline" as const, icon: Layout };
+      default:
+        return { label: "기본 레이아웃", variant: "outline" as const, icon: Layout };
+    }
+  };
+
+  const getColorThemeBadge = (primaryColor: string) => {
+    const hue = primaryColor.toLowerCase();
+    if (hue.includes("blue") || hue.includes("#3b82f6")) {
+      return { label: "블루 테마", variant: "default" as const };
+    } else if (hue.includes("purple") || hue.includes("#9333ea")) {
+      return { label: "퍼플 테마", variant: "secondary" as const };
+    } else if (hue.includes("green") || hue.includes("#10b981")) {
+      return { label: "그린 테마", variant: "outline" as const };
+    }
+    return { label: "커스텀 테마", variant: "outline" as const };
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <DashboardLayout userRole="admin">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 py-12 px-6">
-      <div className="max-w-7xl mx-auto space-y-10">
-        {/* Header Section with better spacing */}
-        <div className="bg-background rounded-2xl p-8 shadow-sm border">
-          <h1 className="text-4xl font-display font-bold text-foreground mb-3">디자인 템플릿</h1>
-          <p className="text-lg text-muted-foreground">
-            사용자에게 보여질 메인 페이지 디자인을 선택하세요. 각 템플릿은 고유한 레이아웃 구조를 가지고 있습니다.
-          </p>
+    <DashboardLayout userRole="admin">
+      <div className="space-y-6">
+        {/* Header - 다른 관리자 페이지와 동일한 스타일 */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-display font-bold">디자인 템플릿</h1>
+            <p className="text-muted-foreground mt-2">
+              사용자에게 보여질 메인 페이지 디자인을 선택하세요. 각 템플릿은 고유한 색상 테마와 레이아웃 구조를 제공합니다.
+            </p>
+          </div>
         </div>
 
-        {/* Templates Grid with proper spacing */}
+        {/* Templates Grid */}
         {templates.length === 0 ? (
-          <Card className="bg-background">
-            <CardContent className="flex flex-col items-center justify-center py-20">
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
               <Palette className="h-16 w-16 text-muted-foreground mb-4" />
-              <p className="text-lg text-muted-foreground text-center">
+              <p className="text-muted-foreground text-center">
                 사용 가능한 템플릿이 없습니다.
               </p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {templates.map((template) => {
               const isSelected = currentTemplate === template.id;
+              const layoutBadge = getLayoutBadge(template.template_key);
+              const colorThemeBadge = getColorThemeBadge(template.style_config.primaryColor);
               
               return (
                 <Card 
                   key={template.id} 
-                  className={`relative bg-background transition-all duration-300 hover:shadow-xl overflow-hidden group ${
+                  className={`relative transition-all duration-300 hover:shadow-lg overflow-hidden group ${
                     isSelected ? 'ring-2 ring-primary shadow-glow' : ''
                   }`}
                 >
                   {/* Selection Badge */}
                   {isSelected && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <Badge variant="default" className="gap-1 shadow-lg">
+                    <div className="absolute top-3 right-3 z-10">
+                      <Badge variant="default" className="gap-1 shadow-md">
                         <Check className="h-3 w-3" />
                         현재 사용중
                       </Badge>
                     </div>
                   )}
 
-                  {/* Template Preview Area - placeholder for actual preview */}
-                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
+                  {/* Template Preview Area */}
+                  <div className="aspect-video bg-gradient-to-br from-primary/5 to-accent/5 relative overflow-hidden border-b">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center space-y-2">
-                        <Palette className="h-12 w-12 text-primary/60 mx-auto" />
-                        <p className="text-sm font-medium text-muted-foreground">
-                          {template.template_key} 레이아웃
+                        <Palette className="h-10 w-10 text-primary/40 mx-auto" />
+                        <p className="text-xs font-medium text-muted-foreground">
+                          템플릿 미리보기
                         </p>
                       </div>
                     </div>
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
                   </div>
                   
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
-                      {template.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm leading-relaxed">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                        {template.name}
+                      </CardTitle>
+                    </div>
+                    <CardDescription className="text-sm leading-relaxed line-clamp-2">
                       {template.description}
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="space-y-5 pb-6">
-                    {/* Color Scheme Preview */}
+                  <CardContent className="space-y-4 pb-6">
+                    {/* 템플릿 구분 뱃지 */}
                     <div className="space-y-2">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        색상 조합
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+                        <Layout className="h-3 w-3" />
+                        레이아웃 구조
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant={layoutBadge.variant} className="text-xs gap-1">
+                          <layoutBadge.icon className="h-3 w-3" />
+                          {layoutBadge.label}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {template.style_config.heroStyle}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* 색상 테마 */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+                        <Paintbrush className="h-3 w-3" />
+                        색상 테마
                       </p>
                       <div className="flex items-center gap-3">
                         <div className="flex gap-2">
                           <div 
-                            className="w-10 h-10 rounded-xl border-2 border-border shadow-sm transition-transform hover:scale-110"
+                            className="w-8 h-8 rounded-lg border-2 border-border shadow-sm transition-transform hover:scale-110"
                             style={{ backgroundColor: template.style_config.primaryColor }}
                             title="Primary Color"
                           />
                           <div 
-                            className="w-10 h-10 rounded-xl border-2 border-border shadow-sm transition-transform hover:scale-110"
+                            className="w-8 h-8 rounded-lg border-2 border-border shadow-sm transition-transform hover:scale-110"
                             style={{ backgroundColor: template.style_config.accentColor }}
                             title="Accent Color"
                           />
                         </div>
-                        <div className="flex-1 text-right">
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {template.style_config.fontFamily}
-                          </span>
-                        </div>
+                        <Badge variant={colorThemeBadge.variant} className="text-xs">
+                          {colorThemeBadge.label}
+                        </Badge>
                       </div>
-                    </div>
-
-                    {/* Style Tags */}
-                    <div className="space-y-2">
-                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        스타일 특성
+                      <p className="text-xs text-muted-foreground">
+                        폰트: {template.style_config.fontFamily}
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {template.style_config.heroStyle}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {template.template_key}
-                        </Badge>
-                      </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-3 pt-2">
+                    <div className="flex gap-2 pt-2">
                       <Link to={`/template-preview/${template.template_key}`} target="_blank" className="flex-1">
                         <Button 
                           variant="outline" 
-                          size="default" 
-                          className="w-full gap-2 hover:bg-accent"
+                          size="sm" 
+                          className="w-full gap-2"
                         >
                           <Eye className="h-4 w-4" />
                           미리보기
@@ -253,7 +289,7 @@ const AdminTemplates = () => {
                       </Link>
                       <Button
                         variant={isSelected ? "secondary" : "default"}
-                        size="default"
+                        size="sm"
                         className="flex-1"
                         onClick={() => handleSelectTemplate(template.id)}
                         disabled={isSelected}
@@ -275,7 +311,7 @@ const AdminTemplates = () => {
           </div>
         )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
