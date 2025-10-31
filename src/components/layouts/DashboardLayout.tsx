@@ -223,7 +223,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
       {/* Top Navigation - Hidden in demo mode */}
       {!isDemoMode && (
         <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
@@ -329,8 +330,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             )}
           </Button>
 
-          <TooltipProvider>
-            <nav className={cn(
+          <nav className={cn(
               "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
               sidebarCollapsed ? "p-2" : "p-4"
             )}>
@@ -416,7 +416,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                 )
               ))}
             </nav>
-          </TooltipProvider>
         </aside>
 
         {/* Main Content */}
@@ -441,6 +440,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         </Button>
       )}
     </div>
+    </TooltipProvider>
   );
 };
 
