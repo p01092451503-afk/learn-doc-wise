@@ -31,7 +31,6 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
-import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -237,9 +236,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             <span className="text-lg md:text-2xl font-atom font-bold tracking-tight">
               <span className="text-gradient-atom">atom</span>
               <span className="text-foreground">LMS</span>
-            </span>
-            <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white text-[10px] md:text-xs font-bold shadow-lg border border-slate-500/30">
-              AI
             </span>
           </Link>
 
