@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface TenantUsage {
   tenant_id: string;
@@ -31,7 +32,31 @@ const OperatorUsage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   useEffect(() => {
     fetchUsageData();
@@ -140,8 +165,14 @@ const OperatorUsage = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">사용량 관리</h1>
-            <p className="text-slate-400">전체 고객사의 리소스 사용량을 모니터링합니다</p>
+            <h1 className={cn(
+              "text-3xl font-bold mb-2 transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>사용량 관리</h1>
+            <p className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>전체 고객사의 리소스 사용량을 모니터링합니다</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -150,7 +181,13 @@ const OperatorUsage = () => {
                 checked={autoRefresh}
                 onCheckedChange={setAutoRefresh}
               />
-              <Label htmlFor="auto-refresh" className="text-sm text-slate-300 cursor-pointer">
+              <Label 
+                htmlFor="auto-refresh" 
+                className={cn(
+                  "text-sm cursor-pointer transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}
+              >
                 자동 새로고침 (30초)
               </Label>
             </div>
@@ -159,7 +196,12 @@ const OperatorUsage = () => {
               size="sm"
               onClick={handleRefresh}
               disabled={refreshing}
-              className="gap-2 border-slate-700 text-slate-300 hover:bg-slate-800"
+              className={cn(
+                "gap-2 transition-colors",
+                theme === "dark"
+                  ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-100"
+              )}
             >
               <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
               새로고침
@@ -169,49 +211,93 @@ const OperatorUsage = () => {
 
         {/* Summary Cards */}
         <div className="grid gap-4 md:grid-cols-4">
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">총 사용자</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>총 사용자</CardTitle>
               <Users className="h-4 w-4 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
                 {usageData.reduce((sum, t) => sum + t.student_count, 0).toLocaleString()}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">총 스토리지</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>총 스토리지</CardTitle>
               <HardDrive className="h-4 w-4 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
                 {usageData.reduce((sum, t) => sum + t.storage_used_gb, 0).toFixed(1)} GB
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">AI 토큰 (월)</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>AI 토큰 (월)</CardTitle>
               <Cpu className="h-4 w-4 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
                 {(usageData.reduce((sum, t) => sum + t.ai_tokens_used, 0) / 1000).toFixed(1)}K
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">대역폭</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>대역폭</CardTitle>
               <Database className="h-4 w-4 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
                 {usageData.reduce((sum, t) => sum + t.bandwidth_gb, 0).toFixed(1)} GB
               </div>
             </CardContent>
@@ -219,16 +305,29 @@ const OperatorUsage = () => {
         </div>
 
         {/* Search Section */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" 
+            ? "bg-slate-900/50 border-slate-800" 
+            : "bg-white border-slate-200"
+        )}>
           <CardContent className="pt-6">
             <div className="flex gap-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Search className={cn(
+                  "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-500"
+                )} />
                 <Input
                   placeholder="고객사명 검색..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-800 border-slate-700 text-white"
+                  className={cn(
+                    "pl-10 transition-colors",
+                    theme === "dark"
+                      ? "bg-slate-800 border-slate-700 text-white"
+                      : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
                 />
               </div>
               {searchQuery && (
@@ -236,7 +335,12 @@ const OperatorUsage = () => {
                   variant="outline"
                   size="icon"
                   onClick={() => setSearchQuery("")}
-                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                  className={cn(
+                    "transition-colors",
+                    theme === "dark"
+                      ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                      : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                  )}
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -246,16 +350,30 @@ const OperatorUsage = () => {
         </Card>
 
         {/* Usage Table */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" 
+            ? "bg-slate-900/50 border-slate-800" 
+            : "bg-white border-slate-200"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">고객사별 사용량</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>고객사별 사용량</CardTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>
               {filteredData.length}개 고객사 {searchQuery && `(전체 ${usageData.length}개 중)`}
             </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-slate-400">로딩 중...</div>
+              <div className={cn(
+                "text-center py-8 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>로딩 중...</div>
             ) : filteredData.length === 0 ? (
               <EmptyState
                 icon={searchQuery ? Search : Database}
@@ -266,17 +384,39 @@ const OperatorUsage = () => {
                     : "고객사가 활동을 시작하면 사용량 데이터가 표시됩니다."
                 }
                 action={searchQuery ? { label: "검색 초기화", onClick: () => setSearchQuery("") } : undefined}
+                theme={theme}
               />
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-slate-800">
-                    <TableHead className="text-slate-400">고객사</TableHead>
-                    <TableHead className="text-slate-400">학생 수</TableHead>
-                    <TableHead className="text-slate-400">스토리지</TableHead>
-                    <TableHead className="text-slate-400">AI 토큰</TableHead>
-                    <TableHead className="text-slate-400">대역폭</TableHead>
-                    <TableHead className="text-slate-400">상태</TableHead>
+                  <TableRow className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "border-slate-800" : "border-slate-200"
+                  )}>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>고객사</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>학생 수</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>스토리지</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>AI 토큰</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>대역폭</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>상태</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -285,21 +425,42 @@ const OperatorUsage = () => {
                     const status = getStorageStatus(storagePercentage);
 
                     return (
-                      <TableRow key={usage.tenant_id} className="border-slate-800">
-                        <TableCell className="font-medium text-white">{usage.tenant_name}</TableCell>
-                        <TableCell className="text-slate-400">{usage.student_count}</TableCell>
+                      <TableRow 
+                        key={usage.tenant_id} 
+                        className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "border-slate-800" : "border-slate-200"
+                        )}
+                      >
+                        <TableCell className={cn(
+                          "font-medium transition-colors",
+                          theme === "dark" ? "text-white" : "text-slate-900"
+                        )}>{usage.tenant_name}</TableCell>
+                        <TableCell className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>{usage.student_count}</TableCell>
                         <TableCell>
                           <div className="space-y-1">
-                            <div className="text-sm text-slate-400">
+                            <div className={cn(
+                              "text-sm transition-colors",
+                              theme === "dark" ? "text-slate-400" : "text-slate-600"
+                            )}>
                               {usage.storage_used_gb.toFixed(1)} / {usage.max_storage_gb} GB
                             </div>
                             <Progress value={storagePercentage} className="h-2" />
                           </div>
                         </TableCell>
-                        <TableCell className="text-slate-400">
+                        <TableCell className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
                           {(usage.ai_tokens_used / 1000).toFixed(1)}K
                         </TableCell>
-                        <TableCell className="text-slate-400">
+                        <TableCell className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
                           {usage.bandwidth_gb.toFixed(1)} GB
                         </TableCell>
                         <TableCell>

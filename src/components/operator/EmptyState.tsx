@@ -11,6 +11,7 @@ interface EmptyStateProps {
     onClick: () => void;
   };
   className?: string;
+  theme?: "dark" | "light";
 }
 
 export const EmptyState = ({
@@ -19,14 +20,21 @@ export const EmptyState = ({
   description,
   action,
   className,
+  theme = "dark",
 }: EmptyStateProps) => {
   return (
     <div className={cn("flex flex-col items-center justify-center py-12 px-4", className)}>
       <div className="h-16 w-16 rounded-full bg-violet-500/10 flex items-center justify-center mb-4">
         <Icon className="h-8 w-8 text-violet-400" />
       </div>
-      <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-      <p className="text-sm text-slate-400 text-center max-w-md mb-6">{description}</p>
+      <h3 className={cn(
+        "text-lg font-semibold mb-2 transition-colors",
+        theme === "dark" ? "text-white" : "text-slate-900"
+      )}>{title}</h3>
+      <p className={cn(
+        "text-sm text-center max-w-md mb-6 transition-colors",
+        theme === "dark" ? "text-slate-400" : "text-slate-600"
+      )}>{description}</p>
       {action && (
         <Button
           onClick={action.onClick}
