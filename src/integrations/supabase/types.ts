@@ -359,6 +359,81 @@ export type Database = {
           },
         ]
       }
+      cohort_analysis: {
+        Row: {
+          active_users: number
+          analysis_date: string
+          avg_completion_time_days: number | null
+          avg_engagement_score: number | null
+          cohort_definition: Json
+          cohort_name: string
+          completed_users: number
+          course_id: string | null
+          created_at: string
+          dropped_users: number
+          id: string
+          metrics: Json | null
+          retention_rate_week1: number | null
+          retention_rate_week2: number | null
+          retention_rate_week4: number | null
+          tenant_id: string | null
+          total_users: number
+        }
+        Insert: {
+          active_users?: number
+          analysis_date?: string
+          avg_completion_time_days?: number | null
+          avg_engagement_score?: number | null
+          cohort_definition: Json
+          cohort_name: string
+          completed_users?: number
+          course_id?: string | null
+          created_at?: string
+          dropped_users?: number
+          id?: string
+          metrics?: Json | null
+          retention_rate_week1?: number | null
+          retention_rate_week2?: number | null
+          retention_rate_week4?: number | null
+          tenant_id?: string | null
+          total_users?: number
+        }
+        Update: {
+          active_users?: number
+          analysis_date?: string
+          avg_completion_time_days?: number | null
+          avg_engagement_score?: number | null
+          cohort_definition?: Json
+          cohort_name?: string
+          completed_users?: number
+          course_id?: string | null
+          created_at?: string
+          dropped_users?: number
+          id?: string
+          metrics?: Json | null
+          retention_rate_week1?: number | null
+          retention_rate_week2?: number | null
+          retention_rate_week4?: number | null
+          tenant_id?: string | null
+          total_users?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohort_analysis_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cohort_analysis_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_comments: {
         Row: {
           author_id: string
@@ -923,6 +998,75 @@ export type Database = {
           },
         ]
       }
+      learner_risk_analysis: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          dropout_probability: number | null
+          factors: Json
+          id: string
+          intervention_notes: string | null
+          intervention_required: boolean
+          intervention_taken: boolean
+          last_analyzed_at: string
+          recommendations: string[] | null
+          risk_level: string
+          risk_score: number
+          tenant_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          dropout_probability?: number | null
+          factors?: Json
+          id?: string
+          intervention_notes?: string | null
+          intervention_required?: boolean
+          intervention_taken?: boolean
+          last_analyzed_at?: string
+          recommendations?: string[] | null
+          risk_level: string
+          risk_score?: number
+          tenant_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          dropout_probability?: number | null
+          factors?: Json
+          id?: string
+          intervention_notes?: string | null
+          intervention_required?: boolean
+          intervention_taken?: boolean
+          last_analyzed_at?: string
+          recommendations?: string[] | null
+          risk_level?: string
+          risk_score?: number
+          tenant_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learner_risk_analysis_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learner_risk_analysis_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learning_analytics: {
         Row: {
           at_risk_score: number | null
@@ -1066,6 +1210,134 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "learning_paths_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_pattern_analysis: {
+        Row: {
+          analysis_period: string
+          avg_session_duration_minutes: number | null
+          completion_rate: number | null
+          consistency_score: number | null
+          created_at: string
+          engagement_score: number | null
+          id: string
+          insights: Json | null
+          learning_velocity: number | null
+          peak_learning_day: number | null
+          peak_learning_hour: number | null
+          period_end: string
+          period_start: string
+          preferred_content_types: Json | null
+          tenant_id: string | null
+          total_learning_time_minutes: number
+          user_id: string
+        }
+        Insert: {
+          analysis_period: string
+          avg_session_duration_minutes?: number | null
+          completion_rate?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          id?: string
+          insights?: Json | null
+          learning_velocity?: number | null
+          peak_learning_day?: number | null
+          peak_learning_hour?: number | null
+          period_end: string
+          period_start: string
+          preferred_content_types?: Json | null
+          tenant_id?: string | null
+          total_learning_time_minutes?: number
+          user_id: string
+        }
+        Update: {
+          analysis_period?: string
+          avg_session_duration_minutes?: number | null
+          completion_rate?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          engagement_score?: number | null
+          id?: string
+          insights?: Json | null
+          learning_velocity?: number | null
+          peak_learning_day?: number | null
+          peak_learning_hour?: number | null
+          period_end?: string
+          period_start?: string
+          preferred_content_types?: Json | null
+          tenant_id?: string | null
+          total_learning_time_minutes?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_pattern_analysis_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_predictions: {
+        Row: {
+          actual_value: Json | null
+          confidence_score: number | null
+          course_id: string | null
+          created_at: string
+          id: string
+          model_version: string | null
+          predicted_value: Json
+          prediction_accuracy: number | null
+          prediction_date: string
+          prediction_type: string
+          tenant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          actual_value?: Json | null
+          confidence_score?: number | null
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          model_version?: string | null
+          predicted_value: Json
+          prediction_accuracy?: number | null
+          prediction_date?: string
+          prediction_type: string
+          tenant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          actual_value?: Json | null
+          confidence_score?: number | null
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          model_version?: string | null
+          predicted_value?: Json
+          prediction_accuracy?: number | null
+          prediction_date?: string
+          prediction_type?: string
+          tenant_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_predictions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_predictions_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1676,6 +1948,59 @@ export type Database = {
             columns: ["submission_id"]
             isOneToOne: false
             referencedRelation: "assignment_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      personalized_recommendations: {
+        Row: {
+          acted_at: string | null
+          created_at: string
+          effectiveness_score: number | null
+          id: string
+          priority_score: number
+          reasoning: string | null
+          recommendation_data: Json
+          recommendation_type: string
+          status: string
+          tenant_id: string | null
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          acted_at?: string | null
+          created_at?: string
+          effectiveness_score?: number | null
+          id?: string
+          priority_score?: number
+          reasoning?: string | null
+          recommendation_data: Json
+          recommendation_type: string
+          status?: string
+          tenant_id?: string | null
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          acted_at?: string | null
+          created_at?: string
+          effectiveness_score?: number | null
+          id?: string
+          priority_score?: number
+          reasoning?: string | null
+          recommendation_data?: Json
+          recommendation_type?: string
+          status?: string
+          tenant_id?: string | null
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "personalized_recommendations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -2594,6 +2919,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: undefined
+      }
+      calculate_learner_risk: {
+        Args: { p_course_id: string; p_user_id: string }
+        Returns: Json
       }
       check_and_award_badges: {
         Args: { p_tenant_id: string; p_user_id: string }
