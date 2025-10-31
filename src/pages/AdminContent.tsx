@@ -431,7 +431,7 @@ const AdminContent = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="cat_slug">Slug (선택사항)</Label>
+                          <Label htmlFor="cat_slug">URL 식별자 (선택사항)</Label>
                           <Input
                             id="cat_slug"
                             value={categoryFormData.slug}
@@ -454,7 +454,7 @@ const AdminContent = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>이름</TableHead>
-                      <TableHead>Slug</TableHead>
+                      <TableHead>URL 식별자</TableHead>
                       <TableHead>설명</TableHead>
                       <TableHead>상태</TableHead>
                       <TableHead className="text-right">작업</TableHead>
@@ -713,7 +713,7 @@ const AdminContent = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="tag_slug">Slug (선택사항)</Label>
+                          <Label htmlFor="tag_slug">URL 식별자 (선택사항)</Label>
                           <Input
                             id="tag_slug"
                             value={tagFormData.slug}
