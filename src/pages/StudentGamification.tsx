@@ -7,6 +7,7 @@ import { PointHistory } from "@/components/gamification/PointHistory";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 export default function StudentGamification() {
   const { toast } = useToast();
@@ -98,30 +99,35 @@ export default function StudentGamification() {
 
   if (loading) {
     return (
-      <div className="space-y-6 p-6">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-96 w-full" />
-      </div>
+      <DashboardLayout userRole="student">
+        <div className="space-y-6">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   if (!userStats) {
     return (
-      <div className="p-6 text-center">
-        <p className="text-muted-foreground">게이미피케이션 데이터를 불러올 수 없습니다.</p>
-      </div>
+      <DashboardLayout userRole="student">
+        <div className="text-center">
+          <p className="text-muted-foreground">게이미피케이션 데이터를 불러올 수 없습니다.</p>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">나의 학습 현황</h1>
-        <p className="text-muted-foreground">
-          학습을 통해 포인트를 모으고 배지를 획득하세요!
-        </p>
-      </div>
+    <DashboardLayout userRole="student">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">나의 학습 현황</h1>
+          <p className="text-muted-foreground">
+            학습을 통해 포인트를 모으고 배지를 획득하세요!
+          </p>
+        </div>
 
       <UserStats
         totalPoints={userStats.total_points}
@@ -149,6 +155,7 @@ export default function StudentGamification() {
           <PointHistory history={pointHistory} />
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
