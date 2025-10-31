@@ -11,6 +11,12 @@ import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 
 const emailSchema = z.string().email("유효한 이메일 주소를 입력하세요");
@@ -354,13 +360,21 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
+    <TooltipProvider>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
       <div className="w-full max-w-md relative z-10">
-        <Link to="/" className="flex items-center justify-center mb-8 gap-2">
-          <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
-          <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-        </Link>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link to="/" className="flex items-center justify-center mb-8 gap-2">
+              <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
+              <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+            <p>아톰 안녕?</p>
+          </TooltipContent>
+        </Tooltip>
 
         <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
           <CardHeader className="space-y-3">
@@ -569,6 +583,7 @@ const Auth = () => {
         </p>
       </div>
     </div>
+    </TooltipProvider>
   );
 };
 

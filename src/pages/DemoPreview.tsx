@@ -5,6 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import StudentDashboard from "./StudentDashboard";
 import StudentCourses from "./StudentCourses";
@@ -126,15 +132,23 @@ const DemoPreview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
       {/* Demo Mode Header */}
       <div className="border-b sticky top-0 bg-background/98 backdrop-blur-xl z-[60] shadow-sm">
         <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
-            <Link to="/" className="flex items-center gap-1.5 md:gap-2">
-              <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
-              <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/" className="flex items-center gap-1.5 md:gap-2">
+                  <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
+                  <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+                <p>아톰 안녕?</p>
+              </TooltipContent>
+            </Tooltip>
             <Button variant="secondary" size="sm" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">
               <Bot className="h-3.5 w-3.5" />
               데모 모드
@@ -193,6 +207,7 @@ const DemoPreview = () => {
         </Link>
       </div>
     </div>
+    </TooltipProvider>
   );
 };
 

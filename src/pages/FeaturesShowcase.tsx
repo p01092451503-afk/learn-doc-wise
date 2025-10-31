@@ -30,6 +30,12 @@ import {
   Star,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Feature {
   name: string;
@@ -194,16 +200,24 @@ const FeaturesShowcase = () => {
   const currentRole = rolesData.find((r) => r.role === activeTab);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-white/10 backdrop-blur-sm">
-              <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
-            </div>
-            <span className="text-xl font-bold text-white">atomLMS</span>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/" className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-white/10 backdrop-blur-sm">
+                  <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
+                </div>
+                <span className="text-xl font-bold text-white">atomLMS</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+              <p>아톰 안녕?</p>
+            </TooltipContent>
+          </Tooltip>
           <div className="flex items-center gap-4">
             <Button variant="ghost" className="text-slate-300 hover:text-white" asChild>
               <Link to="/auth">로그인</Link>
@@ -399,12 +413,19 @@ const FeaturesShowcase = () => {
       <footer className="py-12 px-4 border-t border-slate-800/50">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
-                <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
-              </div>
-              <span className="text-lg font-bold text-white">atomLMS</span>
-            </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer">
+                  <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                    <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
+                  </div>
+                  <span className="text-lg font-bold text-white">atomLMS</span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+                <p>아톰 안녕?</p>
+              </TooltipContent>
+            </Tooltip>
             <div className="text-slate-400 text-sm">
               © 2025 atomLMS. All rights reserved.
             </div>
@@ -412,6 +433,7 @@ const FeaturesShowcase = () => {
         </div>
       </footer>
     </div>
+    </TooltipProvider>
   );
 };
 

@@ -31,6 +31,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface OperatorLayoutProps {
   children: React.ReactNode;
@@ -104,10 +110,11 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   };
 
   return (
-    <div className={cn(
-      "min-h-screen transition-colors duration-300",
-      theme === "dark" ? "bg-slate-950" : "bg-slate-50"
-    )}>
+    <TooltipProvider>
+      <div className={cn(
+        "min-h-screen transition-colors duration-300",
+        theme === "dark" ? "bg-slate-950" : "bg-slate-50"
+      )}>
       {/* Top Navigation Bar */}
       <header className={cn(
         "fixed top-0 left-0 right-0 z-50 h-16 border-b backdrop-blur-xl transition-colors duration-300",
@@ -131,15 +138,22 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
               <Menu className="h-5 w-5" />
             </Button>
 
-            <Link to="/operator" className="flex items-center gap-2 group">
-              <div>
-                <span className={cn(
-                  "text-lg font-bold transition-colors",
-                  theme === "dark" ? "text-white" : "text-slate-900"
-                )}>atomLMS</span>
-                <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
-              </div>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/operator" className="flex items-center gap-2 group">
+                  <div>
+                    <span className={cn(
+                      "text-lg font-bold transition-colors",
+                      theme === "dark" ? "text-white" : "text-slate-900"
+                    )}>atomLMS</span>
+                    <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
+                  </div>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+                <p>아톰 안녕?</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <div className="hidden md:flex flex-1 max-w-md mx-8">
@@ -401,6 +415,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         />
       )}
     </div>
+    </TooltipProvider>
   );
 };
 
