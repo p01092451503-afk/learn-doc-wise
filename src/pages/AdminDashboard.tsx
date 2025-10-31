@@ -31,8 +31,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             <img src={logoIcon} alt="atom" className="h-7 w-7 md:h-8 md:w-8" />
             관리자 대시보드
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
-            <img src={atomLogo} alt="atom" className="h-5 w-5" />
+          <p className="text-sm md:text-base text-muted-foreground">
             {isDemo ? 'AI 기반 리포트 생성과 학습 분석으로 스마트한 플랫폼 운영' : '플랫폼 전체를 관리하고 모니터링하세요'}
           </p>
         </div>
