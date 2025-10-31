@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, CheckCircle2, Circle, Lock, PlayCircle, BookOpen, FileText, Video } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+
+const mockPath = {
+  id: '550e8400-e29b-41d4-a716-446655440001',
+  title: 'React 기초부터 고급까지',
+  description: 'React의 기초부터 고급 개념까지 단계별로 학습합니다',
+  difficulty_level: 'beginner',
+  estimated_hours: 40,
+  learning_objectives: ['컴포넌트 기초 이해', 'Hooks 마스터하기', '상태 관리 학습', '성능 최적화'],
+};
+
+const mockUserPath = {
+  id: '1',
+  progress_percentage: 25,
+  completed_at: null,
+};
+
+const mockSteps = [
+  { id: '1', step_order: 1, title: 'React 소개 및 환경 설정', description: 'React가 무엇인지 알아보고 개발 환경을 설정합니다', content_type: 'lesson', content_id: null, estimated_minutes: 30, is_required: true },
+  { id: '2', step_order: 2, title: 'JSX와 컴포넌트 기초', description: 'JSX 문법과 함수형 컴포넌트를 학습합니다', content_type: 'lesson', content_id: null, estimated_minutes: 45, is_required: true },
+  { id: '3', step_order: 3, title: 'State와 Props 이해하기', description: '컴포넌트 간 데이터 전달 방법을 배웁니다', content_type: 'lesson', content_id: null, estimated_minutes: 60, is_required: true },
+  { id: '4', step_order: 4, title: 'React Hooks 기초', description: 'useState와 useEffect를 활용합니다', content_type: 'lesson', content_id: null, estimated_minutes: 90, is_required: true },
+];
+
+const mockProgress: Record<string, any> = {
+  '1': { id: 'p1', step_id: '1', status: 'completed', started_at: new Date().toISOString(), completed_at: new Date().toISOString() },
+};
 
 interface LearningPathStep {
   id: string;
@@ -47,16 +73,27 @@ interface UserLearningPath {
 export default function StudentLearningPathDetail() {
   const { id: pathId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isDemoMode = searchParams.has('role');
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isDemoMode);
   const [path, setPath] = useState<LearningPath | null>(null);
   const [userPath, setUserPath] = useState<UserLearningPath | null>(null);
   const [steps, setSteps] = useState<LearningPathStep[]>([]);
   const [progress, setProgress] = useState<Record<string, UserStepProgress>>({});
 
   useEffect(() => {
-    loadData();
-  }, [pathId]);
+    if (isDemoMode) {
+      // 데모 모드에서는 하드코딩된 데이터 사용
+      setPath(mockPath);
+      setUserPath(mockUserPath);
+      setSteps(mockSteps);
+      setProgress(mockProgress);
+      setLoading(false);
+    } else {
+      loadData();
+    }
+  }, [pathId, isDemoMode]);
 
   const loadData = async () => {
     try {
@@ -118,6 +155,14 @@ export default function StudentLearningPathDetail() {
   };
 
   const startStep = async (stepId: string) => {
+    if (isDemoMode) {
+      toast({
+        title: "데모 모드",
+        description: "실제 서비스에 가입하시면 학습을 시작하실 수 있습니다.",
+      });
+      return;
+    }
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !userPath) return;
@@ -145,6 +190,14 @@ export default function StudentLearningPathDetail() {
   };
 
   const completeStep = async (stepId: string) => {
+    if (isDemoMode) {
+      toast({
+        title: "데모 모드",
+        description: "실제 서비스에 가입하시면 학습을 완료하실 수 있습니다.",
+      });
+      return;
+    }
+    
     try {
       const stepProgress = progress[stepId];
       if (!stepProgress) return;

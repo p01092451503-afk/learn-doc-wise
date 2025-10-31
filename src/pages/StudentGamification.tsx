@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { UserStats } from "@/components/gamification/UserStats";
 import { BadgeDisplay } from "@/components/gamification/BadgeDisplay";
@@ -9,9 +10,38 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
+const mockBadges = [
+  { id: '1', name: '첫 걸음', description: '첫 강의를 시작했습니다', icon: '🌱', badge_type: 'bronze', requirement_type: 'lessons_completed', requirement_value: 1, earned: true, earned_at: new Date().toISOString() },
+  { id: '2', name: '학습왕', description: '10개 강의를 완료했습니다', icon: '📚', badge_type: 'silver', requirement_type: 'lessons_completed', requirement_value: 10, earned: true, earned_at: new Date().toISOString() },
+  { id: '3', name: '연속 학습 3일', description: '3일 연속으로 학습했습니다', icon: '🔥', badge_type: 'bronze', requirement_type: 'streak', requirement_value: 3, earned: true, earned_at: new Date().toISOString() },
+  { id: '4', name: '포인트 1000', description: '1000 포인트를 획득했습니다', icon: '⭐', badge_type: 'silver', requirement_type: 'points', requirement_value: 1000, earned: true, earned_at: new Date().toISOString() },
+  { id: '5', name: '마스터', description: '50개 강의를 완료했습니다', icon: '🏆', badge_type: 'gold', requirement_type: 'lessons_completed', requirement_value: 50, earned: false },
+  { id: '6', name: '전설', description: '100개 강의를 완료했습니다', icon: '👑', badge_type: 'platinum', requirement_type: 'lessons_completed', requirement_value: 100, earned: false },
+  { id: '7', name: '연속 학습 7일', description: '7일 연속으로 학습했습니다', icon: '⚡', badge_type: 'silver', requirement_type: 'streak', requirement_value: 7, earned: false },
+  { id: '8', name: '포인트 5000', description: '5000 포인트를 획득했습니다', icon: '🌟', badge_type: 'gold', requirement_type: 'points', requirement_value: 5000, earned: false },
+];
+
+const mockLeaderboard = [
+  { rank: 1, user_id: '1', full_name: '김철수', total_points: 5420, level: 54, avatar_url: null },
+  { rank: 2, user_id: '2', full_name: '이영희', total_points: 4890, level: 49, avatar_url: null },
+  { rank: 3, user_id: '3', full_name: '박진열', total_points: 1250, level: 13, avatar_url: null },
+  { rank: 4, user_id: '4', full_name: '최민수', total_points: 980, level: 10, avatar_url: null },
+  { rank: 5, user_id: '5', full_name: '정수진', total_points: 750, level: 8, avatar_url: null },
+];
+
+const mockPointHistory = [
+  { id: '1', points: 50, action_type: 'lesson_completed', description: 'React 기초 강의 완료', created_at: new Date(Date.now() - 3600000).toISOString() },
+  { id: '2', points: 100, action_type: 'assignment_completed', description: '과제 제출 완료', created_at: new Date(Date.now() - 7200000).toISOString() },
+  { id: '3', points: 50, action_type: 'streak_bonus', description: '5일 연속 학습 보너스', created_at: new Date(Date.now() - 86400000).toISOString() },
+  { id: '4', points: 30, action_type: 'lesson_completed', description: 'CSS 스타일링 완료', created_at: new Date(Date.now() - 172800000).toISOString() },
+  { id: '5', points: 20, action_type: 'community_post', description: '질문 게시글 작성', created_at: new Date(Date.now() - 259200000).toISOString() },
+];
+
 export default function StudentGamification() {
+  const [searchParams] = useSearchParams();
+  const isDemoMode = searchParams.has('role');
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isDemoMode);
   const [userStats, setUserStats] = useState<any>(null);
   const [badges, setBadges] = useState<any[]>([]);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -19,8 +49,23 @@ export default function StudentGamification() {
   const [currentUserId, setCurrentUserId] = useState<string>("");
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isDemoMode) {
+      // 데모 모드에서는 하드코딩된 데이터 사용
+      setUserStats({
+        total_points: 1250,
+        level: 13,
+        experience_points: 1250,
+        streak_days: 5,
+      });
+      setBadges(mockBadges);
+      setLeaderboard(mockLeaderboard);
+      setPointHistory(mockPointHistory);
+      setCurrentUserId('3');
+      setLoading(false);
+    } else {
+      loadData();
+    }
+  }, [isDemoMode]);
 
   const loadData = async () => {
     try {

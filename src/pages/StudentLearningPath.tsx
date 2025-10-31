@@ -10,6 +10,46 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { BookOpen, Clock, CheckCircle2, Lock, Target } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
+const mockEnrolledPaths = [
+  {
+    id: '1',
+    learning_path_id: '550e8400-e29b-41d4-a716-446655440001',
+    progress_percentage: 25,
+    started_at: new Date().toISOString(),
+    completed_at: null,
+    learning_paths: {
+      id: '550e8400-e29b-41d4-a716-446655440001',
+      title: 'React 기초부터 고급까지',
+      description: 'React의 기초부터 고급 개념까지 단계별로 학습합니다',
+      difficulty_level: 'beginner',
+      estimated_hours: 40,
+      learning_objectives: ['컴포넌트 기초 이해', 'Hooks 마스터하기', '상태 관리 학습', '성능 최적화'],
+      is_active: true,
+    }
+  }
+];
+
+const mockAvailablePaths = [
+  {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    title: 'TypeScript 완벽 가이드',
+    description: 'TypeScript의 모든 것을 배우는 완벽한 학습 경로',
+    difficulty_level: 'intermediate',
+    estimated_hours: 30,
+    learning_objectives: ['타입 시스템 이해', '제네릭 활용', '고급 타입 기법', '실전 프로젝트'],
+    is_active: true,
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440003',
+    title: 'Full-Stack 개발자 되기',
+    description: '프론트엔드부터 백엔드까지 풀스택 개발 역량 키우기',
+    difficulty_level: 'advanced',
+    estimated_hours: 80,
+    learning_objectives: ['프론트엔드 마스터', 'Node.js & Express', 'Database 설계', 'DevOps 기초'],
+    is_active: true,
+  }
+];
+
 interface LearningPath {
   id: string;
   title: string;
@@ -34,13 +74,20 @@ export default function StudentLearningPath() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDemoMode = searchParams.has('role');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isDemoMode);
   const [availablePaths, setAvailablePaths] = useState<LearningPath[]>([]);
   const [enrolledPaths, setEnrolledPaths] = useState<UserLearningPath[]>([]);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isDemoMode) {
+      // 데모 모드에서는 하드코딩된 데이터 사용
+      setEnrolledPaths(mockEnrolledPaths as any);
+      setAvailablePaths(mockAvailablePaths);
+      setLoading(false);
+    } else {
+      loadData();
+    }
+  }, [isDemoMode]);
 
   const loadData = async () => {
     try {
