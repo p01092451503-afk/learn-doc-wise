@@ -31,6 +31,8 @@ import AdminRevenue from "./AdminRevenue";
 import AdminUsageManagement from "./AdminUsageManagement";
 import AdminMonitoring from "./AdminMonitoring";
 import AdminSettings from "./AdminSettings";
+import AdminAnalytics from "./AdminAnalytics";
+import { Chatbot } from "@/components/Chatbot";
 import {
   Select,
   SelectContent,
@@ -108,6 +110,8 @@ const DemoPreview = () => {
           return <AdminMonitoring />;
         case "settings":
           return <AdminSettings />;
+        case "analytics":
+          return <AdminAnalytics />;
         default:
           return <AdminDashboard isDemo={true} />;
       }
@@ -177,6 +181,9 @@ const DemoPreview = () => {
           {renderContent()}
         </div>
       </div>
+
+      {/* AI 챗봇 - 데모 모드에서도 활성화 */}
+      <Chatbot userRole={activeRole === "admin" ? "admin" : "user"} />
 
       {/* Floating CTA - Positioned to avoid overlap */}
       <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-xs md:max-w-none md:w-auto">
