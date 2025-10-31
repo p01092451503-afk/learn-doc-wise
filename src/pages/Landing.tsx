@@ -13,6 +13,9 @@ const Landing = () => {
           <Link to="/" className="flex items-center gap-2">
             <img src={logoIcon} alt="Logo" className="h-12 w-12" />
             <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+            <span className="px-2.5 py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-xs font-bold shadow-glow border border-primary/20">
+              AI
+            </span>
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/auth">
