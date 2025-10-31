@@ -329,6 +329,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             )}>
               {menuItems
                 .filter(item => {
+                  // 디자인 템플릿 메뉴는 항상 제외
+                  if (item.label === "디자인 템플릿") {
+                    return false;
+                  }
                   // 데모 모드에서는 enabled가 true인 것만 표시
                   if (isDemoMode) {
                     return item.enabled === true;
