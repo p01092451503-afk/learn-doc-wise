@@ -146,6 +146,21 @@ const StudentCourseDetail = () => {
         fetchProgress();
       }
     }
+
+    // 페이지가 다시 표시될 때 데이터 새로고침
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !isDemoMode && id) {
+        fetchCourseDetails();
+        fetchCourseContents();
+        fetchProgress();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [id, isDemoMode]);
 
   const ensureEnrollment = async () => {
