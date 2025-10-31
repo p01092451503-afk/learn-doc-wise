@@ -120,14 +120,14 @@ const PublicMain = () => {
     <TooltipProvider>
       <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
+      <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm" role="banner">
         <div className="container mx-auto px-4 py-4">
           {/* Top Row - Logo and Navigation */}
           <div className="flex items-center justify-between mb-4">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to="/main" className="flex items-center gap-2">
-                  <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
+                <Link to="/main" className="flex items-center gap-2" aria-label="Atom LMS 메인 페이지로 이동">
+                  <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-10 w-10 md:h-12 md:w-12" />
                   <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
                 </Link>
               </TooltipTrigger>
@@ -135,7 +135,7 @@ const PublicMain = () => {
                 <p>아톰 안녕?</p>
               </TooltipContent>
             </Tooltip>
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-8" role="navigation" aria-label="주요 메뉴">
               <Link to="/main" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
                 {t('home')}
               </Link>
@@ -179,12 +179,12 @@ const PublicMain = () => {
       </header>
 
       {/* Hero Banner Section */}
-      <section className="relative overflow-hidden py-20 md:py-28">
-        <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <section className="relative overflow-hidden py-20 md:py-28" aria-labelledby="hero-heading">
+        <div className="absolute inset-0 bg-[var(--gradient-hero)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 text-foreground leading-tight">
+            <h1 id="hero-heading" className="text-4xl md:text-6xl font-display font-bold mb-6 text-foreground leading-tight">
               {t('heroTitle')}<br />
               <span className="text-gradient">{t('heroSubtitle')}</span>
             </h1>
@@ -225,10 +225,10 @@ const PublicMain = () => {
       </section>
 
       {/* Featured Courses Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-muted/30" aria-labelledby="courses-heading">
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
+            <h2 id="courses-heading" className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
               {t('popularCourses')}
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -260,12 +260,13 @@ const PublicMain = () => {
                         {course.thumbnail_url || course.videoThumbnail ? (
                           <img
                             src={course.thumbnail_url || course.videoThumbnail}
-                            alt={course.title}
+                            alt={`${course.title} 강의 썸네일 - ${course.description}`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            loading="lazy"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                            <BookOpen className="h-16 w-16 text-primary/40" />
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10" role="img" aria-label={`${course.title} 기본 이미지`}>
+                            <BookOpen className="h-16 w-16 text-primary/40" aria-hidden="true" />
                           </div>
                         )}
                       </div>
@@ -313,10 +314,10 @@ const PublicMain = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16">
+      <section className="py-16" aria-labelledby="features-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
+            <h2 id="features-heading" className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
               {t('whyUs')}
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -344,12 +345,12 @@ const PublicMain = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-muted/30" aria-labelledby="cta-heading">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center relative overflow-hidden rounded-2xl p-12 border border-primary/20 shadow-elegant">
-            <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
+            <div className="absolute inset-0 bg-[var(--gradient-hero)]" aria-hidden="true" />
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              <h2 id="cta-heading" className="text-3xl md:text-4xl font-display font-bold mb-4">
                 {t('startNow')}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
@@ -367,42 +368,43 @@ const PublicMain = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-background">
+      <footer className="border-t py-12 bg-background" role="contentinfo">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src={logoIcon} alt="Logo" className="h-10 w-10" />
+                <img src={logoIcon} alt="Atom LMS 로고" className="h-10 w-10" />
                 <span className="text-xl font-logo font-bold">atomLMS</span>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">AI 기반 학습관리 플랫폼</p>
             </div>
-            <div>
+            <nav aria-label="회사 정보">
               <h4 className="font-semibold mb-4">{t('aboutUs')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>{t('companyInfo')}</li>
                 <li>{t('instructorInfo')}</li>
                 <li>{t('directions')}</li>
               </ul>
-            </div>
-            <div>
+            </nav>
+            <nav aria-label="수강 정보">
               <h4 className="font-semibold mb-4">{t('enrollment')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>{t('enrollmentInfo')}</li>
                 <li>{t('refundPolicy')}</li>
                 <li>{t('terms')}</li>
               </ul>
-            </div>
-            <div>
+            </nav>
+            <nav aria-label="고객 지원">
               <h4 className="font-semibold mb-4">{t('support')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>{t('faq')}</li>
                 <li>{t('contact')}</li>
                 <li>{t('notice')}</li>
               </ul>
-            </div>
+            </nav>
           </div>
           <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2024 atomLMS. All rights reserved.</p>
+            <p>© 2025 atomLMS. All rights reserved. | AI 기반 학습관리 플랫폼</p>
           </div>
         </div>
       </footer>

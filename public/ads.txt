@@ -1,0 +1,3 @@
+# ads.txt file for Atom LMS
+# Manage advertising inventory
+# Add your advertising partners here when needed

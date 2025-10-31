@@ -8,10 +8,10 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
+      <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm" role="navigation" aria-label="주요 메뉴">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logoIcon} alt="Logo" className="h-12 w-12" />
+          <Link to="/" className="flex items-center gap-2" aria-label="Atom LMS 홈페이지">
+            <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" />
             <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -29,9 +29,9 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-8 md:py-12">
-        <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      <header className="relative overflow-hidden py-8 md:py-12" role="banner">
+        <div className="absolute inset-0 bg-[var(--gradient-hero)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" aria-hidden="true" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-5xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 animate-fade-in">
@@ -77,12 +77,12 @@ const Landing = () => {
             </div>
           </div>
         </div>
-      </section>
+      </header>
 
       {/* Features Section */}
-      <section className="py-12 bg-muted/30">
+      <section className="py-12 bg-muted/30" aria-labelledby="features-heading">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
+          <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
             왜 <span className="font-logo">atomLMS</span>인가?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -303,10 +303,10 @@ const Landing = () => {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-muted/30" aria-labelledby="pricing-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
+            <h2 id="pricing-heading" className="text-4xl md:text-5xl font-display font-bold mb-4">
               <span className="text-gradient">합리적인 가격</span>으로<br />
               시작하세요
             </h2>
@@ -408,10 +408,11 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8 bg-muted/30">
+      <footer className="border-t py-8 bg-muted/30" role="contentinfo">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>© 2024 Atom LMS. All rights reserved.</p>
+            <p>© 2025 Atom LMS. All rights reserved.</p>
+            <p className="mt-2 text-sm">AI 기반 학습관리 플랫폼 | 온라인 교육 솔루션</p>
           </div>
         </div>
       </footer>
