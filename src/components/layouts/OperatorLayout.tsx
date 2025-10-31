@@ -50,6 +50,7 @@ const menuItems: MenuItem[] = [
   { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
   { icon: DollarSign, label: "매출", path: "/operator/revenue" },
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
+  { icon: Layers, label: "기능 목록", path: "/operator/features" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
 ];
 

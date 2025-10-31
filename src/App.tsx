@@ -49,6 +49,7 @@ import OperatorAILogs from "./pages/operator/OperatorAILogs";
 import OperatorRevenue from "./pages/operator/OperatorRevenue";
 import OperatorMonitoring from "./pages/operator/OperatorMonitoring";
 import OperatorSettings from "./pages/operator/OperatorSettings";
+import OperatorFeatures from "./pages/operator/OperatorFeatures";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -97,6 +98,7 @@ const App = () => {
           <Route path="/operator/revenue" element={<OperatorRevenue />} />
           <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
           <Route path="/operator/settings" element={<OperatorSettings />} />
+          <Route path="/operator/features" element={<OperatorFeatures />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />
