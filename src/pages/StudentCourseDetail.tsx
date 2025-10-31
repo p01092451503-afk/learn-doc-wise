@@ -47,12 +47,13 @@ const StudentCourseDetail = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
   const isDemoMode = searchParams.get("demo") === "true";
+  const demoRole = searchParams.get("role") as "student" | "teacher" | "admin" | null;
   const [course, setCourse] = useState<Course | null>(null);
   const [contents, setContents] = useState<CourseContent[]>([]);
   const [currentContent, setCurrentContent] = useState<CourseContent | null>(null);
   const [progress, setProgress] = useState<ContentProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState<"student" | "teacher" | "admin">("student");
+  const [userRole, setUserRole] = useState<"student" | "teacher" | "admin">(demoRole || "student");
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [aiFeedbackOpen, setAiFeedbackOpen] = useState(false);
   const [aiTranslateOpen, setAiTranslateOpen] = useState(false);
