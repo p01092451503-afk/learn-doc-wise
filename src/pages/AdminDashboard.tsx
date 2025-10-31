@@ -345,7 +345,7 @@ const StatsCard = ({
       <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
     <CardContent className="space-y-1">
-      <div className="text-xl sm:text-2xl font-bold break-all">{value}</div>
+      <div className="text-lg sm:text-xl md:text-2xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">{value}</div>
       <p className={`text-xs ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
       </p>
