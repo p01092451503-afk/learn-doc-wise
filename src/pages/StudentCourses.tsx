@@ -194,8 +194,9 @@ const StudentCourses = () => {
     <DashboardLayout userRole={userRole}>
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
             {userRole === "admin" ? "전체 강좌" : "내 강의"}
+            <Badge variant="default" className="text-xs">AI</Badge>
           </h1>
           <p className="text-muted-foreground mt-2">
             {userRole === "admin" 
@@ -282,8 +283,9 @@ const StudentCourses = () => {
 
             {/* 수강 중인 강의 목록 */}
             <div>
-              <h2 className="text-2xl font-semibold mb-4">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                 {userRole === "admin" ? "전체 강좌 목록" : "수강 중인 강의"}
+                <Badge variant="default" className="text-xs">AI</Badge>
               </h2>
               <Card className="border-border/50 shadow-sm">
                 <Table>
