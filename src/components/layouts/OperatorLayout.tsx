@@ -192,9 +192,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                       <div className="flex items-center gap-2 flex-1">
                         <span className="font-medium text-base whitespace-nowrap">{item.label}</span>
                         {item.hasAI && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 flex-shrink-0">
-                            <img src={aiRobotBadge} alt="AI" className="h-3 w-3" />
-                            <span className="text-[10px] font-semibold text-violet-400 whitespace-nowrap">AI</span>
+                          <span className="px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 text-[10px] font-bold text-violet-400 whitespace-nowrap flex-shrink-0">
+                            AI
                           </span>
                         )}
                       </div>

@@ -234,10 +234,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
             <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
             <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-            <div className="relative flex items-center justify-center h-6 w-6 md:h-7 md:w-7 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent shadow-glow border border-primary/20">
-              <img src={aiRobotBadge} alt="AI" className="h-4 w-4 md:h-4.5 md:w-4.5" />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/50 to-accent/50 blur-sm -z-10" />
-            </div>
+            <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-[10px] md:text-xs font-bold shadow-glow border border-primary/20">
+              AI
+            </span>
           </Link>
 
           <div className="hidden lg:flex flex-1 items-center gap-4 ml-4">
@@ -342,9 +341,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                             <div className="flex items-center gap-2 flex-1">
                               <span className="font-medium whitespace-nowrap">{item.label}</span>
                               {item.hasAI && (
-                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 flex-shrink-0">
-                                  <img src={aiRobotBadge} alt="AI" className="h-3 w-3" />
-                                  <span className="text-[10px] font-semibold text-primary whitespace-nowrap">AI</span>
+                                <span className="px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary whitespace-nowrap flex-shrink-0">
+                                  AI
                                 </span>
                               )}
                             </div>
