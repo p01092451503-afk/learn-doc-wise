@@ -344,15 +344,15 @@ const AdminCourses = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="courses" className="space-y-4">
+        <Tabs defaultValue="categories" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="courses">
-              <BookOpen className="h-4 w-4 mr-2" />
-              강좌 목록
-            </TabsTrigger>
             <TabsTrigger value="categories">
               <FolderTree className="h-4 w-4 mr-2" />
               카테고리
+            </TabsTrigger>
+            <TabsTrigger value="courses">
+              <BookOpen className="h-4 w-4 mr-2" />
+              강좌 목록
             </TabsTrigger>
             <TabsTrigger value="tags">
               <Tag className="h-4 w-4 mr-2" />
