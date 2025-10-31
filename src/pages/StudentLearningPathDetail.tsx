@@ -45,7 +45,7 @@ interface UserLearningPath {
 }
 
 export default function StudentLearningPathDetail() {
-  const { pathId } = useParams();
+  const { id: pathId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
