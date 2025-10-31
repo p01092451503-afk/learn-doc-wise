@@ -395,7 +395,7 @@ const StudentCourses = () => {
                             <HoverCard>
                               <HoverCardTrigger asChild>
                                 <Link 
-                                  to={`/student/courses/${course.id}`}
+                                  to={`/student/courses/${course.id}${isDemo ? '?demo=true' : ''}`}
                                   className="hover:text-primary transition-colors flex items-center gap-2"
                                 >
                                   {course.title}
@@ -452,7 +452,7 @@ const StudentCourses = () => {
                             </TableCell>
                           )}
                           <TableCell className="text-right">
-                            <Link to={`/student/courses/${course.id}`}>
+                            <Link to={`/student/courses/${course.id}${isDemo ? '?demo=true' : ''}`}>
                               <Button size="sm" className="gap-2">
                                 <PlayCircle className="h-4 w-4" />
                                 {userRole === "admin" ? "강좌 보기" : "학습하기"}

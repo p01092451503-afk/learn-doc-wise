@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,8 @@ const StudentCourseDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const isDemoMode = searchParams.get("demo") === "true";
   const [course, setCourse] = useState<Course | null>(null);
   const [contents, setContents] = useState<CourseContent[]>([]);
   const [currentContent, setCurrentContent] = useState<CourseContent | null>(null);
@@ -55,15 +57,96 @@ const StudentCourseDetail = () => {
   const [aiFeedbackOpen, setAiFeedbackOpen] = useState(false);
   const [aiTranslateOpen, setAiTranslateOpen] = useState(false);
 
+  // 데모 모드 데이터 설정
+  const setMockDemoData = () => {
+    const mockCourse: Course = {
+      id: id || "course-1",
+      title: "AI 기반 웹 개발 완성 과정",
+      description: "최신 AI 도구를 활용한 웹 개발 실무 과정입니다. React, TypeScript, Tailwind CSS를 사용하여 현대적인 웹 애플리케이션을 개발하는 방법을 배웁니다.",
+      thumbnail_url: "",
+      level: "intermediate",
+      duration_hours: 24
+    };
+
+    const mockContents: CourseContent[] = [
+      {
+        id: "content-1",
+        title: "1강. 웹 개발 환경 설정 및 AI 도구 소개",
+        description: "개발 환경을 구축하고 AI 도구의 기본 사용법을 익힙니다",
+        video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        video_provider: "youtube",
+        duration_minutes: 45,
+        order_index: 1,
+        content_type: "video"
+      },
+      {
+        id: "content-2",
+        title: "2강. React 컴포넌트와 AI 코드 생성",
+        description: "AI를 활용한 React 컴포넌트 개발 실습",
+        video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        video_provider: "youtube",
+        duration_minutes: 60,
+        order_index: 2,
+        content_type: "video"
+      },
+      {
+        id: "content-3",
+        title: "3강. TypeScript 타입 시스템 마스터하기",
+        description: "TypeScript의 고급 타입 기능과 AI 보조 도구 활용",
+        video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        video_provider: "youtube",
+        duration_minutes: 50,
+        order_index: 3,
+        content_type: "video"
+      },
+      {
+        id: "content-4",
+        title: "4강. Tailwind CSS와 디자인 시스템",
+        description: "효율적인 스타일링과 반응형 디자인 구현",
+        video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        video_provider: "youtube",
+        duration_minutes: 55,
+        order_index: 4,
+        content_type: "video"
+      },
+      {
+        id: "content-5",
+        title: "5강. 상태 관리와 데이터 흐름",
+        description: "React Hook과 Context API를 활용한 상태 관리",
+        video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        video_provider: "youtube",
+        duration_minutes: 65,
+        order_index: 5,
+        content_type: "video"
+      }
+    ];
+
+    const mockProgress: ContentProgress[] = [
+      { content_id: "content-1", progress_percentage: 100, completed: true },
+      { content_id: "content-2", progress_percentage: 75, completed: false },
+      { content_id: "content-3", progress_percentage: 30, completed: false }
+    ];
+
+    setCourse(mockCourse);
+    setContents(mockContents);
+    setCurrentContent(mockContents[0]);
+    setProgress(mockProgress);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    checkUserRole();
-    if (id) {
-      ensureEnrollment();
-      fetchCourseDetails();
-      fetchCourseContents();
-      fetchProgress();
+    if (isDemoMode) {
+      setMockDemoData();
+    } else {
+      checkUserRole();
+      if (id) {
+        ensureEnrollment();
+        fetchCourseDetails();
+        fetchCourseContents();
+        fetchProgress();
+      }
     }
-  }, [id]);
+  }, [id, isDemoMode]);
 
   const ensureEnrollment = async () => {
     try {
