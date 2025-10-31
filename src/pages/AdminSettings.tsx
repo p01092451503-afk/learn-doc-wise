@@ -7,13 +7,17 @@ import { Separator } from "@/components/ui/separator";
 import { Settings, Save } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import MenuOrderSettings from "@/components/admin/MenuOrderSettings";
+import logoIcon from "@/assets/logo-icon.png";
 
 const AdminSettings = () => {
   return (
     <DashboardLayout userRole="admin">
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">시스템 설정</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            시스템 설정
+          </h1>
           <p className="text-muted-foreground mt-2">
             플랫폼의 전반적인 설정을 관리하세요
           </p>
