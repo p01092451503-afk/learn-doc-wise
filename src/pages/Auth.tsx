@@ -360,7 +360,7 @@ const Auth = () => {
         <Link to="/" className="flex items-center justify-center mb-8 gap-2">
           <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
           <span className="text-2xl font-logo font-bold tracking-tight">
-            <span className="text-gradient">atom</span>
+            <span className="text-gradient-slate">atom</span>
             <span className="text-foreground">LMS</span>
           </span>
           <span className="px-2.5 py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-xs font-bold shadow-glow border border-primary/20">

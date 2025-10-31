@@ -109,7 +109,7 @@ const ModernLayout = () => {
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
               <span className="text-2xl font-logo font-bold">
-                <span className="text-gradient">atom</span>
+                <span className="text-gradient-slate">atom</span>
                 <span>LMS</span>
               </span>
               <Badge variant="default" className="ml-2">AI</Badge>
@@ -347,7 +347,7 @@ const ModernLayout = () => {
               <div className="flex items-center gap-2 mb-6">
                 <img src={logoIcon} alt="Logo" className="h-12 w-12" />
                 <span className="text-2xl font-logo font-bold">
-                  <span className="text-gradient">atom</span>
+                  <span className="text-gradient-slate">atom</span>
                   <span>LMS</span>
                 </span>
               </div>

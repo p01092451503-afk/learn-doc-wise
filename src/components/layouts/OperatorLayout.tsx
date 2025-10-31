@@ -106,7 +106,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
               </div>
               <div className="hidden sm:block">
                 <span className="text-lg font-bold">
-                  <span className="text-gradient">atom</span>
+                  <span className="text-gradient-slate">atom</span>
                   <span className="text-white">LMS</span>
                 </span>
                 <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>

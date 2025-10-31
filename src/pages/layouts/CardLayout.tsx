@@ -99,7 +99,7 @@ const CardLayout = () => {
             <Link to="/main" className="flex items-center gap-2 font-bold">
               <img src={logoIcon} alt="Logo" className="h-6 w-6" />
               <span>
-                <span className="text-gradient">atom</span>
+                <span className="text-gradient-slate">atom</span>
                 <span>LMS</span>
               </span>
             </Link>

@@ -55,6 +55,7 @@ All colors MUST be HSL.
     /* Premium gradients */
     --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%), hsl(280 65% 65%));
     --gradient-gold: linear-gradient(135deg, hsl(45 93% 58%), hsl(38 92% 50%));
+    --gradient-slate: linear-gradient(135deg, hsl(240 15% 25%), hsl(240 10% 45%), hsl(240 5% 65%));
     --gradient-hero: linear-gradient(135deg, hsl(262 83% 58% / 0.08), hsl(280 65% 65% / 0.05));
     --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(240 9% 98%));
     
@@ -107,6 +108,7 @@ All colors MUST be HSL.
     
     --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%), hsl(280 65% 65%));
     --gradient-gold: linear-gradient(135deg, hsl(45 93% 58%), hsl(38 92% 50%));
+    --gradient-slate: linear-gradient(135deg, hsl(240 15% 35%), hsl(240 10% 55%), hsl(240 5% 75%));
     --gradient-hero: linear-gradient(135deg, hsl(262 83% 58% / 0.15), hsl(280 65% 65% / 0.1));
     --gradient-card: linear-gradient(135deg, hsl(240 21% 12%), hsl(240 21% 14%));
     
@@ -151,6 +153,11 @@ All colors MUST be HSL.
   .text-gradient-gold {
     @apply bg-clip-text text-transparent;
     background-image: var(--gradient-gold);
+  }
+  
+  .text-gradient-slate {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-slate);
   }
   
   .card-premium {
