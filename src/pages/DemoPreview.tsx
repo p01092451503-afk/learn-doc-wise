@@ -132,9 +132,6 @@ const DemoPreview = () => {
                 <span className="text-gradient-atom">atom</span>
                 <span className="text-foreground">LMS</span>
               </span>
-              <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white text-[10px] md:text-xs font-bold shadow-lg border border-slate-500/30">
-                AI
-              </span>
             </Link>
             <Button variant="secondary" size="sm" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">
               <Bot className="h-3.5 w-3.5" />

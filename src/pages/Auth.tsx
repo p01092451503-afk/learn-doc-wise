@@ -363,9 +363,6 @@ const Auth = () => {
             <span className="text-gradient-atom">atom</span>
             <span className="text-foreground">LMS</span>
           </span>
-          <span className="px-2.5 py-1 rounded-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white text-xs font-bold shadow-lg border border-slate-500/30">
-            AI
-          </span>
         </Link>
 
         <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
