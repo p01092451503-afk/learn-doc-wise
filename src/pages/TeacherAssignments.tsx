@@ -209,9 +209,12 @@ const TeacherAssignments = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">과제 관리</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+              과제 관리
+              <Badge variant="default" className="text-xs">AI</Badge>
+            </h1>
             <p className="text-muted-foreground">
-              과제를 생성하고 학생들의 제출물을 평가하세요
+              과제를 생성하고 학생들의 제출물을 평가하세요. AI 자동 채점 기능을 활용해보세요.
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -422,7 +425,10 @@ const TeacherAssignments = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>최근 제출</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              최근 제출
+              <Badge variant="default" className="text-xs">AI 채점</Badge>
+            </CardTitle>
             <CardDescription>채점이 필요한 제출물</CardDescription>
           </CardHeader>
           <CardContent>
@@ -451,11 +457,14 @@ const TeacherAssignments = () => {
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">채점 대기</Badge>
                       {submission.submission_text && (
-                        <AIGradingButton
-                          submissionId={submission.id}
-                          submissionText={submission.submission_text}
-                          onGradingComplete={fetchData}
-                        />
+                        <>
+                          <Badge variant="default" className="text-[10px] px-1.5 py-0">AI 채점 가능</Badge>
+                          <AIGradingButton
+                            submissionId={submission.id}
+                            submissionText={submission.submission_text}
+                            onGradingComplete={fetchData}
+                          />
+                        </>
                       )}
                       <Dialog>
                         <DialogTrigger asChild>
