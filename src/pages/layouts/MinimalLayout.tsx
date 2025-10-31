@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, ArrowRight, User, Search } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import { Session } from "@supabase/supabase-js";
 import { getVideoThumbnail } from "@/lib/utils";
 
@@ -100,7 +100,7 @@ const MinimalLayout = () => {
             <div>
               <div className="font-atom font-bold text-lg">
                 <span className="text-gradient-atom">atom</span>
-                <span>LMS</span>
+                <span className="text-deep-navy dark:text-foreground">LMS</span>
               </div>
               <div className="text-xs text-muted-foreground">Learn Simply</div>
             </div>

@@ -29,7 +29,7 @@ import {
   Palette,
   Zap,
 } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -235,7 +235,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
             <span className="text-lg md:text-2xl font-atom font-bold tracking-tight">
               <span className="text-gradient-atom">atom</span>
-              <span className="text-foreground">LMS</span>
+              <span className="text-deep-navy dark:text-foreground">LMS</span>
             </span>
           </Link>
 

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, Users, Star, TrendingUp, Award, User } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import { Chatbot } from "@/components/Chatbot";
 import { Session } from "@supabase/supabase-js";
 import { AISearchBar } from "@/components/AISearchBar";
@@ -121,7 +121,7 @@ const PublicMain = () => {
               <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
               <span className="text-xl md:text-2xl font-atom font-bold tracking-tight">
                 <span className="text-gradient-atom">atom</span>
-                <span className="text-foreground">LMS</span>
+                <span className="text-deep-navy dark:text-foreground">LMS</span>
               </span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">

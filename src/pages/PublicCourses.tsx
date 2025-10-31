@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Clock, Search } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import { getVideoThumbnail } from "@/lib/utils";
 
 interface Course {
@@ -106,7 +106,7 @@ const PublicCourses = () => {
             <img src={logoIcon} alt="Logo" className="h-12 w-12" />
             <span className="text-2xl font-atom font-bold tracking-tight">
               <span className="text-gradient-atom">atom</span>
-              <span className="text-foreground">LMS</span>
+              <span className="text-deep-navy dark:text-foreground">LMS</span>
             </span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">

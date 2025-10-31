@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bot } from "lucide-react";
 import { Link } from "react-router-dom";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 
 import StudentDashboard from "./StudentDashboard";
 import StudentCourses from "./StudentCourses";
@@ -130,7 +130,7 @@ const DemoPreview = () => {
               <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
               <span className="text-lg md:text-2xl font-atom font-bold tracking-tight">
                 <span className="text-gradient-atom">atom</span>
-                <span className="text-foreground">LMS</span>
+                <span className="text-deep-navy dark:text-foreground">LMS</span>
               </span>
             </Link>
             <Button variant="secondary" size="sm" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">

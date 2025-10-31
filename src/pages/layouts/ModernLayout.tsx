@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, Users, Star, TrendingUp, Award, User, ArrowRight } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import { Session } from "@supabase/supabase-js";
 import { AISearchBar } from "@/components/AISearchBar";
 import { getVideoThumbnail } from "@/lib/utils";
@@ -110,7 +110,7 @@ const ModernLayout = () => {
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
               <span className="text-2xl font-atom font-bold">
                 <span className="text-gradient-atom">atom</span>
-                <span>LMS</span>
+                <span className="text-deep-navy dark:text-foreground">LMS</span>
               </span>
             </Link>
             <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">

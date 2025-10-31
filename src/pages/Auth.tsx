@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link, useNavigate } from "react-router-dom";
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo-icon-refined.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -361,7 +361,7 @@ const Auth = () => {
           <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
           <span className="text-2xl font-atom font-bold tracking-tight">
             <span className="text-gradient-atom">atom</span>
-            <span className="text-foreground">LMS</span>
+            <span className="text-deep-navy dark:text-foreground">LMS</span>
           </span>
         </Link>
 
