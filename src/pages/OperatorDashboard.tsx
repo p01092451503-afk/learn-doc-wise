@@ -12,6 +12,10 @@ import { cn } from "@/lib/utils";
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
   const { role, isOperator, loading } = useUserRole();
+  const [version, setVersion] = useState<"current" | "lite">(() => {
+    const saved = localStorage.getItem("operator-version");
+    return (saved as "current" | "lite") || "current";
+  });
   const [stats, setStats] = useState({
     totalTenants: 0,
     activeTenants: 0,
@@ -19,6 +23,27 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
     monthlyRevenue: 0,
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-version");
+      setVersion((saved as "current" | "lite") || "current");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    // 같은 탭에서 변경사항 감지를 위한 interval
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-version");
+      if (saved !== version) {
+        setVersion((saved as "current" | "lite") || "current");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [version]);
 
   useEffect(() => {
     // Check authentication and authorization
@@ -88,12 +113,28 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">운영자 대시보드</h1>
-          <p className="text-slate-400">SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">운영자 대시보드</h1>
+              <p className="text-slate-400">SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
+            </div>
+            <div className="px-4 py-2 rounded-lg bg-violet-500/20 border border-violet-500/30">
+              <span className="text-sm font-medium text-violet-400">
+                {version === "current" ? "현재 버전" : "라이트 버전"}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {version === "lite" && (
+            <div className="col-span-full mb-4 p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
+              <p className="text-sm text-blue-400">
+                ⚡ 라이트 버전: 필수 기능만 표시되는 간소화된 버전입니다.
+              </p>
+            </div>
+          )}
           <OperatorStatsCard
             title="전체 고객사"
             value={isDemo ? "12" : stats.totalTenants.toString()}
@@ -128,6 +169,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Platform Overview */}
+        {version === "current" && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
             <CardHeader>
@@ -186,8 +228,10 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardContent>
           </Card>
         </div>
+        )}
 
         {/* Recent Activity & Alerts */}
+        {version === "current" && (
         <div className="grid gap-4 md:grid-cols-2">
           <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
             <CardHeader>
@@ -252,6 +296,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardContent>
           </Card>
         </div>
+        )}
 
         {/* Quick Actions */}
         <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
