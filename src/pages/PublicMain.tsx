@@ -131,7 +131,7 @@ const PublicMain = () => {
                   <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent>
+              <TooltipContent side="top">
                 <p>아톰</p>
               </TooltipContent>
             </Tooltip>
