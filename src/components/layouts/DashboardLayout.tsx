@@ -237,10 +237,17 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
-            <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
-            <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
+                <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
+                <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>아톰</p>
+            </TooltipContent>
+          </Tooltip>
 
           <div className="hidden lg:flex flex-1 items-center gap-4 ml-4">
             <div className="relative w-full max-w-lg">

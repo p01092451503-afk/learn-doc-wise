@@ -13,6 +13,12 @@ import { getVideoThumbnail } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Course {
   id: string;
@@ -111,16 +117,24 @@ const PublicMain = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <TooltipProvider>
+      <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur-xl z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           {/* Top Row - Logo and Navigation */}
           <div className="flex items-center justify-between mb-4">
-            <Link to="/main" className="flex items-center gap-2">
-              <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
-              <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to="/main" className="flex items-center gap-2">
+                  <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
+                  <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>아톰</p>
+              </TooltipContent>
+            </Tooltip>
             <nav className="hidden md:flex items-center gap-8">
               <Link to="/main" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
                 {t('home')}
@@ -396,6 +410,7 @@ const PublicMain = () => {
       {/* 챗봇 - 숨김 */}
       {/* <Chatbot userRole="user" /> */}
     </div>
+    </TooltipProvider>
   );
 };
 
