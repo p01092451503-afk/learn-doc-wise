@@ -358,7 +358,20 @@ const AdminContent = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="categories" className="space-y-6">
+        <Tabs 
+          defaultValue="categories" 
+          className="space-y-6"
+          onValueChange={(value) => {
+            // Refetch data when switching tabs to ensure fresh data
+            if (value === "contents") {
+              refetchContents();
+            } else if (value === "categories") {
+              refetchCategories();
+            } else if (value === "tags") {
+              refetchTags();
+            }
+          }}
+        >
           <TabsList className="grid w-full max-w-md grid-cols-3">
             <TabsTrigger value="categories" className="text-base">
               <Folder className="h-5 w-5 mr-2" />
