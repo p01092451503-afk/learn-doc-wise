@@ -108,7 +108,7 @@ const ModernLayout = () => {
           <div className="flex items-center justify-between">
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-              <span className="text-2xl font-logo font-bold">atomLMS</span>
+              <span className="text-2xl font-logo font-bold text-gradient">atomLMS</span>
               <Badge variant="default" className="ml-2">AI</Badge>
             </Link>
             <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
@@ -343,7 +343,7 @@ const ModernLayout = () => {
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-6">
                 <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-                <span className="text-2xl font-logo font-bold">atomLMS</span>
+                <span className="text-2xl font-logo font-bold text-gradient">atomLMS</span>
               </div>
               <p className="text-muted-foreground mb-6 leading-relaxed">
                 AI 기반 차세대 온라인 학습 플랫폼으로<br/>당신의 성장을 가속화합니다
