@@ -12,9 +12,9 @@ import { cn } from "@/lib/utils";
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
   const { role, isOperator, loading } = useUserRole();
-  const [version, setVersion] = useState<"current" | "lite">(() => {
-    const saved = localStorage.getItem("operator-version");
-    return (saved as "current" | "lite") || "current";
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
   });
   const [stats, setStats] = useState({
     totalTenants: 0,
@@ -26,16 +26,15 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const saved = localStorage.getItem("operator-version");
-      setVersion((saved as "current" | "lite") || "current");
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
     };
 
     window.addEventListener("storage", handleStorageChange);
-    // 같은 탭에서 변경사항 감지를 위한 interval
     const interval = setInterval(() => {
-      const saved = localStorage.getItem("operator-version");
-      if (saved !== version) {
-        setVersion((saved as "current" | "lite") || "current");
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
       }
     }, 100);
 
@@ -43,7 +42,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
-  }, [version]);
+  }, [theme]);
 
   useEffect(() => {
     // Check authentication and authorization
@@ -113,28 +112,18 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">운영자 대시보드</h1>
-              <p className="text-slate-400">SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
-            </div>
-            <div className="px-4 py-2 rounded-lg bg-violet-500/20 border border-violet-500/30">
-              <span className="text-sm font-medium text-violet-400">
-                {version === "current" ? "현재 버전" : "라이트 버전"}
-              </span>
-            </div>
-          </div>
+          <h1 className={cn(
+            "text-3xl md:text-4xl font-bold mb-2 transition-colors",
+            theme === "dark" ? "text-white" : "text-slate-900"
+          )}>운영자 대시보드</h1>
+          <p className={cn(
+            "transition-colors",
+            theme === "dark" ? "text-slate-400" : "text-slate-600"
+          )}>SaaS 플랫폼 전체를 관리하고 모니터링하세요</p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {version === "lite" && (
-            <div className="col-span-full mb-4 p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
-              <p className="text-sm text-blue-400">
-                ⚡ 라이트 버전: 필수 기능만 표시되는 간소화된 버전입니다.
-              </p>
-            </div>
-          )}
           <OperatorStatsCard
             title="전체 고객사"
             value={isDemo ? "12" : stats.totalTenants.toString()}
@@ -142,6 +131,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description={`활성: ${isDemo ? "10" : stats.activeTenants}개`}
             trend="up"
             trendValue="+2"
+            theme={theme}
           />
           <OperatorStatsCard
             title="전체 사용자"
@@ -150,6 +140,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description="지난달 대비"
             trend="up"
             trendValue="+280"
+            theme={theme}
           />
           <OperatorStatsCard
             title="월 구독 수익"
@@ -158,6 +149,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description="지난달 대비"
             trend="up"
             trendValue="+18%"
+            theme={theme}
           />
           <OperatorStatsCard
             title="시스템 상태"
@@ -165,78 +157,144 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             icon={<Server className="h-5 w-5" />}
             description="모든 서비스 운영 중"
             status="healthy"
+            theme={theme}
           />
         </div>
 
         {/* Platform Overview */}
-        {version === "current" && (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+          <Card className={cn(
+            "backdrop-blur-xl transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle className="text-base text-white">고객사 현황</CardTitle>
+              <CardTitle className={cn(
+                "text-base transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>고객사 현황</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <OperatorStatRow label="스타터" value="5" percentage={42} color="violet" />
-                <OperatorStatRow label="스탠다드" value="4" percentage={33} color="purple" />
-                <OperatorStatRow label="프로페셔널" value="3" percentage={25} color="fuchsia" />
+                <OperatorStatRow label="스타터" value="5" percentage={42} color="violet" theme={theme} />
+                <OperatorStatRow label="스탠다드" value="4" percentage={33} color="purple" theme={theme} />
+                <OperatorStatRow label="프로페셔널" value="3" percentage={25} color="fuchsia" theme={theme} />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+          <Card className={cn(
+            "backdrop-blur-xl transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle className="text-base text-white">리소스 사용량</CardTitle>
+              <CardTitle className={cn(
+                "text-base transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>리소스 사용량</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">총 스토리지</span>
-                  <span className="font-medium text-white">245 GB / 500 GB</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>총 스토리지</span>
+                  <span className={cn(
+                    "font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>245 GB / 500 GB</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">AI 토큰 (월)</span>
-                  <span className="font-medium text-white">1.2M / 5M</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>AI 토큰 (월)</span>
+                  <span className={cn(
+                    "font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>1.2M / 5M</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">대역폭</span>
-                  <span className="font-medium text-white">4.8 TB</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>대역폭</span>
+                  <span className={cn(
+                    "font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>4.8 TB</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+          <Card className={cn(
+            "backdrop-blur-xl transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle className="text-base text-white">수익 분석</CardTitle>
+              <CardTitle className={cn(
+                "text-base transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>수익 분석</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">평균 ARPU</span>
-                  <span className="font-medium text-white">₩287,500</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>평균 ARPU</span>
+                  <span className={cn(
+                    "font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>₩287,500</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">이탈율</span>
-                  <span className="font-medium text-white">2.1%</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>이탈율</span>
+                  <span className={cn(
+                    "font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>2.1%</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">성장률 (MoM)</span>
+                  <span className={cn(
+                    "text-sm transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>성장률 (MoM)</span>
                   <span className="font-medium text-green-400">+18%</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
-        )}
 
         {/* Recent Activity & Alerts */}
-        {version === "current" && (
         <div className="grid gap-4 md:grid-cols-2">
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+          <Card className={cn(
+            "backdrop-blur-xl transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle className="text-white">최근 활동</CardTitle>
-              <CardDescription className="text-slate-400">플랫폼의 최근 주요 활동</CardDescription>
+              <CardTitle className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>최근 활동</CardTitle>
+              <CardDescription className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>플랫폼의 최근 주요 활동</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -244,33 +302,48 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   type="tenant"
                   message="새 고객사 등록: ABC 대학교"
                   time="10분 전"
+                  theme={theme}
                 />
                 <ActivityLog
                   type="payment"
                   message="구독 갱신: XYZ 학원 (프로페셔널)"
                   time="25분 전"
+                  theme={theme}
                 />
                 <ActivityLog
                   type="system"
                   message="시스템 업데이트 완료"
                   time="1시간 전"
+                  theme={theme}
                 />
                 <ActivityLog
                   type="tenant"
                   message="고객사 플랜 업그레이드: 123 교육원"
                   time="2시간 전"
+                  theme={theme}
                 />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+          <Card className={cn(
+            "backdrop-blur-xl transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className={cn(
+                "flex items-center gap-2 transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
                 <AlertCircle className="h-5 w-5 text-orange-400" />
                 알림 및 경고
               </CardTitle>
-              <CardDescription className="text-slate-400">주의가 필요한 항목</CardDescription>
+              <CardDescription className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>주의가 필요한 항목</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -279,35 +352,50 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   title="리소스 한계 도달"
                   description="2개 고객사가 사용량 80% 초과"
                   action="확인"
+                  theme={theme}
                 />
                 <AlertItem
                   level="info"
                   title="결제 만료 예정"
                   description="3개 고객사 구독 갱신 7일 전"
                   action="통보"
+                  theme={theme}
                 />
                 <AlertItem
                   level="warning"
                   title="서버 사용률 증가"
                   description="지난 주 대비 45% 증가"
                   action="모니터링"
+                  theme={theme}
                 />
               </div>
             </CardContent>
           </Card>
         </div>
-        )}
 
         {/* Quick Actions */}
-        <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-xl">
+        <Card className={cn(
+          "backdrop-blur-xl transition-colors",
+          theme === "dark" 
+            ? "bg-slate-900/50 border-slate-800" 
+            : "bg-white border-slate-200"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">빠른 작업</CardTitle>
+            <CardTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>빠른 작업</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
               <Button 
                 variant="outline" 
-                className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                className={cn(
+                  "h-20 flex-col gap-2 transition-colors hover:border-violet-500",
+                  theme === "dark"
+                    ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                )}
                 onClick={() => navigate('/operator/tenants')}
               >
                 <FileText className="h-5 w-5" />
@@ -315,7 +403,12 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </Button>
               <Button 
                 variant="outline" 
-                className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                className={cn(
+                  "h-20 flex-col gap-2 transition-colors hover:border-violet-500",
+                  theme === "dark"
+                    ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                )}
                 onClick={() => navigate('/operator/usage')}
               >
                 <Activity className="h-5 w-5" />
@@ -323,7 +416,12 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </Button>
               <Button 
                 variant="outline" 
-                className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                className={cn(
+                  "h-20 flex-col gap-2 transition-colors hover:border-violet-500",
+                  theme === "dark"
+                    ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                )}
                 onClick={() => navigate('/operator/revenue')}
               >
                 <DollarSign className="h-5 w-5" />
@@ -331,7 +429,12 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </Button>
               <Button 
                 variant="outline" 
-                className="h-20 flex-col gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                className={cn(
+                  "h-20 flex-col gap-2 transition-colors hover:border-violet-500",
+                  theme === "dark"
+                    ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                )}
                 onClick={() => navigate('/operator/monitoring')}
               >
                 <TrendingUp className="h-5 w-5" />
@@ -352,7 +455,8 @@ const OperatorStatsCard = ({
   description, 
   trend,
   trendValue,
-  status
+  status,
+  theme = "dark"
 }: { 
   title: string; 
   value: string; 
@@ -361,14 +465,26 @@ const OperatorStatsCard = ({
   trend?: "up" | "down";
   trendValue?: string;
   status?: "healthy" | "warning" | "error";
+  theme?: "dark" | "light";
 }) => (
-  <Card className="overflow-hidden bg-slate-900/50 border-slate-800 backdrop-blur-xl hover:border-violet-500/50 transition-all duration-300">
+  <Card className={cn(
+    "overflow-hidden backdrop-blur-xl hover:border-violet-500/50 transition-all duration-300",
+    theme === "dark" 
+      ? "bg-slate-900/50 border-slate-800" 
+      : "bg-white border-slate-200"
+  )}>
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium text-slate-400">{title}</CardTitle>
+      <CardTitle className={cn(
+        "text-sm font-medium transition-colors",
+        theme === "dark" ? "text-slate-400" : "text-slate-600"
+      )}>{title}</CardTitle>
       <div className="text-violet-400 flex-shrink-0 p-2 rounded-lg bg-violet-500/10">{icon}</div>
     </CardHeader>
     <CardContent className="space-y-2">
-      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className={cn(
+        "text-3xl font-bold transition-colors",
+        theme === "dark" ? "text-white" : "text-slate-900"
+      )}>{value}</div>
       <div className="flex items-center gap-2 text-xs">
         {trend && (
           <span className={`flex items-center gap-1 font-medium ${
@@ -387,7 +503,10 @@ const OperatorStatsCard = ({
             {status === "healthy" ? "정상" : status === "warning" ? "주의" : "오류"}
           </span>
         )}
-        <span className="text-slate-500">{description}</span>
+        <span className={cn(
+          "transition-colors",
+          theme === "dark" ? "text-slate-500" : "text-slate-600"
+        )}>{description}</span>
       </div>
     </CardContent>
   </Card>
@@ -397,12 +516,14 @@ const OperatorStatRow = ({
   label, 
   value, 
   percentage,
-  color = "violet"
+  color = "violet",
+  theme = "dark"
 }: { 
   label: string; 
   value: string; 
   percentage: number;
   color?: "violet" | "purple" | "fuchsia";
+  theme?: "dark" | "light";
 }) => {
   const colorClasses = {
     violet: "bg-violet-500",
@@ -413,10 +534,19 @@ const OperatorStatRow = ({
   return (
     <div>
       <div className="flex justify-between mb-2">
-        <span className="text-sm text-slate-400">{label}</span>
-        <span className="text-sm font-medium text-white">{value}</span>
+        <span className={cn(
+          "text-sm transition-colors",
+          theme === "dark" ? "text-slate-400" : "text-slate-600"
+        )}>{label}</span>
+        <span className={cn(
+          "text-sm font-medium transition-colors",
+          theme === "dark" ? "text-white" : "text-slate-900"
+        )}>{value}</span>
       </div>
-      <div className="w-full bg-slate-800 rounded-full h-2">
+      <div className={cn(
+        "w-full rounded-full h-2 transition-colors",
+        theme === "dark" ? "bg-slate-800" : "bg-slate-200"
+      )}>
         <div 
           className={`${colorClasses[color]} h-2 rounded-full transition-all duration-300`}
           style={{ width: `${percentage}%` }}
@@ -426,14 +556,23 @@ const OperatorStatRow = ({
   );
 };
 
-const ActivityLog = ({ type, message, time }: { type: string; message: string; time: string }) => (
-  <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-800/50 transition-colors">
+const ActivityLog = ({ type, message, time, theme = "dark" }: { type: string; message: string; time: string; theme?: "dark" | "light"; }) => (
+  <div className={cn(
+    "flex items-start gap-3 p-3 rounded-lg transition-colors",
+    theme === "dark" ? "hover:bg-slate-800/50" : "hover:bg-slate-100"
+  )}>
     <div className="h-8 w-8 rounded-full bg-violet-500/10 flex items-center justify-center flex-shrink-0">
       <div className="h-2 w-2 rounded-full bg-violet-500" />
     </div>
     <div className="flex-1 min-w-0">
-      <p className="text-sm text-white">{message}</p>
-      <p className="text-xs text-slate-500">{time}</p>
+      <p className={cn(
+        "text-sm transition-colors",
+        theme === "dark" ? "text-white" : "text-slate-900"
+      )}>{message}</p>
+      <p className={cn(
+        "text-xs transition-colors",
+        theme === "dark" ? "text-slate-500" : "text-slate-600"
+      )}>{time}</p>
     </div>
   </div>
 );
@@ -442,24 +581,38 @@ const AlertItem = ({
   level, 
   title, 
   description, 
-  action 
+  action,
+  theme = "dark"
 }: { 
   level: "info" | "warning"; 
   title: string; 
   description: string; 
   action: string;
+  theme?: "dark" | "light";
 }) => (
-  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border border-slate-700 bg-slate-800/30 hover:bg-slate-800/50 transition-colors">
+  <div className={cn(
+    "flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border transition-colors",
+    theme === "dark"
+      ? "border-slate-700 bg-slate-800/30 hover:bg-slate-800/50"
+      : "border-slate-300 bg-slate-50 hover:bg-slate-100"
+  )}>
     <div className="flex-1 min-w-0">
-      <h4 className="text-sm font-medium text-white mb-1">{title}</h4>
-      <p className="text-xs text-slate-400">{description}</p>
+      <h4 className={cn(
+        "text-sm font-medium mb-1 transition-colors",
+        theme === "dark" ? "text-white" : "text-slate-900"
+      )}>{title}</h4>
+      <p className={cn(
+        "text-xs transition-colors",
+        theme === "dark" ? "text-slate-400" : "text-slate-600"
+      )}>{description}</p>
     </div>
     <Button 
       size="sm" 
       variant={level === "warning" ? "destructive" : "outline"} 
       className={cn(
         "w-full sm:w-auto flex-shrink-0",
-        level === "info" && "border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+        level === "info" && theme === "dark" && "border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white",
+        level === "info" && theme === "light" && "border-slate-400 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
       )}
     >
       {action}

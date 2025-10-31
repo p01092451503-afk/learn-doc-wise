@@ -59,9 +59,9 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
     return saved === "true";
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [version, setVersion] = useState<"current" | "lite">(() => {
-    const saved = localStorage.getItem("operator-version");
-    return (saved as "current" | "lite") || "current";
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -71,14 +71,14 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   }, [sidebarCollapsed]);
 
   useEffect(() => {
-    localStorage.setItem("operator-version", version);
-  }, [version]);
+    localStorage.setItem("operator-theme", theme);
+  }, [theme]);
 
-  const handleVersionChange = (newVersion: "current" | "lite") => {
-    setVersion(newVersion);
+  const handleThemeChange = (newTheme: "dark" | "light") => {
+    setTheme(newTheme);
     toast({
-      title: "버전 변경",
-      description: `${newVersion === "current" ? "현재" : "라이트"} 버전으로 전환되었습니다.`,
+      title: "테마 변경",
+      description: `${newTheme === "dark" ? "다크" : "라이트"} 모드로 전환되었습니다.`,
     });
   };
 
@@ -103,23 +103,39 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className={cn(
+      "min-h-screen transition-colors duration-300",
+      theme === "dark" ? "bg-slate-950" : "bg-slate-50"
+    )}>
       {/* Top Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-slate-800 bg-slate-900/95 backdrop-blur-xl">
+      <header className={cn(
+        "fixed top-0 left-0 right-0 z-50 h-16 border-b backdrop-blur-xl transition-colors duration-300",
+        theme === "dark" 
+          ? "border-slate-800 bg-slate-900/95" 
+          : "border-slate-200 bg-white/95"
+      )}>
         <div className="flex h-full items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-slate-300 hover:text-white hover:bg-slate-800"
+              className={cn(
+                "lg:hidden transition-colors",
+                theme === "dark" 
+                  ? "text-slate-300 hover:text-white hover:bg-slate-800" 
+                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+              )}
             >
               <Menu className="h-5 w-5" />
             </Button>
 
             <Link to="/operator" className="flex items-center gap-2 group">
               <div>
-                <span className="text-lg font-bold text-white">atomLMS</span>
+                <span className={cn(
+                  "text-lg font-bold transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>atomLMS</span>
                 <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
               </div>
             </Link>
@@ -127,55 +143,84 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
 
           <div className="hidden md:flex flex-1 max-w-md mx-8">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Search className={cn(
+                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4",
+                theme === "dark" ? "text-slate-400" : "text-slate-500"
+              )} />
               <Input
                 placeholder="검색..."
-                className="pl-10 bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400 focus:border-violet-500 focus:ring-violet-500/20"
+                className={cn(
+                  "pl-10 focus:border-violet-500 focus:ring-violet-500/20 transition-colors",
+                  theme === "dark"
+                    ? "bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400"
+                    : "bg-slate-100 border-slate-300 text-slate-900 placeholder:text-slate-500"
+                )}
               />
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Version Selector */}
+            {/* Theme Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                  className={cn(
+                    "gap-2 transition-colors hover:border-violet-500",
+                    theme === "dark"
+                      ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                      : "bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+                  )}
                 >
                   <Layers className="h-4 w-4" />
                   <span className="hidden md:inline-block">
-                    {version === "current" ? "현재 버전" : "라이트 버전"}
+                    {theme === "dark" ? "다크 모드" : "라이트 모드"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700">
-                <DropdownMenuLabel className="text-slate-200">버전 선택</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-slate-700" />
+              <DropdownMenuContent 
+                align="end" 
+                className={cn(
+                  "w-56 transition-colors",
+                  theme === "dark" 
+                    ? "bg-slate-800 border-slate-700" 
+                    : "bg-white border-slate-200"
+                )}
+              >
+                <DropdownMenuLabel className={theme === "dark" ? "text-slate-200" : "text-slate-900"}>
+                  테마 선택
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className={theme === "dark" ? "bg-slate-700" : "bg-slate-200"} />
                 <DropdownMenuItem 
-                  onClick={() => handleVersionChange("current")}
+                  onClick={() => handleThemeChange("dark")}
                   className={cn(
-                    "text-slate-300 focus:bg-slate-700 focus:text-white",
-                    version === "current" && "bg-violet-500/20 text-violet-400"
+                    "transition-colors",
+                    theme === "dark"
+                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900",
+                    theme === "dark" && "bg-violet-500/20 text-violet-400"
                   )}
                 >
                   <Sparkles className="mr-2 h-4 w-4" />
-                  현재 버전
-                  {version === "current" && (
+                  다크 모드
+                  {theme === "dark" && (
                     <span className="ml-auto text-xs text-violet-400">✓</span>
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem 
-                  onClick={() => handleVersionChange("lite")}
+                  onClick={() => handleThemeChange("light")}
                   className={cn(
-                    "text-slate-300 focus:bg-slate-700 focus:text-white",
-                    version === "lite" && "bg-violet-500/20 text-violet-400"
+                    "transition-colors",
+                    theme === "dark"
+                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900",
+                    theme === "light" && "bg-violet-500/20 text-violet-400"
                   )}
                 >
                   <Zap className="mr-2 h-4 w-4" />
-                  라이트 버전
-                  {version === "lite" && (
+                  라이트 모드
+                  {theme === "light" && (
                     <span className="ml-auto text-xs text-violet-400">✓</span>
                   )}
                 </DropdownMenuItem>
@@ -185,34 +230,70 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="relative text-slate-300 hover:text-white hover:bg-slate-800"
+              className={cn(
+                "relative transition-colors",
+                theme === "dark"
+                  ? "text-slate-300 hover:text-white hover:bg-slate-800"
+                  : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+              )}
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-violet-500 rounded-full ring-2 ring-slate-900" />
+              <span className={cn(
+                "absolute top-1.5 right-1.5 h-2 w-2 bg-violet-500 rounded-full ring-2",
+                theme === "dark" ? "ring-slate-900" : "ring-white"
+              )} />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="gap-2 text-slate-300 hover:text-white hover:bg-slate-800"
+                  className={cn(
+                    "gap-2 transition-colors",
+                    theme === "dark"
+                      ? "text-slate-300 hover:text-white hover:bg-slate-800"
+                      : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                  )}
                 >
                   <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
                     <Zap className="h-4 w-4 text-white" />
                   </div>
-                  <span className="hidden sm:inline-block font-medium text-white">Operator</span>
+                  <span className={cn(
+                    "hidden sm:inline-block font-medium transition-colors",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>Operator</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700">
-                <DropdownMenuLabel className="text-slate-200">운영자 계정</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-slate-700" />
-                <DropdownMenuItem className="text-slate-300 focus:bg-slate-700 focus:text-white">
+              <DropdownMenuContent 
+                align="end" 
+                className={cn(
+                  "w-56 transition-colors",
+                  theme === "dark" 
+                    ? "bg-slate-800 border-slate-700" 
+                    : "bg-white border-slate-200"
+                )}
+              >
+                <DropdownMenuLabel className={theme === "dark" ? "text-slate-200" : "text-slate-900"}>
+                  운영자 계정
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className={theme === "dark" ? "bg-slate-700" : "bg-slate-200"} />
+                <DropdownMenuItem className={cn(
+                  "transition-colors",
+                  theme === "dark"
+                    ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                    : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                )}>
                   <Settings className="mr-2 h-4 w-4" />
                   설정
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={handleLogout} 
-                  className="text-slate-300 focus:bg-slate-700 focus:text-white"
+                  className={cn(
+                    "transition-colors",
+                    theme === "dark"
+                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                  )}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   로그아웃
@@ -227,7 +308,10 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed left-0 top-16 bottom-0 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl transition-all duration-300 z-40",
+            "fixed left-0 top-16 bottom-0 border-r backdrop-blur-xl transition-all duration-300 z-40",
+            theme === "dark" 
+              ? "border-slate-800 bg-slate-900/50" 
+              : "border-slate-200 bg-white/50",
             sidebarCollapsed ? "w-16" : "w-64",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           )}
@@ -244,7 +328,9 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                       sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3 pr-2",
                       isActive
                         ? "bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 border-l-2 border-violet-500"
-                        : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        : theme === "dark"
+                          ? "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     )}
                   >
                     <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -266,12 +352,18 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
               );
             })}
 
-            <div className="mt-auto pt-4 border-t border-slate-800">
+            <div className={cn(
+              "mt-auto pt-4 border-t transition-colors",
+              theme === "dark" ? "border-slate-800" : "border-slate-200"
+            )}>
               <Button
                 variant="ghost"
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                 className={cn(
-                  "w-full h-10 text-slate-400 hover:text-white hover:bg-slate-800/50",
+                  "w-full h-10 transition-colors",
+                  theme === "dark"
+                    ? "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
                   sidebarCollapsed ? "justify-center px-0" : "justify-between px-4"
                 )}
               >
