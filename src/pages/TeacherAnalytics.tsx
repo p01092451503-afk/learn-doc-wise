@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, TrendingUp, Star, Eye, Clock, Award, Target } from "lucide-react";
+import logoIcon from "@/assets/logo-icon.png";
 
 const TeacherAnalytics = () => {
   return (
@@ -8,7 +9,10 @@ const TeacherAnalytics = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">통계 분석</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            통계 분석
+          </h1>
           <p className="text-muted-foreground">
             강의 성과와 학생 참여도를 분석하세요
           </p>
