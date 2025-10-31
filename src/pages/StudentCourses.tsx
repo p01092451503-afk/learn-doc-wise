@@ -37,19 +37,6 @@ const StudentCourses = () => {
   const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
   const isDemo = !!demoRole;
 
-  useEffect(() => {
-    if (isDemo) {
-      // Demo mode: use role from URL param and set mock data
-      setUserRole(demoRole);
-      setMockDemoData();
-      setLoading(false);
-    } else {
-      // Real mode: check user role
-      checkUserRole();
-      fetchEnrollments();
-    }
-  }, [isDemo, demoRole]);
-
   const setMockDemoData = () => {
     const mockEnrollments = [
       {
@@ -111,6 +98,19 @@ const StudentCourses = () => {
     ];
     setEnrollments(mockEnrollments as any);
   };
+
+  useEffect(() => {
+    if (isDemo) {
+      // Demo mode: use role from URL param and set mock data
+      setUserRole(demoRole);
+      setMockDemoData();
+      setLoading(false);
+    } else {
+      // Real mode: check user role
+      checkUserRole();
+      fetchEnrollments();
+    }
+  }, [isDemo, demoRole]);
 
   const checkUserRole = async () => {
     try {
