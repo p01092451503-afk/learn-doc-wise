@@ -3,10 +3,15 @@ import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { HardDrive, Database, Cpu, Users } from "lucide-react";
+import { HardDrive, Database, Cpu, Users, Search, RefreshCw, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { EmptyState } from "@/components/operator/EmptyState";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface TenantUsage {
   tenant_id: string;
@@ -21,12 +26,52 @@ interface TenantUsage {
 
 const OperatorUsage = () => {
   const [usageData, setUsageData] = useState<TenantUsage[]>([]);
+  const [filteredData, setFilteredData] = useState<TenantUsage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchUsageData();
   }, []);
+
+  useEffect(() => {
+    filterData();
+  }, [usageData, searchQuery]);
+
+  useEffect(() => {
+    if (autoRefresh) {
+      const interval = setInterval(() => {
+        handleRefresh();
+      }, 30000); // 30초마다 자동 새로고침
+
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh]);
+
+  const filterData = () => {
+    if (!searchQuery) {
+      setFilteredData(usageData);
+      return;
+    }
+
+    const filtered = usageData.filter((usage) =>
+      usage.tenant_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchUsageData();
+    setRefreshing(false);
+    toast({
+      title: "새로고침 완료",
+      description: "사용량 데이터가 업데이트되었습니다.",
+    });
+  };
 
   const fetchUsageData = async () => {
     try {
@@ -93,9 +138,33 @@ const OperatorUsage = () => {
   return (
     <OperatorLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">사용량 관리</h1>
-          <p className="text-slate-400">전체 고객사의 리소스 사용량을 모니터링합니다</p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">사용량 관리</h1>
+            <p className="text-slate-400">전체 고객사의 리소스 사용량을 모니터링합니다</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="auto-refresh"
+                checked={autoRefresh}
+                onCheckedChange={setAutoRefresh}
+              />
+              <Label htmlFor="auto-refresh" className="text-sm text-slate-300 cursor-pointer">
+                자동 새로고침 (30초)
+              </Label>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="gap-2 border-slate-700 text-slate-300 hover:bg-slate-800"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+              새로고침
+            </Button>
+          </div>
         </div>
 
         {/* Summary Cards */}
@@ -149,17 +218,55 @@ const OperatorUsage = () => {
           </Card>
         </div>
 
+        {/* Search Section */}
+        <Card className="bg-slate-900/50 border-slate-800">
+          <CardContent className="pt-6">
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  placeholder="고객사명 검색..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 bg-slate-800 border-slate-700 text-white"
+                />
+              </div>
+              {searchQuery && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSearchQuery("")}
+                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Usage Table */}
         <Card className="bg-slate-900/50 border-slate-800">
           <CardHeader>
             <CardTitle className="text-white">고객사별 사용량</CardTitle>
-            <CardDescription className="text-slate-400">각 고객사의 리소스 사용 현황</CardDescription>
+            <CardDescription className="text-slate-400">
+              {filteredData.length}개 고객사 {searchQuery && `(전체 ${usageData.length}개 중)`}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
               <div className="text-center py-8 text-slate-400">로딩 중...</div>
-            ) : usageData.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">사용량 데이터가 없습니다.</div>
+            ) : filteredData.length === 0 ? (
+              <EmptyState
+                icon={searchQuery ? Search : Database}
+                title={searchQuery ? "검색 결과 없음" : "사용량 데이터가 없습니다"}
+                description={
+                  searchQuery
+                    ? "검색 조건에 맞는 고객사가 없습니다."
+                    : "고객사가 활동을 시작하면 사용량 데이터가 표시됩니다."
+                }
+                action={searchQuery ? { label: "검색 초기화", onClick: () => setSearchQuery("") } : undefined}
+              />
             ) : (
               <Table>
                 <TableHeader>
@@ -173,7 +280,7 @@ const OperatorUsage = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {usageData.map((usage) => {
+                  {filteredData.map((usage) => {
                     const storagePercentage = getStoragePercentage(usage.storage_used_gb, usage.max_storage_gb);
                     const status = getStorageStatus(storagePercentage);
 
