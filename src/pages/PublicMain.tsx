@@ -10,6 +10,9 @@ import { Chatbot } from "@/components/Chatbot";
 import { Session } from "@supabase/supabase-js";
 import { AISearchBar } from "@/components/AISearchBar";
 import { getVideoThumbnail } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/i18n/translations";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface Course {
   id: string;
@@ -29,6 +32,8 @@ const PublicMain = () => {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
 
   useEffect(() => {
     fetchPublishedCourses();
@@ -98,9 +103,9 @@ const PublicMain = () => {
 
   const getLevelText = (level: string) => {
     switch (level) {
-      case "beginner": return "초급";
-      case "intermediate": return "중급";
-      case "advanced": return "고급";
+      case "beginner": return t("beginner");
+      case "intermediate": return t("intermediate");
+      case "advanced": return t("advanced");
       default: return level;
     }
   };
@@ -121,35 +126,41 @@ const PublicMain = () => {
             </Link>
             <nav className="hidden md:flex items-center gap-8">
               <Link to="/main" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
-                홈
+                {t('home')}
               </Link>
               <Link to="/courses" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
-                전체 강좌
+                {t('allCourses')}
               </Link>
               {!session && (
                 <Link to="/auth" className="text-lg font-display font-bold text-foreground hover:text-primary transition-all hover:scale-105">
-                  로그인
+                  {t('login')}
                 </Link>
               )}
+              <LanguageSwitcher />
             </nav>
-            {session ? (
-              <Button 
-                variant="premium" 
-                size="default"
-                onClick={() => navigate('/student/courses')}
-                className="gap-2"
-              >
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">마이페이지</span>
-              </Button>
-            ) : (
-              <Link to="/auth">
-                <Button variant="premium" size="default">
-                  <span className="hidden sm:inline">수강 신청</span>
-                  <span className="sm:hidden">가입</span>
+            <div className="flex items-center gap-2">
+              <div className="md:hidden">
+                <LanguageSwitcher />
+              </div>
+              {session ? (
+                <Button 
+                  variant="premium" 
+                  size="default"
+                  onClick={() => navigate('/student/courses')}
+                  className="gap-2"
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">{t('myPage')}</span>
                 </Button>
-              </Link>
-            )}
+              ) : (
+                <Link to="/auth">
+                  <Button variant="premium" size="default">
+                    <span className="hidden sm:inline">{t('signup')}</span>
+                    <span className="sm:hidden">{t('signup')}</span>
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
           
           {/* Bottom Row - AI Search Bar */}
@@ -166,22 +177,22 @@ const PublicMain = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 text-foreground leading-tight">
-              새로운 배움의 시작,<br />
-              <span className="text-gradient">당신의 성장을 응원합니다</span>
+              {t('heroTitle')}<br />
+              <span className="text-gradient">{t('heroSubtitle')}</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-              전문 강사진과 함께하는 체계적인 온라인 교육 과정
+              {t('heroDescription')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/courses">
                 <Button size="lg" variant="premium" className="gap-2">
                   <BookOpen className="h-5 w-5" />
-                  전체 강좌 보기
+                  {t('viewAllCourses')}
                 </Button>
               </Link>
               <Link to="/auth">
                 <Button size="lg" variant="outline">
-                  무료 체험하기
+                  {t('freeTrial')}
                 </Button>
               </Link>
             </div>
@@ -190,15 +201,15 @@ const PublicMain = () => {
             <div className="flex flex-wrap items-center justify-center gap-8 mt-12">
               <div className="flex items-center gap-2">
                 <Users className="h-6 w-6 text-accent" />
-                <span className="text-sm font-semibold text-foreground">5,000+ 수강생</span>
+                <span className="text-sm font-semibold text-foreground">5,000+ {t('students')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Award className="h-6 w-6 text-accent" />
-                <span className="text-sm font-semibold text-foreground">수료증 발급</span>
+                <span className="text-sm font-semibold text-foreground">{t('certificate')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Star className="h-6 w-6 text-accent" />
-                <span className="text-sm font-semibold text-foreground">평점 4.8/5.0</span>
+                <span className="text-sm font-semibold text-foreground">{t('rating')} 4.8/5.0</span>
               </div>
             </div>
           </div>
@@ -210,10 +221,10 @@ const PublicMain = () => {
         <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
-              인기 교육 과정
+              {t('popularCourses')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              지금 가장 많은 수강생이 선택한 강좌를 만나보세요
+              {t('popularCoursesDesc')}
             </p>
           </div>
 
@@ -230,7 +241,7 @@ const PublicMain = () => {
           ) : courses.length === 0 ? (
             <div className="text-center py-12">
               <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-lg text-muted-foreground">아직 등록된 강좌가 없습니다.</p>
+              <p className="text-lg text-muted-foreground">{t('noCoursesYet')}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -257,21 +268,21 @@ const PublicMain = () => {
                         </Badge>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           <Clock className="h-4 w-4" />
-                          <span>{course.duration_hours}시간</span>
+                          <span>{course.duration_hours}{t('hours')}</span>
                         </div>
                       </div>
                       <h3 className="text-xl font-semibold mb-2 text-card-foreground group-hover:text-primary transition-colors line-clamp-2">
                         {course.title}
                       </h3>
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                        {course.description || "강좌 설명이 없습니다."}
+                        {course.description || t('noCoursesYet')}
                       </p>
                       <div className="flex items-center justify-between">
                         <span className="text-2xl font-bold text-foreground">
-                          {course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}
+                          {course.price > 0 ? `₩${course.price.toLocaleString()}` : t('free')}
                         </span>
                         <Button variant="ghost" size="sm" className="group-hover:text-primary">
-                          자세히 보기 →
+                          {t('viewDetails')} →
                         </Button>
                       </div>
                     </div>
@@ -285,7 +296,7 @@ const PublicMain = () => {
             <div className="text-center mt-12">
               <Link to="/courses">
                 <Button variant="outline" size="lg">
-                  전체 강좌 보기
+                  {t('viewAllCourses')}
                 </Button>
               </Link>
             </div>
@@ -298,27 +309,27 @@ const PublicMain = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
-              왜 우리 교육원인가요?
+              {t('whyUs')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              체계적인 커리큘럼과 전문 강사진이 함께합니다
+              {t('whyUsDesc')}
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <FeatureCard
               icon={<BookOpen className="h-10 w-10" />}
-              title="체계적인 커리큘럼"
-              description="단계별로 설계된 교육 과정으로 확실한 학습 효과를 제공합니다"
+              title={t('systematicCurriculum')}
+              description={t('systematicDesc')}
             />
             <FeatureCard
               icon={<Users className="h-10 w-10" />}
-              title="전문 강사진"
-              description="현업 전문가들의 실무 경험을 바탕으로 한 생생한 강의"
+              title={t('expertInstructors')}
+              description={t('expertDesc')}
             />
             <FeatureCard
               icon={<Award className="h-10 w-10" />}
-              title="수료증 발급"
-              description="과정 완료 시 공식 수료증을 발급하여 경력에 도움을 드립니다"
+              title={t('certificateIssue')}
+              description={t('certificateDesc')}
             />
           </div>
         </div>
@@ -331,15 +342,15 @@ const PublicMain = () => {
             <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                지금 바로 시작하세요
+                {t('startNow')}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                첫 강좌는 무료로 체험할 수 있습니다
+                {t('firstCourseFree')}
               </p>
               <Link to="/auth">
                 <Button size="lg" variant="premium" className="gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  무료로 시작하기
+                  {t('startForFree')}
                 </Button>
               </Link>
             </div>
@@ -361,27 +372,27 @@ const PublicMain = () => {
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">교육원 소개</h4>
+              <h4 className="font-semibold mb-4">{t('aboutUs')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>회사 소개</li>
-                <li>강사진 소개</li>
-                <li>오시는 길</li>
+                <li>{t('companyInfo')}</li>
+                <li>{t('instructorInfo')}</li>
+                <li>{t('directions')}</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">수강 안내</h4>
+              <h4 className="font-semibold mb-4">{t('enrollment')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>수강 신청</li>
-                <li>환불 정책</li>
-                <li>이용 약관</li>
+                <li>{t('enrollmentInfo')}</li>
+                <li>{t('refundPolicy')}</li>
+                <li>{t('terms')}</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">고객 지원</h4>
+              <h4 className="font-semibold mb-4">{t('support')}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>자주 묻는 질문</li>
-                <li>1:1 문의</li>
-                <li>공지사항</li>
+                <li>{t('faq')}</li>
+                <li>{t('contact')}</li>
+                <li>{t('notice')}</li>
               </ul>
             </div>
           </div>

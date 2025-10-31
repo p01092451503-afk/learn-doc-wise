@@ -6,8 +6,13 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/i18n/translations";
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
+  
   return (
     <DashboardLayout userRole="student" isDemo={isDemo}>
       <div className="space-y-8">
@@ -15,12 +20,12 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-2">
-              <span className="text-gradient">학습 대시보드</span>
+              <span className="text-gradient">{t('learningDashboard')}</span>
             </h1>
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg flex items-center gap-2">
               <img src={atomLogo} alt="atom" className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="hidden sm:inline">안녕하세요! </span>
-              {isDemo ? 'AI 기반 맞춤형 학습으로 더 빠르게 성장하세요' : '오늘도 열심히 학습해봅시다'}
+              <span className="hidden sm:inline">{language === 'ko' ? '안녕하세요! ' : 'Hello! '}</span>
+              {isDemo ? t('aiLearningMessage') : t('welcomeMessage')}
             </p>
           </div>
         </div>
@@ -28,25 +33,25 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Stats Cards */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="수강 중인 강의"
+            title={t('enrolledCourses')}
             value="5"
             icon={<BookOpen className="h-5 w-5" />}
             description="+2 this month"
           />
           <StatsCard
-            title="학습 시간"
+            title={t('learningTime')}
             value="24.5h"
             icon={<Clock className="h-5 w-5" />}
-            description="이번 주"
+            description={t('thisWeek')}
           />
           <StatsCard
-            title="완료한 과제"
+            title={t('completedAssignments')}
             value="12"
             icon={<FileText className="h-5 w-5" />}
-            description="전체 15개 중"
+            description={`${t('outOf')} 15${t('of')}`}
           />
           <StatsCard
-            title="획득 뱃지"
+            title={t('earnedBadges')}
             value="8"
             icon={<Award className="h-5 w-5" />}
             description="+3 new"
@@ -56,8 +61,8 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Current Courses */}
         <Card>
           <CardHeader>
-            <CardTitle>진행 중인 강의</CardTitle>
-            <CardDescription>계속해서 학습을 진행하세요</CardDescription>
+            <CardTitle>{t('ongoingCourses')}</CardTitle>
+            <CardDescription>{t('continueDesc')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -89,29 +94,29 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
-                학습 통계
+                {t('learningStats')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-muted-foreground">주간 목표</span>
+                    <span className="text-sm text-muted-foreground">{t('weeklyGoal')}</span>
                     <span className="text-sm font-medium">15h / 20h</span>
                   </div>
                   <Progress value={75} />
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-muted-foreground">과제 완료율</span>
+                    <span className="text-sm text-muted-foreground">{t('assignmentCompletion')}</span>
                     <span className="text-sm font-medium">80%</span>
                   </div>
                   <Progress value={80} />
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm text-muted-foreground">평균 점수</span>
-                    <span className="text-sm font-medium">92점</span>
+                    <span className="text-sm text-muted-foreground">{t('avgScore')}</span>
+                    <span className="text-sm font-medium">92{t('points')}</span>
                   </div>
                   <Progress value={92} />
                 </div>
@@ -122,10 +127,10 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                추천 강의
-                {isDemo && <Badge variant="default" className="text-xs">AI 추천</Badge>}
+                {t('recommendedCourses')}
+                {isDemo && <Badge variant="default" className="text-xs">{t('aiRecommendation')}</Badge>}
               </CardTitle>
-              <CardDescription>AI가 당신의 학습 패턴을 분석하여 추천합니다</CardDescription>
+              <CardDescription>{t('aiRecommendationDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -152,11 +157,11 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
-                AI 학습 도우미 기능
+                {t('aiLearningHelper')}
                 <Badge variant="default" className="text-xs">AI</Badge>
               </CardTitle>
               <CardDescription>
-                AI 기술로 더 효과적인 학습을 경험하세요
+                {t('aiLearningDesc')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -166,10 +171,10 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
-                    <h4 className="font-semibold">AI 튜터</h4>
+                    <h4 className="font-semibold">{t('aiTutor')}</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    24시간 언제든지 질문하고 실시간 답변을 받으세요
+                    {t('aiTutorDesc')}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-background border border-border">
@@ -177,10 +182,10 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <FileText className="h-5 w-5 text-primary" />
                     </div>
-                    <h4 className="font-semibold">AI 자동 채점</h4>
+                    <h4 className="font-semibold">{t('aiAutoGrading')}</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    과제 제출 시 즉시 채점 결과와 상세한 피드백 제공
+                    {t('aiAutoGradingDesc')}
                   </p>
                 </div>
                 <div className="p-4 rounded-lg bg-background border border-border">
@@ -188,10 +193,10 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <TrendingUp className="h-5 w-5 text-primary" />
                     </div>
-                    <h4 className="font-semibold">AI 학습 분석</h4>
+                    <h4 className="font-semibold">{t('aiLearningAnalysis')}</h4>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    학습 패턴 분석으로 맞춤형 학습 경로 추천
+                    {t('aiLearningAnalysisDesc')}
                   </p>
                 </div>
               </div>
@@ -228,17 +233,17 @@ const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: st
       </div>
       <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
         <PlayCircle className="h-4 w-4 mr-1" />
-        계속하기
+        {getTranslation('ko', 'continue')}
       </Button>
     </div>
     <div>
       <div className="flex justify-between mb-2 text-xs md:text-sm">
-        <span className="text-muted-foreground">진행률</span>
+        <span className="text-muted-foreground">{getTranslation('ko', 'progress')}</span>
         <span className="font-semibold text-primary">{progress}%</span>
       </div>
       <Progress value={progress} className="h-2" />
     </div>
-    <p className="text-xs md:text-sm text-muted-foreground truncate">다음: {nextLesson}</p>
+    <p className="text-xs md:text-sm text-muted-foreground truncate">{getTranslation('ko', 'nextLesson')}: {nextLesson}</p>
   </div>
 );
 
@@ -252,7 +257,7 @@ const RecommendedCourse = ({ title, instructor, rating, students }: { title: str
         <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
       </div>
     </div>
-    <Button size="sm" className="w-full sm:w-auto flex-shrink-0">보기</Button>
+    <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{getTranslation('ko', 'viewDetails')}</Button>
   </div>
 );
 

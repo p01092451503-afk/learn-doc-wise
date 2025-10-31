@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { BookOpen, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getTranslation } from "@/i18n/translations";
 
 interface Course {
   id: string;
@@ -32,6 +34,8 @@ const StudentCourses = () => {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<"student" | "teacher" | "admin">("student");
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
 
   // Check if in demo mode
   const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
@@ -246,9 +250,9 @@ const StudentCourses = () => {
 
   const getLevelBadge = (level: string) => {
     switch (level) {
-      case "beginner": return { text: "초급", variant: "default" as const };
-      case "intermediate": return { text: "중급", variant: "secondary" as const };
-      case "advanced": return { text: "고급", variant: "destructive" as const };
+      case "beginner": return { text: t("beginner"), variant: "default" as const };
+      case "intermediate": return { text: t("intermediate"), variant: "secondary" as const };
+      case "advanced": return { text: t("advanced"), variant: "destructive" as const };
       default: return { text: level, variant: "outline" as const };
     }
   };
@@ -258,15 +262,15 @@ const StudentCourses = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            {userRole === "admin" ? "전체 강좌" : "내 강의"}
+            {userRole === "admin" ? t("allCoursesAdmin") : t("myCourses")}
             <Badge variant="default" className="text-xs">AI</Badge>
           </h1>
           <p className="text-muted-foreground mt-2">
             {userRole === "admin" 
-              ? "관리자 권한으로 모든 강좌에 접근할 수 있습니다" 
+              ? t("adminAccessDesc")
               : isDemo
-              ? "AI 튜터, AI 자동 채점, AI 학습 분석 등 다양한 AI 기능으로 더 스마트하게 학습하세요"
-              : "수강 중인 강의를 확인하고 학습을 이어가세요"}
+              ? t("aiSmartLearning")
+              : t("myCoursesDesc")}
           </p>
         </div>
 
@@ -274,16 +278,16 @@ const StudentCourses = () => {
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-              <p className="text-muted-foreground">강좌 정보를 불러오는 중...</p>
+              <p className="text-muted-foreground">{t("loadingCourses")}</p>
             </div>
           </div>
         ) : enrollments.length === 0 ? (
           <Card className="border-border/50 shadow-sm">
             <CardContent className="pt-12 pb-12 text-center">
               <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">수강 중인 강좌가 없습니다</h3>
+              <h3 className="text-lg font-semibold mb-2">{t("noEnrolledCourses")}</h3>
               <p className="text-muted-foreground mb-6">
-                새로운 강좌를 시작해보세요
+                {t("startNewCourse")}
               </p>
             </CardContent>
           </Card>
@@ -296,7 +300,7 @@ const StudentCourses = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">
-                        {userRole === "admin" ? "전체 강좌" : "수강 중인 강의"}
+                        {userRole === "admin" ? t("allCoursesAdmin") : t("enrolledCourses")}
                       </p>
                       <p className="text-3xl font-bold mt-2">{enrollments.length}</p>
                     </div>
@@ -312,7 +316,7 @@ const StudentCourses = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                        평균 진행률
+                        {t("avgProgress")}
                       </p>
                       <p className="text-3xl font-bold mt-2">
                         {enrollments.length > 0 
@@ -331,13 +335,13 @@ const StudentCourses = () => {
                 <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5">
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                          AI 학습 분석
-                          <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                        </p>
-                        <p className="text-3xl font-bold mt-2">활성</p>
-                      </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        {t("aiLearningAnalysisActive")}
+                        <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                      </p>
+                      <p className="text-3xl font-bold mt-2">{t("active")}</p>
+                    </div>
                       <div className="h-12 w-12 bg-primary/20 rounded-xl flex items-center justify-center">
                         <BookOpen className="h-6 w-6 text-primary" />
                       </div>
@@ -351,10 +355,10 @@ const StudentCourses = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">
-                        총 학습 시간
+                        {t("totalLearningTime")}
                       </p>
                       <p className="text-3xl font-bold mt-2">
-                        {enrollments.reduce((acc, e) => acc + (e.courses?.duration_hours || 0), 0)}시간
+                        {enrollments.reduce((acc, e) => acc + (e.courses?.duration_hours || 0), 0)}{t("hours")}
                       </p>
                     </div>
                     <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center">
@@ -368,18 +372,18 @@ const StudentCourses = () => {
             {/* 수강 중인 강의 목록 */}
             <div>
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                {userRole === "admin" ? "전체 강좌 목록" : "수강 중인 강의"}
+                {userRole === "admin" ? t("allCoursesList") : t("enrolledCourses")}
                 <Badge variant="default" className="text-xs">AI</Badge>
               </h2>
               <Card className="border-border/50 shadow-sm">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[300px]">제목</TableHead>
-                      <TableHead>난이도</TableHead>
-                      <TableHead>학습시간</TableHead>
-                      {userRole !== "admin" && <TableHead>진행률</TableHead>}
-                      <TableHead className="text-right">액션</TableHead>
+                      <TableHead className="w-[300px]">{t("title")}</TableHead>
+                      <TableHead>{t("difficulty")}</TableHead>
+                      <TableHead>{t("learningTimeShort")}</TableHead>
+                      {userRole !== "admin" && <TableHead>{t("progress")}</TableHead>}
+                      <TableHead className="text-right">{t("action")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -435,7 +439,7 @@ const StudentCourses = () => {
                           <TableCell>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <Clock className="h-4 w-4" />
-                              <span>{course.duration_hours}시간</span>
+                              <span>{course.duration_hours}{t("hours")}</span>
                             </div>
                           </TableCell>
                           {userRole !== "admin" && (
