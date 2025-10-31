@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
+import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
@@ -24,12 +24,12 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">관리자 대시보드</h1>
           <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
             <img src={atomLogo} alt="atom" className="h-5 w-5" />
-            플랫폼 전체를 관리하고 모니터링하세요
+            {isDemo ? 'AI 기반 리포트 생성과 학습 분석으로 스마트한 플랫폼 운영' : '플랫폼 전체를 관리하고 모니터링하세요'}
           </p>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatsCard
             title="전체 사용자"
             value="2,847"
@@ -44,6 +44,21 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description="+12 this month"
             trend="up"
           />
+          {isDemo && (
+            <Card className="overflow-hidden border-primary/20 bg-primary/5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-1">
+                  AI 사용량
+                  <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                </CardTitle>
+                <Brain className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">12.4K</div>
+                <p className="text-xs text-muted-foreground">AI 요청 (이번 달)</p>
+              </CardContent>
+            </Card>
+          )}
           <StatsCard
             title="총 매출"
             value="₩45,230,000"

@@ -54,9 +54,68 @@ const StudentAssignments = () => {
     if (!isDemo) {
       fetchData();
     } else {
+      setMockDemoData();
       setLoading(false);
     }
   }, [isDemo]);
+
+  const setMockDemoData = () => {
+    const mockAssignments: Assignment[] = [
+      {
+        id: 'assign-1',
+        title: 'React Hooks 실습 과제',
+        description: 'useState, useEffect, useContext를 활용한 간단한 Todo 앱을 만들어보세요. AI 튜터가 코드 리뷰를 제공합니다.',
+        due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 100,
+        status: 'published',
+        courses: { title: 'AI 기반 웹 개발 마스터' }
+      },
+      {
+        id: 'assign-2',
+        title: 'Python 데이터 분석',
+        description: '판다스와 넘파이를 사용하여 주어진 데이터셋을 분석하세요. AI가 자동으로 코드 품질을 평가합니다.',
+        due_date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 100,
+        status: 'published',
+        courses: { title: 'Python AI 프로그래밍' }
+      },
+      {
+        id: 'assign-3',
+        title: '머신러닝 모델 구현',
+        description: 'Scikit-learn을 사용하여 분류 모델을 만들고 평가하세요.',
+        due_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 150,
+        status: 'published',
+        courses: { title: '머신러닝 실전 프로젝트' }
+      },
+    ];
+
+    const mockSubmissions: Submission[] = [
+      {
+        id: 'sub-1',
+        assignment_id: 'assign-3',
+        submission_text: '머신러닝 분류 모델을 구현했습니다. RandomForest 알고리즘을 사용하여 85%의 정확도를 달성했습니다.',
+        submitted_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'graded',
+        score: 142,
+        feedback: 'AI 자동 채점: 코드 구조가 우수하며, 모델 성능도 뛰어납니다. 다만 데이터 전처리 부분에서 약간의 개선이 필요합니다. 하이퍼파라미터 튜닝도 고려해보세요.',
+        assignments: { title: '머신러닝 모델 구현', max_score: 150 }
+      },
+      {
+        id: 'sub-2',
+        assignment_id: 'assign-1',
+        submission_text: 'React Hooks를 활용한 Todo 앱을 완성했습니다. useState로 상태 관리하고 useEffect로 로컬 스토리지 연동했습니다.',
+        submitted_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'submitted',
+        score: null,
+        feedback: null,
+        assignments: { title: 'React Hooks 실습 과제', max_score: 100 }
+      },
+    ];
+
+    setAssignments(mockAssignments);
+    setSubmissions(mockSubmissions);
+  };
 
   const fetchData = async () => {
     try {
@@ -163,9 +222,14 @@ const StudentAssignments = () => {
     <DashboardLayout userRole="student">
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">과제</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            과제
+            {isDemo && <Badge variant="default" className="text-xs">AI</Badge>}
+          </h1>
           <p className="text-muted-foreground mt-2">
-            제출할 과제를 확인하고 관리하세요
+            {isDemo 
+              ? 'AI 자동 채점으로 즉시 피드백을 받고 학습을 개선하세요'
+              : '제출할 과제를 확인하고 관리하세요'}
           </p>
         </div>
 
@@ -345,15 +409,18 @@ const StudentAssignments = () => {
                   className="border-border/50 shadow-sm hover:shadow-md transition-all duration-300"
                 >
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="text-lg">
-                          {submission.assignments?.title}
-                        </CardTitle>
-                      </div>
-                      <Badge variant="default" className="bg-accent">
-                        {submission.score || 0}점
-                      </Badge>
+                     <div className="flex items-start justify-between">
+                       <div className="space-y-1">
+                         <CardTitle className="text-lg flex items-center gap-2">
+                           {submission.assignments?.title}
+                           {isDemo && submission.feedback?.includes('AI') && (
+                             <Badge variant="default" className="text-[10px] px-1.5 py-0">AI 채점</Badge>
+                           )}
+                         </CardTitle>
+                       </div>
+                       <Badge variant="default" className="bg-accent">
+                         {submission.score || 0}점
+                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent>

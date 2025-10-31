@@ -1,8 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText } from "lucide-react";
+import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
 
@@ -18,7 +19,8 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </h1>
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg flex items-center gap-2">
               <img src={atomLogo} alt="atom" className="h-5 w-5 md:h-6 md:w-6" />
-              <span className="hidden sm:inline">안녕하세요! </span>오늘도 열심히 학습해봅시다
+              <span className="hidden sm:inline">안녕하세요! </span>
+              {isDemo ? 'AI 기반 맞춤형 학습으로 더 빠르게 성장하세요' : '오늘도 열심히 학습해봅시다'}
             </p>
           </div>
         </div>
@@ -119,8 +121,11 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
 
           <Card>
             <CardHeader>
-              <CardTitle>추천 강의</CardTitle>
-              <CardDescription>AI가 추천하는 다음 강의</CardDescription>
+              <CardTitle className="flex items-center gap-2">
+                추천 강의
+                {isDemo && <Badge variant="default" className="text-xs">AI 추천</Badge>}
+              </CardTitle>
+              <CardDescription>AI가 당신의 학습 패턴을 분석하여 추천합니다</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -140,6 +145,59 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardContent>
           </Card>
         </div>
+
+        {/* AI Features Section - Demo Mode Only */}
+        {isDemo && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-primary" />
+                AI 학습 도우미 기능
+                <Badge variant="default" className="text-xs">AI</Badge>
+              </CardTitle>
+              <CardDescription>
+                AI 기술로 더 효과적인 학습을 경험하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="p-4 rounded-lg bg-background border border-border">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                    </div>
+                    <h4 className="font-semibold">AI 튜터</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    24시간 언제든지 질문하고 실시간 답변을 받으세요
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg bg-background border border-border">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <h4 className="font-semibold">AI 자동 채점</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    과제 제출 시 즉시 채점 결과와 상세한 피드백 제공
+                  </p>
+                </div>
+                <div className="p-4 rounded-lg bg-background border border-border">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <h4 className="font-semibold">AI 학습 분석</h4>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    학습 패턴 분석으로 맞춤형 학습 경로 추천
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* 챗봇 - 숨김 */}

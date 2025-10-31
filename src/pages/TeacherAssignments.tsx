@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,6 +42,7 @@ interface Submission {
 }
 
 const TeacherAssignments = () => {
+  const [searchParams] = useSearchParams();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
@@ -50,6 +52,9 @@ const TeacherAssignments = () => {
   const [gradeScore, setGradeScore] = useState<number>(0);
   const [gradeFeedback, setGradeFeedback] = useState("");
   const { toast } = useToast();
+
+  const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
+  const isDemo = !!demoRole;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -61,9 +66,92 @@ const TeacherAssignments = () => {
     status: "draft",
   });
 
+  const setMockDemoData = () => {
+    const mockCourses = [
+      { id: 'course-1', title: 'React 완벽 가이드' },
+      { id: 'course-2', title: 'TypeScript 마스터클래스' },
+      { id: 'course-3', title: 'Next.js 풀스택 개발' },
+    ];
+
+    const mockAssignments: Assignment[] = [
+      {
+        id: 'assign-1',
+        title: 'React Hooks 실습',
+        description: 'useState, useEffect를 활용한 실습',
+        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 100,
+        status: 'published',
+        course_id: 'course-1',
+        courses: { title: 'React 완벽 가이드' }
+      },
+      {
+        id: 'assign-2',
+        title: 'TypeScript 고급 타입',
+        description: '제네릭과 유틸리티 타입 실습',
+        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 100,
+        status: 'published',
+        course_id: 'course-2',
+        courses: { title: 'TypeScript 마스터클래스' }
+      },
+      {
+        id: 'assign-3',
+        title: 'Next.js API Routes',
+        description: 'API Routes와 Server Actions 구현',
+        due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        max_score: 120,
+        status: 'draft',
+        course_id: 'course-3',
+        courses: { title: 'Next.js 풀스택 개발' }
+      },
+    ];
+
+    const mockSubmissions: Submission[] = [
+      {
+        id: 'sub-1',
+        assignment_id: 'assign-1',
+        student_id: 'student-1',
+        submission_text: 'React Hooks를 활용하여 Todo 앱을 구현했습니다. useState로 할 일 목록을 관리하고, useEffect로 로컬 스토리지와 동기화했습니다.',
+        submitted_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'submitted',
+        score: null,
+        profiles: { full_name: '김민수' }
+      },
+      {
+        id: 'sub-2',
+        assignment_id: 'assign-1',
+        student_id: 'student-2',
+        submission_text: 'useReducer와 useContext를 조합하여 복잡한 상태 관리를 구현했습니다.',
+        submitted_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'submitted',
+        score: null,
+        profiles: { full_name: '이지은' }
+      },
+      {
+        id: 'sub-3',
+        assignment_id: 'assign-2',
+        student_id: 'student-3',
+        submission_text: '제네릭을 사용하여 타입 안전한 API 클라이언트를 만들었습니다.',
+        submitted_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'graded',
+        score: 95,
+        profiles: { full_name: '박준호' }
+      },
+    ];
+
+    setCourses(mockCourses);
+    setAssignments(mockAssignments);
+    setSubmissions(mockSubmissions as any);
+  };
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isDemo) {
+      setMockDemoData();
+      setLoading(false);
+    } else {
+      fetchData();
+    }
+  }, [isDemo]);
 
   const fetchData = async () => {
     try {
@@ -310,7 +398,7 @@ const TeacherAssignments = () => {
           </Dialog>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-5">
           <Card className="overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium whitespace-nowrap">전체 과제</CardTitle>
@@ -323,6 +411,24 @@ const TeacherAssignments = () => {
               <p className="text-xs text-muted-foreground whitespace-nowrap">생성된 과제</p>
             </CardContent>
           </Card>
+
+          {isDemo && (
+            <Card className="overflow-hidden border-primary/20 bg-primary/5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-1">
+                  AI 채점
+                  <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                </CardTitle>
+                <div className="text-primary flex-shrink-0">
+                  <CheckCircle className="h-4 w-4" />
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-1 min-w-0">
+                <div className="text-xl font-bold break-all text-primary">가능</div>
+                <p className="text-xs text-muted-foreground whitespace-nowrap">즉시 채점</p>
+              </CardContent>
+            </Card>
+          )}
 
           <Card className="overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

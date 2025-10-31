@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit } from "lucide-react";
+import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
@@ -14,7 +15,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">강사 대시보드</h1>
             <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
               <img src={atomLogo} alt="atom" className="h-5 w-5" />
-              학생들의 학습을 관리하고 분석하세요
+              {isDemo ? 'AI 기반 과제 채점으로 더 효율적인 강의 운영을 경험하세요' : '학생들의 학습을 관리하고 분석하세요'}
             </p>
           </div>
           <Button className="gap-2 w-full sm:w-auto flex-shrink-0">
@@ -24,7 +25,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatsCard
             title="전체 학생"
             value="342"
@@ -38,6 +39,21 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             icon={<BookOpen className="h-4 w-4" />}
             description="2 pending review"
           />
+          {isDemo && (
+            <Card className="overflow-hidden border-primary/20 bg-primary/5">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-1">
+                  AI 채점
+                  <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                </CardTitle>
+                <Brain className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-primary">28건</div>
+                <p className="text-xs text-muted-foreground">자동 채점 완료</p>
+              </CardContent>
+            </Card>
+          )}
           <StatsCard
             title="이번 달 수익"
             value="₩4,250,000"
