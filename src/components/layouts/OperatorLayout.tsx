@@ -192,7 +192,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                         <span className="font-medium text-base whitespace-nowrap">{item.label}</span>
                         {item.hasAI && (
                           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 flex-shrink-0">
-                            <Sparkles className="h-2.5 w-2.5 text-violet-400" />
+                            <Zap className="h-2.5 w-2.5 text-violet-400 fill-current" />
                             <span className="text-[10px] font-semibold text-violet-400 whitespace-nowrap">AI</span>
                           </span>
                         )}
