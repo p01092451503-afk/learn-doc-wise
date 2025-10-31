@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, Check, Palette, Layout, Paintbrush } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface Template {
   id: string;
@@ -194,7 +195,10 @@ const AdminTemplates = () => {
         {/* Header - 다른 관리자 페이지와 동일한 스타일 */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-display font-bold">디자인 템플릿</h1>
+            <h1 className="text-3xl font-display font-bold flex items-center gap-2">
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              디자인 템플릿
+            </h1>
             <p className="text-muted-foreground mt-2">
               사용자에게 보여질 메인 페이지 디자인을 선택하세요. 각 템플릿은 고유한 색상 테마와 레이아웃 구조를 제공합니다.
             </p>

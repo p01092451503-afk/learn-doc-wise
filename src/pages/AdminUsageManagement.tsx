@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { RefreshCw, AlertTriangle, TrendingUp, Users, HardDrive, Zap } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import logoIcon from "@/assets/logo-icon.png";
 
 interface UsageMetric {
   id: string;
@@ -175,7 +176,10 @@ const AdminUsageManagement = () => {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">사용량 관리</h1>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              사용량 관리
+            </h1>
             <p className="text-muted-foreground mt-2">
               테넌트별 리소스 사용량 모니터링 및 자동 과금 관리
             </p>

@@ -34,6 +34,7 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import logoIcon from "@/assets/logo-icon.png";
 
 const AdminContent = () => {
   const { toast } = useToast();
@@ -352,7 +353,10 @@ const AdminContent = () => {
     <DashboardLayout userRole="admin">
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-logo font-bold tracking-tight">콘텐츠 관리</h1>
+          <h1 className="text-4xl font-logo font-bold tracking-tight flex items-center gap-2">
+            <img src={logoIcon} alt="atom" className="h-9 w-9" />
+            콘텐츠 관리
+          </h1>
           <p className="text-muted-foreground mt-2">
             카테고리, 태그 및 비디오 강의 콘텐츠를 등록하고 관리합니다
           </p>
