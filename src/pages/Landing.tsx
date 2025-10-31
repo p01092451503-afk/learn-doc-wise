@@ -53,12 +53,12 @@ const Landing = () => {
               <span className="text-sm font-semibold text-primary">AI 기반 혁신 학습</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 text-foreground leading-tight animate-slide-up">
-              웹헤즈 AI-LMS<br />
-              <span className="text-gradient">이러닝 솔루션 구축</span>
+              차세대<br />
+              <span className="text-gradient">AI 학습관리시스템</span>
             </h1>
             <p className="text-lg md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              국내 최고의 클라우드 LMS. 기업교육 플랫폼, 사내교육 시스템, HRD 교육시스템 구축부터 
-              온라인 학습관리까지. AI 챗봇과 실시간 분석으로 맞춤형 교육 솔루션을 제공합니다.
+              강사와 학습자를 위한 프리미엄 LMS. AI 튜터, 자동 평가, 
+              실시간 분석으로 더 스마트한 학습 경험을 제공합니다.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <Link to="/auth">
