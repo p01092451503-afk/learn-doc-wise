@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, FileCheck, SpellCheck } from "lucide-react";
+import { formatAIResponse } from "@/lib/utils";
 
 interface AIFeedbackDialogProps {
   open: boolean;
@@ -143,7 +144,7 @@ export const AIFeedbackDialog = ({ open, onOpenChange }: AIFeedbackDialogProps) 
           <Card className="mt-4">
             <CardContent className="pt-4">
               <div className="prose prose-sm max-w-none">
-                <pre className="whitespace-pre-wrap font-sans">{feedback}</pre>
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">{formatAIResponse(feedback)}</div>
               </div>
             </CardContent>
           </Card>

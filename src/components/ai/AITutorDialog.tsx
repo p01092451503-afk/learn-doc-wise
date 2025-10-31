@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, MessageCircle, FileText, HelpCircle } from "lucide-react";
+import { formatAIResponse } from "@/lib/utils";
 
 interface AITutorDialogProps {
   open: boolean;
@@ -153,7 +154,7 @@ export const AITutorDialog = ({ open, onOpenChange, courseContext }: AITutorDial
           <Card className="mt-4">
             <CardContent className="pt-4">
               <div className="prose prose-sm max-w-none">
-                <pre className="whitespace-pre-wrap font-sans">{result}</pre>
+                <div className="whitespace-pre-wrap text-sm leading-relaxed">{formatAIResponse(result)}</div>
               </div>
             </CardContent>
           </Card>

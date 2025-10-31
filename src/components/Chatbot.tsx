@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, X, Loader2 } from "lucide-react";
+import { Loader2, X, Send } from "lucide-react";
 import chatbotIcon from "@/assets/chatbot-avatar.png";
+import { formatAIResponse } from "@/lib/utils";
 
 type Message = {
   role: "user" | "assistant";
@@ -235,7 +236,9 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
                           : "bg-muted"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm whitespace-pre-wrap">
+                        {message.role === "assistant" ? formatAIResponse(message.content) : message.content}
+                      </p>
                     </div>
                   </div>
                 ))}

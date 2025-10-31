@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Languages } from "lucide-react";
+import { formatAIResponse } from "@/lib/utils";
 
 interface AITranslateDialogProps {
   open: boolean;
@@ -162,9 +163,9 @@ export const AITranslateDialog = ({ open, onOpenChange }: AITranslateDialogProps
               <CardContent className="pt-4">
                 <Label className="mb-2 block">번역 결과</Label>
                 <div className="prose prose-sm max-w-none">
-                  <pre className="whitespace-pre-wrap font-sans bg-muted p-4 rounded-lg">
-                    {translatedText}
-                  </pre>
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed bg-muted p-4 rounded-lg">
+                    {formatAIResponse(translatedText)}
+                  </div>
                 </div>
               </CardContent>
             </Card>

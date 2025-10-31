@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { formatAIResponse } from "@/lib/utils";
 
 interface Message {
   role: "user" | "assistant";
@@ -188,7 +189,7 @@ export const AISearchBar = () => {
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
-                        {msg.content}
+                        {msg.role === "assistant" ? formatAIResponse(msg.content) : msg.content}
                       </p>
                     </div>
                   </div>

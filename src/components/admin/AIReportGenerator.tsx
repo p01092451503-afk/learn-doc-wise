@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Brain, FileText, Users, AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { formatAIResponse } from "@/lib/utils";
 
 export const AIReportGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -179,7 +180,7 @@ export const AIReportGenerator = () => {
           <CardContent>
             <div className="prose prose-sm max-w-none dark:prose-invert">
               <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                {report}
+                {formatAIResponse(report)}
               </div>
             </div>
           </CardContent>

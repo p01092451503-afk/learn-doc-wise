@@ -34,3 +34,45 @@ export function getVideoThumbnail(videoUrl: string, provider: string): string | 
 
   return null;
 }
+
+/**
+ * AI 응답에서 마크다운 기호를 제거하고 깔끔한 텍스트로 변환합니다
+ */
+export function formatAIResponse(text: string): string {
+  if (!text) return "";
+  
+  return text
+    // ### 제목을 단순 텍스트로
+    .replace(/^###\s+(.+)$/gm, '\n$1\n')
+    .replace(/^##\s+(.+)$/gm, '\n$1\n')
+    .replace(/^#\s+(.+)$/gm, '\n$1\n')
+    // ** 볼드 제거
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    // * 이탤릭 제거
+    .replace(/\*(.+?)\*/g, '$1')
+    // _ 이탤릭/볼드 제거
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    // - 또는 * 로 시작하는 리스트를 • 로 변경
+    .replace(/^[\*\-]\s+/gm, '• ')
+    // 숫자 리스트 포맷 유지
+    .replace(/^(\d+)\.\s+/gm, '$1. ')
+    // 코드 블록 백틱 제거
+    .replace(/```[\s\S]*?```/g, (match) => {
+      return match.replace(/```\w*\n?/g, '').replace(/```$/g, '');
+    })
+    // 인라인 코드 백틱 제거
+    .replace(/`(.+?)`/g, '$1')
+    // 링크 포맷 [텍스트](URL) -> 텍스트
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
+    // 이미지 포맷 ![alt](URL) 제거
+    .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '')
+    // > 인용구 제거
+    .replace(/^>\s+/gm, '')
+    // --- 구분선 제거
+    .replace(/^[\-\*\_]{3,}$/gm, '')
+    // 연속된 빈 줄을 하나로
+    .replace(/\n{3,}/g, '\n\n')
+    // 앞뒤 공백 제거
+    .trim();
+}
