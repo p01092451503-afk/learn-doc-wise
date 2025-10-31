@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Zap,
   Sparkles,
+  Layers,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -58,12 +59,28 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
     return saved === "true";
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [version, setVersion] = useState<"current" | "lite">(() => {
+    const saved = localStorage.getItem("operator-version");
+    return (saved as "current" | "lite") || "current";
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     localStorage.setItem("operator-sidebar-collapsed", String(sidebarCollapsed));
   }, [sidebarCollapsed]);
+
+  useEffect(() => {
+    localStorage.setItem("operator-version", version);
+  }, [version]);
+
+  const handleVersionChange = (newVersion: "current" | "lite") => {
+    setVersion(newVersion);
+    toast({
+      title: "버전 변경",
+      description: `${newVersion === "current" ? "현재" : "라이트"} 버전으로 전환되었습니다.`,
+    });
+  };
 
   const handleLogout = async () => {
     try {
@@ -119,6 +136,52 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Version Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="gap-2 bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-violet-500"
+                >
+                  <Layers className="h-4 w-4" />
+                  <span className="hidden md:inline-block">
+                    {version === "current" ? "현재 버전" : "라이트 버전"}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-slate-800 border-slate-700">
+                <DropdownMenuLabel className="text-slate-200">버전 선택</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-slate-700" />
+                <DropdownMenuItem 
+                  onClick={() => handleVersionChange("current")}
+                  className={cn(
+                    "text-slate-300 focus:bg-slate-700 focus:text-white",
+                    version === "current" && "bg-violet-500/20 text-violet-400"
+                  )}
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  현재 버전
+                  {version === "current" && (
+                    <span className="ml-auto text-xs text-violet-400">✓</span>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => handleVersionChange("lite")}
+                  className={cn(
+                    "text-slate-300 focus:bg-slate-700 focus:text-white",
+                    version === "lite" && "bg-violet-500/20 text-violet-400"
+                  )}
+                >
+                  <Zap className="mr-2 h-4 w-4" />
+                  라이트 버전
+                  {version === "lite" && (
+                    <span className="ml-auto text-xs text-violet-400">✓</span>
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button 
               variant="ghost" 
               size="icon" 
