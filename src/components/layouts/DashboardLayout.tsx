@@ -96,6 +96,23 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
   // Check if we're in demo mode from URL params
   const isDemoMode = isDemo || searchParams.has('role');
+  
+  // In demo mode, always use the role from URL params if available (this prevents role switching bugs)
+  const effectiveUserRole = isDemoMode && searchParams.get('role') 
+    ? (searchParams.get('role') as "student" | "teacher" | "admin" | "operator")
+    : userRole;
+
+  // Debug logging for demo mode
+  useEffect(() => {
+    if (isDemoMode) {
+      console.log('[DashboardLayout] Demo Mode Active:', {
+        propRole: userRole,
+        urlRole: searchParams.get('role'),
+        effectiveRole: effectiveUserRole,
+        fullURL: window.location.href
+      });
+    }
+  }, [isDemoMode, userRole, effectiveUserRole, searchParams]);
 
   const handleLogout = async () => {
     try {
@@ -122,13 +139,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { 
         icon: LayoutDashboard, 
         label: "대시보드", 
-        path: `/${userRole}`, 
+        path: `/${effectiveUserRole}`, 
         enabled: true,
-        hasAI: userRole === "admin" || userRole === "operator"
+        hasAI: effectiveUserRole === "admin" || effectiveUserRole === "operator"
       },
     ];
 
-    if (userRole === "student") {
+    if (effectiveUserRole === "student") {
       return [
         ...baseItems,
         { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true, hasAI: true },
@@ -140,7 +157,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       ];
     }
 
-    if (userRole === "teacher") {
+    if (effectiveUserRole === "teacher") {
       return [
         ...baseItems,
         { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
@@ -152,7 +169,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       ];
     }
 
-    if (userRole === "operator") {
+    if (effectiveUserRole === "operator") {
       // 운영자(SaaS 플랫폼 소유주) 메뉴
       return [
         ...baseItems,
@@ -194,14 +211,14 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     } else {
       fetchMenuOrder();
     }
-  }, [userRole, isDemoMode]);
+  }, [effectiveUserRole, isDemoMode]);
 
   const fetchMenuOrder = async () => {
     try {
       const { data, error } = await supabase
         .from("menu_order")
         .select("menu_items")
-        .eq("user_role", userRole)
+        .eq("user_role", effectiveUserRole)
         .maybeSingle();
 
       if (error && error.code !== "PGRST116") throw error;
@@ -261,7 +278,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           </div>
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
-            {userRole === "admin" && (
+            {effectiveUserRole === "admin" && (
               <Link to="/demo">
                 <Button variant="outline" size="sm" className="gap-2 rounded-xl border-primary/30 hover:bg-primary/10">
                   <Eye className="h-4 w-4" />
@@ -351,7 +368,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   item.enabled ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
-                      <Link to={item.path}>
+                      <Link 
+                        to={isDemoMode ? `${item.path}${item.path.includes('?') ? '&' : '?'}role=${effectiveUserRole}` : item.path}
+                      >
                         <Button
                           variant="ghost"
                           className={cn(
@@ -430,7 +449,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       </div>
 
       {/* AI Chatbot Button - Only for admin and operator */}
-      {!isDemoMode && (userRole === "admin" || userRole === "operator") && (
+      {!isDemoMode && (effectiveUserRole === "admin" || effectiveUserRole === "operator") && (
         <Button
           size="icon"
           variant="premium"
