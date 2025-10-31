@@ -80,7 +80,10 @@ const OperatorAILogs = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">AI 로그</h1>
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+            AI 로그
+            <Badge variant="default" className="text-sm">AI</Badge>
+          </h1>
           <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
         </div>
 
@@ -88,7 +91,10 @@ const OperatorAILogs = () => {
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="bg-slate-900/50 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">총 요청</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-medium text-slate-400">총 요청</CardTitle>
+                <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
+              </div>
               <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
@@ -151,7 +157,10 @@ const OperatorAILogs = () => {
         {/* Logs Table */}
         <Card className="bg-slate-900/50 border-slate-800">
           <CardHeader>
-            <CardTitle className="text-white">AI 사용 로그</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-white">AI 사용 로그</CardTitle>
+              <Badge variant="default" className="text-xs">AI</Badge>
+            </div>
             <CardDescription className="text-slate-400">최근 100개 로그</CardDescription>
           </CardHeader>
           <CardContent>

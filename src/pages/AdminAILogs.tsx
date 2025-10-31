@@ -105,14 +105,20 @@ const AdminAILogs = () => {
     <DashboardLayout userRole="admin">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">AI 로그 관리</h1>
+          <h1 className="text-3xl font-display font-bold flex items-center gap-3">
+            AI 로그 관리
+            <Badge variant="default" className="text-sm">AI</Badge>
+          </h1>
           <p className="text-muted-foreground mt-2">AI 사용량 및 프롬프트 히스토리 모니터링</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">총 요청 수</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-medium">총 요청 수</CardTitle>
+                <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
+              </div>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -157,7 +163,10 @@ const AdminAILogs = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>AI 사용 로그</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle>AI 사용 로그</CardTitle>
+              <Badge variant="default" className="text-xs">AI</Badge>
+            </div>
             <CardDescription>최근 100개의 AI 요청 히스토리</CardDescription>
             <div className="mt-4">
               <Input
