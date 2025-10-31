@@ -101,10 +101,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
             </Button>
 
             <Link to="/operator" className="flex items-center gap-2 group">
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
-                <img src={logoIcon} alt="Logo" className="h-6 w-6" />
-              </div>
-              <div className="hidden sm:block">
+              <div>
                 <span className="text-lg font-bold text-white">atomLMS</span>
                 <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
               </div>
