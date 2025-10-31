@@ -402,7 +402,10 @@ const AdminLearning = () => {
         <Tabs defaultValue="progress" className="space-y-4">
           <TabsList>
             <TabsTrigger value="progress">진도 현황</TabsTrigger>
-            <TabsTrigger value="analytics">AI 학습 분석</TabsTrigger>
+            <TabsTrigger value="analytics" className="gap-2">
+              AI 학습 분석
+              <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
+            </TabsTrigger>
             <TabsTrigger value="completed">이수자 목록</TabsTrigger>
           </TabsList>
 
