@@ -500,8 +500,18 @@ const AdminLearning = () => {
                       <TableHead>학생 ID</TableHead>
                       <TableHead>학습 시간</TableHead>
                       <TableHead>완료 레슨</TableHead>
-                      <TableHead>참여도</TableHead>
-                      <TableHead>이탈 위험도</TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-2">
+                          참여도
+                          <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
+                        </div>
+                      </TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-2">
+                          이탈 위험도
+                          <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
+                        </div>
+                      </TableHead>
                       <TableHead>마지막 활동</TableHead>
                     </TableRow>
                   </TableHeader>
