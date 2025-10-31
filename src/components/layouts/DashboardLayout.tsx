@@ -232,6 +232,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
             <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
             <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+            <div className="relative flex items-center justify-center h-6 w-6 md:h-7 md:w-7 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent shadow-glow border border-primary/20">
+              <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5 text-primary-foreground" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/50 to-accent/50 blur-sm -z-10" />
+            </div>
           </Link>
 
           <div className="hidden lg:flex flex-1 items-center gap-4 ml-4">
