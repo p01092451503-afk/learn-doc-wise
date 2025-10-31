@@ -257,7 +257,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
 
               <div className="mt-4 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                 <p className="text-sm text-yellow-900 dark:text-yellow-200">
-                  <strong>시제 서비스 시작하기</strong> 버튼을 눌러 회원가입하고 모든 AI 기능을 체험해보세요
+                  <strong>실제 서비스 시작하기</strong> 버튼을 눌러 회원가입하고 모든 AI 기능을 체험해보세요
                 </p>
               </div>
             </CardContent>
