@@ -3,7 +3,9 @@ import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 import {
   BookOpen,
   Users,
@@ -20,13 +22,67 @@ import {
   TrendingUp,
   CheckCircle,
   Shield,
+  Layout,
+  Target,
+  LineChart,
+  PieChart,
+  Activity,
+  Clock,
+  Filter,
+  Download,
+  Upload,
+  Search,
+  Bell,
+  Mail,
+  UserCheck,
+  UserPlus,
+  Edit,
+  Trash,
+  Eye,
+  Lock,
+  Unlock,
+  Star,
+  Heart,
+  ThumbsUp,
+  Share2,
+  Bookmark,
+  PlayCircle,
+  PauseCircle,
+  SkipForward,
+  Volume2,
+  Maximize,
+  MessageCircle,
+  Send,
+  Image,
+  Paperclip,
+  Smile,
+  MoreVertical,
+  RefreshCw,
+  Save,
+  Copy,
+  ExternalLink,
+  Globe,
+  Zap,
+  Package,
+  ShoppingCart,
+  DollarSign,
+  Receipt,
+  Wallet,
+  Briefcase,
+  Building2,
 } from "lucide-react";
 
-interface Feature {
+interface SubFeature {
   name: string;
   description: string;
-  icon: any;
-  category: string;
+}
+
+interface MenuSection {
+  menuName: string;
+  menuPath: string;
+  icon: LucideIcon;
+  description: string;
+  features: SubFeature[];
 }
 
 const OperatorFeatures = () => {
@@ -55,202 +111,477 @@ const OperatorFeatures = () => {
     };
   }, [theme]);
 
-  const studentFeatures: Feature[] = [
+  const studentMenus: MenuSection[] = [
     {
-      name: "대시보드",
-      description: "학습 진행 상황, 다가오는 과제, 최근 성적을 한눈에 확인",
-      icon: BarChart3,
-      category: "core",
+      menuName: "대시보드",
+      menuPath: "/student",
+      icon: Layout,
+      description: "학습 현황을 한눈에 파악",
+      features: [
+        { name: "학습 진행률 위젯", description: "현재 수강 중인 강의별 진도율 표시" },
+        { name: "다가오는 과제 목록", description: "마감일이 가까운 과제 우선 표시" },
+        { name: "최근 성적 요약", description: "최근 제출한 과제의 점수 및 피드백" },
+        { name: "학습 시간 통계", description: "일별/주별 학습 시간 차트" },
+        { name: "목표 달성도", description: "설정한 학습 목표 대비 달성률" },
+        { name: "알림 센터", description: "새로운 과제, 성적, 공지사항 알림" },
+        { name: "퀵 액션 버튼", description: "자주 사용하는 기능 빠른 접근" },
+      ],
     },
     {
-      name: "강의 관리",
-      description: "등록된 강의 목록, 강의 상세 정보, 학습 자료 접근",
+      menuName: "강의 관리",
+      menuPath: "/student/courses",
       icon: BookOpen,
-      category: "core",
+      description: "수강 중인 모든 강의 관리",
+      features: [
+        { name: "강의 목록 조회", description: "수강 중/완료된 강의 필터링" },
+        { name: "강의 상세 정보", description: "커리큘럼, 강사 정보, 수강생 수" },
+        { name: "강의 검색", description: "키워드, 카테고리별 강의 검색" },
+        { name: "강의 즐겨찾기", description: "자주 보는 강의 북마크" },
+        { name: "학습 자료 다운로드", description: "강의 자료, PPT, PDF 다운로드" },
+        { name: "비디오 강의 재생", description: "온라인 비디오 스트리밍" },
+        { name: "재생 속도 조절", description: "0.5x ~ 2.0x 속도 조절" },
+        { name: "북마크 기능", description: "강의 중요 구간 저장" },
+        { name: "메모 작성", description: "강의 시청 중 메모 작성" },
+        { name: "진도율 추적", description: "강의별 시청 진행률 자동 저장" },
+      ],
     },
     {
-      name: "과제 제출",
-      description: "과제 목록 확인, 제출, AI 자동 채점 기능",
+      menuName: "과제 관리",
+      menuPath: "/student/assignments",
       icon: FileText,
-      category: "core",
+      description: "과제 제출 및 성적 확인",
+      features: [
+        { name: "과제 목록", description: "제출 대기/완료/채점 완료 상태별 분류" },
+        { name: "과제 상세 조회", description: "과제 요구사항, 마감일, 배점 확인" },
+        { name: "파일 업로드", description: "다양한 형식의 과제 파일 제출" },
+        { name: "AI 자동 채점", description: "즉시 채점 및 피드백 제공" },
+        { name: "재제출 기능", description: "마감일 전 과제 수정 및 재제출" },
+        { name: "성적 확인", description: "채점 결과 및 강사 피드백 확인" },
+        { name: "성적 통계", description: "과목별 평균 점수 및 등급 분포" },
+        { name: "마감일 알림", description: "과제 마감 전 자동 알림" },
+      ],
     },
     {
-      name: "학습 경로",
-      description: "개인화된 학습 로드맵 및 추천 강의",
-      icon: TrendingUp,
-      category: "learning",
+      menuName: "학습 경로",
+      menuPath: "/student/learning-path",
+      icon: Target,
+      description: "개인화된 학습 로드맵",
+      features: [
+        { name: "추천 학습 경로", description: "수준별 맞춤 커리큘럼 제안" },
+        { name: "목표 설정", description: "학습 목표 및 기간 설정" },
+        { name: "진도 추적", description: "학습 경로별 완료율 추적" },
+        { name: "관련 강의 추천", description: "AI 기반 다음 강의 추천" },
+        { name: "스킬 트리", description: "학습 단계별 로드맵 시각화" },
+      ],
     },
     {
-      name: "게임화 요소",
-      description: "포인트, 배지, 리더보드를 통한 학습 동기 부여",
+      menuName: "게임화",
+      menuPath: "/student/gamification",
       icon: Award,
-      category: "engagement",
+      description: "학습 동기 부여 시스템",
+      features: [
+        { name: "포인트 시스템", description: "학습 활동에 따른 포인트 적립" },
+        { name: "배지 획득", description: "업적 달성 시 배지 수여" },
+        { name: "리더보드", description: "전체/과목별 랭킹 확인" },
+        { name: "레벨 시스템", description: "경험치에 따른 레벨 업" },
+        { name: "도전 과제", description: "일일/주간 챌린지 참여" },
+        { name: "보상 스토어", description: "포인트로 아이템 구매" },
+      ],
     },
     {
-      name: "학습 분석",
-      description: "개인 학습 통계, 진도율, 성적 추이 분석",
+      menuName: "학습 분석",
+      menuPath: "/student/analytics",
       icon: BarChart3,
-      category: "analytics",
+      description: "개인 학습 데이터 분석",
+      features: [
+        { name: "학습 시간 분석", description: "일별/주별/월별 학습 시간 차트" },
+        { name: "성적 추이", description: "과목별 성적 변화 그래프" },
+        { name: "강점/약점 분석", description: "과목별 이해도 분석" },
+        { name: "출석률 통계", description: "강의별 출석 기록" },
+        { name: "학습 패턴", description: "선호 학습 시간대 분석" },
+        { name: "목표 대비 달성률", description: "설정한 목표 달성 현황" },
+        { name: "예상 성적", description: "현재 진도 기반 최종 성적 예측" },
+      ],
     },
     {
-      name: "커뮤니티",
-      description: "학생 간 질문답변, 스터디 그룹 형성",
+      menuName: "커뮤니티",
+      menuPath: "/student/community",
       icon: MessageSquare,
-      category: "social",
-    },
-    {
-      name: "AI 튜터",
-      description: "학습 내용에 대한 AI 기반 질의응답 및 피드백",
-      icon: Brain,
-      category: "ai",
+      description: "학생 간 소통 공간",
+      features: [
+        { name: "질문 게시판", description: "학습 질문 작성 및 답변" },
+        { name: "스터디 그룹", description: "스터디 모임 생성 및 참여" },
+        { name: "토론 포럼", description: "주제별 토론 참여" },
+        { name: "파일 공유", description: "학습 자료 공유" },
+        { name: "멘토링", description: "선배 학생과 멘토링 매칭" },
+        { name: "실시간 채팅", description: "그룹 채팅 및 DM" },
+        { name: "투표 기능", description: "설문 및 투표 생성" },
+      ],
     },
   ];
 
-  const teacherFeatures: Feature[] = [
+  const teacherMenus: MenuSection[] = [
     {
-      name: "강의 관리",
-      description: "강의 생성, 수정, 삭제 및 커리큘럼 구성",
+      menuName: "대시보드",
+      menuPath: "/teacher",
+      icon: Layout,
+      description: "강의 현황 종합 관리",
+      features: [
+        { name: "강의 통계", description: "전체 강의 수, 수강생 수, 완강률" },
+        { name: "수익 요약", description: "월별 수익 및 정산 예정액" },
+        { name: "최근 활동", description: "새로운 질문, 과제 제출 현황" },
+        { name: "학생 진도 현황", description: "강의별 평균 진도율" },
+        { name: "평점 및 리뷰", description: "강의 평점 및 최근 리뷰" },
+        { name: "알림 센터", description: "학생 질문, 과제 제출 알림" },
+      ],
+    },
+    {
+      menuName: "강의 관리",
+      menuPath: "/teacher/courses",
       icon: BookOpen,
-      category: "core",
+      description: "강의 콘텐츠 관리",
+      features: [
+        { name: "강의 생성", description: "새로운 강의 과정 개설" },
+        { name: "커리큘럼 구성", description: "섹션 및 레슨 구조 설정" },
+        { name: "강의 편집", description: "강의 정보, 설명, 이미지 수정" },
+        { name: "비디오 업로드", description: "강의 영상 업로드 및 인코딩" },
+        { name: "자료 첨부", description: "PDF, PPT 등 학습 자료 첨부" },
+        { name: "미리보기", description: "학생 시점 강의 미리보기" },
+        { name: "강의 공개 설정", description: "공개/비공개/예약 공개" },
+        { name: "가격 설정", description: "강의 가격 및 할인 설정" },
+        { name: "태그 관리", description: "검색 최적화를 위한 태그 설정" },
+        { name: "강의 삭제", description: "강의 아카이브 또는 영구 삭제" },
+      ],
     },
     {
-      name: "학생 관리",
-      description: "수강생 목록, 출석 관리, 성적 조회",
+      menuName: "학생 관리",
+      menuPath: "/teacher/students",
       icon: Users,
-      category: "core",
+      description: "수강생 관리 및 모니터링",
+      features: [
+        { name: "수강생 목록", description: "강의별 수강생 조회" },
+        { name: "학생 상세 정보", description: "개별 학생 프로필 및 학습 현황" },
+        { name: "진도 추적", description: "학생별 강의 시청 진도" },
+        { name: "성적 관리", description: "과제 및 시험 성적 입력" },
+        { name: "출석 기록", description: "출석 여부 확인 및 수정" },
+        { name: "개별 메시지", description: "학생에게 직접 메시지 전송" },
+        { name: "수료증 발급", description: "강의 완료 학생에게 수료증 발급" },
+        { name: "학생 필터링", description: "진도율, 성적, 출석률로 필터" },
+      ],
     },
     {
-      name: "과제 관리",
-      description: "과제 생성, AI 자동 채점, 피드백 제공",
+      menuName: "과제 관리",
+      menuPath: "/teacher/assignments",
       icon: FileText,
-      category: "core",
+      description: "과제 출제 및 채점",
+      features: [
+        { name: "과제 생성", description: "새로운 과제 출제" },
+        { name: "채점 기준 설정", description: "배점 및 평가 기준 명시" },
+        { name: "마감일 설정", description: "제출 마감 시간 지정" },
+        { name: "제출물 확인", description: "학생 제출 과제 조회" },
+        { name: "AI 자동 채점", description: "AI 기반 자동 채점 실행" },
+        { name: "수동 채점", description: "직접 점수 입력 및 수정" },
+        { name: "피드백 작성", description: "개별 학생에게 피드백 제공" },
+        { name: "재제출 허용", description: "학생 재제출 기회 부여" },
+        { name: "통계 확인", description: "과제별 평균 점수, 제출률" },
+        { name: "대량 다운로드", description: "모든 제출물 일괄 다운로드" },
+      ],
     },
     {
-      name: "출석 체크",
-      description: "실시간 출석 체크 및 출석률 통계",
+      menuName: "출석 관리",
+      menuPath: "/teacher/attendance",
       icon: CheckCircle,
-      category: "management",
+      description: "실시간 출석 체크",
+      features: [
+        { name: "출석 코드 생성", description: "실시간 출석 체크 코드 발급" },
+        { name: "QR 출석", description: "QR 코드 스캔 출석" },
+        { name: "출석부", description: "일별/주별 출석 현황 조회" },
+        { name: "지각/결석 관리", description: "출석 상태 수정" },
+        { name: "출석률 통계", description: "학생별/강의별 출석률" },
+        { name: "출석 알림", description: "미출석 학생에게 자동 알림" },
+        { name: "출석 리포트", description: "기간별 출석 현황 리포트" },
+      ],
     },
     {
-      name: "수익 관리",
-      description: "강의별 수익 현황, 정산 내역 확인",
+      menuName: "수익 관리",
+      menuPath: "/teacher/revenue",
       icon: CreditCard,
-      category: "finance",
+      description: "매출 및 정산 관리",
+      features: [
+        { name: "매출 대시보드", description: "일별/월별 매출 그래프" },
+        { name: "강의별 수익", description: "강의당 판매 수익 현황" },
+        { name: "정산 내역", description: "정산 완료 및 예정 금액" },
+        { name: "환불 관리", description: "환불 요청 처리" },
+        { name: "판매 통계", description: "강의 판매량, 환불률" },
+        { name: "쿠폰 관리", description: "할인 쿠폰 생성 및 사용 현황" },
+        { name: "세금 계산서", description: "월별 세금 계산서 발행" },
+        { name: "결제 내역", description: "학생별 결제 이력 조회" },
+      ],
     },
     {
-      name: "학습 분석",
-      description: "학생별/강의별 학습 데이터 분석 및 리포트",
+      menuName: "학습 분석",
+      menuPath: "/teacher/analytics",
       icon: BarChart3,
-      category: "analytics",
-    },
-    {
-      name: "비디오 관리",
-      description: "강의 영상 업로드, 스트리밍, 관리",
-      icon: Video,
-      category: "content",
-    },
-    {
-      name: "AI 지원",
-      description: "AI 기반 과제 채점, 피드백 생성",
-      icon: Brain,
-      category: "ai",
+      description: "강의 성과 분석",
+      features: [
+        { name: "강의 조회수", description: "강의별 재생 횟수 통계" },
+        { name: "완강률", description: "강의 완료율 분석" },
+        { name: "평균 시청 시간", description: "레슨별 시청 시간" },
+        { name: "이탈 구간 분석", description: "학생들이 이탈하는 구간 파악" },
+        { name: "성적 분포", description: "과제/시험 점수 분포" },
+        { name: "학생 활동", description: "질문, 댓글 등 참여도" },
+        { name: "리뷰 분석", description: "평점 및 리뷰 키워드 분석" },
+        { name: "비교 분석", description: "유사 강의 대비 성과 비교" },
+      ],
     },
   ];
 
-  const adminFeatures: Feature[] = [
+  const adminMenus: MenuSection[] = [
     {
-      name: "전체 대시보드",
-      description: "플랫폼 전체 통계, KPI, 실시간 모니터링",
-      icon: BarChart3,
-      category: "core",
+      menuName: "대시보드",
+      menuPath: "/admin",
+      icon: Layout,
+      description: "플랫폼 전체 현황",
+      features: [
+        { name: "핵심 지표 (KPI)", description: "총 사용자, 강의, 매출 등 주요 지표" },
+        { name: "실시간 활동", description: "현재 접속자, 진행 중인 강의" },
+        { name: "매출 추이", description: "일별/월별 매출 그래프" },
+        { name: "신규 가입자", description: "기간별 가입자 증가 추이" },
+        { name: "인기 강의", description: "조회수/판매량 기준 인기 강의" },
+        { name: "시스템 상태", description: "서버, 데이터베이스 상태 모니터링" },
+        { name: "최근 활동 로그", description: "주요 이벤트 타임라인" },
+      ],
     },
     {
-      name: "사용자 관리",
-      description: "학생, 강사 계정 관리 및 권한 설정",
+      menuName: "사용자 관리",
+      menuPath: "/admin/users",
       icon: Users,
-      category: "core",
+      description: "전체 회원 관리",
+      features: [
+        { name: "사용자 목록", description: "학생, 강사, 관리자 전체 조회" },
+        { name: "회원 검색", description: "이름, 이메일, 전화번호로 검색" },
+        { name: "회원 등록", description: "신규 회원 수동 등록" },
+        { name: "회원 정보 수정", description: "프로필, 연락처 등 정보 수정" },
+        { name: "권한 관리", description: "역할(학생/강사/관리자) 변경" },
+        { name: "계정 상태", description: "활성/비활성/정지 상태 변경" },
+        { name: "계정 삭제", description: "회원 탈퇴 처리" },
+        { name: "로그인 이력", description: "사용자별 접속 기록" },
+        { name: "대량 가입", description: "CSV 파일로 일괄 등록" },
+        { name: "회원 통계", description: "가입 경로, 활동률 분석" },
+      ],
     },
     {
-      name: "강의 승인",
-      description: "강사가 생성한 강의 검토 및 승인",
-      icon: CheckCircle,
-      category: "management",
+      menuName: "강의 관리",
+      menuPath: "/admin/courses",
+      icon: BookOpen,
+      description: "전체 강의 승인 및 관리",
+      features: [
+        { name: "강의 목록", description: "전체 강의 조회 및 필터링" },
+        { name: "강의 승인", description: "신규 강의 검토 및 승인" },
+        { name: "강의 반려", description: "부적합 강의 반려 및 사유 전달" },
+        { name: "강의 수정", description: "강의 정보 직접 수정" },
+        { name: "강의 삭제", description: "강의 숨김 또는 영구 삭제" },
+        { name: "카테고리 관리", description: "강의 분류 체계 설정" },
+        { name: "추천 강의 설정", description: "메인 페이지 추천 강의 선정" },
+        { name: "강의 품질 관리", description: "저품질 강의 필터링" },
+        { name: "강의 통계", description: "강의별 수강생, 매출, 평점" },
+      ],
     },
     {
-      name: "콘텐츠 관리",
-      description: "공지사항, FAQ, 템플릿 관리",
+      menuName: "콘텐츠 관리",
+      menuPath: "/admin/content",
       icon: FileText,
-      category: "content",
+      description: "플랫폼 콘텐츠 관리",
+      features: [
+        { name: "공지사항", description: "전체 공지사항 작성 및 관리" },
+        { name: "FAQ 관리", description: "자주 묻는 질문 등록 및 편집" },
+        { name: "배너 관리", description: "메인 페이지 배너 이미지 설정" },
+        { name: "이벤트 페이지", description: "프로모션 페이지 생성" },
+        { name: "약관 관리", description: "이용약관, 개인정보처리방침 수정" },
+        { name: "이메일 템플릿", description: "자동 발송 이메일 양식 편집" },
+        { name: "푸시 알림", description: "전체 또는 그룹별 알림 발송" },
+        { name: "SEO 설정", description: "메타 태그, 키워드 관리" },
+      ],
     },
     {
-      name: "수익 관리",
-      description: "전체 매출 분석, 정산 처리, 결제 관리",
-      icon: CreditCard,
-      category: "finance",
+      menuName: "매출 관리",
+      menuPath: "/admin/revenue",
+      icon: DollarSign,
+      description: "플랫폼 수익 관리",
+      features: [
+        { name: "매출 대시보드", description: "전체 매출 현황 및 추이" },
+        { name: "정산 관리", description: "강사별 정산 처리" },
+        { name: "결제 내역", description: "전체 결제 트랜잭션 조회" },
+        { name: "환불 처리", description: "환불 요청 검토 및 처리" },
+        { name: "수수료 설정", description: "플랫폼 수수료율 조정" },
+        { name: "쿠폰 관리", description: "전체 쿠폰 생성 및 사용 현황" },
+        { name: "프로모션", description: "할인 이벤트 기획 및 실행" },
+        { name: "매출 리포트", description: "기간별 매출 보고서 생성" },
+        { name: "세금 관리", description: "부가세, 원천징수 처리" },
+        { name: "결제 게이트웨이", description: "결제 수단 설정 및 관리" },
+      ],
     },
     {
-      name: "분석 도구",
-      description: "사용자 행동 분석, 학습 패턴, 성과 지표",
-      icon: TrendingUp,
-      category: "analytics",
+      menuName: "분석 도구",
+      menuPath: "/admin/analytics",
+      icon: BarChart3,
+      description: "데이터 기반 의사결정",
+      features: [
+        { name: "사용자 분석", description: "사용자 행동 패턴 분석" },
+        { name: "강의 성과", description: "강의별 성과 지표 분석" },
+        { name: "매출 분석", description: "카테고리별, 기간별 매출 분석" },
+        { name: "유입 경로", description: "마케팅 채널별 유입 분석" },
+        { name: "전환율", description: "회원가입, 결제 전환율" },
+        { name: "이탈률", description: "페이지별 이탈률 분석" },
+        { name: "코호트 분석", description: "가입 시기별 사용자 그룹 분석" },
+        { name: "A/B 테스트", description: "기능 개선 효과 측정" },
+        { name: "사용자 만족도", description: "NPS, 만족도 설문 결과" },
+        { name: "커스텀 리포트", description: "원하는 지표 조합으로 리포트 생성" },
+      ],
     },
     {
-      name: "시스템 설정",
-      description: "플랫폼 전체 설정, 메뉴 순서, 테마 관리",
+      menuName: "시스템 모니터링",
+      menuPath: "/admin/monitoring",
+      icon: Activity,
+      description: "시스템 상태 모니터링",
+      features: [
+        { name: "서버 상태", description: "CPU, 메모리, 디스크 사용률" },
+        { name: "데이터베이스", description: "DB 성능 및 쿼리 모니터링" },
+        { name: "API 모니터링", description: "API 응답 시간 및 에러율" },
+        { name: "에러 로그", description: "시스템 에러 추적 및 분석" },
+        { name: "보안 로그", description: "의심스러운 접근 기록" },
+        { name: "백업 관리", description: "자동 백업 설정 및 복원" },
+        { name: "알림 설정", description: "임계치 초과 시 관리자 알림" },
+        { name: "성능 최적화", description: "느린 쿼리, 병목 지점 파악" },
+      ],
+    },
+    {
+      menuName: "AI 로그",
+      menuPath: "/admin/ai-logs",
+      icon: Brain,
+      description: "AI 사용 현황 추적",
+      features: [
+        { name: "AI 사용 내역", description: "전체 AI 기능 사용 기록" },
+        { name: "토큰 사용량", description: "일별/사용자별 토큰 소비량" },
+        { name: "모델별 통계", description: "사용된 AI 모델 분포" },
+        { name: "비용 분석", description: "AI 사용 비용 추정" },
+        { name: "품질 모니터링", description: "AI 응답 품질 평가" },
+        { name: "에러 추적", description: "AI 요청 실패 및 에러 로그" },
+        { name: "사용량 한도", description: "사용자별 AI 사용 제한 설정" },
+      ],
+    },
+    {
+      menuName: "학습 관리",
+      menuPath: "/admin/learning",
+      icon: GraduationCap,
+      description: "학습 경로 및 커리큘럼",
+      features: [
+        { name: "학습 경로 관리", description: "추천 학습 경로 생성 및 편집" },
+        { name: "커리큘럼 승인", description: "강사 제안 커리큘럼 검토" },
+        { name: "스킬 트리", description: "학습 단계 체계 설정" },
+        { name: "수료증 템플릿", description: "수료증 디자인 관리" },
+        { name: "자격증 연동", description: "외부 자격증과 연계" },
+      ],
+    },
+    {
+      menuName: "템플릿 관리",
+      menuPath: "/admin/templates",
+      icon: Package,
+      description: "재사용 가능한 템플릿",
+      features: [
+        { name: "강의 템플릿", description: "강의 구조 템플릿 제공" },
+        { name: "과제 템플릿", description: "자주 사용하는 과제 양식" },
+        { name: "이메일 템플릿", description: "자동 발송 메일 양식" },
+        { name: "리포트 템플릿", description: "분석 리포트 양식" },
+      ],
+    },
+    {
+      menuName: "시스템 설정",
+      menuPath: "/admin/settings",
       icon: Settings,
-      category: "system",
-    },
-    {
-      name: "AI 로그",
-      description: "AI 사용 현황, 토큰 소비량 모니터링",
-      icon: Brain,
-      category: "ai",
-    },
-    {
-      name: "스토리지 관리",
-      description: "파일 저장소 사용량 및 용량 관리",
-      icon: Shield,
-      category: "system",
+      description: "플랫폼 전반 설정",
+      features: [
+        { name: "기본 설정", description: "사이트명, 로고, 연락처" },
+        { name: "메뉴 관리", description: "네비게이션 메뉴 구조 편집" },
+        { name: "권한 설정", description: "역할별 접근 권한 제어" },
+        { name: "이메일 설정", description: "SMTP 설정 및 발신자 정보" },
+        { name: "결제 설정", description: "결제 게이트웨이 연동" },
+        { name: "스토리지 설정", description: "파일 저장소 용량 및 정책" },
+        { name: "보안 설정", description: "비밀번호 정책, 2FA 설정" },
+        { name: "언어 설정", description: "다국어 지원 설정" },
+        { name: "테마 설정", description: "색상, 폰트 등 디자인 커스터마이징" },
+        { name: "API 설정", description: "외부 API 키 관리" },
+      ],
     },
   ];
 
-  const renderFeatureCard = (feature: Feature) => (
+  const renderMenuSection = (menu: MenuSection) => (
     <Card
-      key={feature.name}
+      key={menu.menuPath}
       className={cn(
-        "transition-colors hover:shadow-lg",
+        "transition-colors",
         theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-50 border-slate-300"
       )}
     >
       <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-violet-500/10">
-              <feature.icon className="h-5 w-5 text-violet-400" />
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-violet-500/10">
+            <menu.icon className="h-6 w-6 text-violet-400" />
+          </div>
+          <div>
             <CardTitle
               className={cn(
-                "text-lg transition-colors",
+                "text-xl transition-colors",
                 theme === "dark" ? "text-white" : "text-slate-900"
               )}
             >
-              {feature.name}
+              {menu.menuName}
             </CardTitle>
+            <p
+              className={cn(
+                "text-sm mt-1 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}
+            >
+              {menu.description}
+            </p>
           </div>
-          <Badge variant="outline" className="text-xs">
-            {feature.category}
-          </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <p
-          className={cn(
-            "text-sm transition-colors",
-            theme === "dark" ? "text-slate-400" : "text-slate-600"
-          )}
-        >
-          {feature.description}
-        </p>
+        <div className="space-y-2">
+          {menu.features.map((feature, index) => (
+            <div
+              key={index}
+              className={cn(
+                "p-3 rounded-lg transition-colors",
+                theme === "dark" ? "bg-slate-800/50" : "bg-white"
+              )}
+            >
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-violet-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p
+                    className={cn(
+                      "font-medium text-sm transition-colors",
+                      theme === "dark" ? "text-white" : "text-slate-900"
+                    )}
+                  >
+                    {feature.name}
+                  </p>
+                  <p
+                    className={cn(
+                      "text-xs mt-0.5 transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}
+                  >
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );
@@ -299,20 +630,20 @@ const OperatorFeatures = () => {
           </TabsList>
 
           <TabsContent value="student" className="space-y-4 mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {studentFeatures.map(renderFeatureCard)}
+            <div className="grid gap-6">
+              {studentMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
 
           <TabsContent value="teacher" className="space-y-4 mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {teacherFeatures.map(renderFeatureCard)}
+            <div className="grid gap-6">
+              {teacherMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
 
           <TabsContent value="admin" className="space-y-4 mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {adminFeatures.map(renderFeatureCard)}
+            <div className="grid gap-6">
+              {adminMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
         </Tabs>
