@@ -329,7 +329,14 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               sidebarCollapsed ? "p-2" : "p-4"
             )}>
               {menuItems
-                .filter(item => isDemoMode ? item.enabled : true)
+                .filter(item => {
+                  // 데모 모드에서는 enabled가 true인 것만 표시
+                  if (isDemoMode) {
+                    return item.enabled === true;
+                  }
+                  // 일반 모드에서는 모든 항목 표시 (enabled 여부와 관계없이)
+                  return true;
+                })
                 .map((item) => (
                 item.enabled ? (
                   <Tooltip key={item.path}>
