@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -180,9 +181,12 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 relative"
           size="icon"
         >
+          <Badge variant="default" className="absolute -top-1 -right-1 text-[9px] px-1 py-0 h-auto z-10">
+            AI
+          </Badge>
           <img src={chatbotIcon} alt="챗봇" className="h-8 w-8" />
         </Button>
       )}
@@ -195,6 +199,7 @@ export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
               <div className="flex items-center gap-2">
                 <img src={chatbotIcon} alt="챗봇" className="h-7 w-7" />
                 <CardTitle className="text-base">atomLMS 도우미</CardTitle>
+                <Badge variant="default" className="text-xs">AI</Badge>
               </div>
               <Button
                 variant="ghost"

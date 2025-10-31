@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Search, Loader2, Sparkles, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
@@ -121,6 +122,9 @@ export const AISearchBar = () => {
     <div className="relative w-full max-w-2xl">
       {/* Search Input */}
       <div className="relative shadow-lg">
+        <Badge variant="default" className="absolute -top-2 left-2 z-10 text-[10px] px-1.5 py-0.5 h-auto">
+          AI
+        </Badge>
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/70" />
         <Input
           type="text"
@@ -158,6 +162,7 @@ export const AISearchBar = () => {
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold text-foreground">AI 어시스턴트</h3>
+                <Badge variant="default" className="text-xs">AI</Badge>
               </div>
               <Button
                 variant="ghost"

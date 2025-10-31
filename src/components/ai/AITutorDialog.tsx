@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -76,6 +77,7 @@ export const AITutorDialog = ({ open, onOpenChange, courseContext }: AITutorDial
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
             AI 튜터
+            <Badge variant="default" className="text-xs">AI</Badge>
           </DialogTitle>
         </DialogHeader>
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -81,14 +82,20 @@ export const AIGradingButton = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2 relative">
+          <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+            AI
+          </Badge>
           <Sparkles className="h-4 w-4" />
           AI 자동 채점
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>AI 자동 채점</DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            AI 자동 채점
+            <Badge variant="default" className="text-xs">AI</Badge>
+          </DialogTitle>
           <DialogDescription>
             AI가 과제를 분석하여 자동으로 채점하고 피드백을 제공합니다
           </DialogDescription>

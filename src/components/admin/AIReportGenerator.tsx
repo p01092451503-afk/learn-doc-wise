@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Brain, FileText, Users, AlertTriangle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,6 +71,7 @@ export const AIReportGenerator = () => {
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
             AI 학습 분석 리포트
+            <Badge variant="default" className="text-xs">AI</Badge>
           </CardTitle>
           <CardDescription>
             AI가 학습 데이터를 분석하여 인사이트와 개선 방안을 제공합니다
@@ -81,8 +83,9 @@ export const AIReportGenerator = () => {
               onClick={() => generateReport('overview')}
               disabled={isGenerating}
               variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-primary/5"
+              className="h-auto flex-col items-start p-4 hover:bg-primary/5 relative"
             >
+              <Badge variant="default" className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5">AI</Badge>
               <FileText className="h-5 w-5 mb-2 text-primary" />
               <div className="text-left">
                 <div className="font-semibold">전체 현황 리포트</div>
@@ -96,8 +99,9 @@ export const AIReportGenerator = () => {
               onClick={() => generateReport('engagement')}
               disabled={isGenerating}
               variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-accent/5"
+              className="h-auto flex-col items-start p-4 hover:bg-accent/5 relative"
             >
+              <Badge variant="default" className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5">AI</Badge>
               <Users className="h-5 w-5 mb-2 text-accent" />
               <div className="text-left">
                 <div className="font-semibold">참여도 분석</div>
@@ -111,8 +115,9 @@ export const AIReportGenerator = () => {
               onClick={() => generateReport('risk')}
               disabled={isGenerating}
               variant="outline"
-              className="h-auto flex-col items-start p-4 hover:bg-destructive/5"
+              className="h-auto flex-col items-start p-4 hover:bg-destructive/5 relative"
             >
+              <Badge variant="default" className="absolute top-2 right-2 text-[10px] px-1.5 py-0.5">AI</Badge>
               <AlertTriangle className="h-5 w-5 mb-2 text-destructive" />
               <div className="text-left">
                 <div className="font-semibold">이탈 위험 분석</div>

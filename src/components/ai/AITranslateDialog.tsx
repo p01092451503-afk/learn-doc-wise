@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
@@ -98,6 +99,7 @@ export const AITranslateDialog = ({ open, onOpenChange }: AITranslateDialogProps
           <DialogTitle className="flex items-center gap-2">
             <Languages className="h-5 w-5" />
             AI 번역
+            <Badge variant="default" className="text-xs">AI</Badge>
           </DialogTitle>
         </DialogHeader>
 
