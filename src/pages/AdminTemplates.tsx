@@ -136,13 +136,33 @@ const AdminTemplates = () => {
   const getLayoutBadge = (templateKey: string) => {
     switch (templateKey) {
       case "modern":
-        return { label: "모던 레이아웃", variant: "default" as const, icon: Layout };
+        return { 
+          label: "풀스크린 레이아웃", 
+          variant: "default" as const, 
+          icon: Layout,
+          description: "몰입형 전체화면 히어로 + 가로 스크롤 강좌 목록"
+        };
       case "minimal":
-        return { label: "미니멀 레이아웃", variant: "secondary" as const, icon: Layout };
+        return { 
+          label: "사이드바 레이아웃", 
+          variant: "secondary" as const, 
+          icon: Layout,
+          description: "고정 사이드 네비게이션 + 2단 콘텐츠 구조"
+        };
       case "card":
-        return { label: "카드 레이아웃", variant: "outline" as const, icon: Layout };
+        return { 
+          label: "매거진 레이아웃", 
+          variant: "outline" as const, 
+          icon: Layout,
+          description: "비대칭 그리드 + 다양한 카드 크기 (Pinterest 스타일)"
+        };
       default:
-        return { label: "기본 레이아웃", variant: "outline" as const, icon: Layout };
+        return { 
+          label: "기본 레이아웃", 
+          variant: "outline" as const, 
+          icon: Layout,
+          description: "표준 레이아웃"
+        };
     }
   };
 
@@ -245,14 +265,19 @@ const AdminTemplates = () => {
                         <Layout className="h-3 w-3" />
                         레이아웃 구조
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant={layoutBadge.variant} className="text-xs gap-1">
-                          <layoutBadge.icon className="h-3 w-3" />
-                          {layoutBadge.label}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {template.style_config.heroStyle}
-                        </Badge>
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant={layoutBadge.variant} className="text-xs gap-1">
+                            <layoutBadge.icon className="h-3 w-3" />
+                            {layoutBadge.label}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {template.style_config.heroStyle}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {layoutBadge.description}
+                        </p>
                       </div>
                     </div>
 

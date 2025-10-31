@@ -91,192 +91,266 @@ const MinimalLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Simple Header */}
-      <header className="border-b bg-background">
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <Link to="/main" className="flex items-center gap-3">
-              <img src={logoIcon} alt="Logo" className="h-8 w-8" />
-              <span className="text-lg font-semibold text-foreground">atomLMS</span>
+    <div className="min-h-screen flex">
+      {/* Fixed Sidebar Navigation */}
+      <aside className="w-64 border-r bg-card flex-shrink-0 sticky top-0 h-screen hidden lg:flex flex-col">
+        <div className="p-6 border-b">
+          <Link to="/main" className="flex items-center gap-3 mb-8">
+            <img src={logoIcon} alt="Logo" className="h-10 w-10" />
+            <div>
+              <div className="font-bold text-lg">atomLMS</div>
+              <div className="text-xs text-muted-foreground">Learn Simply</div>
+            </div>
+          </Link>
+        </div>
+        
+        <nav className="flex-1 p-6 space-y-2">
+          <Link to="/main" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors">
+            <BookOpen className="h-5 w-5" />
+            <span className="text-sm font-medium">홈</span>
+          </Link>
+          <Link to="/courses" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors">
+            <Search className="h-5 w-5" />
+            <span className="text-sm font-medium">강좌 탐색</span>
+          </Link>
+          {session ? (
+            <button 
+              onClick={() => navigate('/student/courses')}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+            >
+              <User className="h-5 w-5" />
+              <span className="text-sm font-medium">마이페이지</span>
+            </button>
+          ) : (
+            <Link to="/auth" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors">
+              <User className="h-5 w-5" />
+              <span className="text-sm font-medium">로그인</span>
             </Link>
-            <div className="flex items-center gap-6">
-              <Link to="/courses" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                강좌
+          )}
+        </nav>
+
+        <div className="p-6 border-t">
+          {!session && (
+            <Link to="/auth" className="block">
+              <Button className="w-full" size="sm">
+                무료 시작하기
+              </Button>
+            </Link>
+          )}
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-auto">
+        {/* Mobile Header */}
+        <header className="lg:hidden border-b bg-background sticky top-0 z-40">
+          <div className="px-4 py-4 flex items-center justify-between">
+            <Link to="/main" className="flex items-center gap-2">
+              <img src={logoIcon} alt="Logo" className="h-8 w-8" />
+              <span className="font-bold">atomLMS</span>
+            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/courses">
+                <Button variant="ghost" size="sm">강좌</Button>
               </Link>
               {session ? (
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => navigate('/student/courses')}
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  마이페이지
+                <Button size="sm" onClick={() => navigate('/student/courses')}>
+                  <User className="h-4 w-4" />
                 </Button>
               ) : (
                 <Link to="/auth">
-                  <Button variant="default" size="sm">
-                    시작하기
-                  </Button>
+                  <Button size="sm">시작</Button>
                 </Link>
               )}
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Minimal Hero - Side by Side */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
-            <div>
-              <h1 className="text-5xl font-bold mb-6 text-foreground leading-tight">
-                배움의 즐거움을<br/>다시 발견하세요
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                간결하고 효과적인 온라인 강좌로<br/>당신의 목표를 이루어보세요
-              </p>
-              <div className="flex gap-4">
-                <Link to="/courses">
-                  <Button size="lg" className="gap-2">
-                    강좌 둘러보기
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+        {/* Side-by-Side Hero Section */}
+        <section className="min-h-[80vh] flex items-center">
+          <div className="container mx-auto px-6 lg:px-12 py-20">
+            <div className="grid lg:grid-cols-12 gap-16 items-center">
+              <div className="lg:col-span-7">
+                <div className="inline-block mb-6">
+                  <Badge variant="outline" className="text-sm py-1">
+                    심플하고 효과적인 학습
+                  </Badge>
+                </div>
+                <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-[1.1]">
+                  집중할 수 있는<br/>
+                  <span className="text-muted-foreground">공간</span>
+                </h1>
+                <p className="text-xl text-muted-foreground mb-10 leading-relaxed max-w-xl">
+                  불필요한 것은 모두 제거했습니다.<br/>
+                  오직 학습에만 몰입하세요.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link to="/courses">
+                    <Button size="lg" className="gap-2">
+                      강좌 둘러보기
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-            <div className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <BookOpen className="h-32 w-32 text-primary/40" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Courses - List Style */}
-      <section className="py-16 bg-muted/20">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-3 text-foreground">추천 강좌</h2>
-            <p className="text-muted-foreground">당신에게 맞는 완벽한 강좌를 찾아보세요</p>
-          </div>
-
-          {loading ? (
-            <div className="space-y-6">
-              {[1, 2, 3].map((i) => (
-                <Card key={i} className="p-6 animate-pulse">
-                  <div className="h-6 bg-muted rounded mb-2" />
-                  <div className="h-4 bg-muted rounded w-2/3" />
-                </Card>
-              ))}
-            </div>
-          ) : courses.length === 0 ? (
-            <div className="text-center py-12">
-              <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">강좌를 준비중입니다.</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {courses.map((course) => (
-                <Link key={course.id} to={`/courses/${course.id}`}>
-                  <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-                    <div className="flex flex-col sm:flex-row gap-6 p-6">
-                      <div className="sm:w-48 flex-shrink-0">
-                        <div className="aspect-video rounded-lg overflow-hidden bg-muted">
-                          {course.thumbnail_url || course.videoThumbnail ? (
-                            <img
-                              src={course.thumbnail_url || course.videoThumbnail}
-                              alt={course.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
-                              <BookOpen className="h-8 w-8 text-primary/40" />
-                            </div>
-                          )}
-                        </div>
+              <div className="lg:col-span-5">
+                <div className="relative">
+                  <div className="aspect-square rounded-3xl bg-gradient-to-br from-muted to-muted/30 p-12">
+                    <div className="w-full h-full rounded-2xl border-2 border-dashed border-border flex items-center justify-center">
+                      <div className="text-center">
+                        <BookOpen className="h-20 w-20 text-muted-foreground/40 mx-auto mb-4" />
+                        <p className="text-sm text-muted-foreground">Learn. Focus. Succeed.</p>
                       </div>
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <Badge variant="outline" className="text-xs">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Two Column Course List */}
+        <section className="py-20 bg-muted/30">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="mb-16">
+                <h2 className="text-4xl font-bold mb-4">추천 강좌</h2>
+                <p className="text-lg text-muted-foreground">
+                  엄선된 강좌로 시작하세요
+                </p>
+              </div>
+
+              {loading ? (
+                <div className="space-y-8">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="grid md:grid-cols-2 gap-8">
+                      <Card className="p-6 animate-pulse">
+                        <div className="h-48 bg-muted rounded-lg mb-4" />
+                        <div className="h-6 bg-muted rounded mb-2" />
+                        <div className="h-4 bg-muted rounded w-2/3" />
+                      </Card>
+                      <Card className="p-6 animate-pulse">
+                        <div className="h-48 bg-muted rounded-lg mb-4" />
+                        <div className="h-6 bg-muted rounded mb-2" />
+                        <div className="h-4 bg-muted rounded w-2/3" />
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+              ) : courses.length === 0 ? (
+                <div className="text-center py-20">
+                  <Search className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-lg text-muted-foreground">강좌를 준비중입니다</p>
+                </div>
+              ) : (
+                <div className="space-y-12">
+                  {courses.map((course, index) => (
+                    <Link key={course.id} to={`/courses/${course.id}`}>
+                      <div className={`group grid md:grid-cols-2 gap-8 items-center ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+                        <div className={index % 2 === 1 ? 'md:order-2' : ''}>
+                          <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
+                            {course.thumbnail_url || course.videoThumbnail ? (
+                              <img
+                                src={course.thumbnail_url || course.videoThumbnail}
+                                alt={course.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10">
+                                <BookOpen className="h-16 w-16 text-primary/30" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className={index % 2 === 1 ? 'md:order-1' : ''}>
+                          <div className="flex items-center gap-3 mb-4">
+                            <Badge variant="outline">
                               {getLevelText(course.level)}
                             </Badge>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
+                            <span className="text-sm text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
                               {course.duration_hours}시간
                             </span>
                           </div>
-                          <h3 className="text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors">
+                          <h3 className="text-3xl font-bold mb-4 group-hover:text-primary transition-colors">
                             {course.title}
                           </h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="text-lg text-muted-foreground mb-6 line-clamp-3">
                             {course.description || "강좌 설명이 없습니다."}
                           </p>
-                        </div>
-                        <div className="flex items-center justify-between mt-4">
-                          <span className="text-lg font-bold text-foreground">
-                            {course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}
-                          </span>
-                          <span className="text-sm text-primary group-hover:gap-2 flex items-center transition-all">
-                            자세히 보기
-                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                          </span>
+                          <div className="flex items-center justify-between">
+                            <span className="text-2xl font-bold">
+                              {course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}
+                            </span>
+                            <span className="flex items-center gap-2 text-primary font-medium">
+                              자세히 보기
+                              <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          )}
+                    </Link>
+                  ))}
+                </div>
+              )}
 
-          {courses.length > 0 && (
-            <div className="text-center mt-8">
-              <Link to="/courses">
-                <Button variant="outline">
-                  모든 강좌 보기
+              {courses.length > 0 && (
+                <div className="mt-16 text-center">
+                  <Link to="/courses">
+                    <Button size="lg" variant="outline">
+                      모든 강좌 보기
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Centered CTA */}
+        <section className="py-32">
+          <div className="container mx-auto px-6">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-5xl font-bold mb-6">
+                단순함의 힘을<br/>경험하세요
+              </h2>
+              <p className="text-xl text-muted-foreground mb-10">
+                복잡함은 버리고, 효과만 남겼습니다
+              </p>
+              <Link to="/auth">
+                <Button size="lg">
+                  지금 무료로 시작하기
                 </Button>
               </Link>
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Simple CTA */}
-      <section className="py-24">
-        <div className="container mx-auto px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-4 text-foreground">
-              지금 시작하세요
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              무료 체험으로 먼저 경험해보세요
-            </p>
-            <Link to="/auth">
-              <Button size="lg" variant="default">
-                무료로 시작하기
-              </Button>
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Minimal Footer */}
-      <footer className="border-t py-8 bg-background">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <img src={logoIcon} alt="Logo" className="h-6 w-6" />
-              <span className="font-semibold text-sm">atomLMS</span>
+        {/* Simple Footer */}
+        <footer className="border-t py-12">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="max-w-5xl mx-auto">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-3">
+                  <img src={logoIcon} alt="Logo" className="h-8 w-8" />
+                  <div>
+                    <div className="font-bold">atomLMS</div>
+                    <div className="text-xs text-muted-foreground">Learn Simply</div>
+                  </div>
+                </div>
+                <div className="flex gap-8 text-sm text-muted-foreground">
+                  <Link to="#" className="hover:text-foreground transition-colors">소개</Link>
+                  <Link to="#" className="hover:text-foreground transition-colors">강좌</Link>
+                  <Link to="#" className="hover:text-foreground transition-colors">고객지원</Link>
+                </div>
+              </div>
+              <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+                © 2024 atomLMS. 모든 권리 보유.
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              © 2024 atomLMS. All rights reserved.
-            </p>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 };
