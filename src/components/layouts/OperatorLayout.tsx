@@ -105,8 +105,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                 <img src={logoIcon} alt="Logo" className="h-6 w-6" />
               </div>
               <div className="hidden sm:block">
-                <span className="text-lg font-bold">
-                  <span className="text-gradient-slate">atom</span>
+                <span className="text-lg font-atom font-bold">
+                  <span className="text-gradient-atom">atom</span>
                   <span className="text-white">LMS</span>
                 </span>
                 <span className="ml-2 text-xs font-medium text-slate-300 bg-slate-700/80 px-2 py-0.5 rounded border border-slate-500/30">Operator</span>

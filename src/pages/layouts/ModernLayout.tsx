@@ -108,8 +108,8 @@ const ModernLayout = () => {
           <div className="flex items-center justify-between">
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-              <span className="text-2xl font-logo font-bold">
-                <span className="text-gradient-slate">atom</span>
+              <span className="text-2xl font-atom font-bold">
+                <span className="text-gradient-atom">atom</span>
                 <span>LMS</span>
               </span>
               <span className="ml-2 px-2 py-0.5 rounded-full bg-gradient-to-br from-slate-700 via-slate-600 to-slate-700 text-white text-xs font-bold shadow-lg border border-slate-500/30">AI</span>

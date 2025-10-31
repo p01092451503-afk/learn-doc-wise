@@ -96,10 +96,10 @@ const CardLayout = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
-            <Link to="/main" className="flex items-center gap-2 font-bold">
+            <Link to="/main" className="flex items-center gap-2 font-atom font-bold">
               <img src={logoIcon} alt="Logo" className="h-6 w-6" />
               <span>
-                <span className="text-gradient-slate">atom</span>
+                <span className="text-gradient-atom">atom</span>
                 <span>LMS</span>
               </span>
             </Link>
