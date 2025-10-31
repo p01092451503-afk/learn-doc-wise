@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, CheckCircle2, Circle, Lock, PlayCircle, BookOpen, FileText, Video } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 interface LearningPathStep {
   id: string;
@@ -63,12 +64,13 @@ export default function StudentLearningPathDetail() {
       if (!user) return;
 
       // 학습 경로 정보 로드
-      const { data: pathData } = await supabase
+      const { data: pathData, error: pathError } = await supabase
         .from("learning_paths")
         .select("*")
         .eq("id", pathId)
-        .single();
+        .maybeSingle();
 
+      if (pathError) throw pathError;
       setPath(pathData);
 
       // 사용자 학습 경로 등록 정보
@@ -192,23 +194,32 @@ export default function StudentLearningPathDetail() {
 
   if (loading) {
     return (
-      <div className="space-y-6 p-6">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-96 w-full" />
-      </div>
+      <DashboardLayout userRole="student">
+        <div className="space-y-6">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   if (!path) {
     return (
-      <div className="p-6">
-        <p className="text-muted-foreground">학습 경로를 찾을 수 없습니다.</p>
-      </div>
+      <DashboardLayout userRole="student">
+        <div className="text-center py-12">
+          <p className="text-muted-foreground mb-4">학습 경로를 찾을 수 없습니다.</p>
+          <Button onClick={() => navigate("/student/learning-path")}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            목록으로 돌아가기
+          </Button>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <DashboardLayout userRole="student">
+      <div className="space-y-6">
       <Button variant="ghost" onClick={() => navigate("/student/learning-path")}>
         <ArrowLeft className="h-4 w-4 mr-2" />
         돌아가기
@@ -321,6 +332,7 @@ export default function StudentLearningPathDetail() {
           );
         })}
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
