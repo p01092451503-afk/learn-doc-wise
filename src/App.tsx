@@ -50,6 +50,7 @@ import OperatorRevenue from "./pages/operator/OperatorRevenue";
 import OperatorMonitoring from "./pages/operator/OperatorMonitoring";
 import OperatorSettings from "./pages/operator/OperatorSettings";
 import OperatorFeatures from "./pages/operator/OperatorFeatures";
+import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
@@ -69,6 +70,7 @@ const App = () => {
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/features" element={<FeaturesShowcase />} />
           <Route path="/main" element={<PublicMain />} />
           <Route path="/courses" element={<PublicCourses />} />
           <Route path="/courses/:id" element={<PublicCourseDetail />} />
