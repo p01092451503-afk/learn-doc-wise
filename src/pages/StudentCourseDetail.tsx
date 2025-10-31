@@ -135,6 +135,13 @@ const StudentCourseDetail = () => {
   };
 
   useEffect(() => {
+    // 강의 ID가 변경될 때 이전 데이터 초기화
+    setCourse(null);
+    setContents([]);
+    setCurrentContent(null);
+    setProgress([]);
+    setLoading(true);
+
     if (isDemoMode) {
       setMockDemoData();
     } else {
