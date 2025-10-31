@@ -135,7 +135,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: Route, label: "학습 경로", path: "/student/learning-path", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
-        { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: true },
+        { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: false },
         { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
       ];
     }
