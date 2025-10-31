@@ -1079,6 +1079,122 @@ export type Database = {
           },
         ]
       }
+      mentoring_relationships: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          end_date: string | null
+          id: string
+          mentee_id: string
+          mentor_id: string
+          notes: string | null
+          start_date: string
+          status: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          mentee_id: string
+          mentor_id: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          mentee_id?: string
+          mentor_id?: string
+          notes?: string | null
+          start_date?: string
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentoring_relationships_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mentoring_relationships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mentoring_sessions: {
+        Row: {
+          agenda: string | null
+          created_at: string
+          duration_minutes: number
+          feedback_mentee: string | null
+          feedback_mentor: string | null
+          id: string
+          meeting_link: string | null
+          notes: string | null
+          rating_mentee: number | null
+          rating_mentor: number | null
+          relationship_id: string
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          agenda?: string | null
+          created_at?: string
+          duration_minutes?: number
+          feedback_mentee?: string | null
+          feedback_mentor?: string | null
+          id?: string
+          meeting_link?: string | null
+          notes?: string | null
+          rating_mentee?: number | null
+          rating_mentor?: number | null
+          relationship_id: string
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          agenda?: string | null
+          created_at?: string
+          duration_minutes?: number
+          feedback_mentee?: string | null
+          feedback_mentor?: string | null
+          id?: string
+          meeting_link?: string | null
+          notes?: string | null
+          rating_mentee?: number | null
+          rating_mentor?: number | null
+          relationship_id?: string
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mentoring_sessions_relationship_id_fkey"
+            columns: ["relationship_id"]
+            isOneToOne: false
+            referencedRelation: "mentoring_relationships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_order: {
         Row: {
           created_at: string
@@ -1260,6 +1376,66 @@ export type Database = {
           },
         ]
       }
+      peer_feedback: {
+        Row: {
+          assignment_id: string | null
+          comments: string | null
+          created_at: string
+          id: string
+          improvements: string | null
+          is_helpful: boolean | null
+          rating: number | null
+          reviewee_id: string
+          reviewer_id: string
+          strengths: string | null
+          submission_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assignment_id?: string | null
+          comments?: string | null
+          created_at?: string
+          id?: string
+          improvements?: string | null
+          is_helpful?: boolean | null
+          rating?: number | null
+          reviewee_id: string
+          reviewer_id: string
+          strengths?: string | null
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assignment_id?: string | null
+          comments?: string | null
+          created_at?: string
+          id?: string
+          improvements?: string | null
+          is_helpful?: boolean | null
+          rating?: number | null
+          reviewee_id?: string
+          reviewer_id?: string
+          strengths?: string | null
+          submission_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "peer_feedback_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "peer_feedback_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "assignment_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       point_history: {
         Row: {
           action_type: string
@@ -1381,6 +1557,196 @@ export type Database = {
           video_bytes?: number
         }
         Relationships: []
+      }
+      study_group_comments: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          parent_comment_id: string | null
+          post_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          post_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          parent_comment_id?: string | null
+          post_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "study_group_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_group_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "study_group_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          last_active_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          last_active_at?: string | null
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          last_active_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_group_posts: {
+        Row: {
+          attachments: Json | null
+          author_id: string
+          comments_count: number
+          content: string
+          created_at: string
+          group_id: string
+          id: string
+          is_pinned: boolean
+          likes_count: number
+          post_type: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          attachments?: Json | null
+          author_id: string
+          comments_count?: number
+          content: string
+          created_at?: string
+          group_id: string
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          post_type?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          attachments?: Json | null
+          author_id?: string
+          comments_count?: number
+          content?: string
+          created_at?: string
+          group_id?: string
+          id?: string
+          is_pinned?: boolean
+          likes_count?: number
+          post_type?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_group_posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "study_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_groups: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          is_active: boolean
+          is_public: boolean
+          max_members: number
+          name: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          max_members?: number
+          name: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          max_members?: number
+          name?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_groups_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_groups_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       system_logs: {
         Row: {
