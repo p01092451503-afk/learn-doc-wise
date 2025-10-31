@@ -185,11 +185,12 @@ const PublicMain = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
             <h1 id="hero-heading" className="text-4xl md:text-6xl font-display font-bold mb-6 text-foreground leading-tight">
-              {t('heroTitle')}<br />
-              <span className="text-gradient">{t('heroSubtitle')}</span>
+              웹헤즈 클라우드 이러닝 솔루션<br />
+              <span className="text-gradient">AI 기반 교육관리 플랫폼</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
-              {t('heroDescription')}
+              사내교육 시스템, HRD 교육시스템 구축, 비대면 교육 플랫폼, 직무교육을 위한 최적의 LMS 솔루션. 
+              AI 교육 솔루션과 B2B 교육 SaaS로 맞춤형 학습 환경을 제공합니다.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/courses">
