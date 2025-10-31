@@ -199,7 +199,9 @@ const FeaturesShowcase = () => {
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logoIcon} alt="atomLMS" className="h-8 w-8" />
+            <div className="p-2 rounded-lg bg-white/10 backdrop-blur-sm">
+              <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
+            </div>
             <span className="text-xl font-bold text-white">atomLMS</span>
           </Link>
           <div className="flex items-center gap-4">
@@ -398,7 +400,9 @@ const FeaturesShowcase = () => {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <img src={logoIcon} alt="atomLMS" className="h-8 w-8" />
+              <div className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm">
+                <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
+              </div>
               <span className="text-lg font-bold text-white">atomLMS</span>
             </div>
             <div className="text-slate-400 text-sm">
