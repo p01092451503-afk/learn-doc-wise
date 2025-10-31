@@ -523,15 +523,15 @@ const OperatorFeatures = () => {
         theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-50 border-slate-300"
       )}
     >
-      <CardHeader>
+      <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-violet-500/10">
-            <menu.icon className="h-6 w-6 text-violet-400" />
+            <menu.icon className="h-5 w-5 text-violet-400" />
           </div>
-          <div>
+          <div className="flex-1">
             <CardTitle
               className={cn(
-                "text-xl transition-colors",
+                "text-lg transition-colors",
                 theme === "dark" ? "text-white" : "text-slate-900"
               )}
             >
@@ -539,31 +539,36 @@ const OperatorFeatures = () => {
             </CardTitle>
             <p
               className={cn(
-                "text-sm mt-1 transition-colors",
+                "text-xs mt-0.5 transition-colors",
                 theme === "dark" ? "text-slate-400" : "text-slate-600"
               )}
             >
               {menu.description}
             </p>
           </div>
+          <Badge variant="outline" className="text-xs">
+            {menu.features.length}개
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {menu.features.map((feature, index) => (
             <div
               key={index}
               className={cn(
-                "p-3 rounded-lg transition-colors",
-                theme === "dark" ? "bg-slate-800/50" : "bg-white"
+                "p-2.5 rounded-md transition-colors border",
+                theme === "dark" 
+                  ? "bg-slate-800/50 border-slate-700/50 hover:bg-slate-800" 
+                  : "bg-white border-slate-200 hover:bg-slate-50"
               )}
             >
               <div className="flex items-start gap-2">
-                <CheckCircle className="h-4 w-4 text-violet-400 mt-0.5 flex-shrink-0" />
-                <div>
+                <CheckCircle className="h-3.5 w-3.5 text-violet-400 mt-0.5 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
                   <p
                     className={cn(
-                      "font-medium text-sm transition-colors",
+                      "font-medium text-xs leading-tight transition-colors",
                       theme === "dark" ? "text-white" : "text-slate-900"
                     )}
                   >
@@ -571,7 +576,7 @@ const OperatorFeatures = () => {
                   </p>
                   <p
                     className={cn(
-                      "text-xs mt-0.5 transition-colors",
+                      "text-[11px] mt-0.5 leading-snug transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
                     )}
                   >
@@ -629,20 +634,20 @@ const OperatorFeatures = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="student" className="space-y-4 mt-6">
-            <div className="grid gap-6">
+          <TabsContent value="student" className="space-y-3 mt-6">
+            <div className="grid gap-4">
               {studentMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
 
-          <TabsContent value="teacher" className="space-y-4 mt-6">
-            <div className="grid gap-6">
+          <TabsContent value="teacher" className="space-y-3 mt-6">
+            <div className="grid gap-4">
               {teacherMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
 
-          <TabsContent value="admin" className="space-y-4 mt-6">
-            <div className="grid gap-6">
+          <TabsContent value="admin" className="space-y-3 mt-6">
+            <div className="grid gap-4">
               {adminMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
