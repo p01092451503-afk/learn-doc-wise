@@ -11,6 +11,8 @@ import StudentCourses from "./StudentCourses";
 import StudentAssignments from "./StudentAssignments";
 import StudentCommunity from "./StudentCommunity";
 import StudentAnalytics from "./StudentAnalytics";
+import StudentGamification from "./StudentGamification";
+import StudentLearningPath from "./StudentLearningPath";
 import TeacherDashboard from "./TeacherDashboard";
 import TeacherCourses from "./TeacherCourses";
 import TeacherAssignments from "./TeacherAssignments";
@@ -64,6 +66,10 @@ const DemoPreview = () => {
           return <StudentCommunity />;
         case "analytics":
           return <StudentAnalytics />;
+        case "gamification":
+          return <StudentGamification />;
+        case "learning-path":
+          return <StudentLearningPath />;
         default:
           return <StudentDashboard isDemo={true} />;
       }
