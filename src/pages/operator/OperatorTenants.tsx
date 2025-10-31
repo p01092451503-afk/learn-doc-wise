@@ -486,28 +486,67 @@ const OperatorTenants = () => {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-slate-800">
-                    <TableHead className="text-slate-400">고객사명</TableHead>
-                    <TableHead className="text-slate-400">서브도메인</TableHead>
-                    <TableHead className="text-slate-400">플랜</TableHead>
-                    <TableHead className="text-slate-400">최대 학생</TableHead>
-                    <TableHead className="text-slate-400">저장소</TableHead>
-                    <TableHead className="text-slate-400">상태</TableHead>
-                    <TableHead className="text-slate-400">작업</TableHead>
+                  <TableRow className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "border-slate-800" : "border-slate-200"
+                  )}>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>고객사명</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>서브도메인</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>플랜</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>최대 학생</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>저장소</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>상태</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>작업</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredTenants.map((tenant) => (
-                    <TableRow key={tenant.id} className="border-slate-800">
-                      <TableCell className="font-medium text-white">{tenant.name}</TableCell>
-                      <TableCell className="text-slate-400">{tenant.subdomain}</TableCell>
+                    <TableRow key={tenant.id} className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "border-slate-800" : "border-slate-200"
+                    )}>
+                      <TableCell className={cn(
+                        "font-medium transition-colors",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>{tenant.name}</TableCell>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>{tenant.subdomain}</TableCell>
                       <TableCell>
                         <Badge className={getPlanBadgeColor(tenant.plan)}>
                           {getPlanLabel(tenant.plan)}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-slate-400">{tenant.max_students}</TableCell>
-                      <TableCell className="text-slate-400">{tenant.max_storage_gb} GB</TableCell>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>{tenant.max_students}</TableCell>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>{tenant.max_storage_gb} GB</TableCell>
                       <TableCell>
                         <Badge className={tenant.is_active ? "bg-green-500/10 text-green-400 border-green-500/50" : "bg-red-500/10 text-red-400 border-red-500/50"}>
                           {tenant.is_active ? "활성" : "비활성"}
@@ -557,7 +596,6 @@ const OperatorTenants = () => {
         tenantId={selectedTenant?.id || ""}
         tenantName={selectedTenant?.name || ""}
         amount={getPlanAmount(selectedTenant?.plan || "")}
-        orderName={`${selectedTenant?.name} - ${getPlanLabel(selectedTenant?.plan || "")} 플랜`}
       />
     </OperatorLayout>
   );

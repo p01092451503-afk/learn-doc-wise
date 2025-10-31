@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AILog {
   id: string;
@@ -25,7 +26,31 @@ const OperatorAILogs = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterModel, setFilterModel] = useState("all");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   useEffect(() => {
     fetchAILogs();
@@ -80,53 +105,92 @@ const OperatorAILogs = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+          <h1 className={cn(
+            "text-3xl font-bold mb-2 flex items-center gap-3 transition-colors",
+            theme === "dark" ? "text-white" : "text-slate-900"
+          )}>
             AI 로그
             <Badge variant="default" className="text-sm">AI</Badge>
           </h1>
-          <p className="text-slate-400">전체 AI 사용 기록을 확인합니다</p>
+          <p className={cn(
+            "transition-colors",
+            theme === "dark" ? "text-slate-400" : "text-slate-600"
+          )}>전체 AI 사용 기록을 확인합니다</p>
         </div>
 
         {/* Summary */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-sm font-medium text-slate-400">총 요청</CardTitle>
+                <CardTitle className={cn(
+                  "text-sm font-medium transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>총 요청</CardTitle>
                 <Badge variant="default" className="text-[10px] px-1.5 py-0.5 h-auto">AI</Badge>
               </div>
               <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{filteredLogs.length.toLocaleString()}</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{filteredLogs.length.toLocaleString()}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">총 토큰</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>총 토큰</CardTitle>
               <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{(totalTokens / 1000).toFixed(1)}K</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{(totalTokens / 1000).toFixed(1)}K</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">모델 종류</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>모델 종류</CardTitle>
               <Brain className="h-6 w-6 text-violet-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{uniqueModels.length}</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{uniqueModels.length}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Filters */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">필터</CardTitle>
+            <CardTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>필터</CardTitle>
           </CardHeader>
           <CardContent className="flex gap-4">
             <div className="relative flex-1">
@@ -135,14 +199,23 @@ const OperatorAILogs = () => {
                 placeholder="고객사 또는 모델 검색..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-slate-800 border-slate-700 text-white"
+                className={cn(
+                  "pl-10 transition-colors",
+                  theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                )}
               />
             </div>
             <Select value={filterModel} onValueChange={setFilterModel}>
-              <SelectTrigger className="w-[200px] bg-slate-800 border-slate-700 text-white">
+              <SelectTrigger className={cn(
+                "w-[200px] transition-colors",
+                theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+              )}>
                 <SelectValue placeholder="모델 선택" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-700">
+              <SelectContent className={cn(
+                "transition-colors",
+                theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+              )}>
                 <SelectItem value="all">모든 모델</SelectItem>
                 {uniqueModels.map((model) => (
                   <SelectItem key={model} value={model}>
@@ -155,46 +228,94 @@ const OperatorAILogs = () => {
         </Card>
 
         {/* Logs Table */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <CardTitle className="text-white">AI 사용 로그</CardTitle>
+              <CardTitle className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>AI 사용 로그</CardTitle>
               <Badge variant="default" className="text-xs">AI</Badge>
             </div>
-            <CardDescription className="text-slate-400">최근 100개 로그</CardDescription>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>최근 100개 로그</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-slate-400">로딩 중...</div>
+              <div className={cn(
+                "text-center py-8 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>로딩 중...</div>
             ) : filteredLogs.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">로그가 없습니다.</div>
+              <div className={cn(
+                "text-center py-8 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>로그가 없습니다.</div>
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-slate-800">
-                    <TableHead className="text-slate-400">시간</TableHead>
-                    <TableHead className="text-slate-400">고객사</TableHead>
-                    <TableHead className="text-slate-400">모델</TableHead>
-                    <TableHead className="text-slate-400">프롬프트</TableHead>
-                    <TableHead className="text-slate-400">토큰</TableHead>
+                  <TableRow className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "border-slate-800" : "border-slate-200"
+                  )}>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>시간</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>고객사</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>모델</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>프롬프트</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>토큰</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLogs.map((log) => (
-                    <TableRow key={log.id} className="border-slate-800">
-                      <TableCell className="text-slate-400">
+                    <TableRow key={log.id} className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "border-slate-800" : "border-slate-200"
+                    )}>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
                         {new Date(log.created_at).toLocaleString("ko-KR")}
                       </TableCell>
-                      <TableCell className="font-medium text-white">{log.tenant_name}</TableCell>
+                      <TableCell className={cn(
+                        "font-medium transition-colors",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>{log.tenant_name}</TableCell>
                       <TableCell>
                         <Badge className="bg-violet-500/10 text-violet-400 border-violet-500/50">
                           {log.model_name}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-slate-400 max-w-md truncate">
+                      <TableCell className={cn(
+                        "max-w-md truncate transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
                         {log.prompt_text || "-"}
                       </TableCell>
-                      <TableCell className="text-slate-400">{log.tokens_used.toLocaleString()}</TableCell>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>{log.tokens_used.toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

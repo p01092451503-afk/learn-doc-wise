@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, Server, Activity } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SystemLog {
   id: string;
@@ -20,7 +21,31 @@ interface SystemLog {
 const OperatorMonitoring = () => {
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   useEffect(() => {
     fetchSystemLogs();
@@ -93,15 +118,27 @@ const OperatorMonitoring = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">시스템 모니터링</h1>
-          <p className="text-slate-400">플랫폼 전체의 시스템 상태를 모니터링합니다</p>
+          <h1 className={cn(
+            "text-3xl font-bold mb-2 transition-colors",
+            theme === "dark" ? "text-white" : "text-slate-900"
+          )}>시스템 모니터링</h1>
+          <p className={cn(
+            "transition-colors",
+            theme === "dark" ? "text-slate-400" : "text-slate-600"
+          )}>플랫폼 전체의 시스템 상태를 모니터링합니다</p>
         </div>
 
         {/* Status Cards */}
         <div className="grid gap-4 md:grid-cols-4">
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">시스템 상태</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>시스템 상태</CardTitle>
               <Server className="h-4 w-4 text-green-400" />
             </CardHeader>
             <CardContent>
@@ -110,65 +147,128 @@ const OperatorMonitoring = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">에러</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>에러</CardTitle>
               <AlertCircle className="h-4 w-4 text-red-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{errorCount}</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{errorCount}</div>
               <p className="text-xs text-slate-500 mt-1">최근 로그</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">경고</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>경고</CardTitle>
               <AlertCircle className="h-4 w-4 text-yellow-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{warningCount}</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{warningCount}</div>
               <p className="text-xs text-slate-500 mt-1">최근 로그</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-900/50 border-slate-800">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+          )}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-400">정보</CardTitle>
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>정보</CardTitle>
               <Activity className="h-4 w-4 text-blue-400" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{infoCount}</div>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{infoCount}</div>
               <p className="text-xs text-slate-500 mt-1">최근 로그</p>
             </CardContent>
           </Card>
         </div>
 
         {/* System Logs Table */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">시스템 로그</CardTitle>
-            <CardDescription className="text-slate-400">최근 50개 로그</CardDescription>
+            <CardTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>시스템 로그</CardTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>최근 50개 로그</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-8 text-slate-400">로딩 중...</div>
+              <div className={cn(
+                "text-center py-8 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>로딩 중...</div>
             ) : logs.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">로그가 없습니다.</div>
+              <div className={cn(
+                "text-center py-8 transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>로그가 없습니다.</div>
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="border-slate-800">
-                    <TableHead className="text-slate-400">시간</TableHead>
-                    <TableHead className="text-slate-400">레벨</TableHead>
-                    <TableHead className="text-slate-400">대상</TableHead>
-                    <TableHead className="text-slate-400">메시지</TableHead>
+                  <TableRow className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "border-slate-800" : "border-slate-200"
+                  )}>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>시간</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>레벨</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>대상</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>메시지</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {logs.map((log) => (
-                    <TableRow key={log.id} className="border-slate-800">
-                      <TableCell className="text-slate-400">
+                    <TableRow key={log.id} className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "border-slate-800" : "border-slate-200"
+                    )}>
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
                         {new Date(log.created_at).toLocaleString("ko-KR")}
                       </TableCell>
                       <TableCell>
@@ -179,8 +279,14 @@ const OperatorMonitoring = () => {
                           </Badge>
                         </div>
                       </TableCell>
-                      <TableCell className="text-slate-400">{log.tenant_name}</TableCell>
-                      <TableCell className="text-slate-400 max-w-md">
+                      <TableCell className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>{log.tenant_name}</TableCell>
+                      <TableCell className={cn(
+                        "max-w-md transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
                         <div className="truncate">{log.message}</div>
                         {log.error_details && (
                           <div className="text-xs text-red-400 mt-1 truncate">

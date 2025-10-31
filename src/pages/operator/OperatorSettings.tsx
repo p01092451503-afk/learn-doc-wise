@@ -8,10 +8,35 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const OperatorSettings = () => {
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   const [settings, setSettings] = useState({
     platformName: "atomLMS",
@@ -45,72 +70,117 @@ const OperatorSettings = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">플랫폼 설정</h1>
-          <p className="text-slate-400">플랫폼 전체 설정을 관리합니다</p>
+          <h1 className={cn(
+            "text-3xl font-bold mb-2 transition-colors",
+            theme === "dark" ? "text-white" : "text-slate-900"
+          )}>플랫폼 설정</h1>
+          <p className={cn(
+            "transition-colors",
+            theme === "dark" ? "text-slate-400" : "text-slate-600"
+          )}>플랫폼 전체 설정을 관리합니다</p>
         </div>
 
         {/* Platform Settings */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className={cn(
+              "flex items-center gap-2 transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
               <Settings className="h-5 w-5" />
               기본 설정
             </CardTitle>
-            <CardDescription className="text-slate-400">플랫폼의 기본 설정을 관리합니다</CardDescription>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>플랫폼의 기본 설정을 관리합니다</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="platformName" className="text-slate-300">플랫폼 이름</Label>
+              <Label htmlFor="platformName" className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-300" : "text-slate-700"
+              )}>플랫폼 이름</Label>
               <Input
                 id="platformName"
                 value={settings.platformName}
                 onChange={(e) => setSettings({ ...settings, platformName: e.target.value })}
-                className="bg-slate-800 border-slate-700 text-white"
+                className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                )}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="supportEmail" className="text-slate-300">지원 이메일</Label>
+              <Label htmlFor="supportEmail" className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-300" : "text-slate-700"
+              )}>지원 이메일</Label>
               <Input
                 id="supportEmail"
                 type="email"
                 value={settings.supportEmail}
                 onChange={(e) => setSettings({ ...settings, supportEmail: e.target.value })}
-                className="bg-slate-800 border-slate-700 text-white"
+                className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                )}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="maxTenants" className="text-slate-300">최대 고객사 수</Label>
+                <Label htmlFor="maxTenants" className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>최대 고객사 수</Label>
                 <Input
                   id="maxTenants"
                   type="number"
                   value={settings.maxTenants}
                   onChange={(e) => setSettings({ ...settings, maxTenants: parseInt(e.target.value) })}
-                  className="bg-slate-800 border-slate-700 text-white"
+                  className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="defaultStorageLimit" className="text-slate-300">기본 스토리지 (GB)</Label>
+                <Label htmlFor="defaultStorageLimit" className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>기본 스토리지 (GB)</Label>
                 <Input
                   id="defaultStorageLimit"
                   type="number"
                   value={settings.defaultStorageLimit}
                   onChange={(e) => setSettings({ ...settings, defaultStorageLimit: parseInt(e.target.value) })}
-                  className="bg-slate-800 border-slate-700 text-white"
+                  className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="defaultStudentLimit" className="text-slate-300">기본 학생 수</Label>
+                <Label htmlFor="defaultStudentLimit" className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>기본 학생 수</Label>
                 <Input
                   id="defaultStudentLimit"
                   type="number"
                   value={settings.defaultStudentLimit}
                   onChange={(e) => setSettings({ ...settings, defaultStudentLimit: parseInt(e.target.value) })}
-                  className="bg-slate-800 border-slate-700 text-white"
+                  className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
                 />
               </div>
             </div>
@@ -129,24 +199,51 @@ const OperatorSettings = () => {
         </Card>
 
         {/* API Configuration */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">API 설정</CardTitle>
-            <CardDescription className="text-slate-400">외부 서비스 연동 설정</CardDescription>
+            <CardTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>API 설정</CardTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>외부 서비스 연동 설정</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-                <h4 className="text-sm font-medium text-white mb-2">Lovable AI</h4>
-                <p className="text-xs text-slate-400">AI 기능 제공을 위한 API 연동</p>
+              <div className={cn(
+                "p-4 rounded-lg border transition-colors",
+                theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-300"
+              )}>
+                <h4 className={cn(
+                  "text-sm font-medium mb-2 transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>Lovable AI</h4>
+                <p className={cn(
+                  "text-xs transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>AI 기능 제공을 위한 API 연동</p>
                 <div className="mt-3">
                   <Badge className="bg-green-500/10 text-green-400 border-green-500/50">연결됨</Badge>
                 </div>
               </div>
 
-              <div className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-                <h4 className="text-sm font-medium text-white mb-2">Toss Payments</h4>
-                <p className="text-xs text-slate-400">결제 시스템 연동</p>
+              <div className={cn(
+                "p-4 rounded-lg border transition-colors",
+                theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-300"
+              )}>
+                <h4 className={cn(
+                  "text-sm font-medium mb-2 transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>Toss Payments</h4>
+                <p className={cn(
+                  "text-xs transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>결제 시스템 연동</p>
                 <div className="mt-3">
                   <Badge className="bg-green-500/10 text-green-400 border-green-500/50">연결됨</Badge>
                 </div>
