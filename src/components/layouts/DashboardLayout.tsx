@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
+import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -234,7 +235,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
             <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             <div className="relative flex items-center justify-center h-6 w-6 md:h-7 md:w-7 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent shadow-glow border border-primary/20">
-              <Zap className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary-foreground fill-current" />
+              <img src={aiRobotBadge} alt="AI" className="h-4 w-4 md:h-4.5 md:w-4.5" />
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/50 to-accent/50 blur-sm -z-10" />
             </div>
           </Link>
@@ -342,7 +343,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                               <span className="font-medium whitespace-nowrap">{item.label}</span>
                               {item.hasAI && (
                                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 flex-shrink-0">
-                                  <Zap className="h-2.5 w-2.5 text-primary fill-current" />
+                                  <img src={aiRobotBadge} alt="AI" className="h-3 w-3" />
                                   <span className="text-[10px] font-semibold text-primary whitespace-nowrap">AI</span>
                                 </span>
                               )}

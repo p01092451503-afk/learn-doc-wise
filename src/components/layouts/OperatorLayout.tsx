@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -192,7 +193,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                         <span className="font-medium text-base whitespace-nowrap">{item.label}</span>
                         {item.hasAI && (
                           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 flex-shrink-0">
-                            <Zap className="h-2.5 w-2.5 text-violet-400 fill-current" />
+                            <img src={aiRobotBadge} alt="AI" className="h-3 w-3" />
                             <span className="text-[10px] font-semibold text-violet-400 whitespace-nowrap">AI</span>
                           </span>
                         )}
