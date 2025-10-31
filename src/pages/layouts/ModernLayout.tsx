@@ -109,7 +109,6 @@ const ModernLayout = () => {
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-12 w-12" />
               <span className="text-2xl font-logo font-bold">atomLMS</span>
-              <Badge variant="default" className="ml-2">AI</Badge>
             </Link>
             <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
               <Link to="/main" className="text-sm font-medium hover:text-primary transition-colors">홈</Link>
