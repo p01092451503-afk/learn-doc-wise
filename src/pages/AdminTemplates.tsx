@@ -85,40 +85,49 @@ const AdminTemplates = () => {
   const handleSelectTemplate = async (templateId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("User not authenticated");
+      if (!user) {
+        throw new Error("사용자 인증이 필요합니다.");
+      }
 
-      // Get user's tenant_id
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("tenant_id")
-        .eq("user_id", user.id)
-        .single();
+      // Get user's tenant_id using the database function
+      const { data: tenantData, error: tenantError } = await supabase
+        .rpc('get_user_tenant_id', { _user_id: user.id });
 
-      if (!roleData?.tenant_id) throw new Error("Tenant ID not found");
+      if (tenantError) {
+        console.error("Tenant ID fetch error:", tenantError);
+        throw new Error("테넌트 정보를 찾을 수 없습니다. 관리자 권한이 필요합니다.");
+      }
+
+      if (!tenantData) {
+        throw new Error("테넌트 ID가 설정되어 있지 않습니다. 시스템 관리자에게 문의하세요.");
+      }
 
       // Upsert tenant settings
-      const { error } = await supabase
+      const { error: upsertError } = await supabase
         .from("tenant_settings")
         .upsert({
-          tenant_id: roleData.tenant_id,
+          tenant_id: tenantData,
           template_id: templateId,
           updated_at: new Date().toISOString(),
         }, {
           onConflict: "tenant_id"
         });
 
-      if (error) throw error;
+      if (upsertError) {
+        console.error("Template upsert error:", upsertError);
+        throw new Error(`템플릿 적용 중 오류: ${upsertError.message}`);
+      }
 
       setCurrentTemplate(templateId);
       toast({
         title: "템플릿 적용 완료",
         description: "선택한 템플릿이 성공적으로 적용되었습니다.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error selecting template:", error);
       toast({
         title: "템플릿 적용 실패",
-        description: "템플릿을 적용하는 중 오류가 발생했습니다.",
+        description: error.message || "템플릿을 적용하는 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     }
