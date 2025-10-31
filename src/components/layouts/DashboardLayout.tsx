@@ -28,6 +28,7 @@ import {
   Sparkles,
   Palette,
   Zap,
+  Trophy,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -80,6 +81,7 @@ const iconMap: { [key: string]: any } = {
   Brain,
   Shield,
   Palette,
+  Trophy,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -130,6 +132,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: BookOpen, label: "내 강의", path: "/student/courses", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
+        { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: true },
         { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
       ];
     }

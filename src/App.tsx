@@ -13,6 +13,7 @@ import StudentCourses from "./pages/StudentCourses";
 import StudentAssignments from "./pages/StudentAssignments";
 import StudentCommunity from "./pages/StudentCommunity";
 import StudentAnalytics from "./pages/StudentAnalytics";
+import StudentGamification from "./pages/StudentGamification";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import TeacherCourses from "./pages/TeacherCourses";
 import TeacherStudents from "./pages/TeacherStudents";
@@ -76,6 +77,7 @@ const App = () => {
           <Route path="/student/assignments" element={<StudentAssignments />} />
           <Route path="/student/community" element={<StudentCommunity />} />
           <Route path="/student/analytics" element={<StudentAnalytics />} />
+          <Route path="/student/gamification" element={<StudentGamification />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/teacher/courses" element={<TeacherCourses />} />
           <Route path="/teacher/students" element={<TeacherStudents />} />
