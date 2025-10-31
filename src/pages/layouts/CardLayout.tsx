@@ -98,7 +98,10 @@ const CardLayout = () => {
           <div className="flex items-center justify-between h-14">
             <Link to="/main" className="flex items-center gap-2 font-bold">
               <img src={logoIcon} alt="Logo" className="h-6 w-6" />
-              <span className="text-gradient">atomLMS</span>
+              <span>
+                <span className="text-gradient">atom</span>
+                <span>LMS</span>
+              </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <Link to="/main" className="hover:text-primary transition-colors">홈</Link>

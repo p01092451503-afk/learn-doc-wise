@@ -104,7 +104,10 @@ const PublicCourses = () => {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <Link to="/main" className="flex items-center gap-2">
             <img src={logoIcon} alt="Logo" className="h-12 w-12" />
-            <span className="text-2xl font-logo font-bold text-gradient tracking-tight">atomLMS</span>
+            <span className="text-2xl font-logo font-bold tracking-tight">
+              <span className="text-gradient">atom</span>
+              <span className="text-foreground">LMS</span>
+            </span>
             <span className="px-2.5 py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-xs font-bold shadow-glow border border-primary/20">
               AI
             </span>

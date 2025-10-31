@@ -98,7 +98,10 @@ const MinimalLayout = () => {
           <Link to="/main" className="flex items-center gap-3 mb-8">
             <img src={logoIcon} alt="Logo" className="h-10 w-10" />
             <div>
-              <div className="font-bold text-lg text-gradient">atomLMS</div>
+              <div className="font-bold text-lg">
+                <span className="text-gradient">atom</span>
+                <span>LMS</span>
+              </div>
               <div className="text-xs text-muted-foreground">Learn Simply</div>
             </div>
           </Link>

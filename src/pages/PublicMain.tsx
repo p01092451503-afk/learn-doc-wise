@@ -119,7 +119,10 @@ const PublicMain = () => {
           <div className="flex items-center justify-between mb-4">
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
-              <span className="text-xl md:text-2xl font-logo font-bold text-gradient tracking-tight">atomLMS</span>
+              <span className="text-xl md:text-2xl font-logo font-bold tracking-tight">
+                <span className="text-gradient">atom</span>
+                <span className="text-foreground">LMS</span>
+              </span>
               <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-[10px] md:text-xs font-bold shadow-glow border border-primary/20">
                 AI
               </span>
