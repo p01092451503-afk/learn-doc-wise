@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
@@ -208,9 +209,12 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm"
+                  className="h-16 md:h-20 flex-col gap-1.5 md:gap-2 text-xs md:text-sm relative"
                   onClick={() => setReportOpen(true)}
                 >
+                  <Badge variant="default" className="absolute -top-2 -right-2 text-[10px] px-1.5 py-0.5 h-auto">
+                    AI
+                  </Badge>
                   <TrendingUp className="h-4 w-4 md:h-5 md:w-5" />
                   리포트 생성
                 </Button>
