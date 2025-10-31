@@ -132,105 +132,149 @@ const AdminTemplates = () => {
   }
 
   return (
-    <div className="space-y-8 max-w-[1400px] mx-auto">
-      <div className="px-2">
-        <h1 className="text-3xl font-display font-bold text-foreground mb-2">디자인 템플릿</h1>
-        <p className="text-muted-foreground">
-          사용자에게 보여질 메인 페이지 디자인을 선택하세요
-        </p>
-      </div>
+    <div className="min-h-screen bg-muted/30 py-12 px-6">
+      <div className="max-w-7xl mx-auto space-y-10">
+        {/* Header Section with better spacing */}
+        <div className="bg-background rounded-2xl p-8 shadow-sm border">
+          <h1 className="text-4xl font-display font-bold text-foreground mb-3">디자인 템플릿</h1>
+          <p className="text-lg text-muted-foreground">
+            사용자에게 보여질 메인 페이지 디자인을 선택하세요. 각 템플릿은 고유한 레이아웃 구조를 가지고 있습니다.
+          </p>
+        </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 px-2">
-        {templates.map((template) => {
-          const isSelected = currentTemplate === template.id;
-          
-          return (
-            <Card 
-              key={template.id} 
-              className={`relative transition-all duration-200 hover:shadow-lg ${
-                isSelected ? 'ring-2 ring-primary shadow-glow' : ''
-              }`}
-            >
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="flex items-center gap-2">
+        {/* Templates Grid with proper spacing */}
+        {templates.length === 0 ? (
+          <Card className="bg-background">
+            <CardContent className="flex flex-col items-center justify-center py-20">
+              <Palette className="h-16 w-16 text-muted-foreground mb-4" />
+              <p className="text-lg text-muted-foreground text-center">
+                사용 가능한 템플릿이 없습니다.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {templates.map((template) => {
+              const isSelected = currentTemplate === template.id;
+              
+              return (
+                <Card 
+                  key={template.id} 
+                  className={`relative bg-background transition-all duration-300 hover:shadow-xl overflow-hidden group ${
+                    isSelected ? 'ring-2 ring-primary shadow-glow' : ''
+                  }`}
+                >
+                  {/* Selection Badge */}
+                  {isSelected && (
+                    <div className="absolute top-4 right-4 z-10">
+                      <Badge variant="default" className="gap-1 shadow-lg">
+                        <Check className="h-3 w-3" />
+                        현재 사용중
+                      </Badge>
+                    </div>
+                  )}
+
+                  {/* Template Preview Area - placeholder for actual preview */}
+                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-accent/10 relative overflow-hidden">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        <Palette className="h-12 w-12 text-primary/60 mx-auto" />
+                        <p className="text-sm font-medium text-muted-foreground">
+                          {template.template_key} 레이아웃
+                        </p>
+                      </div>
+                    </div>
+                    {/* Decorative elements */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+                  </div>
+                  
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">
                       {template.name}
-                      {isSelected && (
-                        <Badge variant="default" className="gap-1">
-                          <Check className="h-3 w-3" />
-                          현재 사용중
-                        </Badge>
-                      )}
                     </CardTitle>
-                    <CardDescription className="mt-2">
+                    <CardDescription className="text-sm leading-relaxed">
                       {template.description}
                     </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                {/* Color Preview */}
-                <div className="flex items-center gap-3">
-                  <Palette className="h-4 w-4 text-muted-foreground" />
-                  <div className="flex gap-2">
-                    <div 
-                      className="w-8 h-8 rounded-lg border shadow-sm"
-                      style={{ backgroundColor: template.style_config.primaryColor }}
-                      title="Primary Color"
-                    />
-                    <div 
-                      className="w-8 h-8 rounded-lg border shadow-sm"
-                      style={{ backgroundColor: template.style_config.accentColor }}
-                      title="Accent Color"
-                    />
-                  </div>
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {template.style_config.fontFamily}
-                  </span>
-                </div>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-5 pb-6">
+                    {/* Color Scheme Preview */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        색상 조합
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-2">
+                          <div 
+                            className="w-10 h-10 rounded-xl border-2 border-border shadow-sm transition-transform hover:scale-110"
+                            style={{ backgroundColor: template.style_config.primaryColor }}
+                            title="Primary Color"
+                          />
+                          <div 
+                            className="w-10 h-10 rounded-xl border-2 border-border shadow-sm transition-transform hover:scale-110"
+                            style={{ backgroundColor: template.style_config.accentColor }}
+                            title="Accent Color"
+                          />
+                        </div>
+                        <div className="flex-1 text-right">
+                          <span className="text-xs font-medium text-muted-foreground">
+                            {template.style_config.fontFamily}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Style Info */}
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline">{template.style_config.heroStyle}</Badge>
-                  <Badge variant="outline">{template.template_key}</Badge>
-                </div>
+                    {/* Style Tags */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        스타일 특성
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {template.style_config.heroStyle}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {template.template_key}
+                        </Badge>
+                      </div>
+                    </div>
 
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Link to={`/template-preview/${template.template_key}`} target="_blank" className="flex-1">
-                    <Button variant="outline" size="sm" className="w-full gap-2">
-                      <Eye className="h-4 w-4" />
-                      미리보기
-                    </Button>
-                  </Link>
-                  <Button
-                    variant={isSelected ? "default" : "premium"}
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => handleSelectTemplate(template.id)}
-                    disabled={isSelected}
-                  >
-                    {isSelected ? "선택됨" : "선택하기"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-2">
+                      <Link to={`/template-preview/${template.template_key}`} target="_blank" className="flex-1">
+                        <Button 
+                          variant="outline" 
+                          size="default" 
+                          className="w-full gap-2 hover:bg-accent"
+                        >
+                          <Eye className="h-4 w-4" />
+                          미리보기
+                        </Button>
+                      </Link>
+                      <Button
+                        variant={isSelected ? "secondary" : "default"}
+                        size="default"
+                        className="flex-1"
+                        onClick={() => handleSelectTemplate(template.id)}
+                        disabled={isSelected}
+                      >
+                        {isSelected ? (
+                          <>
+                            <Check className="h-4 w-4 mr-2" />
+                            선택됨
+                          </>
+                        ) : (
+                          "선택하기"
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
-
-      {templates.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Palette className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-center">
-              사용 가능한 템플릿이 없습니다.
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };
