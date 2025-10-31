@@ -203,7 +203,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         .from("menu_order")
         .select("menu_items")
         .eq("user_role", userRole)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== "PGRST116") throw error;
 
