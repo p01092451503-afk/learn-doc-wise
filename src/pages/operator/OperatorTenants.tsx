@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Building2, Plus, Search, Filter, CreditCard, X } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
+import { cn } from "@/lib/utils";
 
 interface Tenant {
   id: string;
@@ -42,6 +43,10 @@ const OperatorTenants = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [planFilter, setPlanFilter] = useState<"all" | "starter" | "standard" | "professional">("all");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -51,6 +56,26 @@ const OperatorTenants = () => {
     max_students: 50,
     max_storage_gb: 10,
   });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   useEffect(() => {
     fetchTenants();
@@ -63,7 +88,6 @@ const OperatorTenants = () => {
   const filterTenants = () => {
     let filtered = [...tenants];
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter(
         (tenant) =>
@@ -72,14 +96,12 @@ const OperatorTenants = () => {
       );
     }
 
-    // Status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter((tenant) =>
         statusFilter === "active" ? tenant.is_active : !tenant.is_active
       );
     }
 
-    // Plan filter
     if (planFilter !== "all") {
       filtered = filtered.filter((tenant) => tenant.plan === planFilter);
     }
@@ -222,8 +244,14 @@ const OperatorTenants = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">고객사 관리</h1>
-            <p className="text-slate-400">등록된 고객사를 관리하고 모니터링합니다</p>
+            <h1 className={cn(
+              "text-3xl font-bold mb-2 transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>고객사 관리</h1>
+            <p className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>등록된 고객사를 관리하고 모니터링합니다</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -232,38 +260,69 @@ const OperatorTenants = () => {
                 새 고객사 추가
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-900 border-slate-800">
+            <DialogContent className={cn(
+              "transition-colors",
+              theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+            )}>
               <DialogHeader>
-                <DialogTitle className="text-white">새 고객사 추가</DialogTitle>
+                <DialogTitle className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>새 고객사 추가</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-slate-300">고객사명</Label>
+                  <Label htmlFor="name" className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-300" : "text-slate-700"
+                  )}>고객사명</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className={cn(
+                      "transition-colors",
+                      theme === "dark"
+                        ? "bg-slate-800 border-slate-700 text-white"
+                        : "bg-slate-50 border-slate-300 text-slate-900"
+                    )}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subdomain" className="text-slate-300">서브도메인</Label>
+                  <Label htmlFor="subdomain" className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-300" : "text-slate-700"
+                  )}>서브도메인</Label>
                   <Input
                     id="subdomain"
                     value={formData.subdomain}
                     onChange={(e) => setFormData({ ...formData, subdomain: e.target.value })}
                     required
-                    className="bg-slate-800 border-slate-700 text-white"
+                    className={cn(
+                      "transition-colors",
+                      theme === "dark"
+                        ? "bg-slate-800 border-slate-700 text-white"
+                        : "bg-slate-50 border-slate-300 text-slate-900"
+                    )}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="plan" className="text-slate-300">플랜</Label>
+                  <Label htmlFor="plan" className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-300" : "text-slate-700"
+                  )}>플랜</Label>
                   <Select value={formData.plan} onValueChange={(value) => setFormData({ ...formData, plan: value })}>
-                    <SelectTrigger className="bg-slate-800 border-slate-700 text-white">
+                    <SelectTrigger className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                    )}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-slate-700">
+                    <SelectContent className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                    )}>
                       <SelectItem value="starter">스타터</SelectItem>
                       <SelectItem value="standard">스탠다드</SelectItem>
                       <SelectItem value="professional">프로페셔널</SelectItem>
@@ -272,25 +331,41 @@ const OperatorTenants = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="max_students" className="text-slate-300">최대 학생 수</Label>
+                    <Label htmlFor="max_students" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>최대 학생 수</Label>
                     <Input
                       id="max_students"
                       type="number"
                       value={formData.max_students}
                       onChange={(e) => setFormData({ ...formData, max_students: parseInt(e.target.value) })}
                       required
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className={cn(
+                        "transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="max_storage_gb" className="text-slate-300">최대 저장소 (GB)</Label>
+                    <Label htmlFor="max_storage_gb" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>최대 저장소 (GB)</Label>
                     <Input
                       id="max_storage_gb"
                       type="number"
                       value={formData.max_storage_gb}
                       onChange={(e) => setFormData({ ...formData, max_storage_gb: parseInt(e.target.value) })}
                       required
-                      className="bg-slate-800 border-slate-700 text-white"
+                      className={cn(
+                        "transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
                     />
                   </div>
                 </div>
@@ -303,7 +378,10 @@ const OperatorTenants = () => {
         </div>
 
         {/* Search and Filter Section */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "bg-slate-900/50 border-slate-800 transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardContent className="pt-6">
             <div className="flex flex-col lg:flex-row gap-4">
               <div className="flex-1 relative">
@@ -312,25 +390,40 @@ const OperatorTenants = () => {
                   placeholder="고객사명 또는 서브도메인 검색..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-800 border-slate-700 text-white"
+                  className={cn(
+                    "pl-10 bg-slate-800 border-slate-700 text-white transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
                 />
               </div>
               <div className="flex gap-2">
                 <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-                  <SelectTrigger className="w-[140px] bg-slate-800 border-slate-700 text-white">
+                  <SelectTrigger className={cn(
+                    "w-[140px] bg-slate-800 border-slate-700 text-white transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}>
                     <SelectValue placeholder="상태" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectContent className={cn(
+                    "bg-slate-800 border-slate-700 transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                  )}>
                     <SelectItem value="all">전체 상태</SelectItem>
                     <SelectItem value="active">활성</SelectItem>
                     <SelectItem value="inactive">비활성</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={planFilter} onValueChange={(value: any) => setPlanFilter(value)}>
-                  <SelectTrigger className="w-[140px] bg-slate-800 border-slate-700 text-white">
+                  <SelectTrigger className={cn(
+                    "w-[140px] bg-slate-800 border-slate-700 text-white transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}>
                     <SelectValue placeholder="플랜" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectContent className={cn(
+                    "bg-slate-800 border-slate-700 transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                  )}>
                     <SelectItem value="all">전체 플랜</SelectItem>
                     <SelectItem value="starter">스타터</SelectItem>
                     <SelectItem value="standard">스탠다드</SelectItem>
@@ -342,7 +435,10 @@ const OperatorTenants = () => {
                     variant="outline"
                     size="icon"
                     onClick={clearFilters}
-                    className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                    className={cn(
+                      "border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors",
+                      theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-500 hover:bg-slate-100"
+                    )}
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -353,10 +449,19 @@ const OperatorTenants = () => {
         </Card>
 
         {/* Tenants Table */}
-        <Card className="bg-slate-900/50 border-slate-800">
+        <Card className={cn(
+          "bg-slate-900/50 border-slate-800 transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
           <CardHeader>
-            <CardTitle className="text-white">고객사 목록</CardTitle>
-            <CardDescription className="text-slate-400">
+            <CardTitle className={cn(
+              "text-white transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>고객사 목록</CardTitle>
+            <CardDescription className={cn(
+              "text-slate-400 transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>
               {filteredTenants.length}개 고객사 {hasActiveFilters && `(전체 ${tenants.length}개 중)`}
             </CardDescription>
           </CardHeader>
@@ -414,7 +519,10 @@ const OperatorTenants = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleToggleStatus(tenant)}
-                            className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                            className={cn(
+                              "border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-500 hover:bg-slate-100"
+                            )}
                           >
                             {tenant.is_active ? "비활성화" : "활성화"}
                           </Button>
@@ -425,7 +533,10 @@ const OperatorTenants = () => {
                               setSelectedTenant(tenant);
                               setPaymentDialogOpen(true);
                             }}
-                            className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                            className={cn(
+                              "border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-500 hover:bg-slate-100"
+                            )}
                           >
                             <CreditCard className="h-4 w-4" />
                           </Button>
@@ -445,7 +556,8 @@ const OperatorTenants = () => {
         onOpenChange={setPaymentDialogOpen}
         tenantId={selectedTenant?.id || ""}
         tenantName={selectedTenant?.name || ""}
-        amount={selectedTenant ? getPlanAmount(selectedTenant.plan) : 0}
+        amount={getPlanAmount(selectedTenant?.plan || "")}
+        orderName={`${selectedTenant?.name} - ${getPlanLabel(selectedTenant?.plan || "")} 플랜`}
       />
     </OperatorLayout>
   );
