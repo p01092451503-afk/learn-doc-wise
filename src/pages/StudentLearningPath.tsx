@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { BookOpen, Clock, CheckCircle2, Lock, Target } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
@@ -32,6 +32,8 @@ interface UserLearningPath {
 export default function StudentLearningPath() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isDemoMode = searchParams.has('role');
   const [loading, setLoading] = useState(true);
   const [availablePaths, setAvailablePaths] = useState<LearningPath[]>([]);
   const [enrolledPaths, setEnrolledPaths] = useState<UserLearningPath[]>([]);
@@ -196,7 +198,16 @@ export default function StudentLearningPath() {
                   ) : (
                     <Button 
                       className="w-full"
-                      onClick={() => navigate(`/student/learning-path/${enrollment.learning_path_id}`)}
+                      onClick={() => {
+                        if (isDemoMode) {
+                          toast({
+                            title: "데모 모드",
+                            description: "실제 서비스에 가입하시면 학습 경로 상세 페이지를 이용하실 수 있습니다.",
+                          });
+                        } else {
+                          navigate(`/student/learning-path/${enrollment.learning_path_id}`);
+                        }
+                      }}
                     >
                       학습 계속하기
                     </Button>
@@ -257,7 +268,16 @@ export default function StudentLearningPath() {
 
                   <Button 
                     className="w-full"
-                    onClick={() => enrollInPath(path.id)}
+                    onClick={() => {
+                      if (isDemoMode) {
+                        toast({
+                          title: "데모 모드",
+                          description: "실제 서비스에 가입하시면 학습 경로를 시작하실 수 있습니다.",
+                        });
+                      } else {
+                        enrollInPath(path.id);
+                      }
+                    }}
                   >
                     학습 시작하기
                   </Button>
