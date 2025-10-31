@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, CheckCircle2, Lock, Target } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 interface LearningPath {
   id: string;
@@ -127,22 +128,25 @@ export default function StudentLearningPath() {
 
   if (loading) {
     return (
-      <div className="space-y-6 p-6">
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-64 w-full" />
-      </div>
+      <DashboardLayout userRole="student">
+        <div className="space-y-6">
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">맞춤형 학습 경로</h1>
-        <p className="text-muted-foreground">
-          체계적인 학습 경로를 따라 목표를 달성하세요
-        </p>
-      </div>
+    <DashboardLayout userRole="student">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">맞춤형 학습 경로</h1>
+          <p className="text-muted-foreground">
+            체계적인 학습 경로를 따라 목표를 달성하세요
+          </p>
+        </div>
 
       {/* 진행 중인 학습 경로 */}
       {enrolledPaths.length > 0 && (
@@ -272,6 +276,7 @@ export default function StudentLearningPath() {
           </CardContent>
         </Card>
       )}
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
