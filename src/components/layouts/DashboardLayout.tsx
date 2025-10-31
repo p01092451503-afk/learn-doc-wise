@@ -338,10 +338,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   return true;
                 })
                 .map((item) => (
-                item.enabled ? (
+                  item.enabled ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
-                      <Link to={isDemoMode ? `/demo?role=${userRole}&page=${item.path.split('/').pop()}` : item.path}>
+                      <Link to={item.path}>
                         <Button
                           variant="ghost"
                           className={cn(
