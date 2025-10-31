@@ -153,9 +153,53 @@ export const AITutorDialog = ({ open, onOpenChange, courseContext }: AITutorDial
         {result && (
           <Card className="mt-4">
             <CardContent className="pt-4">
-              <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap text-sm leading-relaxed">{formatAIResponse(result)}</div>
-              </div>
+              {(() => {
+                try {
+                  const parsed = JSON.parse(result);
+                  if (parsed.questions && Array.isArray(parsed.questions)) {
+                    return (
+                      <div className="space-y-6">
+                        {parsed.questions.map((q: any, idx: number) => (
+                          <div key={idx} className="space-y-3 pb-6 border-b last:border-b-0">
+                            <div className="font-semibold text-base">
+                              문제 {idx + 1}. {q.question}
+                            </div>
+                            <div className="space-y-2">
+                              {q.options?.map((opt: string, optIdx: number) => (
+                                <div 
+                                  key={optIdx} 
+                                  className={`pl-4 py-2 rounded ${
+                                    optIdx === q.answer 
+                                      ? 'bg-primary/10 font-medium' 
+                                      : 'bg-muted/50'
+                                  }`}
+                                >
+                                  {optIdx + 1}. {opt}
+                                </div>
+                              ))}
+                            </div>
+                            {q.explanation && (
+                              <div className="mt-3 p-3 bg-muted/30 rounded text-sm">
+                                <span className="font-medium">해설: </span>
+                                {q.explanation}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  }
+                } catch (e) {
+                  // JSON이 아니면 일반 텍스트로 처리
+                }
+                return (
+                  <div className="prose prose-sm max-w-none">
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {formatAIResponse(result)}
+                    </div>
+                  </div>
+                );
+              })()}
             </CardContent>
           </Card>
         )}
