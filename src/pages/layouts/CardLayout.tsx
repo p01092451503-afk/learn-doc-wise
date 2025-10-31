@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, Users, Zap, Target, User, TrendingUp, ArrowRight } from "lucide-react";
-import logoIcon from "@/assets/logo-icon-refined.png";
+import logoIcon from "@/assets/logo-icon.png";
 import { Session } from "@supabase/supabase-js";
 import { getVideoThumbnail } from "@/lib/utils";
 
@@ -96,12 +96,9 @@ const CardLayout = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
-            <Link to="/main" className="flex items-center gap-2 font-atom font-bold">
+            <Link to="/main" className="flex items-center gap-2 font-bold">
               <img src={logoIcon} alt="Logo" className="h-6 w-6" />
-              <span>
-                <span className="text-gradient-atom">atom</span>
-                <span className="text-deep-navy dark:text-foreground">LMS</span>
-              </span>
+              <span>atomLMS</span>
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm">
               <Link to="/main" className="hover:text-primary transition-colors">홈</Link>

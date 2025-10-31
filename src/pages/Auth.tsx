@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Link, useNavigate } from "react-router-dom";
-import logoIcon from "@/assets/logo-icon-refined.png";
+import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -359,9 +359,9 @@ const Auth = () => {
       <div className="w-full max-w-md relative z-10">
         <Link to="/" className="flex items-center justify-center mb-8 gap-2">
           <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
-          <span className="text-2xl font-atom font-bold tracking-tight">
-            <span className="text-gradient-atom">atom</span>
-            <span className="text-deep-navy dark:text-foreground">LMS</span>
+          <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+          <span className="px-2.5 py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-xs font-bold shadow-glow border border-primary/20">
+            AI
           </span>
         </Link>
 

@@ -29,8 +29,9 @@ import {
   Palette,
   Zap,
 } from "lucide-react";
-import logoIcon from "@/assets/logo-icon-refined.png";
+import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
+import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -166,7 +167,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
       { icon: Brain, label: "AI 로그", path: "/admin/ai-logs", enabled: true },
-      { icon: Palette, label: "디자인 템플릿", path: "/admin/templates", enabled: true },
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
@@ -233,9 +233,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
           <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
             <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
-            <span className="text-lg md:text-2xl font-atom font-bold tracking-tight">
-              <span className="text-gradient-atom">atom</span>
-              <span className="text-deep-navy dark:text-foreground">LMS</span>
+            <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+            <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-[10px] md:text-xs font-bold shadow-glow border border-primary/20">
+              AI
             </span>
           </Link>
 

@@ -16,7 +16,8 @@ import {
   Zap,
   Sparkles,
 } from "lucide-react";
-import logoIcon from "@/assets/logo-icon-refined.png";
+import logoIcon from "@/assets/logo-icon.png";
+import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,11 +105,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                 <img src={logoIcon} alt="Logo" className="h-6 w-6" />
               </div>
               <div className="hidden sm:block">
-                <span className="text-lg font-atom font-bold">
-                  <span className="text-gradient-atom">atom</span>
-                  <span className="text-white">LMS</span>
-                </span>
-                <span className="ml-2 text-xs font-medium text-slate-300 bg-slate-700/80 px-2 py-0.5 rounded border border-slate-500/30">Operator</span>
+                <span className="text-lg font-bold text-white">atomLMS</span>
+                <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
               </div>
             </Link>
           </div>

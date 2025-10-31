@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Clock, Users, Star, TrendingUp, Award, User } from "lucide-react";
-import logoIcon from "@/assets/logo-icon-refined.png";
+import logoIcon from "@/assets/logo-icon.png";
 import { Chatbot } from "@/components/Chatbot";
 import { Session } from "@supabase/supabase-js";
 import { AISearchBar } from "@/components/AISearchBar";
@@ -119,9 +119,9 @@ const PublicMain = () => {
           <div className="flex items-center justify-between mb-4">
             <Link to="/main" className="flex items-center gap-2">
               <img src={logoIcon} alt="Logo" className="h-10 w-10 md:h-12 md:w-12" />
-              <span className="text-xl md:text-2xl font-atom font-bold tracking-tight">
-                <span className="text-gradient-atom">atom</span>
-                <span className="text-deep-navy dark:text-foreground">LMS</span>
+              <span className="text-xl md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+              <span className="px-2 py-0.5 md:px-2.5 md:py-1 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent text-primary-foreground text-[10px] md:text-xs font-bold shadow-glow border border-primary/20">
+                AI
               </span>
             </Link>
             <nav className="hidden md:flex items-center gap-8">
