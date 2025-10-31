@@ -781,6 +781,56 @@ export type Database = {
           },
         ]
       }
+      daily_learning_goals: {
+        Row: {
+          completed_lessons: number
+          completed_minutes: number
+          created_at: string
+          goal_achieved: boolean
+          goal_date: string
+          id: string
+          target_lessons: number
+          target_minutes: number
+          tenant_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_lessons?: number
+          completed_minutes?: number
+          created_at?: string
+          goal_achieved?: boolean
+          goal_date?: string
+          id?: string
+          target_lessons?: number
+          target_minutes?: number
+          tenant_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_lessons?: number
+          completed_minutes?: number
+          created_at?: string
+          goal_achieved?: boolean
+          goal_date?: string
+          id?: string
+          target_lessons?: number
+          target_minutes?: number
+          tenant_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_learning_goals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       enrollments: {
         Row: {
           completed_at: string | null
@@ -1079,6 +1129,153 @@ export type Database = {
           },
         ]
       }
+      learning_reminders: {
+        Row: {
+          created_at: string
+          days_of_week: number[]
+          id: string
+          is_active: boolean
+          message: string | null
+          reminder_time: string
+          reminder_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_week?: number[]
+          id?: string
+          is_active?: boolean
+          message?: string | null
+          reminder_time?: string
+          reminder_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_week?: number[]
+          id?: string
+          is_active?: boolean
+          message?: string | null
+          reminder_time?: string
+          reminder_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      learning_sessions: {
+        Row: {
+          completed: boolean
+          content_id: string | null
+          course_id: string | null
+          created_at: string
+          duration_minutes: number
+          ended_at: string | null
+          focus_score: number | null
+          id: string
+          notes: string | null
+          session_type: string
+          started_at: string
+          tenant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          content_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          duration_minutes: number
+          ended_at?: string | null
+          focus_score?: number | null
+          id?: string
+          notes?: string | null
+          session_type?: string
+          started_at?: string
+          tenant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          content_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          duration_minutes?: number
+          ended_at?: string | null
+          focus_score?: number | null
+          id?: string
+          notes?: string | null
+          session_type?: string
+          started_at?: string
+          tenant_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_sessions_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "course_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_streaks: {
+        Row: {
+          created_at: string
+          goal_achieved: boolean
+          id: string
+          lessons_completed: number
+          minutes_learned: number
+          streak_date: string
+          tenant_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          goal_achieved?: boolean
+          id?: string
+          lessons_completed?: number
+          minutes_learned?: number
+          streak_date: string
+          tenant_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          goal_achieved?: boolean
+          id?: string
+          lessons_completed?: number
+          minutes_learned?: number
+          streak_date?: string
+          tenant_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_streaks_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentoring_relationships: {
         Row: {
           course_id: string | null
@@ -1218,6 +1415,53 @@ export type Database = {
           user_role?: string
         }
         Relationships: []
+      }
+      offline_downloads: {
+        Row: {
+          access_count: number
+          content_id: string
+          created_at: string
+          download_size_mb: number | null
+          download_status: string
+          downloaded_at: string | null
+          expires_at: string | null
+          id: string
+          last_accessed_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_count?: number
+          content_id: string
+          created_at?: string
+          download_size_mb?: number | null
+          download_status?: string
+          downloaded_at?: string | null
+          expires_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_count?: number
+          content_id?: string
+          created_at?: string
+          download_size_mb?: number | null
+          download_status?: string
+          downloaded_at?: string | null
+          expires_at?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_downloads_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "course_contents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organizations: {
         Row: {
@@ -2399,6 +2643,10 @@ export type Database = {
           p_progress_percentage: number
           p_user_id: string
         }
+        Returns: undefined
+      }
+      update_daily_goal_progress: {
+        Args: { p_lessons: number; p_minutes: number; p_user_id: string }
         Returns: undefined
       }
       update_streak: {
