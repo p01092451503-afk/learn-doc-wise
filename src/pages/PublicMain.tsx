@@ -136,12 +136,9 @@ const PublicMain = () => {
                   {t('login')}
                 </Link>
               )}
-              <LanguageSwitcher />
             </nav>
             <div className="flex items-center gap-2">
-              <div className="md:hidden">
-                <LanguageSwitcher />
-              </div>
+              <LanguageSwitcher />
               {session ? (
                 <Button 
                   variant="premium" 

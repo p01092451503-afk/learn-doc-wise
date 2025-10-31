@@ -260,6 +260,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               </Link>
             )}
             
+            <LanguageSwitcher />
+            
             <Button variant="ghost" size="icon" className="relative rounded-xl hover:bg-primary/10 flex-shrink-0">
               <Bell className="h-5 w-5" />
               <span className="absolute top-2 right-2 h-2 w-2 bg-accent rounded-full ring-2 ring-background" />

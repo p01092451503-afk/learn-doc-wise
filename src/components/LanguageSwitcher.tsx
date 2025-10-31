@@ -1,6 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Languages } from "lucide-react";
 
 export const LanguageSwitcher = () => {
   const { language, setLanguage } = useLanguage();
@@ -10,9 +9,8 @@ export const LanguageSwitcher = () => {
       variant="ghost"
       size="sm"
       onClick={() => setLanguage(language === 'ko' ? 'en' : 'ko')}
-      className="gap-2"
+      className="h-8 px-2 text-xs font-medium"
     >
-      <Languages className="h-4 w-4" />
       {language === 'ko' ? 'EN' : 'KO'}
     </Button>
   );
