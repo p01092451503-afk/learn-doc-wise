@@ -408,8 +408,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         </main>
       </div>
 
-      {/* AI Chatbot Button - Hidden in demo mode */}
-      {!isDemoMode && (
+      {/* AI Chatbot Button - Only for admin and operator */}
+      {!isDemoMode && (userRole === "admin" || userRole === "operator") && (
         <Button
           size="icon"
           variant="premium"
