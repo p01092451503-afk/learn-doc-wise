@@ -14,12 +14,12 @@ type Message = {
 };
 
 interface ChatbotProps {
-  userRole?: "admin" | "user";
+  userRole?: "admin" | "user" | "teacher";
 }
 
 export const Chatbot = ({ userRole = "user" }: ChatbotProps) => {
-  // 관리자는 챗봇을 사용하지 않음
-  if (userRole === "admin") {
+  // 관리자와 강사는 챗봇을 사용하지 않음
+  if (userRole === "admin" || userRole === "teacher") {
     return null;
   }
 
