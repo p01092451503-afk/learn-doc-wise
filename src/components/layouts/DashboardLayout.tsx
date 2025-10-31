@@ -328,7 +328,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
               sidebarCollapsed ? "p-2" : "p-4"
             )}>
-              {menuItems.map((item) => (
+              {menuItems
+                .filter(item => isDemoMode ? item.enabled : true)
+                .map((item) => (
                 item.enabled ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
