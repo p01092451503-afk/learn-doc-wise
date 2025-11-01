@@ -476,20 +476,19 @@ const Landing = () => {
             </div>
 
             {/* AI 챗봇 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-3">
-              <div className="flex items-start gap-4 max-w-2xl mx-auto">
+            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Bot className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 챗봇</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    학습자와 강사를 위한 지능형 챗봇이 학습 관련 질문에 실시간으로 답변하고, 코스 추천, 일정 관리, 학습 조언을 제공합니다
+                    학습 관련 모든 질문에 24시간 답변하고 맞춤형 도움을 제공합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2 flex-wrap">
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 상담</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">코스 추천</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">일정 관리</span>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">24/7 지원</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 답변</span>
                   </div>
                 </div>
               </div>
