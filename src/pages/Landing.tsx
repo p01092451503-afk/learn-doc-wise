@@ -219,11 +219,7 @@ const Landing = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mx-auto">
             {/* AI 튜터 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Bot className="h-5 w-5 text-primary" />
@@ -242,11 +238,7 @@ const Landing = () => {
             </div>
 
             {/* AI 자동 채점 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <CheckCircle className="h-5 w-5 text-primary" />
@@ -265,11 +257,7 @@ const Landing = () => {
             </div>
 
             {/* AI 피드백 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Sparkles className="h-5 w-5 text-primary" />
@@ -288,11 +276,7 @@ const Landing = () => {
             </div>
 
             {/* AI 번역 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Brain className="h-5 w-5 text-primary" />
@@ -311,11 +295,7 @@ const Landing = () => {
             </div>
 
             {/* AI 학습 분석 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <BarChart3 className="h-5 w-5 text-primary" />
@@ -334,11 +314,7 @@ const Landing = () => {
             </div>
 
             {/* AI 리포트 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <TrendingUp className="h-5 w-5 text-primary" />
@@ -357,11 +333,7 @@ const Landing = () => {
             </div>
 
             {/* AI 학습 경로 추천 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Route className="h-5 w-5 text-primary" />
@@ -382,11 +354,7 @@ const Landing = () => {
             </div>
 
             {/* AI 퀴즈 생성 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FileQuestion className="h-5 w-5 text-primary" />
@@ -405,11 +373,7 @@ const Landing = () => {
             </div>
 
             {/* AI 요약 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FileText className="h-5 w-5 text-primary" />
@@ -428,11 +392,7 @@ const Landing = () => {
             </div>
 
             {/* AI 진도 예측 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <TrendingUp className="h-5 w-5 text-primary" />
@@ -451,11 +411,7 @@ const Landing = () => {
             </div>
 
             {/* AI 스터디 메이트 매칭 */}
-            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs font-bold text-white">AI</span>
-              </div>
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Users className="h-5 w-5 text-primary" />
