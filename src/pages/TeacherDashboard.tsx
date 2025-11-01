@@ -108,61 +108,6 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </CardContent>
         </Card>
 
-        {/* AI Features for Teachers */}
-        {isDemo && (
-          <Card className="border-primary/20 bg-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-primary" />
-                  AI 강의 도구
-                  <Badge variant="default" className="text-xs">AI</Badge>
-                </CardTitle>
-                <CardDescription>
-                  AI로 강의 준비와 학생 관리를 더 효율적으로
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <button
-                    onClick={() => setQuizOpen(true)}
-                    className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                        <FileQuestion className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold">AI 퀴즈 생성</h4>
-                        <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      강의 주제에 맞는 퀴즈를 자동으로 생성하세요
-                    </p>
-                  </button>
-
-                  <button
-                    onClick={() => setSummaryOpen(true)}
-                    className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                        <FileText className="h-5 w-5 text-primary" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-semibold">AI 요약</h4>
-                        <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      강의 자료를 빠르게 요약하세요
-                    </p>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-        )}
-
         {/* Recent Activity & Revenue Chart */}
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
@@ -226,6 +171,61 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardContent>
           </Card>
         </div>
+
+        {/* AI Features for Teachers */}
+        {isDemo && (
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-primary" />
+                AI 강의 도구
+                <Badge variant="default" className="text-xs">AI</Badge>
+              </CardTitle>
+              <CardDescription>
+                AI로 강의 준비와 학생 관리를 더 효율적으로
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2">
+                <button
+                  onClick={() => setQuizOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <FileQuestion className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 퀴즈 생성</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    강의 주제에 맞는 퀴즈를 자동으로 생성하세요
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setSummaryOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 요약</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    강의 자료를 빠르게 요약하세요
+                  </p>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI Dialogs */}
         <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
