@@ -306,12 +306,52 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
             {effectiveUserRole === "admin" && (
-              <Link to="/demo">
-                <Button size="sm" className="gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90">
-                  <Briefcase className="h-4 w-4" />
-                  <span className="hidden sm:inline">데모 모드</span>
-                </Button>
-              </Link>
+              <>
+                <Link to="/demo">
+                  <Button size="sm" className="gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90">
+                    <Briefcase className="h-4 w-4" />
+                    <span className="hidden sm:inline">데모 모드</span>
+                  </Button>
+                </Link>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="outline" className="gap-2 rounded-full">
+                      <Users className="h-4 w-4" />
+                      <span className="hidden sm:inline">역할 전환</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                    <DropdownMenuLabel>역할별 대시보드</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/student" className="flex items-center cursor-pointer">
+                        <GraduationCap className="mr-2 h-4 w-4" />
+                        학생
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/teacher" className="flex items-center cursor-pointer">
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        강사
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center cursor-pointer">
+                        <Shield className="mr-2 h-4 w-4" />
+                        관리자
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/operator/dashboard" className="flex items-center cursor-pointer">
+                        <Building2 className="mr-2 h-4 w-4" />
+                        운영자
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
             )}
             
             <LanguageSwitcher />
