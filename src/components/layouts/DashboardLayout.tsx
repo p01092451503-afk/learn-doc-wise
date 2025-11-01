@@ -97,11 +97,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Check if we're in demo mode from URL params
-  const isDemoMode = isDemo || searchParams.has('role');
+  // CRITICAL: Only use demo mode when explicitly set via isDemo prop
+  // This prevents URL parameter pollution from breaking normal user pages
+  const isDemoMode = isDemo === true;
   
-  // In demo mode, always use the role from URL params if available (this prevents role switching bugs)
-  const effectiveUserRole = isDemoMode && searchParams.get('role') 
+  // In demo mode, use role from URL params, otherwise ALWAYS use the userRole prop
+  const effectiveUserRole = (isDemoMode && searchParams.get('role')) 
     ? (searchParams.get('role') as "student" | "teacher" | "admin" | "operator")
     : userRole;
 
