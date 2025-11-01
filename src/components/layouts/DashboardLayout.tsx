@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   GraduationCap,
   LayoutDashboard,
@@ -67,6 +68,7 @@ interface MenuItem {
   path: string;
   enabled: boolean;
   hasAI?: boolean;
+  isHRD?: boolean;
 }
 
 const iconMap: { [key: string]: any } = {
@@ -153,8 +155,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: Route, label: "학습 경로", path: "/student/learning-path", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
-        { icon: MessageSquare, label: "만족도 조사 (HRD)", path: "/student/satisfaction-survey", enabled: true },
-        { icon: ClipboardList, label: "상담 이력 (HRD)", path: "/student/counseling-log", enabled: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "/student/satisfaction-survey", enabled: true, isHRD: true },
+        { icon: ClipboardList, label: "상담 이력", path: "/student/counseling-log", enabled: true, isHRD: true },
         { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: false },
         { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
       ];
@@ -166,14 +168,14 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
-        { icon: CalendarCheck, label: "출결 상세 (HRD)", path: "/teacher/attendance-detail", enabled: true },
-        { icon: ClipboardList, label: "훈련일지 (HRD)", path: "/teacher/training-log", enabled: true },
-        { icon: MessageSquare, label: "만족도 조사 (HRD)", path: "/teacher/satisfaction-survey", enabled: true },
-        { icon: ClipboardList, label: "상담일지 (HRD)", path: "/teacher/counseling-log", enabled: true },
-        { icon: Users, label: "중도탈락 관리 (HRD)", path: "/teacher/dropout-management", enabled: true },
-        { icon: Trophy, label: "수료 요건 (HRD)", path: "/teacher/training-completion", enabled: true },
-        { icon: DollarSign, label: "훈련수당 (HRD)", path: "/teacher/training-allowance", enabled: true },
-        { icon: BarChart3, label: "훈련 리포트 (HRD)", path: "/teacher/training-report", enabled: true },
+        { icon: CalendarCheck, label: "출결 상세", path: "/teacher/attendance-detail", enabled: true, isHRD: true },
+        { icon: ClipboardList, label: "훈련일지", path: "/teacher/training-log", enabled: true, isHRD: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "/teacher/satisfaction-survey", enabled: true, isHRD: true },
+        { icon: ClipboardList, label: "상담일지", path: "/teacher/counseling-log", enabled: true, isHRD: true },
+        { icon: Users, label: "중도탈락 관리", path: "/teacher/dropout-management", enabled: true, isHRD: true },
+        { icon: Trophy, label: "수료 요건", path: "/teacher/training-completion", enabled: true, isHRD: true },
+        { icon: DollarSign, label: "훈련수당", path: "/teacher/training-allowance", enabled: true, isHRD: true },
+        { icon: BarChart3, label: "훈련 리포트", path: "/teacher/training-report", enabled: true, isHRD: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
         { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
@@ -395,11 +397,18 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                           {!sidebarCollapsed && (
                             <div className="flex items-center gap-2 flex-1">
                               <span className="font-medium whitespace-nowrap">{item.label}</span>
-                              {item.hasAI && (
-                                <span className="px-1.5 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary whitespace-nowrap flex-shrink-0">
-                                  AI
-                                </span>
-                              )}
+                              <div className="flex items-center gap-1.5">
+                                {item.hasAI && (
+                                  <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">
+                                    AI
+                                  </Badge>
+                                )}
+                                {item.isHRD && (
+                                  <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-blue-500/10 border-blue-500/20 text-blue-600 whitespace-nowrap">
+                                    HRD
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
                           )}
                         </Button>
