@@ -106,12 +106,12 @@ const Landing = () => {
       </header>
 
       {/* Features Section */}
-      <section className="py-12 bg-muted/30" aria-labelledby="features-heading">
+      <section className="py-10 bg-muted/30" aria-labelledby="features-heading">
         <div className="container mx-auto px-4">
-          <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
+          <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">
             왜 <span className="font-logo">atomLMS</span>인가?
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             <FeatureCard
               icon={<Brain className="h-10 w-10" />}
               title="AI 지능형 학습"
@@ -145,8 +145,8 @@ const Landing = () => {
           </div>
           
           {/* HRD 정부지원 훈련과정 전용 기능 */}
-          <div className="mt-16 pt-16 border-t border-border">
-            <div className="text-center mb-12">
+          <div className="mt-12 pt-12 border-t border-border">
+            <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-4">
                 <Award className="h-4 w-4 text-accent" />
                 <span className="text-sm font-semibold text-accent">HRD 정부지원 훈련과정</span>
@@ -158,7 +158,7 @@ const Landing = () => {
                 HRD-Net 연계부터 수료 관리까지, 정부지원 훈련과정 운영에 필요한 모든 기능
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <FeatureCard
                 icon={<FileText className="h-10 w-10" />}
                 title="훈련일지 관리"
@@ -210,41 +210,41 @@ const Landing = () => {
       </section>
 
       {/* AI Features Section */}
-      <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
               <Brain className="h-5 w-5 text-primary" />
               <span className="text-sm font-semibold text-primary">AI 파워드</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
               <span className="text-gradient">AI가 탑재된</span><br />
               7가지 핵심 기능
             </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               최신 AI 기술로 학습 효율을 극대화하고, 강사의 업무 부담을 줄이며,<br />
               학습자에게 개인화된 경험을 제공합니다
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl mx-auto">
             {/* AI 튜터 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Bot className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Bot className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 튜터</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 튜터</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     24시간 상시 대기하는 AI 튜터가 질문에 즉시 답변하고, 개념 설명과 퀴즈를 제공합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 답변</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">개념 설명</span>
                   </div>
@@ -253,21 +253,21 @@ const Landing = () => {
             </div>
 
             {/* AI 자동 채점 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <CheckCircle className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <CheckCircle className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 자동 채점</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 자동 채점</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     과제와 시험을 AI가 자동으로 채점하고 상세한 피드백을 즉시 제공합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">즉시 채점</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">상세 피드백</span>
                   </div>
@@ -276,21 +276,21 @@ const Landing = () => {
             </div>
 
             {/* AI 피드백 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Sparkles className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Sparkles className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 피드백</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 피드백</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     과제와 문법을 AI가 분석하여 개선점과 맞춤형 피드백을 제공합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">과제 분석</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">문법 교정</span>
                   </div>
@@ -299,21 +299,21 @@ const Landing = () => {
             </div>
 
             {/* AI 번역 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Brain className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Brain className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 번역</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 번역</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 자료와 콘텐츠를 다국어로 실시간 번역하여 글로벌 학습을 지원합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">실시간 번역</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">다국어 지원</span>
                   </div>
@@ -322,21 +322,21 @@ const Landing = () => {
             </div>
 
             {/* AI 학습 분석 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <BarChart3 className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <BarChart3 className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 분석</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 분석</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 패턴을 분석하여 취약점을 파악하고 맞춤형 학습 경로를 제안합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">패턴 분석</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 경로</span>
                   </div>
@@ -345,21 +345,21 @@ const Landing = () => {
             </div>
 
             {/* AI 리포트 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <TrendingUp className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <TrendingUp className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 리포트 생성</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 리포트 생성</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 데이터를 기반으로 상세한 분석 리포트를 자동으로 생성합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">자동 생성</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">상세 분석</span>
                   </div>
@@ -370,24 +370,24 @@ const Landing = () => {
             {/* AI 학습 경로 추천 */}
             <div 
               onClick={() => setLearningPathOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Route className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Route className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors flex items-center gap-2">
                     AI 학습 경로 추천
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     수준과 목표를 분석하여 최적의 학습 순서와 코스를 추천합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 추천</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">단계별 학습</span>
                   </div>
@@ -398,22 +398,22 @@ const Landing = () => {
             {/* AI 퀴즈 생성 */}
             <div 
               onClick={() => setQuizOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <FileQuestion className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FileQuestion className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 퀴즈 생성</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 퀴즈 생성</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     강의 내용을 분석하여 맞춤형 퀴즈와 연습문제를 자동 생성합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">자동 생성</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">다양한 난이도</span>
                   </div>
@@ -424,22 +424,22 @@ const Landing = () => {
             {/* AI 요약 */}
             <div 
               onClick={() => setSummaryOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <FileText className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FileText className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 요약</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 요약</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     긴 강의나 문서를 핵심 내용만 간추려 빠르게 이해할 수 있습니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">핵심 요약</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">시간 절약</span>
                   </div>
@@ -450,22 +450,22 @@ const Landing = () => {
             {/* AI 진도 예측 */}
             <div 
               onClick={() => setProgressOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <TrendingUp className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <TrendingUp className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 진도 예측</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 진도 예측</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 패턴을 분석하여 수료 시점을 예측하고 목표 달성을 돕습니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">패턴 분석</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">목표 관리</span>
                   </div>
@@ -476,22 +476,22 @@ const Landing = () => {
             {/* AI 스터디 메이트 매칭 */}
             <div 
               onClick={() => setStudyMatchOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
+              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Users className="h-6 w-6 text-primary" />
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 스터디 메이트 매칭</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 스터디 메이트 매칭</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 수준과 관심사가 비슷한 학습 동료를 AI가 매칭해줍니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">스마트 매칭</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">협업 학습</span>
                   </div>
@@ -500,17 +500,17 @@ const Landing = () => {
             </div>
 
             {/* AI 챗봇 */}
-            <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <Bot className="h-6 w-6 text-primary" />
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-start gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Bot className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 챗봇</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 챗봇</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     학습 관련 모든 질문에 24시간 답변하고 맞춤형 도움을 제공합니다
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">24/7 지원</span>
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 답변</span>
                   </div>
@@ -659,13 +659,13 @@ const Landing = () => {
 
 const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
   return (
-    <div className="group p-8 rounded-2xl card-premium border border-border shadow-premium hover:border-primary/50 hover:shadow-glow transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01] bg-gradient-to-br from-background to-background/80">
-      <div className="relative mb-4">
-        <div className="text-primary group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">{icon}</div>
+    <div className="group p-6 rounded-xl card-premium border border-border shadow-premium hover:border-primary/50 hover:shadow-glow transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01] bg-gradient-to-br from-background to-background/80">
+      <div className="relative mb-3">
+        <div className="text-primary group-hover:scale-110 transition-transform duration-300 drop-shadow-lg [&>svg]:h-8 [&>svg]:w-8">{icon}</div>
         <div className="absolute inset-0 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
-      <h3 className="text-xl font-display font-semibold mb-3 text-card-foreground group-hover:text-primary transition-colors">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{description}</p>
+      <h3 className="text-lg font-display font-semibold mb-2 text-card-foreground group-hover:text-primary transition-colors">{title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </div>
   );
 };
