@@ -342,12 +342,12 @@ const TeacherDropoutManagement = () => {
             <CardTitle>필터</CardTitle>
           </CardHeader>
           <CardContent>
-            <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+            <Select value={selectedCourse || "all"} onValueChange={(value) => setSelectedCourse(value === "all" ? "" : value)}>
               <SelectTrigger className="w-[300px]">
                 <SelectValue placeholder="전체 강의" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">전체 강의</SelectItem>
+                <SelectItem value="all">전체 강의</SelectItem>
                 {courses.map((course: any) => (
                   <SelectItem key={course.id} value={course.id}>
                     {course.title}
