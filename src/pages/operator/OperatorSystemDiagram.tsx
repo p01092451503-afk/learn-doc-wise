@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
-import { Network, Users, Database, Workflow, Boxes, Layers, Table } from "lucide-react";
+import { Network, Users, Database, Workflow, Boxes, Layers, Table, GitBranch } from "lucide-react";
 
 const OperatorSystemDiagram = () => {
   return (
@@ -16,7 +16,7 @@ const OperatorSystemDiagram = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">
               <Network className="h-4 w-4 mr-2" />
               전체 구조
@@ -32,6 +32,10 @@ const OperatorSystemDiagram = () => {
             <TabsTrigger value="workflow">
               <Workflow className="h-4 w-4 mr-2" />
               워크플로우
+            </TabsTrigger>
+            <TabsTrigger value="usecase">
+              <GitBranch className="h-4 w-4 mr-2" />
+              Use Case
             </TabsTrigger>
             <TabsTrigger value="tech">
               <Boxes className="h-4 w-4 mr-2" />
@@ -1558,6 +1562,405 @@ const OperatorSystemDiagram = () => {
                           <div className="flex"><span className="w-32 text-muted-foreground">recorded_at:</span><span>TIMESTAMP</span></div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Use Case 다이어그램 */}
+          <TabsContent value="usecase">
+            <div className="space-y-6">
+              {/* 학생 Use Cases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>학생 Use Case</CardTitle>
+                  <CardDescription>
+                    학생이 시스템과 상호작용하는 주요 기능
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">인증 및 등록</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 회원가입/로그인</li>
+                        <li>• 프로필 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">강좌 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 강좌 탐색</li>
+                        <li>• 강좌 등록</li>
+                        <li>• 강좌 구매</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">학습 활동</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 동영상 강의 수강</li>
+                        <li>• 학습 자료 다운로드</li>
+                        <li>• 학습 진도 추적</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">과제 및 평가</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 과제 제출</li>
+                        <li>• 퀴즈/시험 응시</li>
+                        <li>• 성적 조회</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">AI 기능</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• AI 튜터 질문</li>
+                        <li>• AI 학습 경로 추천</li>
+                        <li>• AI 요약/번역</li>
+                        <li>• AI 퀴즈 생성</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">게임화</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 배지/포인트 획득</li>
+                        <li>• 리더보드 경쟁</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">커뮤니티</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 토론 참여</li>
+                        <li>• 질문/답변</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-blue-400 mb-2">HRD 기능</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련일지 작성</li>
+                        <li>• 상담 신청</li>
+                        <li>• 만족도 조사 응답</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 강사 Use Cases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>강사 Use Case</CardTitle>
+                  <CardDescription>
+                    강사가 시스템과 상호작용하는 주요 기능
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">강좌 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 강좌 생성</li>
+                        <li>• 강의 콘텐츠 업로드</li>
+                        <li>• 강의 자료 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">과제 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 과제 출제</li>
+                        <li>• 과제 채점</li>
+                        <li>• AI 자동 채점</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">평가 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 퀴즈 생성</li>
+                        <li>• 성적 입력</li>
+                        <li>• 피드백 제공</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">출석 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 출석 체크</li>
+                        <li>• 출석 현황 확인</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">학습 모니터링</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 학생 진도 모니터링</li>
+                        <li>• 학습 분석 확인</li>
+                        <li>• AI 리포트 생성</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">HRD 기능</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련일지 작성</li>
+                        <li>• 상담 수행</li>
+                        <li>• 중도탈락 방지</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-green-400 mb-2">매출 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 매출 확인</li>
+                        <li>• 정산 신청</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 관리자 Use Cases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>관리자 Use Case</CardTitle>
+                  <CardDescription>
+                    관리자가 시스템과 상호작용하는 주요 기능
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">사용자 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 사용자 관리</li>
+                        <li>• 사용자 생성</li>
+                        <li>• 권한 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">강좌 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 강좌 승인</li>
+                        <li>• 강좌 관리</li>
+                        <li>• 콘텐츠 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">학습 모니터링</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 학습 모니터링</li>
+                        <li>• 학습 분석</li>
+                        <li>• AI 리포트 생성</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">출석/성적 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 출석 관리</li>
+                        <li>• 성적 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">HRD 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련일지 관리</li>
+                        <li>• 상담 관리</li>
+                        <li>• 중도탈락 관리</li>
+                        <li>• 훈련수당 관리</li>
+                        <li>• 수료 처리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">매출 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 매출 분석</li>
+                        <li>• 정산 처리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-orange-400 mb-2">시스템 설정</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 시스템 설정</li>
+                        <li>• 만족도 조사 분석</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 운영자 Use Cases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>운영자 Use Case</CardTitle>
+                  <CardDescription>
+                    운영자가 시스템과 상호작용하는 주요 기능
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">테넌트 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 테넌트 관리</li>
+                        <li>• 테넌트 생성</li>
+                        <li>• 테넌트 설정</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">시스템 모니터링</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 시스템 모니터링</li>
+                        <li>• 서버 상태 확인</li>
+                        <li>• 성능 분석</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">사용량 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 사용량 분석</li>
+                        <li>• 사용량 제한 설정</li>
+                        <li>• 스토리지 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">AI 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• AI 로그 확인</li>
+                        <li>• AI 사용량 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">매출 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 매출 분석</li>
+                        <li>• 전체 매출 확인</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">시스템 정보</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 시스템 다이어그램</li>
+                        <li>• 기술 스택 정보</li>
+                        <li>• 기능 목록</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-purple-400 mb-2">보안 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 백업/복구</li>
+                        <li>• 보안 설정</li>
+                        <li>• 접근 로그</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* HRD 담당자 Use Cases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>HRD 담당자 Use Case</CardTitle>
+                  <CardDescription>
+                    HRD 담당자가 시스템과 상호작용하는 주요 기능
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">과정 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 국비과정 관리</li>
+                        <li>• 훈련과정 등록</li>
+                        <li>• 훈련생 관리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">출석 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 출석 현황 확인</li>
+                        <li>• 출석률 분석</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">훈련일지</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련일지 검토</li>
+                        <li>• 훈련일지 승인</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">상담 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 상담일지 검토</li>
+                        <li>• 상담 현황 분석</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">중도탈락 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 중도탈락 관리</li>
+                        <li>• 중도탈락 처리</li>
+                        <li>• AI 예측 분석</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">훈련수당</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련수당 산정</li>
+                        <li>• 훈련수당 지급</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">수료 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 수료 요건 확인</li>
+                        <li>• 수료 처리</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">보고 및 규정</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• HRD 리포트 생성</li>
+                        <li>• 정부 보고서 제출</li>
+                        <li>• 정부 규정 준수</li>
+                      </ul>
+                    </div>
+                    
+                    <div className="p-3 bg-pink-500/10 border border-pink-500/30 rounded-lg">
+                      <h4 className="font-semibold text-sm text-pink-400 mb-2">품질 관리</h4>
+                      <ul className="text-xs space-y-1 text-muted-foreground">
+                        <li>• 훈련품질 모니터링</li>
+                        <li>• 만족도 조사 분석</li>
+                      </ul>
                     </div>
                   </div>
                 </CardContent>
