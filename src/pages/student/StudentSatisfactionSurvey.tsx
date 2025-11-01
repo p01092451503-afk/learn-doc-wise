@@ -127,37 +127,37 @@ const StudentSatisfactionSurvey = () => {
               const isExpanded = selectedSurvey === survey.id;
 
               return (
-                <Card key={survey.id}>
+                <Card key={survey.id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
                         <CardTitle>{survey.title}</CardTitle>
-                        <CardDescription>
-                          {survey.courses?.title}
-                        </CardDescription>
-                      </div>
-                      <Badge variant={completed ? "secondary" : "default"}>
-                        {completed ? (
-                          <span className="flex items-center gap-1">
-                            <CheckCircle2 className="h-3 w-3" />
-                            완료
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            대기중
-                          </span>
-                        )}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {survey.description && (
-                      <p className="text-sm text-muted-foreground">{survey.description}</p>
+                    <CardDescription>
+                      {survey.courses?.title}
+                    </CardDescription>
+                  </div>
+                  <Badge variant={completed ? "secondary" : "default"} className="flex-shrink-0">
+                    {completed ? (
+                      <span className="flex items-center gap-1.5">
+                        <CheckCircle2 className="h-3 w-3" />
+                        완료
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="h-3 w-3" />
+                        대기중
+                      </span>
                     )}
-                    <div className="text-sm text-muted-foreground">
-                      조사 기간: {new Date(survey.start_date).toLocaleDateString()} ~ {new Date(survey.end_date).toLocaleDateString()}
-                    </div>
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {survey.description && (
+                  <p className="text-sm text-muted-foreground">{survey.description}</p>
+                )}
+                <div className="text-sm text-muted-foreground px-3 py-2 bg-muted/20 rounded-lg">
+                  📅 조사 기간: {new Date(survey.start_date).toLocaleDateString('ko-KR')} ~ {new Date(survey.end_date).toLocaleDateString('ko-KR')}
+                </div>
 
                     {!completed && !isExpanded && (
                       <Button onClick={() => setSelectedSurvey(survey.id)}>
@@ -166,19 +166,19 @@ const StudentSatisfactionSurvey = () => {
                     )}
 
                     {!completed && isExpanded && (
-                      <form onSubmit={(e) => handleSubmit(e, survey)} className="space-y-6">
+                      <form onSubmit={(e) => handleSubmit(e, survey)} className="space-y-6 pt-4 border-t">
                         {survey.questions?.map((question: any, index: number) => (
-                          <div key={index} className="space-y-3">
-                            <Label className="text-base">
+                          <div key={index} className="space-y-3 p-4 bg-muted/30 rounded-lg">
+                            <Label className="text-base font-semibold">
                               {index + 1}. {question.question}
                             </Label>
                             {question.type === "rating" ? (
-                              <RadioGroup name={`q${index}`} required>
-                                {[1, 2, 3, 4, 5].map((value) => (
-                                  <div key={value} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={value.toString()} id={`q${index}-${value}`} />
-                                    <Label htmlFor={`q${index}-${value}`} className="font-normal">
-                                      {value}점 {value === 1 ? "(매우 불만족)" : value === 5 ? "(매우 만족)" : ""}
+                              <RadioGroup name={`q${index}`} required className="space-y-2">
+                                {[1, 2, 3, 4].map((value) => (
+                                  <div key={value} className="flex items-center space-x-3 p-2 rounded-md hover:bg-background transition-colors">
+                                    <RadioGroupItem value={value.toString()} id={`q${index}-${value}`} className="h-5 w-5" />
+                                    <Label htmlFor={`q${index}-${value}`} className="font-normal cursor-pointer flex-1">
+                                      {value}점 {value === 1 ? "(매우 불만족)" : value === 2 ? "" : value === 3 ? "" : value === 4 ? "(매우 만족)" : ""}
                                     </Label>
                                   </div>
                                 ))}
@@ -189,6 +189,7 @@ const StudentSatisfactionSurvey = () => {
                                 placeholder="답변을 입력하세요"
                                 rows={4}
                                 required
+                                className="resize-none"
                               />
                             )}
                           </div>

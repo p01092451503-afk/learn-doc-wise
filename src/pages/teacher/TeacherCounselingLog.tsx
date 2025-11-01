@@ -356,7 +356,7 @@ const TeacherCounselingLog = () => {
                     </div>
                   )}
                   {log.follow_up_needed && (
-                    <div className="flex items-center gap-2 text-sm text-orange-600">
+                    <div className="flex items-center gap-2 text-sm text-orange-600 dark:text-orange-400">
                       <AlertCircle className="h-4 w-4" />
                       후속 조치 필요
                       {log.follow_up_date && ` (${new Date(log.follow_up_date).toLocaleDateString()})`}

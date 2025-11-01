@@ -370,30 +370,30 @@ const TeacherDropoutManagement = () => {
               <div className="text-2xl font-bold">{dropouts.length}명</div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                환불 대기
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">
-                {dropouts.filter((d: any) => d.refund_status === "pending").length}건
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                환불 완료
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                {dropouts.filter((d: any) => d.refund_status === "completed").length}건
-              </div>
-            </CardContent>
-          </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        환불 대기
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                        {dropouts.filter((d: any) => d.refund_status === "pending").length}건
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        환불 완료
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {dropouts.filter((d: any) => d.refund_status === "completed").length}건
+                      </div>
+                    </CardContent>
+                  </Card>
         </div>
 
         {/* 중도탈락 기록 목록 */}

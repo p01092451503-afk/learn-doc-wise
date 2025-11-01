@@ -154,11 +154,11 @@ const AdminGrades = () => {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <span className={`font-semibold ${
-                            item.percentage >= 90 ? "text-green-600" :
-                            item.percentage >= 80 ? "text-blue-600" :
-                            item.percentage >= 70 ? "text-yellow-600" :
-                            item.percentage >= 60 ? "text-orange-600" :
-                            "text-red-600"
+                            item.percentage >= 90 ? "text-green-600 dark:text-green-400" :
+                            item.percentage >= 80 ? "text-blue-600 dark:text-blue-400" :
+                            item.percentage >= 70 ? "text-yellow-600 dark:text-yellow-400" :
+                            item.percentage >= 60 ? "text-orange-600 dark:text-orange-400" :
+                            "text-red-600 dark:text-red-400"
                           }`}>
                             {item.percentage?.toFixed(1)}%
                           </span>

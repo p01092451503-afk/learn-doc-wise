@@ -192,11 +192,11 @@ const TeacherTrainingCompletion = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "예상 수료":
-        return <Badge className="bg-green-500"><CheckCircle2 className="h-3 w-3 mr-1" />예상 수료</Badge>;
+        return <Badge className="bg-green-500 hover:bg-green-600 flex items-center gap-1"><CheckCircle2 className="h-3 w-3" />예상 수료</Badge>;
       case "수료 위험":
-        return <Badge variant="outline" className="border-yellow-500 text-yellow-600"><AlertTriangle className="h-3 w-3 mr-1" />수료 위험</Badge>;
+        return <Badge variant="outline" className="border-yellow-500 text-yellow-600 dark:text-yellow-400 dark:border-yellow-400 flex items-center gap-1"><AlertTriangle className="h-3 w-3" />수료 위험</Badge>;
       case "수료 불가":
-        return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />수료 불가</Badge>;
+        return <Badge variant="destructive" className="flex items-center gap-1"><XCircle className="h-3 w-3" />수료 불가</Badge>;
       default:
         return null;
     }
@@ -271,65 +271,65 @@ const TeacherTrainingCompletion = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-green-600">
-                    예상 수료
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    <div className="text-2xl font-bold text-green-600">
-                      {stats.canComplete}명
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-green-600 dark:text-green-400">
+                      예상 수료
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {stats.canComplete}명
+                      </div>
                     </div>
-                  </div>
-                  <Progress 
-                    value={stats.total > 0 ? (stats.canComplete / stats.total) * 100 : 0} 
-                    className="mt-2 h-2" 
-                  />
-                </CardContent>
-              </Card>
+                    <Progress 
+                      value={stats.total > 0 ? (stats.canComplete / stats.total) * 100 : 0} 
+                      className="mt-2 h-2" 
+                    />
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-yellow-600">
-                    수료 위험
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                    <div className="text-2xl font-bold text-yellow-600">
-                      {stats.atRisk}명
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                      수료 위험
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+                      <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                        {stats.atRisk}명
+                      </div>
                     </div>
-                  </div>
-                  <Progress 
-                    value={stats.total > 0 ? (stats.atRisk / stats.total) * 100 : 0} 
-                    className="mt-2 h-2" 
-                  />
-                </CardContent>
-              </Card>
+                    <Progress 
+                      value={stats.total > 0 ? (stats.atRisk / stats.total) * 100 : 0} 
+                      className="mt-2 h-2" 
+                    />
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-red-600">
-                    수료 불가
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <TrendingDown className="h-4 w-4 text-red-600" />
-                    <div className="text-2xl font-bold text-red-600">
-                      {stats.cannotComplete}명
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-red-600 dark:text-red-400">
+                      수료 불가
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-2">
+                      <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+                      <div className="text-2xl font-bold text-red-600 dark:text-red-400">
+                        {stats.cannotComplete}명
+                      </div>
                     </div>
-                  </div>
-                  <Progress 
-                    value={stats.total > 0 ? (stats.cannotComplete / stats.total) * 100 : 0} 
-                    className="mt-2 h-2" 
-                  />
-                </CardContent>
-              </Card>
+                    <Progress 
+                      value={stats.total > 0 ? (stats.cannotComplete / stats.total) * 100 : 0} 
+                      className="mt-2 h-2" 
+                    />
+                  </CardContent>
+                </Card>
             </div>
 
             {/* 학생 목록 탭 */}
@@ -372,14 +372,14 @@ const TeacherTrainingCompletion = () => {
                                       {student.student_email}
                                     </p>
                                   </div>
-                                  <Award className={`h-6 w-6 ${student.can_complete ? "text-green-500" : "text-muted-foreground"}`} />
+                                  <Award className={`h-6 w-6 ${student.can_complete ? "text-green-500" : "text-muted-foreground/30"}`} />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4 mt-4">
                                   <div>
                                     <div className="flex items-center justify-between mb-1">
                                       <span className="text-sm font-medium">출석률</span>
-                                      <span className={`text-sm font-bold ${student.meets_attendance ? "text-green-600" : "text-red-600"}`}>
+                                      <span className={`text-sm font-bold ${student.meets_attendance ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
                                         {student.attendance_rate}%
                                       </span>
                                     </div>
@@ -395,7 +395,7 @@ const TeacherTrainingCompletion = () => {
                                   <div>
                                     <div className="flex items-center justify-between mb-1">
                                       <span className="text-sm font-medium">평균 성적</span>
-                                      <span className={`text-sm font-bold ${student.meets_grade ? "text-green-600" : "text-red-600"}`}>
+                                      <span className={`text-sm font-bold ${student.meets_grade ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
                                         {student.average_score}점
                                       </span>
                                     </div>

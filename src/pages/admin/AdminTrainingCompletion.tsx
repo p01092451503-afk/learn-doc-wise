@@ -189,29 +189,29 @@ const AdminTrainingCompletion = () => {
                         </TableCell>
                         <TableCell>{item.courses?.title || "-"}</TableCell>
                         <TableCell>
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-medium">{item.attendanceRate.toFixed(1)}%</span>
                               {item.attendanceRate >= requiredAttendance ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                               ) : (
-                                <XCircle className="h-4 w-4 text-red-600" />
+                                <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
                               )}
                             </div>
-                            <Progress value={item.attendanceRate} className="h-1.5" />
+                            <Progress value={item.attendanceRate} className="h-2" />
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="space-y-1">
+                          <div className="space-y-1.5">
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-medium">{item.avgGrade.toFixed(1)}점</span>
                               {item.avgGrade >= requiredGrade ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-600" />
+                                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                               ) : (
-                                <XCircle className="h-4 w-4 text-red-600" />
+                                <XCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
                               )}
                             </div>
-                            <Progress value={item.avgGrade} className="h-1.5" />
+                            <Progress value={item.avgGrade} className="h-2" />
                           </div>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">

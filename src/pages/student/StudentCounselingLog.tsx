@@ -60,19 +60,19 @@ const StudentCounselingLog = () => {
             </Card>
           ) : (
             logs.map((log: any) => (
-              <Card key={log.id}>
+              <Card key={log.id} className="hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle>{log.summary}</CardTitle>
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{log.summary}</CardTitle>
                       <CardDescription>
-                        <span className="flex items-center gap-2 mt-1">
+                        <span className="flex items-center gap-2 mt-1.5">
                           <User className="h-4 w-4" />
                           상담자: {log.profiles?.full_name} • {log.courses?.title}
                         </span>
                       </CardDescription>
                     </div>
-                    <Badge>
+                    <Badge variant="secondary">
                       {counselingTypes[log.counseling_type] || log.counseling_type}
                     </Badge>
                   </div>
@@ -80,24 +80,24 @@ const StudentCounselingLog = () => {
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="h-4 w-4" />
-                    {new Date(log.counseling_date).toLocaleString()}
+                    {new Date(log.counseling_date).toLocaleString('ko-KR')}
                   </div>
                   {log.student_concerns && (
-                    <div>
-                      <p className="text-sm font-semibold mb-1">내 고민:</p>
-                      <p className="text-sm text-muted-foreground">{log.student_concerns}</p>
+                    <div className="p-3 bg-muted/30 rounded-lg">
+                      <p className="text-sm font-semibold mb-1.5">내 고민:</p>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{log.student_concerns}</p>
                     </div>
                   )}
                   {log.counselor_advice && (
-                    <div>
-                      <p className="text-sm font-semibold mb-1">상담 조언:</p>
-                      <p className="text-sm text-muted-foreground">{log.counselor_advice}</p>
+                    <div className="p-3 bg-primary/5 rounded-lg">
+                      <p className="text-sm font-semibold mb-1.5">상담 조언:</p>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{log.counselor_advice}</p>
                     </div>
                   )}
                   {log.follow_up_needed && (
-                    <div className="text-sm text-muted-foreground">
-                      후속 조치 예정
-                      {log.follow_up_date && `: ${new Date(log.follow_up_date).toLocaleDateString()}`}
+                    <div className="text-sm text-muted-foreground px-3 py-2 bg-muted/20 rounded-lg">
+                      📋 후속 조치 예정
+                      {log.follow_up_date && `: ${new Date(log.follow_up_date).toLocaleDateString('ko-KR')}`}
                     </div>
                   )}
                 </CardContent>

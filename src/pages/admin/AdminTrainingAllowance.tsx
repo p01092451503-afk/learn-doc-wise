@@ -115,38 +115,38 @@ const AdminTrainingAllowance = () => {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-6">
+          <Card className="p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-primary/10 rounded-lg">
+              <div className="p-3 bg-primary/10 rounded-lg flex-shrink-0">
                 <DollarSign className="h-6 w-6 text-primary" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">총 지급 예정액</p>
-                <p className="text-2xl font-bold">₩{totalAllowance.toLocaleString()}</p>
+                <p className="text-2xl font-bold truncate">₩{totalAllowance.toLocaleString()}</p>
               </div>
             </div>
           </Card>
-          <Card className="p-6">
+          <Card className="p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-green-500/10 rounded-lg">
-                <DollarSign className="h-6 w-6 text-green-600" />
+              <div className="p-3 bg-green-500/10 rounded-lg flex-shrink-0">
+                <DollarSign className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">지급 대상자</p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold truncate">
                   {filteredData.filter(item => calculateAllowance(item) > 0).length}명
                 </p>
               </div>
             </div>
           </Card>
-          <Card className="p-6">
+          <Card className="p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-orange-500/10 rounded-lg">
-                <DollarSign className="h-6 w-6 text-orange-600" />
+              <div className="p-3 bg-orange-500/10 rounded-lg flex-shrink-0">
+                <DollarSign className="h-6 w-6 text-orange-600 dark:text-orange-400" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">미지급 대상자</p>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold truncate">
                   {filteredData.filter(item => calculateAllowance(item) === 0).length}명
                 </p>
               </div>
@@ -223,9 +223,9 @@ const AdminTrainingAllowance = () => {
                         <TableCell>{item.courses?.title || "-"}</TableCell>
                         <TableCell>
                           <span className={`font-medium ${
-                            item.attendanceRate >= requiredRate ? "text-green-600" :
-                            item.attendanceRate >= requiredRate * 0.9 ? "text-yellow-600" :
-                            "text-red-600"
+                            item.attendanceRate >= requiredRate ? "text-green-600 dark:text-green-400" :
+                            item.attendanceRate >= requiredRate * 0.9 ? "text-yellow-600 dark:text-yellow-400" :
+                            "text-red-600 dark:text-red-400"
                           }`}>
                             {item.attendanceRate.toFixed(1)}%
                           </span>
@@ -234,9 +234,9 @@ const AdminTrainingAllowance = () => {
                           ₩{baseAllowance.toLocaleString()}
                         </TableCell>
                         <TableCell className={`font-bold ${
-                          allowance === baseAllowance ? "text-green-600" :
-                          allowance > 0 ? "text-yellow-600" :
-                          "text-red-600"
+                          allowance === baseAllowance ? "text-green-600 dark:text-green-400" :
+                          allowance > 0 ? "text-yellow-600 dark:text-yellow-400" :
+                          "text-red-600 dark:text-red-400"
                         }`}>
                           ₩{allowance.toLocaleString()}
                         </TableCell>

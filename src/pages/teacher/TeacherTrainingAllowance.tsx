@@ -294,21 +294,21 @@ const TeacherTrainingAllowance = () => {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-green-600">
-                    지급 대상
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    <div className="text-2xl font-bold text-green-600">
-                      {stats.eligibleStudents}명
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-green-600 dark:text-green-400">
+                      지급 대상
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        {stats.eligibleStudents}명
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
               <Card>
                 <CardHeader className="pb-2">
@@ -365,48 +365,48 @@ const TeacherTrainingAllowance = () => {
                     {students.map((student) => (
                       <Card key={student.student_id}>
                         <CardContent className="pt-6">
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <h4 className="font-semibold">{student.student_name}</h4>
-                                {student.is_eligible ? (
-                                  <Badge className="bg-green-500">지급 대상</Badge>
-                                ) : (
-                                  <Badge variant="outline">미지급</Badge>
-                                )}
+                            <div className="flex items-start justify-between">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-semibold">{student.student_name}</h4>
+                                  {student.is_eligible ? (
+                                    <Badge className="bg-green-500 hover:bg-green-600">지급 대상</Badge>
+                                  ) : (
+                                    <Badge variant="outline">미지급</Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {student.student_email}
+                                </p>
                               </div>
-                              <p className="text-sm text-muted-foreground">
-                                {student.student_email}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-2xl font-bold text-primary">
-                                {formatCurrency(student.total_allowance)}
-                              </div>
-                              <p className="text-sm text-muted-foreground mt-1">
-                                {student.total_attendance_days}일 출석
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 pt-4 border-t">
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                              <div>
-                                <p className="text-xs text-muted-foreground mb-1">출석일수</p>
-                                <p className="font-semibold">{student.total_attendance_days}일</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-muted-foreground mb-1">일일 수당</p>
-                                <p className="font-semibold">{formatCurrency(student.daily_allowance)}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-muted-foreground mb-1">지급액</p>
-                                <p className="font-semibold text-primary">
+                              <div className="text-right">
+                                <div className="text-2xl font-bold text-primary">
                                   {formatCurrency(student.total_allowance)}
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {student.total_attendance_days}일 출석
                                 </p>
                               </div>
                             </div>
-                          </div>
+
+                            <div className="mt-4 pt-4 border-t">
+                              <div className="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                  <p className="text-xs text-muted-foreground mb-1">출석일수</p>
+                                  <p className="font-semibold">{student.total_attendance_days}일</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground mb-1">일일 수당</p>
+                                  <p className="font-semibold">{formatCurrency(student.daily_allowance)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground mb-1">지급액</p>
+                                  <p className="font-semibold text-primary">
+                                    {formatCurrency(student.total_allowance)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                         </CardContent>
                       </Card>
                     ))}
