@@ -260,6 +260,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
   return (
     <TooltipProvider>
+      {isDemoMode ? (
+        // Demo mode: just render children without any layout wrapper
+        <>{children}</>
+      ) : (
       <div className="min-h-screen bg-background">
       {/* Top Navigation - Hidden in demo mode */}
       {!isDemoMode && (
@@ -487,6 +491,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         </Button>
       )}
     </div>
+      )}
     </TooltipProvider>
   );
 };
