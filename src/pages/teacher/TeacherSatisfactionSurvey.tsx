@@ -15,7 +15,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const TeacherSatisfactionSurvey = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [selectedCourse, setSelectedCourse] = useState<string>("all");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -49,7 +49,7 @@ const TeacherSatisfactionSurvey = () => {
         `)
         .order("created_at", { ascending: false });
 
-      if (selectedCourse) {
+      if (selectedCourse && selectedCourse !== "all") {
         query = query.eq("course_id", selectedCourse);
       }
 
@@ -224,7 +224,7 @@ const TeacherSatisfactionSurvey = () => {
                   <SelectValue placeholder="전체 강의" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체 강의</SelectItem>
+                  <SelectItem value="all">전체 강의</SelectItem>
                   {courses.map((course: any) => (
                     <SelectItem key={course.id} value={course.id}>
                       {course.title}
