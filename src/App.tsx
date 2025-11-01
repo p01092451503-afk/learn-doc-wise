@@ -50,6 +50,7 @@ import OperatorRevenue from "./pages/operator/OperatorRevenue";
 import OperatorMonitoring from "./pages/operator/OperatorMonitoring";
 import OperatorSettings from "./pages/operator/OperatorSettings";
 import OperatorFeatures from "./pages/operator/OperatorFeatures";
+import OperatorTechStack from "./pages/operator/OperatorTechStack";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
@@ -101,6 +102,7 @@ const App = () => {
           <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
           <Route path="/operator/settings" element={<OperatorSettings />} />
           <Route path="/operator/features" element={<OperatorFeatures />} />
+          <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />

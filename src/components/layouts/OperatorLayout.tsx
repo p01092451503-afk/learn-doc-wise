@@ -16,6 +16,7 @@ import {
   Zap,
   Sparkles,
   Layers,
+  Package,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -57,6 +58,7 @@ const menuItems: MenuItem[] = [
   { icon: DollarSign, label: "매출", path: "/operator/revenue" },
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
   { icon: Layers, label: "기능 목록", path: "/operator/features" },
+  { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
 ];
 

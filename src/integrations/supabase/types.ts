@@ -2005,6 +2005,51 @@ export type Database = {
           },
         ]
       }
+      platform_versions: {
+        Row: {
+          breaking_changes: Json | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          features: Json
+          id: string
+          is_published: boolean
+          release_date: string
+          release_type: string
+          tech_changes: Json | null
+          title: string
+          version: string
+        }
+        Insert: {
+          breaking_changes?: Json | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          features?: Json
+          id?: string
+          is_published?: boolean
+          release_date?: string
+          release_type?: string
+          tech_changes?: Json | null
+          title: string
+          version: string
+        }
+        Update: {
+          breaking_changes?: Json | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          features?: Json
+          id?: string
+          is_published?: boolean
+          release_date?: string
+          release_type?: string
+          tech_changes?: Json | null
+          title?: string
+          version?: string
+        }
+        Relationships: []
+      }
       point_history: {
         Row: {
           action_type: string
@@ -2370,6 +2415,48 @@ export type Database = {
           id?: string
           name?: string
           slug?: string
+        }
+        Relationships: []
+      }
+      tech_stack: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          display_order: number | null
+          documentation_url: string | null
+          id: string
+          is_core: boolean | null
+          name: string
+          purpose: string | null
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          documentation_url?: string | null
+          id?: string
+          is_core?: boolean | null
+          name: string
+          purpose?: string | null
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          documentation_url?: string | null
+          id?: string
+          is_core?: boolean | null
+          name?: string
+          purpose?: string | null
+          updated_at?: string
+          version?: string | null
         }
         Relationships: []
       }
