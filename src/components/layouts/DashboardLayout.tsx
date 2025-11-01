@@ -153,6 +153,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: Route, label: "학습 경로", path: "/student/learning-path", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "/student/satisfaction-survey", enabled: true },
+        { icon: ClipboardList, label: "상담 이력", path: "/student/counseling-log", enabled: true },
         { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: false },
         { icon: BarChart3, label: "학습 통계", path: "/student/analytics", enabled: true },
       ];
@@ -165,6 +167,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: ClipboardList, label: "훈련일지", path: "/teacher/training-log", enabled: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "/teacher/satisfaction-survey", enabled: true },
+        { icon: ClipboardList, label: "상담일지", path: "/teacher/counseling-log", enabled: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
         { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },

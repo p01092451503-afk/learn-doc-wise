@@ -36,6 +36,10 @@ import AdminLearning from "./pages/AdminLearning";
 import AdminAILogs from "./pages/AdminAILogs";
 import AdminTemplates from "./pages/AdminTemplates";
 import TeacherTrainingLog from "./pages/teacher/TeacherTrainingLog";
+import TeacherSatisfactionSurvey from "./pages/teacher/TeacherSatisfactionSurvey";
+import TeacherCounselingLog from "./pages/teacher/TeacherCounselingLog";
+import StudentSatisfactionSurvey from "./pages/student/StudentSatisfactionSurvey";
+import StudentCounselingLog from "./pages/student/StudentCounselingLog";
 import TemplatePreview from "./pages/TemplatePreview";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
@@ -88,6 +92,8 @@ const App = () => {
           <Route path="/student/gamification" element={<StudentGamification />} />
           <Route path="/student/learning-path" element={<StudentLearningPath />} />
           <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
+          <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
+          <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/teacher/courses" element={<TeacherCourses />} />
           <Route path="/teacher/students" element={<TeacherStudents />} />
@@ -96,6 +102,8 @@ const App = () => {
           <Route path="/teacher/assignments" element={<TeacherAssignments />} />
           <Route path="/teacher/attendance" element={<TeacherAttendance />} />
           <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
+          <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
+          <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/operator/tenants" element={<OperatorTenants />} />
