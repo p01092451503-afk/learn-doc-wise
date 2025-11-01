@@ -219,8 +219,8 @@ const Landing = () => {
               <span className="text-sm font-semibold text-primary">AI 파워드</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">
-              <span className="text-gradient">AI가 탑재된</span><br />
-              7가지 핵심 기능
+              <span className="text-gradient">다양하고 강력한</span><br />
+              AI 기능
             </h2>
             <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               최신 AI 기술로 학습 효율을 극대화하고, 강사의 업무 부담을 줄이며,<br />
