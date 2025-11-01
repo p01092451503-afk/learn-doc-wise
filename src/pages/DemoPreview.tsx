@@ -408,10 +408,10 @@ const DemoPreview = () => {
 
         {/* Main Content Area */}
         <main className={cn(
-          "flex-1 transition-all duration-300 pt-[130px]",
+          "flex-1 transition-all duration-300",
           sidebarCollapsed ? "ml-16" : "ml-64"
         )}>
-          <div className="px-4 md:px-6 lg:px-8 pb-4 md:pb-6 lg:pb-8">
+          <div className="p-4 md:p-6 lg:p-8">
             {renderContent()}
           </div>
         </main>
