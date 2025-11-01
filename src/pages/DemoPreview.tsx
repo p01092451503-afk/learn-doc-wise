@@ -298,6 +298,18 @@ const DemoPreview = () => {
               <Bot className="h-3.5 w-3.5" />
               데모 모드
             </Button>
+            <Link 
+              to={
+                activeRole === "student" ? "/student" : 
+                activeRole === "teacher" ? "/teacher" : 
+                "/admin"
+              }
+            >
+              <Button variant="outline" size="sm" className="text-xs hidden sm:inline-flex gap-1.5">
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                일반 모드
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 ml-auto">
