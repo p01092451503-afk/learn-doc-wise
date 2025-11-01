@@ -40,6 +40,9 @@ import TeacherSatisfactionSurvey from "./pages/teacher/TeacherSatisfactionSurvey
 import TeacherCounselingLog from "./pages/teacher/TeacherCounselingLog";
 import TeacherDropoutManagement from "./pages/teacher/TeacherDropoutManagement";
 import TeacherAttendanceDetail from "./pages/teacher/TeacherAttendanceDetail";
+import TeacherTrainingCompletion from "./pages/teacher/TeacherTrainingCompletion";
+import TeacherTrainingAllowance from "./pages/teacher/TeacherTrainingAllowance";
+import TeacherTrainingReport from "./pages/teacher/TeacherTrainingReport";
 import StudentSatisfactionSurvey from "./pages/student/StudentSatisfactionSurvey";
 import StudentCounselingLog from "./pages/student/StudentCounselingLog";
 import TemplatePreview from "./pages/TemplatePreview";
@@ -108,6 +111,9 @@ const App = () => {
           <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
           <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
           <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
+          <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
+          <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
+          <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/operator/tenants" element={<OperatorTenants />} />

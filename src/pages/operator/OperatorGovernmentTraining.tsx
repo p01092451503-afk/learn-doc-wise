@@ -97,18 +97,18 @@ const OperatorGovernmentTraining = () => {
       name: "훈련일지 작성",
       description: "일일 훈련 내용, 교육방법, 과제 등 기록",
       difficulty: "easy",
-      status: "in-progress",
+      status: "done",
       priority: "high",
       category: "필수",
-      estimatedDays: 2,
+      estimatedDays: 0,
       icon: FileText,
       details: [
-        "일일 훈련 내용 요약 작성",
-        "교육 방법 (강의/실습/토론) 기록",
-        "사용한 교재 및 자료 기록",
-        "과제 및 특이사항 기록",
-        "훈련시간 자동 계산",
-        "월별/주별 훈련일지 조회"
+        "✅ 일일 훈련 내용 요약 작성",
+        "✅ 교육 방법 (강의/실습/토론) 기록",
+        "✅ 사용한 교재 및 자료 기록",
+        "✅ 과제 및 특이사항 기록",
+        "✅ 훈련시간 자동 계산",
+        "✅ 월별/주별 훈련일지 조회"
       ]
     },
     {
@@ -116,18 +116,18 @@ const OperatorGovernmentTraining = () => {
       name: "만족도 조사",
       description: "중간/최종 만족도 조사 생성 및 관리",
       difficulty: "easy",
-      status: "in-progress",
+      status: "done",
       priority: "high",
       category: "필수",
-      estimatedDays: 3,
+      estimatedDays: 0,
       icon: MessageSquare,
       details: [
-        "설문 템플릿 생성 (5점 척도, 객관식, 주관식)",
-        "중간/최종 만족도 구분",
-        "훈련생 설문 참여",
-        "설문 결과 통계 및 시각화",
-        "만족도 평균 점수 산출",
-        "답변 엑셀 다운로드"
+        "✅ 설문 템플릿 생성 (5점 척도, 객관식, 주관식)",
+        "✅ 중간/최종 만족도 구분",
+        "✅ 훈련생 설문 참여",
+        "✅ 설문 결과 통계 및 시각화",
+        "✅ 만족도 평균 점수 산출",
+        "✅ 답변 엑셀 다운로드"
       ]
     },
     {
@@ -135,18 +135,18 @@ const OperatorGovernmentTraining = () => {
       name: "상담일지",
       description: "훈련생 상담 내용 기록 및 관리",
       difficulty: "easy",
-      status: "in-progress",
+      status: "done",
       priority: "medium",
       category: "권장",
-      estimatedDays: 2,
+      estimatedDays: 0,
       icon: MessageSquare,
       details: [
-        "상담 유형별 분류 (진로/학습/생활/취업)",
-        "상담 내용 및 조언 기록",
-        "후속 조치 필요 여부 체크",
-        "비공개 상담 설정",
-        "학생별 상담 이력 조회",
-        "상담 통계 대시보드"
+        "✅ 상담 유형별 분류 (진로/학습/생활/취업)",
+        "✅ 상담 내용 및 조언 기록",
+        "✅ 후속 조치 필요 여부 체크",
+        "✅ 비공개 상담 설정",
+        "✅ 학생별 상담 이력 조회",
+        "✅ 상담 통계 대시보드"
       ]
     },
     {
@@ -193,18 +193,18 @@ const OperatorGovernmentTraining = () => {
       name: "수료 요건 자동 체크",
       description: "출석률 80%, 성적 60점 자동 확인",
       difficulty: "medium",
-      status: "planned",
+      status: "done",
       priority: "high",
       category: "필수",
-      estimatedDays: 2,
+      estimatedDays: 0,
       dependencies: ["attendance-detail"],
       icon: Award,
       details: [
-        "출석률 80% 이상 자동 확인",
-        "평균 성적 60점 이상 확인",
-        "수료 미달자 알림",
-        "수료 예상자 목록",
-        "수료 통계 대시보드"
+        "✅ 출석률 80% 이상 자동 확인",
+        "✅ 평균 성적 60점 이상 확인",
+        "✅ 수료 미달자 알림",
+        "✅ 수료 예상자 목록",
+        "✅ 수료 통계 대시보드"
       ]
     },
     {
@@ -212,17 +212,17 @@ const OperatorGovernmentTraining = () => {
       name: "훈련수당 계산",
       description: "출석일 기반 훈련수당 자동 계산",
       difficulty: "medium",
-      status: "planned",
+      status: "done",
       priority: "medium",
       category: "권장",
-      estimatedDays: 3,
+      estimatedDays: 0,
       icon: DollarSign,
       details: [
-        "출석일 기반 훈련수당 산출",
-        "지급 대상자 필터링",
-        "월별 훈련수당 집계",
-        "훈련수당 지급 내역 관리",
-        "엑셀 다운로드"
+        "✅ 출석일 기반 훈련수당 산출",
+        "✅ 지급 대상자 필터링",
+        "✅ 월별 훈련수당 집계",
+        "✅ 훈련수당 지급 내역 관리",
+        "✅ 엑셀 다운로드"
       ]
     },
     {
@@ -230,18 +230,18 @@ const OperatorGovernmentTraining = () => {
       name: "훈련 진행 리포트",
       description: "과정별 진행 현황 종합 리포트 생성",
       difficulty: "medium",
-      status: "planned",
+      status: "done",
       priority: "medium",
       category: "권장",
-      estimatedDays: 4,
+      estimatedDays: 0,
       icon: BarChart3,
       details: [
-        "과정별 훈련생 현황",
-        "출석률 통계",
-        "성적 분포",
-        "만족도 조사 결과",
-        "중도탈락 현황",
-        "PDF 리포트 생성"
+        "✅ 과정별 훈련생 현황",
+        "✅ 출석률 통계",
+        "✅ 성적 분포",
+        "✅ 만족도 조사 결과",
+        "✅ 중도탈락 현황",
+        "✅ PDF 리포트 생성"
       ]
     },
 
