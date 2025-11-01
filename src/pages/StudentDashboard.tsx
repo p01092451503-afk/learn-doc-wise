@@ -163,9 +163,8 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
         </div>
 
-        {/* AI Features Section - Demo Mode Only */}
-        {isDemo && (
-          <Card className="border-primary/20 bg-primary/5">
+        {/* AI Features Section */}
+        <Card className="border-primary/20 bg-primary/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
@@ -285,7 +284,6 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </div>
             </CardContent>
           </Card>
-        )}
       </div>
 
       {/* AI Dialogs */}
