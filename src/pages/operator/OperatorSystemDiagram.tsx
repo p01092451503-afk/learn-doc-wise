@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
-import { Network, Users, Database, Workflow, Boxes, Layers, Table, GitBranch } from "lucide-react";
+import { Network, Users, Database, Workflow, Boxes, Layers, Table, GitBranch, Box } from "lucide-react";
 
 const OperatorSystemDiagram = () => {
   return (
@@ -16,7 +16,7 @@ const OperatorSystemDiagram = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="overview">
               <Network className="h-4 w-4 mr-2" />
               전체 구조
@@ -36,6 +36,10 @@ const OperatorSystemDiagram = () => {
             <TabsTrigger value="usecase">
               <GitBranch className="h-4 w-4 mr-2" />
               Use Case
+            </TabsTrigger>
+            <TabsTrigger value="object">
+              <Box className="h-4 w-4 mr-2" />
+              객체
             </TabsTrigger>
             <TabsTrigger value="tech">
               <Boxes className="h-4 w-4 mr-2" />
@@ -1961,6 +1965,528 @@ const OperatorSystemDiagram = () => {
                         <li>• 훈련품질 모니터링</li>
                         <li>• 만족도 조사 분석</li>
                       </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* 객체 다이어그램 */}
+          <TabsContent value="object">
+            <div className="space-y-6">
+              {/* 주요 도메인 객체 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>주요 도메인 객체</CardTitle>
+                  <CardDescription>
+                    시스템의 핵심 비즈니스 객체와 속성
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* User 객체 */}
+                    <div className="p-4 bg-blue-500/10 border-2 border-blue-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-blue-400 mb-3">User (사용자)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">email:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">full_name:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">role:</span>
+                          <span className="font-mono">Role</span>
+                        </div>
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">avatar_url:</span>
+                          <span className="font-mono">String?</span>
+                        </div>
+                        <div className="flex justify-between border-b border-blue-500/20 pb-1">
+                          <span className="text-muted-foreground">bio:</span>
+                          <span className="font-mono">String?</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-blue-500/20 text-xs text-muted-foreground">
+                        관계: enrollments[], submissions[], badges[]
+                      </div>
+                    </div>
+
+                    {/* Course 객체 */}
+                    <div className="p-4 bg-green-500/10 border-2 border-green-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-green-400 mb-3">Course (강좌)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">title:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">slug:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">instructor_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">price:</span>
+                          <span className="font-mono">Decimal</span>
+                        </div>
+                        <div className="flex justify-between border-b border-green-500/20 pb-1">
+                          <span className="text-muted-foreground">status:</span>
+                          <span className="font-mono">Status</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-green-500/20 text-xs text-muted-foreground">
+                        관계: instructor, contents[], enrollments[]
+                      </div>
+                    </div>
+
+                    {/* Enrollment 객체 */}
+                    <div className="p-4 bg-purple-500/10 border-2 border-purple-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-purple-400 mb-3">Enrollment (수강신청)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">user_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">course_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">progress:</span>
+                          <span className="font-mono">Decimal</span>
+                        </div>
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">enrolled_at:</span>
+                          <span className="font-mono">DateTime</span>
+                        </div>
+                        <div className="flex justify-between border-b border-purple-500/20 pb-1">
+                          <span className="text-muted-foreground">completed_at:</span>
+                          <span className="font-mono">DateTime?</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-purple-500/20 text-xs text-muted-foreground">
+                        관계: user, course, progress[]
+                      </div>
+                    </div>
+
+                    {/* Assignment 객체 */}
+                    <div className="p-4 bg-orange-500/10 border-2 border-orange-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-orange-400 mb-3">Assignment (과제)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">course_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">title:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">max_score:</span>
+                          <span className="font-mono">Integer</span>
+                        </div>
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">due_date:</span>
+                          <span className="font-mono">DateTime?</span>
+                        </div>
+                        <div className="flex justify-between border-b border-orange-500/20 pb-1">
+                          <span className="text-muted-foreground">status:</span>
+                          <span className="font-mono">Status</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-orange-500/20 text-xs text-muted-foreground">
+                        관계: course, submissions[]
+                      </div>
+                    </div>
+
+                    {/* Submission 객체 */}
+                    <div className="p-4 bg-pink-500/10 border-2 border-pink-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-pink-400 mb-3">Submission (제출물)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">assignment_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">student_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">score:</span>
+                          <span className="font-mono">Integer?</span>
+                        </div>
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">submitted_at:</span>
+                          <span className="font-mono">DateTime</span>
+                        </div>
+                        <div className="flex justify-between border-b border-pink-500/20 pb-1">
+                          <span className="text-muted-foreground">status:</span>
+                          <span className="font-mono">Status</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-pink-500/20 text-xs text-muted-foreground">
+                        관계: assignment, student
+                      </div>
+                    </div>
+
+                    {/* Attendance 객체 */}
+                    <div className="p-4 bg-cyan-500/10 border-2 border-cyan-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-cyan-400 mb-3">Attendance (출석)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">user_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">course_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">attendance_date:</span>
+                          <span className="font-mono">Date</span>
+                        </div>
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">status:</span>
+                          <span className="font-mono">Status</span>
+                        </div>
+                        <div className="flex justify-between border-b border-cyan-500/20 pb-1">
+                          <span className="text-muted-foreground">check_in_time:</span>
+                          <span className="font-mono">DateTime?</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-cyan-500/20 text-xs text-muted-foreground">
+                        관계: user, course, details
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* HRD 관련 객체 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>HRD 관련 객체</CardTitle>
+                  <CardDescription>
+                    국비교육 및 HRD 관리를 위한 객체
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* TrainingLog 객체 */}
+                    <div className="p-4 bg-amber-500/10 border-2 border-amber-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-amber-400 mb-3">TrainingLog (훈련일지)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">course_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">instructor_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">log_date:</span>
+                          <span className="font-mono">Date</span>
+                        </div>
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">content:</span>
+                          <span className="font-mono">Text</span>
+                        </div>
+                        <div className="flex justify-between border-b border-amber-500/20 pb-1">
+                          <span className="text-muted-foreground">training_hours:</span>
+                          <span className="font-mono">Decimal</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-amber-500/20 text-xs text-muted-foreground">
+                        관계: course, instructor
+                      </div>
+                    </div>
+
+                    {/* CounselingLog 객체 */}
+                    <div className="p-4 bg-teal-500/10 border-2 border-teal-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-teal-400 mb-3">CounselingLog (상담일지)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">student_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">counselor_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">counseling_type:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">summary:</span>
+                          <span className="font-mono">Text</span>
+                        </div>
+                        <div className="flex justify-between border-b border-teal-500/20 pb-1">
+                          <span className="text-muted-foreground">follow_up_needed:</span>
+                          <span className="font-mono">Boolean</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-teal-500/20 text-xs text-muted-foreground">
+                        관계: student, counselor
+                      </div>
+                    </div>
+
+                    {/* DropoutRecord 객체 */}
+                    <div className="p-4 bg-red-500/10 border-2 border-red-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-red-400 mb-3">DropoutRecord (중도탈락)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">enrollment_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">dropout_date:</span>
+                          <span className="font-mono">Date</span>
+                        </div>
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">reason_category:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">refund_status:</span>
+                          <span className="font-mono">Status</span>
+                        </div>
+                        <div className="flex justify-between border-b border-red-500/20 pb-1">
+                          <span className="text-muted-foreground">processed_by:</span>
+                          <span className="font-mono">UUID?</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-red-500/20 text-xs text-muted-foreground">
+                        관계: enrollment, processor
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 게임화 및 분석 객체 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>게임화 및 분석 객체</CardTitle>
+                  <CardDescription>
+                    학습 동기부여 및 분석을 위한 객체
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Badge 객체 */}
+                    <div className="p-4 bg-yellow-500/10 border-2 border-yellow-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-yellow-400 mb-3">Badge (배지)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">name:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">badge_type:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">icon:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">requirement_type:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-yellow-500/20 pb-1">
+                          <span className="text-muted-foreground">requirement_value:</span>
+                          <span className="font-mono">Integer</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-yellow-500/20 text-xs text-muted-foreground">
+                        관계: userBadges[]
+                      </div>
+                    </div>
+
+                    {/* LearningAnalytics 객체 */}
+                    <div className="p-4 bg-indigo-500/10 border-2 border-indigo-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-indigo-400 mb-3">LearningAnalytics (학습분석)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">user_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">course_id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">total_time_minutes:</span>
+                          <span className="font-mono">Integer</span>
+                        </div>
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">engagement_score:</span>
+                          <span className="font-mono">Decimal</span>
+                        </div>
+                        <div className="flex justify-between border-b border-indigo-500/20 pb-1">
+                          <span className="text-muted-foreground">at_risk_score:</span>
+                          <span className="font-mono">Decimal</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-indigo-500/20 text-xs text-muted-foreground">
+                        관계: user, course
+                      </div>
+                    </div>
+
+                    {/* LearningPath 객체 */}
+                    <div className="p-4 bg-violet-500/10 border-2 border-violet-500/30 rounded-lg">
+                      <h4 className="font-bold text-sm text-violet-400 mb-3">LearningPath (학습경로)</h4>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">id:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">title:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">difficulty_level:</span>
+                          <span className="font-mono">String</span>
+                        </div>
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">estimated_hours:</span>
+                          <span className="font-mono">Integer</span>
+                        </div>
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">is_active:</span>
+                          <span className="font-mono">Boolean</span>
+                        </div>
+                        <div className="flex justify-between border-b border-violet-500/20 pb-1">
+                          <span className="text-muted-foreground">created_by:</span>
+                          <span className="font-mono">UUID</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 pt-3 border-t border-violet-500/20 text-xs text-muted-foreground">
+                        관계: steps[], userPaths[]
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 객체 관계도 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>객체 관계도</CardTitle>
+                  <CardDescription>
+                    주요 객체 간의 관계 및 다중성
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-muted/30 rounded-lg">
+                      <h4 className="font-semibold mb-3 text-sm">1:N 관계</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (1) ← → (N) <span className="text-purple-400">Enrollment</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-green-400">Course</span> (1) ← → (N) <span className="text-purple-400">Enrollment</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-green-400">Course</span> (1) ← → (N) <span className="text-orange-400">Assignment</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-orange-400">Assignment</span> (1) ← → (N) <span className="text-pink-400">Submission</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (1) ← → (N) <span className="text-pink-400">Submission</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (1) ← → (N) <span className="text-cyan-400">Attendance</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-green-400">Course</span> (1) ← → (N) <span className="text-cyan-400">Attendance</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (1) ← → (N) <span className="text-teal-400">CounselingLog</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-muted/30 rounded-lg">
+                      <h4 className="font-semibold mb-3 text-sm">1:1 관계</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-purple-400">Enrollment</span> (1) ← → (1) <span className="text-red-400">DropoutRecord</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-purple-400">Enrollment</span> (1) ← → (1) <span className="text-muted-foreground">Certificate</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-muted/30 rounded-lg">
+                      <h4 className="font-semibold mb-3 text-sm">N:M 관계 (중간 테이블)</h4>
+                      <div className="grid grid-cols-1 gap-2 text-xs">
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (N) ← → <span className="text-muted-foreground">[UserBadge]</span> ← → (M) <span className="text-yellow-400">Badge</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-green-400">Course</span> (N) ← → <span className="text-muted-foreground">[CourseTag]</span> ← → (M) <span className="text-muted-foreground">Tag</span>
+                        </div>
+                        <div className="p-2 bg-background rounded border">
+                          <span className="text-blue-400">User</span> (N) ← → <span className="text-muted-foreground">[UserLearningPath]</span> ← → (M) <span className="text-violet-400">LearningPath</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
