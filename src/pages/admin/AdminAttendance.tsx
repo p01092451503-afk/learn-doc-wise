@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import atomLogo from "@/assets/atom-logo.png";
 
 const AdminAttendance = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,7 +81,10 @@ const AdminAttendance = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">출석 관리</h1>
-            <p className="text-muted-foreground mt-1">전체 강의의 출석 현황을 관리합니다</p>
+            <p className="text-muted-foreground mt-1 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+              전체 강의의 출석 현황을 관리합니다
+            </p>
           </div>
           <Button variant="outline" className="gap-2">
             <Download className="h-4 w-4" />

@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import atomLogo from "@/assets/atom-logo.png";
 
 const AdminGrades = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,7 +80,10 @@ const AdminGrades = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">성적 관리</h1>
-            <p className="text-muted-foreground mt-1">전체 학생의 성적을 확인합니다</p>
+            <p className="text-muted-foreground mt-1 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+              전체 학생의 성적을 확인합니다
+            </p>
           </div>
           <Button variant="outline" className="gap-2">
             <Download className="h-4 w-4" />

@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import atomLogo from "@/assets/atom-logo.png";
 
 const AdminTrainingCompletion = () => {
   const [searchTerm, setSearchTerm] = useState("");

@@ -12,6 +12,7 @@ import { Clock, AlertCircle, FileUp, CheckCircle, Calendar } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherAttendanceDetail = () => {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
@@ -153,7 +154,8 @@ const TeacherAttendanceDetail = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">출결 상세 관리</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 flex items-center gap-2">
+            <img src={atomLogo} alt="atom" className="h-5 w-5" />
             지각/조퇴 시간, 결석 사유를 상세히 관리하세요
           </p>
         </div>

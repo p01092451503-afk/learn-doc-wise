@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import atomLogo from "@/assets/atom-logo.png";
 
 const StudentCounselingLog = () => {
   // 내 상담 이력 조회 (비공개가 아닌 것만)
@@ -39,7 +40,8 @@ const StudentCounselingLog = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">상담 이력</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 flex items-center gap-2">
+            <img src={atomLogo} alt="atom" className="h-5 w-5" />
             내가 받은 상담 내용을 확인하세요
           </p>
         </div>

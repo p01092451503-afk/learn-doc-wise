@@ -10,6 +10,7 @@ import { CheckCircle2, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import atomLogo from "@/assets/atom-logo.png";
 
 const StudentSatisfactionSurvey = () => {
   const { toast } = useToast();
@@ -102,7 +103,8 @@ const StudentSatisfactionSurvey = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">만족도 조사</h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 flex items-center gap-2">
+            <img src={atomLogo} alt="atom" className="h-5 w-5" />
             진행 중인 만족도 조사에 참여하세요
           </p>
         </div>

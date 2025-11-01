@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -258,7 +259,8 @@ const TeacherTrainingReport = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">훈련 진행 리포트</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
               과정별 진행 현황을 종합적으로 확인하고 리포트를 생성합니다
             </p>
           </div>

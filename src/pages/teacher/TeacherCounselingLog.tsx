@@ -13,6 +13,7 @@ import { Plus, Calendar, User, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherCounselingLog = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -142,7 +143,8 @@ const TeacherCounselingLog = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">상담일지</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
               훈련생 상담 내용을 기록하고 관리하세요
             </p>
           </div>

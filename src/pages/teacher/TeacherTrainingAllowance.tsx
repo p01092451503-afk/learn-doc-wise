@@ -17,6 +17,7 @@ import {
   Users,
   TrendingUp
 } from "lucide-react";
+import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -190,7 +191,8 @@ const TeacherTrainingAllowance = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">훈련수당 관리</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
               출석일 기반으로 학생들의 훈련수당을 자동 계산합니다
             </p>
           </div>

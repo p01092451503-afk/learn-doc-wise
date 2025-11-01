@@ -22,6 +22,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { CalendarIcon, Plus, FileText, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -233,7 +234,8 @@ const TeacherTrainingLog = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">훈련일지 관리</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
               일일 훈련 내용과 진행 사항을 기록하고 관리합니다
             </p>
           </div>

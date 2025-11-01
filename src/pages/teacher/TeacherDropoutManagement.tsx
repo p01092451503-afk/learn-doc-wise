@@ -12,6 +12,7 @@ import { Plus, AlertTriangle, DollarSign, FileText, CheckCircle } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherDropoutManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -204,7 +205,8 @@ const TeacherDropoutManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">중도탈락 관리</h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground mt-2 flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-5 w-5" />
               중도탈락자를 관리하고 환불을 처리하세요
             </p>
           </div>
