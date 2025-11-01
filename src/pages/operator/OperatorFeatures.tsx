@@ -223,6 +223,23 @@ const OperatorFeatures = () => {
         { name: "투표 기능", description: "설문 및 투표 생성" },
       ],
     },
+    {
+      menuName: "AI 학습 도우미",
+      menuPath: "/student/ai-tools",
+      icon: Brain,
+      description: "AI 기반 학습 지원 도구",
+      features: [
+        { name: "AI 챗봇", description: "24시간 학습 질문 답변 AI 어시스턴트" },
+        { name: "AI 튜터", description: "개인 맞춤형 학습 가이드 및 설명" },
+        { name: "AI 퀴즈 생성", description: "학습 내용 기반 자동 퀴즈 생성" },
+        { name: "AI 요약", description: "긴 학습 자료를 핵심 요약" },
+        { name: "AI 번역", description: "다국어 학습 자료 실시간 번역" },
+        { name: "AI 학습 경로", description: "수준별 맞춤 학습 로드맵 추천" },
+        { name: "AI 진도 예측", description: "학습 패턴 분석 및 완료 시기 예측" },
+        { name: "AI 스터디 매칭", description: "학습 스타일 기반 스터디 메이트 추천" },
+        { name: "AI 피드백", description: "과제 및 코드에 대한 즉각적 피드백" },
+      ],
+    },
   ];
 
   const teacherMenus: MenuSection[] = [
@@ -337,6 +354,21 @@ const OperatorFeatures = () => {
         { name: "학생 활동", description: "질문, 댓글 등 참여도" },
         { name: "리뷰 분석", description: "평점 및 리뷰 키워드 분석" },
         { name: "비교 분석", description: "유사 강의 대비 성과 비교" },
+      ],
+    },
+    {
+      menuName: "AI 교육 도구",
+      menuPath: "/teacher/ai-tools",
+      icon: Brain,
+      description: "AI 기반 교육 지원 도구",
+      features: [
+        { name: "AI 챗봇", description: "학생 질문 자동 응답 AI 어시스턴트" },
+        { name: "AI 자동 채점", description: "과제 자동 채점 및 즉각 피드백" },
+        { name: "AI 피드백 생성", description: "학생 과제에 대한 상세 피드백 자동 생성" },
+        { name: "AI 보고서 생성", description: "학생 성과 분석 리포트 자동 작성" },
+        { name: "AI 퀴즈 생성", description: "강의 내용 기반 평가 문제 자동 생성" },
+        { name: "AI 요약", description: "긴 학습 자료 핵심 요약 생성" },
+        { name: "AI 번역", description: "강의 자료 다국어 번역" },
       ],
     },
   ];
@@ -518,6 +550,21 @@ const OperatorFeatures = () => {
         { name: "API 설정", description: "외부 API 키 관리" },
       ],
     },
+    {
+      menuName: "AI 관리 도구",
+      menuPath: "/admin/ai-management",
+      icon: Brain,
+      description: "AI 기능 관리 및 모니터링",
+      features: [
+        { name: "AI 챗봇 관리", description: "전체 플랫폼 AI 챗봇 설정 및 관리" },
+        { name: "AI 사용량 모니터링", description: "역할별 AI 기능 사용 현황 추적" },
+        { name: "AI 보고서 자동 생성", description: "플랫폼 전체 통계 AI 리포트 작성" },
+        { name: "AI 모델 설정", description: "사용 AI 모델 및 파라미터 설정" },
+        { name: "AI 품질 관리", description: "AI 응답 품질 모니터링 및 개선" },
+        { name: "AI 비용 관리", description: "AI 사용 비용 추적 및 예산 관리" },
+        { name: "AI 사용 제한", description: "사용자별 AI 기능 접근 권한 설정" },
+      ],
+    },
   ];
 
   const operatorMenus: MenuSection[] = [
@@ -631,6 +678,21 @@ const OperatorFeatures = () => {
         { name: "미수료 관리", description: "미수료 사유 및 재교육 안내" },
         { name: "수료율 통계", description: "과정별/기수별 수료율 분석" },
         { name: "수료 보고서", description: "HRD 제출용 수료 보고서" },
+      ],
+    },
+    {
+      menuName: "AI 분석 도구",
+      menuPath: "/operator/ai-tools",
+      icon: Brain,
+      description: "AI 기반 HRD 분석 및 보고",
+      features: [
+        { name: "AI 챗봇", description: "HRD 업무 관련 질의응답 AI 어시스턴트" },
+        { name: "AI 보고서 자동 생성", description: "HRD 제출용 각종 보고서 자동 작성" },
+        { name: "AI 중도탈락 예측", description: "학생 데이터 기반 탈락 위험도 예측" },
+        { name: "AI 상담 분석", description: "상담 내용 키워드 분석 및 인사이트" },
+        { name: "AI 성적 분석", description: "성적 패턴 분석 및 개선 방안 제시" },
+        { name: "AI 출석 패턴 분석", description: "출석 데이터 기반 문제 학생 조기 발견" },
+        { name: "AI 만족도 분석", description: "설문 응답 자동 분석 및 리포트" },
       ],
     },
   ];
