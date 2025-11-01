@@ -32,6 +32,7 @@ import {
   Trophy,
   Route,
   ClipboardList,
+  Briefcase,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -303,8 +304,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
             {effectiveUserRole === "admin" && (
               <Link to="/demo">
-                <Button variant="outline" size="sm" className="gap-2 rounded-xl border-primary/30 hover:bg-primary/10">
-                  <Eye className="h-4 w-4" />
+                <Button size="sm" className="gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90">
+                  <Briefcase className="h-4 w-4" />
                   <span className="hidden sm:inline">데모 모드</span>
                 </Button>
               </Link>
