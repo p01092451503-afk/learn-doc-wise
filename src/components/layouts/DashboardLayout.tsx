@@ -386,7 +386,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   return true;
                 })
                 .map((item) => (
-                  item.enabled ? (
+                  // 일반 모드에서는 enabled 체크 안함, 데모 모드에서만 체크
+                  (isDemoMode ? item.enabled : true) ? (
                   <Tooltip key={item.path}>
                     <TooltipTrigger asChild>
                       <Link 
