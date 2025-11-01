@@ -182,8 +182,6 @@ const DemoPreview = () => {
           return <StudentCommunity />;
         case "analytics":
           return <StudentAnalytics />;
-        case "gamification":
-          return <StudentGamification />;
         case "learning-path":
           return <StudentLearningPath />;
         case "satisfaction-survey":

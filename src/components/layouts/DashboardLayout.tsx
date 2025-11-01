@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -92,6 +92,7 @@ const iconMap: { [key: string]: any } = {
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -99,8 +100,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const { toast } = useToast();
 
   // CRITICAL: Auto-detect demo mode from URL or use explicit isDemo prop
-  // If URL has "role" param, it's demo mode regardless of isDemo prop
-  const isDemoMode = searchParams.has('role') || isDemo === true;
+  // If URL has "role" param OR path starts with /demo, it's demo mode
+  const isDemoMode = searchParams.has('role') || isDemo === true || location.pathname.startsWith('/demo');
   
   // In demo mode, use role from URL params, otherwise ALWAYS use the userRole prop
   const effectiveUserRole = (isDemoMode && searchParams.get('role')) 
