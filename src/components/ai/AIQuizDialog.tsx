@@ -62,8 +62,13 @@ export const AIQuizDialog = ({ open, onOpenChange }: AIQuizDialogProps) => {
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileQuestion className="h-5 w-5 text-primary" />
-            AI 퀴즈 생성
+            <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-accent">
+              <FileQuestion className="h-5 w-5 text-white" />
+            </div>
+            <div className="flex items-center gap-2">
+              <span>AI 퀴즈 생성</span>
+              <span className="text-xs bg-gradient-to-r from-primary to-accent text-white px-2 py-0.5 rounded-full font-bold">AI</span>
+            </div>
           </DialogTitle>
         </DialogHeader>
 

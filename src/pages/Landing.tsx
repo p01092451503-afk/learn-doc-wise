@@ -346,14 +346,20 @@ const Landing = () => {
             {/* AI 학습 경로 추천 */}
             <div 
               onClick={() => setLearningPathOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs font-bold text-white">AI</span>
+              </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Route className="h-6 w-6 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 경로 추천</h3>
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                    AI 학습 경로 추천
+                  </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     수준과 목표를 분석하여 최적의 학습 순서와 코스를 추천합니다
                   </p>
@@ -368,8 +374,12 @@ const Landing = () => {
             {/* AI 퀴즈 생성 */}
             <div 
               onClick={() => setQuizOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs font-bold text-white">AI</span>
+              </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FileQuestion className="h-6 w-6 text-primary" />
@@ -390,8 +400,12 @@ const Landing = () => {
             {/* AI 요약 */}
             <div 
               onClick={() => setSummaryOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs font-bold text-white">AI</span>
+              </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <FileText className="h-6 w-6 text-primary" />
@@ -412,8 +426,12 @@ const Landing = () => {
             {/* AI 진도 예측 */}
             <div 
               onClick={() => setProgressOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs font-bold text-white">AI</span>
+              </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <TrendingUp className="h-6 w-6 text-primary" />
@@ -434,8 +452,12 @@ const Landing = () => {
             {/* AI 스터디 메이트 매칭 */}
             <div 
               onClick={() => setStudyMatchOpen(true)}
-              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
             >
+              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs font-bold text-white">AI</span>
+              </div>
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Users className="h-6 w-6 text-primary" />
