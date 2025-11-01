@@ -233,6 +233,50 @@ export type Database = {
         }
         Relationships: []
       }
+      attendance_details: {
+        Row: {
+          absence_reason: string | null
+          approved_at: string | null
+          approved_by: string | null
+          attendance_id: string
+          created_at: string
+          early_leave_minutes: number | null
+          excuse_document_url: string | null
+          id: string
+          late_minutes: number | null
+        }
+        Insert: {
+          absence_reason?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          attendance_id: string
+          created_at?: string
+          early_leave_minutes?: number | null
+          excuse_document_url?: string | null
+          id?: string
+          late_minutes?: number | null
+        }
+        Update: {
+          absence_reason?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          attendance_id?: string
+          created_at?: string
+          early_leave_minutes?: number | null
+          excuse_document_url?: string | null
+          id?: string
+          late_minutes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_details_attendance_id_fkey"
+            columns: ["attendance_id"]
+            isOneToOne: false
+            referencedRelation: "attendance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       badges: {
         Row: {
           badge_type: string
@@ -623,6 +667,65 @@ export type Database = {
           },
         ]
       }
+      counseling_logs: {
+        Row: {
+          counseling_date: string
+          counseling_type: string
+          counselor_advice: string | null
+          counselor_id: string
+          course_id: string | null
+          created_at: string
+          follow_up_date: string | null
+          follow_up_needed: boolean | null
+          id: string
+          is_confidential: boolean | null
+          student_concerns: string | null
+          student_id: string
+          summary: string
+          updated_at: string
+        }
+        Insert: {
+          counseling_date?: string
+          counseling_type: string
+          counselor_advice?: string | null
+          counselor_id: string
+          course_id?: string | null
+          created_at?: string
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          id?: string
+          is_confidential?: boolean | null
+          student_concerns?: string | null
+          student_id: string
+          summary: string
+          updated_at?: string
+        }
+        Update: {
+          counseling_date?: string
+          counseling_type?: string
+          counselor_advice?: string | null
+          counselor_id?: string
+          course_id?: string | null
+          created_at?: string
+          follow_up_date?: string | null
+          follow_up_needed?: boolean | null
+          id?: string
+          is_confidential?: boolean | null
+          student_concerns?: string | null
+          student_id?: string
+          summary?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "counseling_logs_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_contents: {
         Row: {
           content_type: Database["public"]["Enums"]["content_type"]
@@ -906,6 +1009,59 @@ export type Database = {
           },
         ]
       }
+      dropout_records: {
+        Row: {
+          created_at: string
+          documents: Json | null
+          dropout_date: string
+          dropout_reason: string
+          enrollment_id: string
+          id: string
+          interview_notes: string | null
+          processed_at: string | null
+          processed_by: string | null
+          reason_category: string
+          refund_amount: number | null
+          refund_status: string | null
+        }
+        Insert: {
+          created_at?: string
+          documents?: Json | null
+          dropout_date?: string
+          dropout_reason: string
+          enrollment_id: string
+          id?: string
+          interview_notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason_category: string
+          refund_amount?: number | null
+          refund_status?: string | null
+        }
+        Update: {
+          created_at?: string
+          documents?: Json | null
+          dropout_date?: string
+          dropout_reason?: string
+          enrollment_id?: string
+          id?: string
+          interview_notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          reason_category?: string
+          refund_amount?: number | null
+          refund_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dropout_records_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       enrollments: {
         Row: {
           completed_at: string | null
@@ -936,6 +1092,71 @@ export type Database = {
             foreignKeyName: "enrollments_course_id_fkey"
             columns: ["course_id"]
             isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      government_training_info: {
+        Row: {
+          course_id: string
+          created_at: string
+          hrd_net_course_id: string | null
+          id: string
+          is_government_supported: boolean | null
+          metadata: Json | null
+          practical_hours: number | null
+          required_attendance_rate: number | null
+          required_exam_score: number | null
+          theory_hours: number | null
+          total_training_hours: number | null
+          training_allowance: number | null
+          training_number: string | null
+          training_provider: string | null
+          training_type: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          hrd_net_course_id?: string | null
+          id?: string
+          is_government_supported?: boolean | null
+          metadata?: Json | null
+          practical_hours?: number | null
+          required_attendance_rate?: number | null
+          required_exam_score?: number | null
+          theory_hours?: number | null
+          total_training_hours?: number | null
+          training_allowance?: number | null
+          training_number?: string | null
+          training_provider?: string | null
+          training_type: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          hrd_net_course_id?: string | null
+          id?: string
+          is_government_supported?: boolean | null
+          metadata?: Json | null
+          practical_hours?: number | null
+          required_attendance_rate?: number | null
+          required_exam_score?: number | null
+          theory_hours?: number | null
+          total_training_hours?: number | null
+          training_allowance?: number | null
+          training_number?: string | null
+          training_provider?: string | null
+          training_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "government_training_info_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: true
             referencedRelation: "courses"
             referencedColumns: ["id"]
           },
@@ -2130,6 +2351,88 @@ export type Database = {
         }
         Relationships: []
       }
+      satisfaction_responses: {
+        Row: {
+          id: string
+          responses: Json
+          submitted_at: string
+          survey_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          responses?: Json
+          submitted_at?: string
+          survey_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          responses?: Json
+          submitted_at?: string
+          survey_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "satisfaction_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "satisfaction_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      satisfaction_surveys: {
+        Row: {
+          course_id: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean
+          questions: Json
+          start_date: string | null
+          survey_type: string
+          title: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          questions?: Json
+          start_date?: string | null
+          survey_type: string
+          title: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          questions?: Json
+          start_date?: string | null
+          survey_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "satisfaction_surveys_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       storage_usage: {
         Row: {
           created_at: string
@@ -2635,6 +2938,59 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      training_logs: {
+        Row: {
+          content_summary: string
+          course_id: string
+          created_at: string
+          homework: string | null
+          id: string
+          instructor_id: string
+          materials_used: string | null
+          notes: string | null
+          training_date: string
+          training_hours: number
+          training_method: string | null
+          updated_at: string
+        }
+        Insert: {
+          content_summary: string
+          course_id: string
+          created_at?: string
+          homework?: string | null
+          id?: string
+          instructor_id: string
+          materials_used?: string | null
+          notes?: string | null
+          training_date: string
+          training_hours?: number
+          training_method?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content_summary?: string
+          course_id?: string
+          created_at?: string
+          homework?: string | null
+          id?: string
+          instructor_id?: string
+          materials_used?: string | null
+          notes?: string | null
+          training_date?: string
+          training_hours?: number
+          training_method?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_logs_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       usage_metrics: {
         Row: {

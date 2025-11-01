@@ -35,6 +35,7 @@ import AdminMonitoring from "./pages/AdminMonitoring";
 import AdminLearning from "./pages/AdminLearning";
 import AdminAILogs from "./pages/AdminAILogs";
 import AdminTemplates from "./pages/AdminTemplates";
+import TeacherTrainingLog from "./pages/teacher/TeacherTrainingLog";
 import TemplatePreview from "./pages/TemplatePreview";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
@@ -51,6 +52,7 @@ import OperatorMonitoring from "./pages/operator/OperatorMonitoring";
 import OperatorSettings from "./pages/operator/OperatorSettings";
 import OperatorFeatures from "./pages/operator/OperatorFeatures";
 import OperatorTechStack from "./pages/operator/OperatorTechStack";
+import OperatorGovernmentTraining from "./pages/operator/OperatorGovernmentTraining";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
@@ -93,6 +95,7 @@ const App = () => {
           <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
           <Route path="/teacher/assignments" element={<TeacherAssignments />} />
           <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+          <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/operator/tenants" element={<OperatorTenants />} />
@@ -103,6 +106,7 @@ const App = () => {
           <Route path="/operator/settings" element={<OperatorSettings />} />
           <Route path="/operator/features" element={<OperatorFeatures />} />
           <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
+          <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />

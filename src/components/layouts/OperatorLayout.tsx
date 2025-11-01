@@ -59,6 +59,7 @@ const menuItems: MenuItem[] = [
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
   { icon: Layers, label: "기능 목록", path: "/operator/features" },
   { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
+  { icon: Brain, label: "국비환급과정", path: "/operator/government-training" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
 ];
 
