@@ -37,7 +37,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className={`grid gap-4 md:grid-cols-2 ${isDemo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
           <StatsCard
             title="전체 사용자"
             value="2,847"
