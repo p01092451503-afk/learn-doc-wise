@@ -20,10 +20,23 @@ interface Tenant {
   id: string;
   name: string;
   subdomain: string;
+  custom_domain?: string;
   plan: string;
+  status: "active" | "suspended" | "terminated" | "trial";
   is_active: boolean;
   max_students: number;
   max_storage_gb: number;
+  max_bandwidth_gb: number;
+  features_enabled: {
+    ai: boolean;
+    analytics: boolean;
+    community: boolean;
+    gamification: boolean;
+    certificates: boolean;
+  };
+  contract_end_date?: string;
+  trial_end_date?: string;
+  suspended_reason?: string;
   created_at: string;
 }
 
@@ -53,9 +66,21 @@ const OperatorTenants = () => {
   const [formData, setFormData] = useState({
     name: "",
     subdomain: "",
+    custom_domain: "",
     plan: "starter",
+    status: "trial" as "active" | "suspended" | "terminated" | "trial",
     max_students: 50,
     max_storage_gb: 10,
+    max_bandwidth_gb: 100,
+    contract_end_date: "",
+    trial_end_date: "",
+    features_enabled: {
+      ai: true,
+      analytics: true,
+      community: true,
+      gamification: true,
+      certificates: true,
+    },
   });
 
   useEffect(() => {
@@ -124,7 +149,22 @@ const OperatorTenants = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setTenants(data || []);
+      
+      // Type conversion for features_enabled
+      const typedData = (data || []).map(tenant => ({
+        ...tenant,
+        features_enabled: typeof tenant.features_enabled === 'object' && tenant.features_enabled !== null
+          ? tenant.features_enabled as any
+          : {
+              ai: true,
+              analytics: true,
+              community: true,
+              gamification: true,
+              certificates: true,
+            }
+      })) as Tenant[];
+      
+      setTenants(typedData);
     } catch (error: any) {
       toast({
         title: "오류",
@@ -143,9 +183,15 @@ const OperatorTenants = () => {
         {
           name: formData.name,
           subdomain: formData.subdomain,
+          custom_domain: formData.custom_domain || null,
           plan: formData.plan as "starter" | "standard" | "professional",
+          status: formData.status,
           max_students: formData.max_students,
           max_storage_gb: formData.max_storage_gb,
+          max_bandwidth_gb: formData.max_bandwidth_gb,
+          features_enabled: formData.features_enabled,
+          contract_end_date: formData.contract_end_date || null,
+          trial_end_date: formData.trial_end_date || null,
           is_active: true,
         },
       ]);
@@ -162,14 +208,94 @@ const OperatorTenants = () => {
       setFormData({
         name: "",
         subdomain: "",
+        custom_domain: "",
         plan: "starter",
+        status: "trial",
         max_students: 50,
         max_storage_gb: 10,
+        max_bandwidth_gb: 100,
+        contract_end_date: "",
+        trial_end_date: "",
+        features_enabled: {
+          ai: true,
+          analytics: true,
+          community: true,
+          gamification: true,
+          certificates: true,
+        },
       });
     } catch (error: any) {
       toast({
         title: "오류",
         description: error.message || "고객사 추가에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSuspendTenant = async (tenant: Tenant, reason: string) => {
+    try {
+      const { error } = await supabase
+        .from("tenants")
+        .update({ 
+          status: "suspended",
+          suspended_reason: reason,
+          is_active: false
+        })
+        .eq("id", tenant.id);
+
+      if (error) throw error;
+
+      await supabase.from("tenant_access_logs").insert({
+        tenant_id: tenant.id,
+        action: "suspended",
+        reason: reason,
+      });
+
+      toast({
+        title: "성공",
+        description: `${tenant.name}의 접속이 차단되었습니다.`,
+      });
+
+      fetchTenants();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "차단 처리에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReactivateTenant = async (tenant: Tenant) => {
+    try {
+      const { error } = await supabase
+        .from("tenants")
+        .update({ 
+          status: "active",
+          suspended_reason: null,
+          is_active: true
+        })
+        .eq("id", tenant.id);
+
+      if (error) throw error;
+
+      await supabase.from("tenant_access_logs").insert({
+        tenant_id: tenant.id,
+        action: "allowed",
+        reason: "Reactivated by operator",
+      });
+
+      toast({
+        title: "성공",
+        description: `${tenant.name}의 접속이 재개되었습니다.`,
+      });
+
+      fetchTenants();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "재개 처리에 실패했습니다.",
         variant: "destructive",
       });
     }
@@ -303,6 +429,28 @@ const OperatorTenants = () => {
                     value={formData.subdomain}
                     onChange={(e) => setFormData({ ...formData, subdomain: e.target.value })}
                     required
+                    placeholder="company"
+                    className={cn(
+                      "transition-colors",
+                      theme === "dark"
+                        ? "bg-slate-800 border-slate-700 text-white"
+                        : "bg-slate-50 border-slate-300 text-slate-900"
+                    )}
+                  />
+                  <p className={cn("text-xs", theme === "dark" ? "text-slate-500" : "text-slate-600")}>
+                    company.yourdomain.com
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="custom_domain" className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-300" : "text-slate-700"
+                  )}>커스텀 도메인 (선택)</Label>
+                  <Input
+                    id="custom_domain"
+                    value={formData.custom_domain}
+                    onChange={(e) => setFormData({ ...formData, custom_domain: e.target.value })}
+                    placeholder="www.company.com"
                     className={cn(
                       "transition-colors",
                       theme === "dark"
@@ -311,34 +459,59 @@ const OperatorTenants = () => {
                     )}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="plan" className={cn(
-                    "transition-colors",
-                    theme === "dark" ? "text-slate-300" : "text-slate-700"
-                  )}>플랜</Label>
-                  <Select value={formData.plan} onValueChange={(value) => setFormData({ ...formData, plan: value })}>
-                    <SelectTrigger className={cn(
-                      "transition-colors",
-                      theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
-                    )}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className={cn(
-                      "transition-colors",
-                      theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
-                    )}>
-                      <SelectItem value="starter">스타터</SelectItem>
-                      <SelectItem value="standard">스탠다드</SelectItem>
-                      <SelectItem value="professional">프로페셔널</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="plan" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>플랜</Label>
+                    <Select value={formData.plan} onValueChange={(value) => setFormData({ ...formData, plan: value })}>
+                      <SelectTrigger className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                      )}>
+                        <SelectItem value="starter">스타터</SelectItem>
+                        <SelectItem value="standard">스탠다드</SelectItem>
+                        <SelectItem value="professional">프로페셔널</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="status" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>상태</Label>
+                    <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
+                      <SelectTrigger className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                      )}>
+                        <SelectItem value="trial">트라이얼</SelectItem>
+                        <SelectItem value="active">활성</SelectItem>
+                        <SelectItem value="suspended">일시중단</SelectItem>
+                        <SelectItem value="terminated">종료</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="max_students" className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-300" : "text-slate-700"
-                    )}>최대 학생 수</Label>
+                    )}>최대 학생</Label>
                     <Input
                       id="max_students"
                       type="number"
@@ -357,7 +530,7 @@ const OperatorTenants = () => {
                     <Label htmlFor="max_storage_gb" className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-300" : "text-slate-700"
-                    )}>최대 저장소 (GB)</Label>
+                    )}>저장소 (GB)</Label>
                     <Input
                       id="max_storage_gb"
                       type="number"
@@ -371,6 +544,98 @@ const OperatorTenants = () => {
                           : "bg-slate-50 border-slate-300 text-slate-900"
                       )}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="max_bandwidth_gb" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>전송량 (GB)</Label>
+                    <Input
+                      id="max_bandwidth_gb"
+                      type="number"
+                      value={formData.max_bandwidth_gb}
+                      onChange={(e) => setFormData({ ...formData, max_bandwidth_gb: parseInt(e.target.value) })}
+                      required
+                      className={cn(
+                        "transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="contract_end_date" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>계약 종료일</Label>
+                    <Input
+                      id="contract_end_date"
+                      type="date"
+                      value={formData.contract_end_date}
+                      onChange={(e) => setFormData({ ...formData, contract_end_date: e.target.value })}
+                      className={cn(
+                        "transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="trial_end_date" className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>트라이얼 종료일</Label>
+                    <Input
+                      id="trial_end_date"
+                      type="date"
+                      value={formData.trial_end_date}
+                      onChange={(e) => setFormData({ ...formData, trial_end_date: e.target.value })}
+                      className={cn(
+                        "transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Label className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-300" : "text-slate-700"
+                  )}>활성화 기능</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {Object.entries(formData.features_enabled).map(([key, value]) => (
+                      <div key={key} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={`feature_${key}`}
+                          checked={value}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            features_enabled: {
+                              ...formData.features_enabled,
+                              [key]: e.target.checked
+                            }
+                          })}
+                          className="rounded border-slate-700"
+                        />
+                        <Label htmlFor={`feature_${key}`} className={cn(
+                          "text-sm cursor-pointer",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
+                          {key === 'ai' ? 'AI 기능' : 
+                           key === 'analytics' ? '분석' :
+                           key === 'community' ? '커뮤니티' :
+                           key === 'gamification' ? '게이미피케이션' :
+                           '수료증'}
+                        </Label>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <DialogFooter>
@@ -501,7 +766,7 @@ const OperatorTenants = () => {
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
-                    )}>서브도메인</TableHead>
+                    )}>도메인</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
@@ -509,15 +774,15 @@ const OperatorTenants = () => {
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
-                    )}>최대 학생</TableHead>
-                    <TableHead className={cn(
-                      "transition-colors",
-                      theme === "dark" ? "text-slate-400" : "text-slate-600"
-                    )}>저장소</TableHead>
+                    )}>리소스</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
                     )}>상태</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>계약</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
@@ -534,41 +799,99 @@ const OperatorTenants = () => {
                         "font-medium transition-colors",
                         theme === "dark" ? "text-white" : "text-slate-900"
                       )}>{tenant.name}</TableCell>
-                      <TableCell className={cn(
-                        "transition-colors",
-                        theme === "dark" ? "text-slate-400" : "text-slate-600"
-                      )}>{tenant.subdomain}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            theme === "dark" ? "text-slate-400" : "text-slate-600"
+                          )}>{tenant.subdomain}</div>
+                          {tenant.custom_domain && (
+                            <div className={cn(
+                              "text-xs transition-colors",
+                              theme === "dark" ? "text-violet-400" : "text-violet-600"
+                            )}>{tenant.custom_domain}</div>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <Badge className={getPlanBadgeColor(tenant.plan)}>
                           {getPlanLabel(tenant.plan)}
                         </Badge>
                       </TableCell>
-                      <TableCell className={cn(
-                        "transition-colors",
-                        theme === "dark" ? "text-slate-400" : "text-slate-600"
-                      )}>{tenant.max_students}</TableCell>
-                      <TableCell className={cn(
-                        "transition-colors",
-                        theme === "dark" ? "text-slate-400" : "text-slate-600"
-                      )}>{tenant.max_storage_gb} GB</TableCell>
                       <TableCell>
-                        <Badge className={tenant.is_active ? "bg-green-500/10 text-green-400 border-green-500/50" : "bg-red-500/10 text-red-400 border-red-500/50"}>
-                          {tenant.is_active ? "활성" : "비활성"}
+                        <div className="space-y-1 text-xs">
+                          <div className={cn(
+                            "transition-colors",
+                            theme === "dark" ? "text-slate-400" : "text-slate-600"
+                          )}>학생: {tenant.max_students}</div>
+                          <div className={cn(
+                            "transition-colors",
+                            theme === "dark" ? "text-slate-400" : "text-slate-600"
+                          )}>저장소: {tenant.max_storage_gb}GB</div>
+                          <div className={cn(
+                            "transition-colors",
+                            theme === "dark" ? "text-slate-400" : "text-slate-600"
+                          )}>전송량: {tenant.max_bandwidth_gb}GB</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={
+                          tenant.status === 'active' ? "bg-green-500/10 text-green-400 border-green-500/50" :
+                          tenant.status === 'trial' ? "bg-blue-500/10 text-blue-400 border-blue-500/50" :
+                          tenant.status === 'suspended' ? "bg-orange-500/10 text-orange-400 border-orange-500/50" :
+                          "bg-red-500/10 text-red-400 border-red-500/50"
+                        }>
+                          {tenant.status === 'active' ? '활성' :
+                           tenant.status === 'trial' ? '트라이얼' :
+                           tenant.status === 'suspended' ? '일시중단' : '종료'}
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <div className="space-y-1 text-xs">
+                          {tenant.contract_end_date && (
+                            <div className={cn(
+                              "transition-colors",
+                              theme === "dark" ? "text-slate-400" : "text-slate-600"
+                            )}>계약: {new Date(tenant.contract_end_date).toLocaleDateString('ko-KR')}</div>
+                          )}
+                          {tenant.trial_end_date && (
+                            <div className={cn(
+                              "transition-colors",
+                              theme === "dark" ? "text-blue-400" : "text-blue-600"
+                            )}>트라이얼: {new Date(tenant.trial_end_date).toLocaleDateString('ko-KR')}</div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
                         <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleToggleStatus(tenant)}
-                            className={cn(
-                              "border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors",
-                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-500 hover:bg-slate-100"
-                            )}
-                          >
-                            {tenant.is_active ? "비활성화" : "활성화"}
-                          </Button>
+                          {tenant.status === 'suspended' ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleReactivateTenant(tenant)}
+                              className={cn(
+                                "transition-colors",
+                                theme === "dark" ? "border-green-700 text-green-400 hover:bg-green-900/20" : "border-green-300 text-green-600 hover:bg-green-50"
+                              )}
+                            >
+                              재개
+                            </Button>
+                          ) : tenant.status !== 'terminated' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const reason = prompt("차단 사유를 입력하세요:");
+                                if (reason) handleSuspendTenant(tenant, reason);
+                              }}
+                              className={cn(
+                                "transition-colors",
+                                theme === "dark" ? "border-orange-700 text-orange-400 hover:bg-orange-900/20" : "border-orange-300 text-orange-600 hover:bg-orange-50"
+                              )}
+                            >
+                              차단
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
                             size="sm"
@@ -577,7 +900,7 @@ const OperatorTenants = () => {
                               setPaymentDialogOpen(true);
                             }}
                             className={cn(
-                              "border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors",
+                              "transition-colors",
                               theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-500 hover:bg-slate-100"
                             )}
                           >
