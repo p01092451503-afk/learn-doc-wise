@@ -2,7 +2,31 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bot } from "lucide-react";
+import { 
+  Bot, 
+  LayoutDashboard, 
+  BookOpen, 
+  FileText, 
+  Users, 
+  MessageSquare, 
+  BarChart3, 
+  DollarSign, 
+  Trophy, 
+  Route,
+  CalendarCheck,
+  ClipboardList,
+  Target,
+  Award,
+  GraduationCap,
+  Shield,
+  FolderOpen,
+  Brain,
+  Activity,
+  Settings,
+  Package,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 import {
@@ -11,6 +35,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 import StudentDashboard from "./StudentDashboard";
 import StudentCourses from "./StudentCourses";
@@ -50,14 +75,65 @@ import {
 
 type DemoRole = "student" | "teacher" | "admin";
 
+interface MenuItem {
+  icon: any;
+  label: string;
+  path: string;
+  hasAI?: boolean;
+}
+
 const DemoPreview = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const setActiveRole = (role: DemoRole) => {
     setSearchParams({ role, page: "dashboard" });
   };
+
+  const getMenuItems = (): MenuItem[] => {
+    if (activeRole === "student") {
+      return [
+        { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+        { icon: BookOpen, label: "내 강의", path: "courses", hasAI: true },
+        { icon: Route, label: "학습 경로", path: "learning-path", hasAI: true },
+        { icon: FileText, label: "과제", path: "assignments" },
+        { icon: MessageSquare, label: "커뮤니티", path: "community" },
+        { icon: Trophy, label: "게이미피케이션", path: "gamification" },
+        { icon: BarChart3, label: "학습 통계", path: "analytics" },
+      ];
+    }
+    
+    if (activeRole === "teacher") {
+      return [
+        { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+        { icon: BookOpen, label: "강의 관리", path: "courses" },
+        { icon: FileText, label: "과제 관리", path: "assignments", hasAI: true },
+        { icon: CalendarCheck, label: "출석 관리", path: "attendance" },
+        { icon: Users, label: "학생 관리", path: "students" },
+        { icon: BarChart3, label: "통계", path: "analytics" },
+        { icon: DollarSign, label: "수익", path: "revenue" },
+      ];
+    }
+    
+    // admin
+    return [
+      { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+      { icon: Users, label: "사용자 관리", path: "users" },
+      { icon: BookOpen, label: "강좌 관리", path: "courses" },
+      { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
+      { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
+      { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+      { icon: Package, label: "템플릿 관리", path: "templates" },
+      { icon: DollarSign, label: "매출 관리", path: "revenue" },
+      { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
+      { icon: BarChart3, label: "분석 도구", path: "analytics" },
+      { icon: Settings, label: "시스템 설정", path: "settings" },
+    ];
+  };
+
+  const menuItems = getMenuItems();
 
   const renderContent = () => {
     // Student pages
@@ -176,29 +252,94 @@ const DemoPreview = () => {
         </div>
       </div>
 
-      {/* Dashboard Content */}
-      <div className="relative">
-        {/* Info Banner - Static below header */}
-        <div className="bg-primary/10 border-b border-primary/20 shadow-sm">
-          <div className="container mx-auto px-3 md:px-4 py-2.5 md:py-3.5">
-            <p className="text-xs md:text-sm text-center font-medium">
-              💡 <strong>
-                {activeRole === "student" ? "학생" : 
-                 activeRole === "teacher" ? "강사" : 
-                 "관리자"}
-              </strong>
-              {" "}대시보드를 <span className="hidden sm:inline">자유롭게 </span>체험해보세요<span className="hidden md:inline">. 실제 작동하는 UI로 구성되어 있습니다</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Dashboard */}
-        <div>
-          {renderContent()}
+      {/* Info Banner */}
+      <div className="bg-primary/10 border-b border-primary/20 shadow-sm">
+        <div className="container mx-auto px-3 md:px-4 py-2.5 md:py-3.5">
+          <p className="text-xs md:text-sm text-center font-medium">
+            💡 <strong>
+              {activeRole === "student" ? "학생" : 
+               activeRole === "teacher" ? "강사" : 
+               "관리자"}
+            </strong>
+            {" "}대시보드를 <span className="hidden sm:inline">자유롭게 </span>체험해보세요<span className="hidden md:inline">. 실제 작동하는 UI로 구성되어 있습니다</span>
+          </p>
         </div>
       </div>
 
-      {/* Floating CTA - Positioned to avoid overlap */}
+      {/* Main Content with Sidebar */}
+      <div className="flex">
+        {/* Sidebar */}
+        <aside
+          className={cn(
+            "fixed left-0 top-[130px] h-[calc(100vh-130px)] border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm z-30",
+            sidebarCollapsed ? "w-16" : "w-64"
+          )}
+        >
+          {/* Collapse Toggle Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="hidden md:flex absolute -right-3 top-6 z-50 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-primary/10"
+          >
+            {sidebarCollapsed ? (
+              <ChevronRight className="h-4 w-4" />
+            ) : (
+              <ChevronLeft className="h-4 w-4" />
+            )}
+          </Button>
+
+          <nav className={cn(
+            "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
+            sidebarCollapsed ? "p-2" : "p-4"
+          )}>
+            {menuItems.map((item) => (
+              <Tooltip key={item.path}>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setSearchParams({ role: activeRole, page: item.path })}
+                    className={cn(
+                      "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group",
+                      activePage === item.path && "bg-primary/10 text-primary",
+                      sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 pr-2"
+                    )}
+                  >
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                      <item.icon className="h-4 w-4 text-primary" />
+                    </div>
+                    {!sidebarCollapsed && (
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="font-medium whitespace-nowrap">{item.label}</span>
+                        {item.hasAI && (
+                          <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">
+                            AI
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                {sidebarCollapsed && (
+                  <TooltipContent side="right" className="bg-primary text-primary-foreground">
+                    <p>{item.label}</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className={cn(
+          "flex-1 transition-all duration-300",
+          sidebarCollapsed ? "ml-16" : "ml-64"
+        )}>
+          {renderContent()}
+        </main>
+      </div>
+
+      {/* Floating CTA */}
       <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-xs md:max-w-none md:w-auto">
         <Link to="/auth?from=demo" className="block">
           <Button size="lg" variant="gold" className="w-full md:w-auto shadow-glow hover:shadow-elegant transition-all text-sm md:text-base">
