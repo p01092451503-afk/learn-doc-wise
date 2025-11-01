@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck, Route, FileQuestion } from "lucide-react";
-import { useState } from "react";
-import { AILearningPathDialog } from "@/components/ai/AILearningPathDialog";
-import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
-import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
-import { AIProgressDialog } from "@/components/ai/AIProgressDialog";
-import { AIStudyMatchDialog } from "@/components/ai/AIStudyMatchDialog";
 import logoIcon from "@/assets/logo-icon.png";
 import {
   Tooltip,
@@ -17,11 +11,6 @@ import {
 
 
 const Landing = () => {
-  const [learningPathOpen, setLearningPathOpen] = useState(false);
-  const [quizOpen, setQuizOpen] = useState(false);
-  const [summaryOpen, setSummaryOpen] = useState(false);
-  const [progressOpen, setProgressOpen] = useState(false);
-  const [studyMatchOpen, setStudyMatchOpen] = useState(false);
 
   return (
     <TooltipProvider>
@@ -368,10 +357,7 @@ const Landing = () => {
             </div>
 
             {/* AI 학습 경로 추천 */}
-            <div 
-              onClick={() => setLearningPathOpen(true)}
-              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
-            >
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
@@ -396,10 +382,7 @@ const Landing = () => {
             </div>
 
             {/* AI 퀴즈 생성 */}
-            <div 
-              onClick={() => setQuizOpen(true)}
-              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
-            >
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
@@ -422,10 +405,7 @@ const Landing = () => {
             </div>
 
             {/* AI 요약 */}
-            <div 
-              onClick={() => setSummaryOpen(true)}
-              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
-            >
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
@@ -448,10 +428,7 @@ const Landing = () => {
             </div>
 
             {/* AI 진도 예측 */}
-            <div 
-              onClick={() => setProgressOpen(true)}
-              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
-            >
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
@@ -474,10 +451,7 @@ const Landing = () => {
             </div>
 
             {/* AI 스터디 메이트 매칭 */}
-            <div 
-              onClick={() => setStudyMatchOpen(true)}
-              className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer relative"
-            >
+            <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 relative">
               <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
                 <Sparkles className="h-3 w-3 text-white" />
                 <span className="text-xs font-bold text-white">AI</span>
@@ -646,12 +620,6 @@ const Landing = () => {
         </div>
       </footer>
 
-      {/* AI Dialogs */}
-      <AILearningPathDialog open={learningPathOpen} onOpenChange={setLearningPathOpen} />
-      <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
-      <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
-      <AIProgressDialog open={progressOpen} onOpenChange={setProgressOpen} />
-      <AIStudyMatchDialog open={studyMatchOpen} onOpenChange={setStudyMatchOpen} />
     </div>
     </TooltipProvider>
   );
