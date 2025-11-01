@@ -100,10 +100,10 @@ const TeacherTrainingAllowance = () => {
       const { data: enrollments, error: enrollmentError } = await supabase
         .from("enrollments")
         .select(`
+          id,
           user_id,
           profiles:user_id (
-            full_name,
-            email
+            full_name
           )
         `)
         .eq("course_id", selectedCourse);
@@ -138,7 +138,7 @@ const TeacherTrainingAllowance = () => {
           return {
             student_id: userId,
             student_name: enrollment.profiles?.full_name || "이름 없음",
-            student_email: enrollment.profiles?.email || "",
+            student_email: "",
             total_attendance_days: attendanceDays,
             daily_allowance: dailyAllowance,
             total_allowance: totalAllowance,
