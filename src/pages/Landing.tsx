@@ -114,33 +114,33 @@ const Landing = () => {
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <FeatureCard
               icon={<Brain className="h-10 w-10" />}
-              title="AI 기반 학습"
-              description="개인화된 AI 튜터가 학습을 도와주고, 자동으로 피드백과 요약을 제공합니다"
+              title="AI 지능형 학습"
+              description="10가지 이상의 AI 기능으로 학습 경로 추천, 퀴즈 생성, 자동 채점, 진도 예측 등을 제공합니다"
             />
             <FeatureCard
-              icon={<Users className="h-10 w-10" />}
-              title="협업 학습"
-              description="토론, Q&A, 그룹 스터디를 통해 학습자들과 함께 성장하세요"
-            />
-            <FeatureCard
-              icon={<BarChart3 className="h-10 w-10" />}
-              title="실시간 분석"
-              description="학습 진도, 성적, 참여도를 실시간으로 확인하고 개선하세요"
+              icon={<Award className="h-10 w-10" />}
+              title="HRD 전문 시스템"
+              description="정부지원 훈련과정에 필요한 출석, 훈련일지, 상담일지, 수료 관리 등 모든 기능을 완벽 지원합니다"
             />
             <FeatureCard
               icon={<Zap className="h-10 w-10" />}
-              title="자동화된 평가"
-              description="AI가 과제를 자동으로 채점하고 상세한 피드백을 제공합니다"
+              title="엔터프라이즈급 안정성"
+              description="99.9% 가동률 보장, 자동 백업, 실시간 모니터링으로 언제나 안정적인 서비스를 제공합니다"
             />
             <FeatureCard
               icon={<CheckCircle className="h-10 w-10" />}
-              title="수료증 발급"
-              description="코스 완료 시 자동으로 수료증이 발급됩니다"
+              title="강력한 보안 체계"
+              description="데이터 암호화, RLS 기반 접근 제어, 역할별 권한 관리로 민감한 학습 데이터를 안전하게 보호합니다"
             />
             <FeatureCard
-              icon={<Bot className="h-10 w-10" />}
-              title="AI 기반 학습"
-              description="Atom AI가 개인화된 학습 경로를 제공하고 실시간으로 피드백합니다"
+              icon={<BarChart3 className="h-10 w-10" />}
+              title="실시간 분석 대시보드"
+              description="학습 진도, 성적, 참여도, AI 사용량 등 모든 데이터를 실시간으로 분석하고 시각화합니다"
+            />
+            <FeatureCard
+              icon={<Users className="h-10 w-10" />}
+              title="확장 가능한 아키텍처"
+              description="멀티 테넌트 구조로 수천 명의 동시 사용자를 지원하며, 무제한 확장이 가능합니다"
             />
           </div>
           
