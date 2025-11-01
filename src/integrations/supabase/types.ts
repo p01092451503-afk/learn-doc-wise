@@ -2847,6 +2847,79 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_access_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          reason: string | null
+          tenant_id: string
+          user_ip: unknown
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          tenant_id: string
+          user_ip?: unknown
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          tenant_id?: string
+          user_ip?: unknown
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_access_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_config_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string | null
+          field_name: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          tenant_id: string
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string | null
+          field_name: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          tenant_id: string
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string | null
+          field_name?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_config_history_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_settings: {
         Row: {
           created_at: string
@@ -2939,44 +3012,65 @@ export type Database = {
       tenants: {
         Row: {
           billing_status: string | null
+          contract_end_date: string | null
           created_at: string
+          custom_domain: string | null
+          features_enabled: Json | null
           id: string
           is_active: boolean
           last_payment_date: string | null
+          max_bandwidth_gb: number | null
           max_storage_gb: number
           max_students: number
           name: string
           owner_id: string | null
           plan: Database["public"]["Enums"]["subscription_plan_type"]
+          status: Database["public"]["Enums"]["tenant_status"] | null
           subdomain: string
+          suspended_reason: string | null
+          trial_end_date: string | null
           updated_at: string
         }
         Insert: {
           billing_status?: string | null
+          contract_end_date?: string | null
           created_at?: string
+          custom_domain?: string | null
+          features_enabled?: Json | null
           id?: string
           is_active?: boolean
           last_payment_date?: string | null
+          max_bandwidth_gb?: number | null
           max_storage_gb?: number
           max_students?: number
           name: string
           owner_id?: string | null
           plan?: Database["public"]["Enums"]["subscription_plan_type"]
+          status?: Database["public"]["Enums"]["tenant_status"] | null
           subdomain: string
+          suspended_reason?: string | null
+          trial_end_date?: string | null
           updated_at?: string
         }
         Update: {
           billing_status?: string | null
+          contract_end_date?: string | null
           created_at?: string
+          custom_domain?: string | null
+          features_enabled?: Json | null
           id?: string
           is_active?: boolean
           last_payment_date?: string | null
+          max_bandwidth_gb?: number | null
           max_storage_gb?: number
           max_students?: number
           name?: string
           owner_id?: string | null
           plan?: Database["public"]["Enums"]["subscription_plan_type"]
+          status?: Database["public"]["Enums"]["tenant_status"] | null
           subdomain?: string
+          suspended_reason?: string | null
+          trial_end_date?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -3417,6 +3511,7 @@ export type Database = {
         Args: { p_file_size: number; p_tenant_id: string }
         Returns: boolean
       }
+      check_tenant_access: { Args: { p_tenant_id: string }; Returns: Json }
       get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -3482,6 +3577,7 @@ export type Database = {
       post_type: "discussion" | "question" | "announcement" | "notice"
       submission_status: "submitted" | "graded" | "returned" | "late"
       subscription_plan_type: "starter" | "standard" | "professional"
+      tenant_status: "active" | "suspended" | "terminated" | "trial"
       video_provider: "youtube" | "vimeo" | "direct"
     }
     CompositeTypes: {
@@ -3623,6 +3719,7 @@ export const Constants = {
       post_type: ["discussion", "question", "announcement", "notice"],
       submission_status: ["submitted", "graded", "returned", "late"],
       subscription_plan_type: ["starter", "standard", "professional"],
+      tenant_status: ["active", "suspended", "terminated", "trial"],
       video_provider: ["youtube", "vimeo", "direct"],
     },
   },
