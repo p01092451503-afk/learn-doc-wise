@@ -227,12 +227,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
-    if (isDemoMode) {
-      // 데모 모드에서는 데이터베이스 호출 없이 기본 메뉴만 사용
-      setMenuItems(getDefaultMenuItems());
-    } else {
-      fetchMenuOrder();
-    }
+    // CRITICAL: Always use default menu items to ensure HRD menus are visible
+    // Database menu_order is outdated and doesn't include new HRD menus
+    setMenuItems(getDefaultMenuItems());
   }, [effectiveUserRole, isDemoMode]);
 
   const fetchMenuOrder = async () => {
