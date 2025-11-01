@@ -108,45 +108,9 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </CardContent>
         </Card>
 
-        {/* Recent Activity & Revenue Chart */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>최근 활동</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <ActivityItem
-                  student="김철수"
-                  action="과제 제출"
-                  course="React 완벽 가이드"
-                  time="10분 전"
-                />
-                <ActivityItem
-                  student="이영희"
-                  action="새 질문 등록"
-                  course="TypeScript 마스터클래스"
-                  time="25분 전"
-                />
-                <ActivityItem
-                  student="박지민"
-                  action="강의 완료"
-                  course="Next.js 풀스택 개발"
-                  time="1시간 전"
-                />
-                <ActivityItem
-                  student="정민수"
-                  action="과제 제출"
-                  course="React 완벽 가이드"
-                  time="2시간 전"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* AI Features for Teachers */}
-          {isDemo && (
-            <Card className="border-primary/20 bg-primary/5 lg:col-span-2">
+        {/* AI Features for Teachers */}
+        {isDemo && (
+          <Card className="border-primary/20 bg-primary/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5 text-primary" />
@@ -197,7 +161,43 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 </div>
               </CardContent>
             </Card>
-          )}
+        )}
+
+        {/* Recent Activity & Revenue Chart */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>최근 활동</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <ActivityItem
+                  student="김철수"
+                  action="과제 제출"
+                  course="React 완벽 가이드"
+                  time="10분 전"
+                />
+                <ActivityItem
+                  student="이영희"
+                  action="새 질문 등록"
+                  course="TypeScript 마스터클래스"
+                  time="25분 전"
+                />
+                <ActivityItem
+                  student="박지민"
+                  action="강의 완료"
+                  course="Next.js 풀스택 개발"
+                  time="1시간 전"
+                />
+                <ActivityItem
+                  student="정민수"
+                  action="과제 제출"
+                  course="React 완벽 가이드"
+                  time="2시간 전"
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>
