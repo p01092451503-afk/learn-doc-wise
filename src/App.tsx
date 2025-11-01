@@ -38,6 +38,8 @@ import AdminTemplates from "./pages/AdminTemplates";
 import TeacherTrainingLog from "./pages/teacher/TeacherTrainingLog";
 import TeacherSatisfactionSurvey from "./pages/teacher/TeacherSatisfactionSurvey";
 import TeacherCounselingLog from "./pages/teacher/TeacherCounselingLog";
+import TeacherDropoutManagement from "./pages/teacher/TeacherDropoutManagement";
+import TeacherAttendanceDetail from "./pages/teacher/TeacherAttendanceDetail";
 import StudentSatisfactionSurvey from "./pages/student/StudentSatisfactionSurvey";
 import StudentCounselingLog from "./pages/student/StudentCounselingLog";
 import TemplatePreview from "./pages/TemplatePreview";
@@ -101,9 +103,11 @@ const App = () => {
           <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
           <Route path="/teacher/assignments" element={<TeacherAssignments />} />
           <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+          <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
           <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
           <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
           <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
+          <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/operator/tenants" element={<OperatorTenants />} />

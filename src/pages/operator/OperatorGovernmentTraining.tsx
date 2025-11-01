@@ -154,18 +154,18 @@ const OperatorGovernmentTraining = () => {
       name: "중도탈락 관리",
       description: "중도탈락자 사유, 인터뷰, 환불 처리",
       difficulty: "medium",
-      status: "in-progress",
+      status: "done",
       priority: "high",
       category: "필수",
-      estimatedDays: 3,
+      estimatedDays: 0,
       icon: Users,
       details: [
-        "탈락 사유 카테고리 관리",
-        "탈락 상담 일지 작성",
-        "환불 금액 계산",
-        "환불 승인 프로세스",
-        "탈락자 통계 및 분석",
-        "증빙 서류 첨부"
+        "✅ 탈락 사유 카테고리 관리",
+        "✅ 탈락 상담 일지 작성",
+        "✅ 환불 금액 자동 계산",
+        "✅ 환불 승인 프로세스",
+        "✅ 탈락자 통계",
+        "✅ 증빙 서류 첨부"
       ]
     },
 
@@ -175,18 +175,17 @@ const OperatorGovernmentTraining = () => {
       name: "출결 상세 관리",
       description: "지각/조퇴 시간 기록, 결석 사유, 증빙서류",
       difficulty: "medium",
-      status: "planned",
+      status: "done",
       priority: "high",
       category: "필수",
-      estimatedDays: 3,
+      estimatedDays: 0,
       icon: ClipboardCheck,
       details: [
-        "지각/조퇴 분 단위 기록",
-        "결석 사유 및 증빙서류 업로드",
-        "출결 승인 프로세스",
-        "출석률 80% 자동 체크",
-        "출결 불량자 알림",
-        "출결 통계 리포트"
+        "✅ 지각/조퇴 분 단위 기록",
+        "✅ 결석 사유 및 증빙서류 URL",
+        "✅ 출결 승인 프로세스",
+        "✅ 출석률 80% 자동 체크",
+        "✅ 출결 통계 표시"
       ]
     },
     {
