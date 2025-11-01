@@ -468,6 +468,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <main
           className={cn(
             "flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300",
+            isDemoMode && "pt-[130px]",
             sidebarOpen && !sidebarCollapsed ? "md:ml-64" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
           )}
         >
