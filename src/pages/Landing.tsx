@@ -461,8 +461,8 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section className="py-20 bg-muted/30" aria-labelledby="pricing-heading">
+      {/* Pricing Section - 숨김 처리 */}
+      {/* <section className="py-20 bg-muted/30" aria-labelledby="pricing-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 id="pricing-heading" className="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -475,164 +475,10 @@ const Landing = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
-            {/* 스타터 */}
-            <PricingCard
-              title="스타터"
-              description="개인 강사 및 소규모 학습 그룹"
-              price="₩0"
-              period="/영구 무료"
-              aiTokens="월 최대 수강생 50명"
-              features={[
-                "기본 강좌 개설",
-                "동영상 업로드 5GB",
-                "출석 체크 기능",
-                "과제 제출 및 채점",
-                "커뮤니티 게시판",
-                "이메일 지원"
-              ]}
-              buttonText="무료 시작하기"
-              buttonVariant="outline"
-            />
-
-            {/* 스탠다드 */}
-            <PricingCard
-              title="스탠다드"
-              description="전문 강사 및 중소 교육 기관"
-              price="₩150,000"
-              period="/월"
-              aiTokens="월 최대 수강생 500명"
-              features={[
-                "무제한 강좌 개설",
-                "동영상 업로드 100GB",
-                "실시간 화상 강의",
-                "자동 채점 시스템",
-                "맞춤형 학습 경로",
-                "우선 고객 지원",
-                "수료증 자동 발급"
-              ]}
-              buttonText="스탠다드 시작하기"
-              buttonVariant="outline"
-            />
-
-            {/* 프로 (인기) */}
-            <PricingCard
-              title="프로"
-              description="AI 기능이 필요한 교육 기관"
-              price="₩300,000"
-              period="/월"
-              aiTokens="월 최대 수강생 1,000명"
-              features={[
-                "스탠다드의 모든 기능",
-                "AI 자동 채점",
-                "AI 피드백",
-                "AI 번역",
-                "AI 학습 분석",
-                "AI 리포트",
-                "AI 학습 경로 추천",
-                "AI 퀴즈 생성",
-                "AI 요약",
-                "AI 진도 예측"
-              ]}
-              buttonText="프로 시작하기"
-              buttonVariant="default"
-              isPopular={true}
-            />
-
-            {/* 프로페셔널 */}
-            <PricingCard
-              title="프로페셔널"
-              description="대형 교육 기관 및 기업 교육"
-              price="₩500,000"
-              period="/월"
-              aiTokens="월 최대 수강생 무제한"
-              features={[
-                "프로의 모든 AI 기능",
-                "동영상 업로드 500GB",
-                "AI 스터디 메이트 매칭",
-                "AI 튜터",
-                "전담 계정 관리자",
-                "24시간 우선 지원",
-                "맞춤형 브랜딩",
-                "API 연동 지원",
-                "고급 분석 대시보드",
-                "SSO 통합 인증"
-              ]}
-              buttonText="프로페셔널 시작하기"
-              buttonVariant="premium"
-            />
-
-            {/* 엔터프라이즈 */}
-            <PricingCard
-              title="엔터프라이즈"
-              description="대규모 조직 및 정부 기관"
-              price="₩1,000,000"
-              period="/월"
-              aiTokens="무제한 수강생 + AI 기능"
-              features={[
-                "프로페셔널의 모든 기능",
-                "동영상 업로드 무제한",
-                "전용 서버 구축",
-                "온프레미스 설치 지원",
-                "커스터마이징 개발",
-                "통합 관리 시스템",
-                "실시간 기술 지원",
-                "보안 강화 옵션",
-                "전담 개발팀 지원"
-              ]}
-              buttonText="엔터프라이즈 문의"
-              buttonVariant="premium"
-            />
-
-            {/* 엔터프라이즈 HRD */}
-            <PricingCard
-              title="엔터프라이즈 HRD"
-              description="정부지원 교육 운영 기관"
-              price="₩1,700,000"
-              period="/월"
-              aiTokens="HRD 전용 기능 포함"
-              features={[
-                "엔터프라이즈의 모든 기능",
-                "출석 관리 시스템",
-                "훈련수당 관리",
-                "훈련일지 관리",
-                "중도탈락 관리",
-                "만족도 조사",
-                "훈련 이수 관리",
-                "정부 보고서 자동 생성",
-                "HRD-Net 연동",
-                "컨설팅 및 운영 지원"
-              ]}
-              buttonText="HRD 문의하기"
-              buttonVariant="premium"
-            />
+            Pricing cards...
           </div>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-[var(--gradient-hero)]"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-              <span className="text-gradient">AI가 설계한</span><br />
-              지능형 학습의 세계로 초대합니다
-            </h2>
-            <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-              14일 무료 체험을 통해 자동 진도 관리, 실시간 피드백, 콘텐츠 추천까지<br />
-              <span className="font-logo font-semibold">atomLMS</span>의 모든 기능을 직접 경험해보세요.<br />
-              복잡한 등록 절차나 결제 정보는 필요 없습니다.
-            </p>
-            <Link to="/auth">
-              <Button size="lg" variant="gold" className="text-lg px-12 gap-2 shadow-glow">
-                <Sparkles className="h-5 w-5" />
-                무료로 시작하기
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="border-t py-8 bg-muted/30" role="contentinfo">
