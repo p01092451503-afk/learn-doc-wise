@@ -61,7 +61,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 </CardTitle>
                 <Brain className="h-4 w-4 text-primary" />
               </CardHeader>
-              <CardContent>
+              <CardContent className="min-h-[60px] flex flex-col justify-between">
                 <div className="text-2xl font-bold text-primary">12.4K</div>
                 <p className="text-xs text-muted-foreground">AI 요청 (이번 달)</p>
               </CardContent>
@@ -347,7 +347,7 @@ const StatsCard = ({
       <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
       <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent className="space-y-1">
+    <CardContent className="space-y-1 min-h-[60px] flex flex-col justify-between">
       <div className="text-lg sm:text-xl md:text-2xl font-bold whitespace-nowrap overflow-hidden text-ellipsis">{value}</div>
       <p className={`text-xs ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
