@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
-import { Network, Users, Database, Workflow, Boxes, Layers } from "lucide-react";
+import { Network, Users, Database, Workflow, Boxes, Layers, Table } from "lucide-react";
 
 const OperatorSystemDiagram = () => {
   return (
@@ -16,7 +16,7 @@ const OperatorSystemDiagram = () => {
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">
               <Network className="h-4 w-4 mr-2" />
               전체 구조
@@ -40,6 +40,10 @@ const OperatorSystemDiagram = () => {
             <TabsTrigger value="architecture">
               <Layers className="h-4 w-4 mr-2" />
               아키텍처
+            </TabsTrigger>
+            <TabsTrigger value="tables">
+              <Table className="h-4 w-4 mr-2" />
+              테이블 정의서
             </TabsTrigger>
           </TabsList>
 
@@ -1083,6 +1087,482 @@ const OperatorSystemDiagram = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* 테이블 정의서 */}
+          <TabsContent value="tables">
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>데이터베이스 테이블 정의서</CardTitle>
+                  <CardDescription>
+                    LMS 플랫폼의 모든 데이터베이스 테이블 구조와 관계
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* 사용자 관리 테이블 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">사용자 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">user_roles</h4>
+                        <p className="text-xs text-muted-foreground">사용자 역할 정보 (학생, 강사, 관리자, 운영자)</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">role:</span><span>app_role (학생/강사/관리자/운영자)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">tenant_id:</span><span>UUID</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">profiles</h4>
+                        <p className="text-xs text-muted-foreground">사용자 프로필 상세 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">full_name:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">avatar_url:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">bio:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">level:</span><span>INTEGER (게임화)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">total_points:</span><span>INTEGER (게임화)</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 강의 관리 테이블 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">강의 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">courses</h4>
+                        <p className="text-xs text-muted-foreground">강의 기본 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">title:</span><span>TEXT (강의명)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">description:</span><span>TEXT (강의 설명)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">instructor_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">category_id:</span><span>UUID (FK → categories)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">level:</span><span>course_level (초급/중급/고급)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">status:</span><span>course_status (초안/검토중/게시/보류)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">price:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">duration_hours:</span><span>INTEGER</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">course_contents</h4>
+                        <p className="text-xs text-muted-foreground">강의 콘텐츠 (비디오, 문서 등)</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">title:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content_type:</span><span>content_type (비디오/문서/퀴즈)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">video_url:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">video_provider:</span><span>video_provider (youtube/vimeo)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">duration_minutes:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">order_index:</span><span>INTEGER</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">categories</h4>
+                        <p className="text-xs text-muted-foreground">강의 카테고리 분류</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">name:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">slug:</span><span>TEXT (URL용)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">parent_id:</span><span>UUID (FK → categories, 계층 구조)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">display_order:</span><span>INTEGER</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 수강 및 진도 관리 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">수강 및 진도 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">enrollments</h4>
+                        <p className="text-xs text-muted-foreground">강의 수강 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">enrolled_at:</span><span>TIMESTAMP</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">progress:</span><span>NUMERIC (0-100)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">completed_at:</span><span>TIMESTAMP</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">content_progress</h4>
+                        <p className="text-xs text-muted-foreground">콘텐츠별 학습 진도</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content_id:</span><span>UUID (FK → course_contents)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">progress_percentage:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">last_position_seconds:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">completed:</span><span>BOOLEAN</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">certificates</h4>
+                        <p className="text-xs text-muted-foreground">수료증 발급 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">enrollment_id:</span><span>UUID (FK → enrollments)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">certificate_number:</span><span>TEXT (고유번호)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">certificate_url:</span><span>TEXT (PDF URL)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">issued_at:</span><span>TIMESTAMP</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 과제 및 성적 관리 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">과제 및 성적 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">assignments</h4>
+                        <p className="text-xs text-muted-foreground">과제 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">title:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">description:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">due_date:</span><span>TIMESTAMP</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">max_score:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">status:</span><span>assignment_status (초안/게시/종료)</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">assignment_submissions</h4>
+                        <p className="text-xs text-muted-foreground">과제 제출 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">assignment_id:</span><span>UUID (FK → assignments)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">student_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">submission_text:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">file_urls:</span><span>ARRAY (첨부파일)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">score:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">feedback:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">status:</span><span>submission_status (제출/채점중/완료)</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">grades</h4>
+                        <p className="text-xs text-muted-foreground">성적 관리</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">enrollment_id:</span><span>UUID (FK → enrollments)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">grade_type:</span><span>TEXT (시험/과제/퀴즈)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">score:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">max_score:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">percentage:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">graded_by:</span><span>UUID (FK → auth.users)</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 출석 관리 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">출석 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">attendance</h4>
+                        <p className="text-xs text-muted-foreground">출석 기록</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content_id:</span><span>UUID (FK → course_contents)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">attendance_date:</span><span>DATE</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">status:</span><span>attendance_status (출석/지각/결석)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">check_in_time:</span><span>TIMESTAMP</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">ip_address:</span><span>INET</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">attendance_details</h4>
+                        <p className="text-xs text-muted-foreground">출석 상세 정보 (지각/조퇴/사유)</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">attendance_id:</span><span>UUID (FK → attendance)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">late_minutes:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">early_leave_minutes:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">absence_reason:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">excuse_document_url:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 게임화 시스템 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">게임화 시스템</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">badges</h4>
+                        <p className="text-xs text-muted-foreground">배지 정의</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">name:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">badge_type:</span><span>TEXT (학습/참여/성취)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">requirement_type:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">requirement_value:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">icon:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">user_badges</h4>
+                        <p className="text-xs text-muted-foreground">사용자별 획득 배지</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">badge_id:</span><span>UUID (FK → badges)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">earned_at:</span><span>TIMESTAMP</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">point_transactions</h4>
+                        <p className="text-xs text-muted-foreground">포인트 거래 내역</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">points:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">transaction_type:</span><span>TEXT (획득/소비)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">reason:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 커뮤니티 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">커뮤니티</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">community_posts</h4>
+                        <p className="text-xs text-muted-foreground">게시글</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">author_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">title:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">post_type:</span><span>post_type (토론/질문/공지)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">views_count:</span><span>INTEGER</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">community_comments</h4>
+                        <p className="text-xs text-muted-foreground">댓글</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">post_id:</span><span>UUID (FK → community_posts)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">author_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">parent_comment_id:</span><span>UUID (FK → community_comments, 대댓글)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* HRD 국비과정 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">HRD 국비과정 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">government_training_info</h4>
+                        <p className="text-xs text-muted-foreground">국비 훈련 과정 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">training_type:</span><span>VARCHAR (실업자/재직자)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">hrd_net_course_id:</span><span>TEXT (HRD-Net ID)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">total_training_hours:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">training_allowance:</span><span>NUMERIC (훈련수당)</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">counseling_logs</h4>
+                        <p className="text-xs text-muted-foreground">상담 일지</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">student_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">counselor_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">counseling_type:</span><span>VARCHAR (진로/학업/생활)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">summary:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">follow_up_needed:</span><span>BOOLEAN</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">dropout_records</h4>
+                        <p className="text-xs text-muted-foreground">중도탈락 기록</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">enrollment_id:</span><span>UUID (FK → enrollments)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">dropout_date:</span><span>DATE</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">reason_category:</span><span>VARCHAR (개인/가정/건강)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">dropout_reason:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">refund_status:</span><span>VARCHAR</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">satisfaction_surveys</h4>
+                        <p className="text-xs text-muted-foreground">만족도 조사</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">student_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">overall_rating:</span><span>INTEGER (1-5)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">content_rating:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">instructor_rating:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">comments:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* AI 및 분석 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">AI 및 학습 분석</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">ai_usage_logs</h4>
+                        <p className="text-xs text-muted-foreground">AI 기능 사용 로그</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">tenant_id:</span><span>UUID</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">model_name:</span><span>TEXT (GPT/Gemini)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">tokens_used:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">prompt_text:</span><span>TEXT</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">learning_analytics</h4>
+                        <p className="text-xs text-muted-foreground">학습 분석 데이터</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">total_time_minutes:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">engagement_score:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">at_risk_score:</span><span>NUMERIC (위험도)</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">learner_risk_analysis</h4>
+                        <p className="text-xs text-muted-foreground">학습자 위험도 분석</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">risk_level:</span><span>TEXT (낮음/중간/높음)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">dropout_probability:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">intervention_required:</span><span>BOOLEAN</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">learning_paths</h4>
+                        <p className="text-xs text-muted-foreground">학습 경로 정의</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">title:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">difficulty_level:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">estimated_hours:</span><span>INTEGER</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">learning_objectives:</span><span>ARRAY</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 결제 및 정산 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">결제 및 정산</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">payments</h4>
+                        <p className="text-xs text-muted-foreground">결제 정보</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">user_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">course_id:</span><span>UUID (FK → courses)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">amount:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">payment_key:</span><span>TEXT (Toss)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">status:</span><span>payment_status</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">revenue_shares</h4>
+                        <p className="text-xs text-muted-foreground">수익 배분</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">payment_id:</span><span>UUID (FK → payments)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">instructor_share:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">platform_share:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">settlement_date:</span><span>DATE</span></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 시스템 관리 */}
+                    <div className="space-y-3">
+                      <h3 className="text-lg font-semibold text-primary">시스템 관리</h3>
+                      
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">tenants</h4>
+                        <p className="text-xs text-muted-foreground">테넌트 (멀티테넌시)</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">name:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">domain:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">settings:</span><span>JSONB</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">is_active:</span><span>BOOLEAN</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">admin_access_logs</h4>
+                        <p className="text-xs text-muted-foreground">관리자 접근 로그</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">admin_id:</span><span>UUID (FK → auth.users)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">action:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">resource_type:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">ip_address:</span><span>INET</span></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+                        <h4 className="font-semibold text-sm">usage_metrics</h4>
+                        <p className="text-xs text-muted-foreground">사용량 측정</p>
+                        <div className="text-xs space-y-1">
+                          <div className="flex"><span className="w-32 text-muted-foreground">id:</span><span>UUID (PK)</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">tenant_id:</span><span>UUID</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">metric_type:</span><span>TEXT</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">metric_value:</span><span>NUMERIC</span></div>
+                          <div className="flex"><span className="w-32 text-muted-foreground">recorded_at:</span><span>TIMESTAMP</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
