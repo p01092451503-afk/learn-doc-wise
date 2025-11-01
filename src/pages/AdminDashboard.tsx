@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3 } from "lucide-react";
+import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import logoIcon from "@/assets/logo-icon.png";
 import { Chatbot } from "@/components/Chatbot";
@@ -212,13 +212,16 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
-                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiTutorOpen(true)}>
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer relative" onClick={() => setAiTutorOpen(true)}>
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg z-10">
+                    <Sparkles className="h-3 w-3 text-white" />
+                    <span className="text-xs font-bold text-white">AI</span>
+                  </div>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
                         <MessageCircle className="h-6 w-6 text-primary" />
                       </div>
-                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
@@ -227,13 +230,16 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiGradingOpen(true)}>
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer relative" onClick={() => setAiGradingOpen(true)}>
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg z-10">
+                    <Sparkles className="h-3 w-3 text-white" />
+                    <span className="text-xs font-bold text-white">AI</span>
+                  </div>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
                         <FileText className="h-6 w-6 text-primary" />
                       </div>
-                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
@@ -242,13 +248,16 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer" onClick={() => setAiAnalysisOpen(true)}>
+                <Card className="border-primary/20 hover:border-primary/40 transition-all cursor-pointer relative" onClick={() => setAiAnalysisOpen(true)}>
+                  <div className="absolute -top-2 -right-2 bg-gradient-to-r from-primary to-accent px-2 py-1 rounded-full flex items-center gap-1 shadow-lg z-10">
+                    <Sparkles className="h-3 w-3 text-white" />
+                    <span className="text-xs font-bold text-white">AI</span>
+                  </div>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
                         <BarChart3 className="h-6 w-6 text-primary" />
                       </div>
-                      <Badge variant="default" className="text-[10px] px-1.5 py-0.5">AI</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">

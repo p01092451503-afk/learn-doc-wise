@@ -1,17 +1,29 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles } from "lucide-react";
+import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { Chatbot } from "@/components/Chatbot";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
+import { AILearningPathDialog } from "@/components/ai/AILearningPathDialog";
+import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
+import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
+import { AIProgressDialog } from "@/components/ai/AIProgressDialog";
+import { AIStudyMatchDialog } from "@/components/ai/AIStudyMatchDialog";
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  
+  const [learningPathOpen, setLearningPathOpen] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [progressOpen, setProgressOpen] = useState(false);
+  const [studyMatchOpen, setStudyMatchOpen] = useState(false);
   
   return (
     <DashboardLayout userRole="student" isDemo={isDemo}>
@@ -165,38 +177,109 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <button
+                  onClick={() => setLearningPathOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <Route className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 학습 경로 추천</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    맞춤형 학습 경로를 추천받으세요
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setQuizOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <FileQuestion className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 퀴즈 생성</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    맞춤형 연습 문제를 생성하세요
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setSummaryOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <FileText className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 요약</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    강의 내용을 빠르게 요약하세요
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setProgressOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 진도 예측</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    완료 시점을 예측하고 목표를 관리하세요
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => setStudyMatchOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <Users className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 스터디 메이트</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    비슷한 수준의 학습 동료를 찾으세요
+                  </p>
+                </button>
+
                 <div className="p-4 rounded-lg bg-background border border-border">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
-                    <h4 className="font-semibold">{t('aiTutor')}</h4>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">{t('aiTutor')}</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {t('aiTutorDesc')}
-                  </p>
-                </div>
-                <div className="p-4 rounded-lg bg-background border border-border">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <FileText className="h-5 w-5 text-primary" />
-                    </div>
-                    <h4 className="font-semibold">{t('aiAutoGrading')}</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {t('aiAutoGradingDesc')}
-                  </p>
-                </div>
-                <div className="p-4 rounded-lg bg-background border border-border">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-primary" />
-                    </div>
-                    <h4 className="font-semibold">{t('aiLearningAnalysis')}</h4>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {t('aiLearningAnalysisDesc')}
                   </p>
                 </div>
               </div>
@@ -204,6 +287,13 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
         )}
       </div>
+
+      {/* AI Dialogs */}
+      <AILearningPathDialog open={learningPathOpen} onOpenChange={setLearningPathOpen} />
+      <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
+      <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
+      <AIProgressDialog open={progressOpen} onOpenChange={setProgressOpen} />
+      <AIStudyMatchDialog open={studyMatchOpen} onOpenChange={setStudyMatchOpen} />
 
       {/* 챗봇 - 숨김 */}
       {/* <Chatbot userRole="user" /> */}
