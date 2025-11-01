@@ -233,9 +233,11 @@ const TeacherTrainingLog = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">훈련일지 관리</h1>
-            <p className="text-muted-foreground mt-2 flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              훈련일지 관리
+            </h1>
+            <p className="text-muted-foreground mt-2">
               일일 훈련 내용과 진행 사항을 기록하고 관리합니다
             </p>
           </div>

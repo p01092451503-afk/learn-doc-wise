@@ -116,9 +116,11 @@ const TeacherSatisfactionSurvey = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">만족도 조사</h1>
-            <p className="text-muted-foreground mt-2 flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              만족도 조사
+            </h1>
+            <p className="text-muted-foreground mt-2">
               중간/최종 만족도 조사를 생성하고 결과를 확인하세요
             </p>
           </div>

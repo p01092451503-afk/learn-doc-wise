@@ -79,9 +79,11 @@ const AdminGrades = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">성적 관리</h1>
-            <p className="text-muted-foreground mt-1 flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              성적 관리
+            </h1>
+            <p className="text-muted-foreground mt-1">
               전체 학생의 성적을 확인합니다
             </p>
           </div>

@@ -153,9 +153,11 @@ const TeacherAttendanceDetail = () => {
     <DashboardLayout userRole="teacher">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">출결 상세 관리</h1>
-          <p className="text-muted-foreground mt-2 flex items-center gap-2">
-            <img src={atomLogo} alt="atom" className="h-5 w-5" />
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+            <img src={atomLogo} alt="atom" className="h-8 w-8" />
+            출결 상세 관리
+          </h1>
+          <p className="text-muted-foreground mt-2">
             지각/조퇴 시간, 결석 사유를 상세히 관리하세요
           </p>
         </div>

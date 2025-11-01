@@ -222,9 +222,11 @@ const TeacherTrainingCompletion = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">수료 요건 관리</h1>
-            <p className="text-muted-foreground mt-2 flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              수료 요건 관리
+            </h1>
+            <p className="text-muted-foreground mt-2">
               학생들의 출석률과 성적을 기반으로 수료 요건을 자동으로 체크합니다
             </p>
           </div>
