@@ -250,7 +250,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/operator/dashboard" className={cn(
+                  <Link to="/operator" className={cn(
                     "flex items-center cursor-pointer transition-colors",
                     theme === "dark"
                       ? "text-slate-300 focus:bg-slate-700 focus:text-white"

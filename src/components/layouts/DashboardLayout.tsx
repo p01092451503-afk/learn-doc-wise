@@ -344,7 +344,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/operator/dashboard" className="flex items-center cursor-pointer">
+                  <Link to="/operator" className="flex items-center cursor-pointer">
                     <Building2 className="mr-2 h-4 w-4" />
                     운영자
                   </Link>
