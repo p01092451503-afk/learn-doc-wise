@@ -1219,6 +1219,48 @@ export type Database = {
           },
         ]
       }
+      hrd_features: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          feature_key: string
+          feature_name: string
+          icon_name: string | null
+          id: string
+          is_enabled: boolean | null
+          role: string
+          route_path: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          feature_key: string
+          feature_name: string
+          icon_name?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          role: string
+          route_path?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          feature_key?: string
+          feature_name?: string
+          icon_name?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          role?: string
+          route_path?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       learner_risk_analysis: {
         Row: {
           course_id: string | null

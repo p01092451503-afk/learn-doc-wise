@@ -4,6 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   CheckCircle2,
   Clock,
@@ -16,9 +21,11 @@ import {
   Award,
   DollarSign,
   Link as LinkIcon,
-  BarChart3
+  BarChart3,
+  Eye,
+  EyeOff,
+  Settings
 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 
 interface Feature {
   id: string;
@@ -35,7 +42,48 @@ interface Feature {
 }
 
 const OperatorGovernmentTraining = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  // HRD 기능 데이터 가져오기
+  const { data: hrdFeatures = [], isLoading } = useQuery({
+    queryKey: ["hrd-features"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("hrd_features")
+        .select("*")
+        .order("role", { ascending: true })
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // HRD 기능 토글
+  const toggleFeature = useMutation({
+    mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
+      const { error } = await supabase
+        .from("hrd_features")
+        .update({ is_enabled: enabled })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["hrd-features"] });
+      toast({
+        title: "설정 변경 완료",
+        description: "HRD 기능 노출 설정이 업데이트되었습니다.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "설정 변경 실패",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
 
   const features: Feature[] = [
     // 이미 구현된 기능들
@@ -354,9 +402,24 @@ const OperatorGovernmentTraining = () => {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">국비환급과정 기능 관리</h1>
           <p className="text-muted-foreground mt-2">
-            국비환급과정 운영에 필요한 모든 기능의 개발 현황과 우선순위를 관리합니다
+            국비환급과정 운영에 필요한 모든 기능의 개발 현황과 노출 설정을 관리합니다
           </p>
         </div>
+
+        <Tabs defaultValue="development" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="development" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              기능 개발 현황
+            </TabsTrigger>
+            <TabsTrigger value="visibility" className="gap-2">
+              <Settings className="h-4 w-4" />
+              HRD 기능 노출 관리
+            </TabsTrigger>
+          </TabsList>
+
+          {/* 기능 개발 현황 탭 */}
+          <TabsContent value="development" className="space-y-6">
 
         {/* 통계 카드 */}
         <div className="grid gap-4 md:grid-cols-5">
@@ -580,6 +643,161 @@ const OperatorGovernmentTraining = () => {
             </div>
           </CardContent>
         </Card>
+          </TabsContent>
+
+          {/* HRD 기능 노출 관리 탭 */}
+          <TabsContent value="visibility" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  HRD 기능 노출 설정
+                </CardTitle>
+                <CardDescription>
+                  각 역할별 HRD 기능의 메뉴 노출 여부를 관리합니다
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* 학생 기능 */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Users className="h-5 w-5 text-primary" />
+                        학생 메뉴
+                      </h3>
+                      <div className="grid gap-3">
+                        {hrdFeatures
+                          .filter((f: any) => f.role === "student")
+                          .map((feature: any) => (
+                            <div
+                              key={feature.id}
+                              className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                            >
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-semibold">{feature.feature_name}</h4>
+                                  <Badge variant="outline" className="text-xs">
+                                    {feature.feature_key}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {feature.description}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3 ml-4">
+                                <Switch
+                                  checked={feature.is_enabled}
+                                  onCheckedChange={(checked) =>
+                                    toggleFeature.mutate({ id: feature.id, enabled: checked })
+                                  }
+                                />
+                                {feature.is_enabled ? (
+                                  <Eye className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <EyeOff className="h-4 w-4 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* 강사 기능 */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <ClipboardCheck className="h-5 w-5 text-accent" />
+                        강사 메뉴
+                      </h3>
+                      <div className="grid gap-3">
+                        {hrdFeatures
+                          .filter((f: any) => f.role === "teacher")
+                          .map((feature: any) => (
+                            <div
+                              key={feature.id}
+                              className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                            >
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-semibold">{feature.feature_name}</h4>
+                                  <Badge variant="outline" className="text-xs">
+                                    {feature.feature_key}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {feature.description}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3 ml-4">
+                                <Switch
+                                  checked={feature.is_enabled}
+                                  onCheckedChange={(checked) =>
+                                    toggleFeature.mutate({ id: feature.id, enabled: checked })
+                                  }
+                                />
+                                {feature.is_enabled ? (
+                                  <Eye className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <EyeOff className="h-4 w-4 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* 관리자 기능 */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Award className="h-5 w-5 text-secondary" />
+                        관리자 메뉴
+                      </h3>
+                      <div className="grid gap-3">
+                        {hrdFeatures
+                          .filter((f: any) => f.role === "admin")
+                          .map((feature: any) => (
+                            <div
+                              key={feature.id}
+                              className="flex items-center justify-between p-4 rounded-lg border bg-card"
+                            >
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="font-semibold">{feature.feature_name}</h4>
+                                  <Badge variant="outline" className="text-xs">
+                                    {feature.feature_key}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {feature.description}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-3 ml-4">
+                                <Switch
+                                  checked={feature.is_enabled}
+                                  onCheckedChange={(checked) =>
+                                    toggleFeature.mutate({ id: feature.id, enabled: checked })
+                                  }
+                                />
+                                {feature.is_enabled ? (
+                                  <Eye className="h-4 w-4 text-green-600" />
+                                ) : (
+                                  <EyeOff className="h-4 w-4 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </OperatorLayout>
   );
