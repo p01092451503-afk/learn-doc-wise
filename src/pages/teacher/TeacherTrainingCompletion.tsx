@@ -96,10 +96,10 @@ const TeacherTrainingCompletion = () => {
       const { data: enrollments, error: enrollmentError } = await supabase
         .from("enrollments")
         .select(`
+          id,
           user_id,
           profiles:user_id (
-            full_name,
-            email
+            full_name
           )
         `)
         .eq("course_id", selectedCourse);
@@ -110,6 +110,7 @@ const TeacherTrainingCompletion = () => {
       const studentData: StudentCompletion[] = await Promise.all(
         (enrollments || []).map(async (enrollment: any) => {
           const userId = enrollment.user_id;
+          const enrollmentId = enrollment.id;
           
           // 출석률 계산
           const { data: attendanceData } = await supabase
@@ -130,7 +131,7 @@ const TeacherTrainingCompletion = () => {
           const { data: gradesData } = await supabase
             .from("grades")
             .select("score, max_score")
-            .eq("enrollment_id", enrollment.user_id);
+            .eq("enrollment_id", enrollmentId);
 
           let averageScore = 0;
           if (gradesData && gradesData.length > 0) {
@@ -157,7 +158,7 @@ const TeacherTrainingCompletion = () => {
           return {
             student_id: userId,
             student_name: enrollment.profiles?.full_name || "이름 없음",
-            student_email: enrollment.profiles?.email || "",
+            student_email: "",
             attendance_rate: Math.round(attendanceRate * 10) / 10,
             average_score: Math.round(averageScore * 10) / 10,
             meets_attendance: meetsAttendance,
