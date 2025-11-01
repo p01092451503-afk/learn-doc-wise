@@ -381,12 +381,16 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                   if (item.label === "디자인 템플릿") {
                     return false;
                   }
+                  // 게이미피케이션 메뉴는 항상 제외
+                  if (item.label === "게이미피케이션") {
+                    return false;
+                  }
                   // 데모 모드에서는 enabled가 true인 것만 표시
                   if (isDemoMode) {
                     return item.enabled === true;
                   }
-                  // 일반 모드에서는 모든 항목 표시 (enabled 여부와 관계없이)
-                  return true;
+                  // 일반 모드에서는 enabled가 false인 항목 제외
+                  return item.enabled !== false;
                 })
                 .map((item) => (
                   // 일반 모드에서는 enabled 체크 안함, 데모 모드에서만 체크
