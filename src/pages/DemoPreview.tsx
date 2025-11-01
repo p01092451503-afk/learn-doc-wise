@@ -281,7 +281,7 @@ const DemoPreview = () => {
       <div className="min-h-screen bg-background">
       {/* Demo Mode Header */}
       <div className="border-b sticky top-0 bg-background/98 backdrop-blur-xl z-[60] shadow-sm">
-        <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-between gap-2">
+        <div className="container mx-auto px-3 md:px-4 h-16 md:h-20 flex items-center justify-start gap-4">
           <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -300,7 +300,7 @@ const DemoPreview = () => {
             </Button>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-4 ml-auto">
             <div className="flex items-center gap-1.5 md:gap-2">
               <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">역할 전환:</span>
               <Select value={activeRole} onValueChange={(value) => setActiveRole(value as DemoRole)}>
