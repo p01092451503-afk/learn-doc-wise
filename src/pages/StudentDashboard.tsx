@@ -14,6 +14,7 @@ import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
 import { AIProgressDialog } from "@/components/ai/AIProgressDialog";
 import { AIStudyMatchDialog } from "@/components/ai/AIStudyMatchDialog";
+import { AITutorDialog } from "@/components/ai/AITutorDialog";
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const { language } = useLanguage();
@@ -24,6 +25,7 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [progressOpen, setProgressOpen] = useState(false);
   const [studyMatchOpen, setStudyMatchOpen] = useState(false);
+  const [aiTutorOpen, setAiTutorOpen] = useState(false);
   
   return (
     <DashboardLayout userRole="student" isDemo={isDemo}>
@@ -267,9 +269,12 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   </p>
                 </button>
 
-                <div className="p-4 rounded-lg bg-background border border-border">
+                <button
+                  onClick={() => setAiTutorOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex items-center gap-2">
@@ -280,7 +285,7 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   <p className="text-sm text-muted-foreground">
                     {t('aiTutorDesc')}
                   </p>
-                </div>
+                </button>
               </div>
             </CardContent>
           </Card>
@@ -292,6 +297,7 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
       <AIProgressDialog open={progressOpen} onOpenChange={setProgressOpen} />
       <AIStudyMatchDialog open={studyMatchOpen} onOpenChange={setStudyMatchOpen} />
+      <AITutorDialog open={aiTutorOpen} onOpenChange={setAiTutorOpen} courseContext="학습 대시보드" />
 
       {/* 챗봇 - 숨김 */}
       {/* <Chatbot userRole="user" /> */}
