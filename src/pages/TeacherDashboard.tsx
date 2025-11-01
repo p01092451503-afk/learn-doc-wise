@@ -3,14 +3,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText } from "lucide-react";
+import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText, Bot } from "lucide-react";
 import atomLogo from "@/assets/atom-logo.png";
 import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
+import { AITutorDialog } from "@/components/ai/AITutorDialog";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [quizOpen, setQuizOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [aiTutorOpen, setAiTutorOpen] = useState(false);
 
   return (
     <DashboardLayout userRole="teacher" isDemo={isDemo}>
@@ -185,7 +187,25 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-3">
+                <button
+                  onClick={() => setAiTutorOpen(true)}
+                  className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                      <Bot className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">AI 튜터</h4>
+                      <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    강의 주제에 대해 질문하고 답변을 받으세요
+                  </p>
+                </button>
+
                 <button
                   onClick={() => setQuizOpen(true)}
                   className="p-4 rounded-lg bg-background border border-border hover:border-primary/50 hover:shadow-glow transition-all text-left group"
@@ -226,6 +246,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
 
         {/* AI Dialogs */}
+        <AITutorDialog open={aiTutorOpen} onOpenChange={setAiTutorOpen} courseContext="강의 준비" />
         <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
         <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
       </div>
