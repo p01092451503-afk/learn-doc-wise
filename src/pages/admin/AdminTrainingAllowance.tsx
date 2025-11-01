@@ -43,7 +43,7 @@ const AdminTrainingAllowance = () => {
               required_attendance_rate
             )
           ),
-          student:user_id(full_name, email)
+          profiles:user_id(full_name, email)
         `)
         .order("enrolled_at", { ascending: false });
 
@@ -79,8 +79,8 @@ const AdminTrainingAllowance = () => {
   });
 
   const filteredData = enrollments.filter((item: any) =>
-    item.student?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.student?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -215,10 +215,10 @@ const AdminTrainingAllowance = () => {
                     return (
                       <TableRow key={item.id}>
                         <TableCell className="font-medium">
-                          {item.student?.full_name || "-"}
+                          {item.profiles?.full_name || "-"}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
-                          {item.student?.email || "-"}
+                          {item.profiles?.email || "-"}
                         </TableCell>
                         <TableCell>{item.courses?.title || "-"}</TableCell>
                         <TableCell>
