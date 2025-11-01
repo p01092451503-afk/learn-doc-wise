@@ -44,6 +44,8 @@ import StudentCommunity from "./StudentCommunity";
 import StudentAnalytics from "./StudentAnalytics";
 import StudentGamification from "./StudentGamification";
 import StudentLearningPath from "./StudentLearningPath";
+import StudentSatisfactionSurvey from "./student/StudentSatisfactionSurvey";
+import StudentCounselingLog from "./student/StudentCounselingLog";
 import TeacherDashboard from "./TeacherDashboard";
 import TeacherCourses from "./TeacherCourses";
 import TeacherAssignments from "./TeacherAssignments";
@@ -51,6 +53,14 @@ import TeacherStudents from "./TeacherStudents";
 import TeacherAnalytics from "./TeacherAnalytics";
 import TeacherRevenue from "./TeacherRevenue";
 import TeacherAttendance from "./TeacherAttendance";
+import TeacherAttendanceDetail from "./teacher/TeacherAttendanceDetail";
+import TeacherTrainingLog from "./teacher/TeacherTrainingLog";
+import TeacherSatisfactionSurvey from "./teacher/TeacherSatisfactionSurvey";
+import TeacherCounselingLog from "./teacher/TeacherCounselingLog";
+import TeacherDropoutManagement from "./teacher/TeacherDropoutManagement";
+import TeacherTrainingCompletion from "./teacher/TeacherTrainingCompletion";
+import TeacherTrainingAllowance from "./teacher/TeacherTrainingAllowance";
+import TeacherTrainingReport from "./teacher/TeacherTrainingReport";
 import AdminDashboard from "./AdminDashboard";
 import OperatorDashboard from "./OperatorDashboard";
 import AdminUsers from "./AdminUsers";
@@ -65,6 +75,14 @@ import AdminUsageManagement from "./AdminUsageManagement";
 import AdminMonitoring from "./AdminMonitoring";
 import AdminSettings from "./AdminSettings";
 import AdminAnalytics from "./AdminAnalytics";
+import AdminAttendance from "./admin/AdminAttendance";
+import AdminTrainingLog from "./admin/AdminTrainingLog";
+import AdminSatisfactionSurvey from "./admin/AdminSatisfactionSurvey";
+import AdminCounselingLog from "./admin/AdminCounselingLog";
+import AdminDropoutManagement from "./admin/AdminDropoutManagement";
+import AdminTrainingCompletion from "./admin/AdminTrainingCompletion";
+import AdminGrades from "./admin/AdminGrades";
+import AdminTrainingAllowance from "./admin/AdminTrainingAllowance";
 import {
   Select,
   SelectContent,
@@ -80,6 +98,7 @@ interface MenuItem {
   label: string;
   path: string;
   hasAI?: boolean;
+  isHRD?: boolean;
 }
 
 const DemoPreview = () => {
@@ -100,6 +119,8 @@ const DemoPreview = () => {
         { icon: Route, label: "학습 경로", path: "learning-path", hasAI: true },
         { icon: FileText, label: "과제", path: "assignments" },
         { icon: MessageSquare, label: "커뮤니티", path: "community" },
+        { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+        { icon: ClipboardList, label: "상담 이력", path: "counseling-log", isHRD: true },
         { icon: Trophy, label: "게이미피케이션", path: "gamification" },
         { icon: BarChart3, label: "학습 통계", path: "analytics" },
       ];
@@ -111,6 +132,14 @@ const DemoPreview = () => {
         { icon: BookOpen, label: "강의 관리", path: "courses" },
         { icon: FileText, label: "과제 관리", path: "assignments", hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "attendance" },
+        { icon: CalendarCheck, label: "출결 상세", path: "attendance-detail", isHRD: true },
+        { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+        { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
+        { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
+        { icon: Trophy, label: "수료 요건", path: "training-completion", isHRD: true },
+        { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
+        { icon: BarChart3, label: "훈련 리포트", path: "training-report", isHRD: true },
         { icon: Users, label: "학생 관리", path: "students" },
         { icon: BarChart3, label: "통계", path: "analytics" },
         { icon: DollarSign, label: "수익", path: "revenue" },
@@ -124,8 +153,15 @@ const DemoPreview = () => {
       { icon: BookOpen, label: "강좌 관리", path: "courses" },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
       { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
+      { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
+      { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
+      { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+      { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
+      { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
+      { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
+      { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
+      { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
       { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
-      { icon: Package, label: "템플릿 관리", path: "templates" },
       { icon: DollarSign, label: "매출 관리", path: "revenue" },
       { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
       { icon: BarChart3, label: "분석 도구", path: "analytics" },
@@ -151,6 +187,10 @@ const DemoPreview = () => {
           return <StudentGamification />;
         case "learning-path":
           return <StudentLearningPath />;
+        case "satisfaction-survey":
+          return <StudentSatisfactionSurvey />;
+        case "counseling-log":
+          return <StudentCounselingLog />;
         default:
           return <StudentDashboard isDemo={true} />;
       }
@@ -167,6 +207,22 @@ const DemoPreview = () => {
           return <TeacherStudents />;
         case "attendance":
           return <TeacherAttendance isDemo={true} />;
+        case "attendance-detail":
+          return <TeacherAttendanceDetail />;
+        case "training-log":
+          return <TeacherTrainingLog />;
+        case "satisfaction-survey":
+          return <TeacherSatisfactionSurvey />;
+        case "counseling-log":
+          return <TeacherCounselingLog />;
+        case "dropout-management":
+          return <TeacherDropoutManagement />;
+        case "training-completion":
+          return <TeacherTrainingCompletion />;
+        case "training-allowance":
+          return <TeacherTrainingAllowance />;
+        case "training-report":
+          return <TeacherTrainingReport />;
         case "analytics":
           return <TeacherAnalytics />;
         case "revenue":
@@ -187,6 +243,22 @@ const DemoPreview = () => {
           return <AdminContent />;
         case "learning":
           return <AdminLearning />;
+        case "attendance":
+          return <AdminAttendance />;
+        case "training-log":
+          return <AdminTrainingLog />;
+        case "satisfaction-survey":
+          return <AdminSatisfactionSurvey />;
+        case "counseling-log":
+          return <AdminCounselingLog />;
+        case "dropout-management":
+          return <AdminDropoutManagement />;
+        case "training-completion":
+          return <AdminTrainingCompletion />;
+        case "grades":
+          return <AdminGrades />;
+        case "training-allowance":
+          return <AdminTrainingAllowance />;
         case "ai-logs":
           return <AdminAILogs />;
         case "templates":
@@ -311,11 +383,18 @@ const DemoPreview = () => {
                     {!sidebarCollapsed && (
                       <div className="flex items-center gap-2 flex-1">
                         <span className="font-medium whitespace-nowrap">{item.label}</span>
-                        {item.hasAI && (
-                          <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">
-                            AI
-                          </Badge>
-                        )}
+                        <div className="flex items-center gap-1.5">
+                          {item.hasAI && (
+                            <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">
+                              AI
+                            </Badge>
+                          )}
+                          {item.isHRD && (
+                            <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                              HRD
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     )}
                   </Button>
