@@ -44,6 +44,7 @@ import AdminCounselingLog from "./pages/admin/AdminCounselingLog";
 import AdminDropoutManagement from "./pages/admin/AdminDropoutManagement";
 import AdminTrainingCompletion from "./pages/admin/AdminTrainingCompletion";
 import AdminGrades from "./pages/admin/AdminGrades";
+import AdminManual from "./pages/admin/AdminManual";
 import AdminTrainingAllowance from "./pages/admin/AdminTrainingAllowance";
 import TeacherTrainingLog from "./pages/teacher/TeacherTrainingLog";
 import TeacherSatisfactionSurvey from "./pages/teacher/TeacherSatisfactionSurvey";
@@ -72,6 +73,7 @@ import OperatorSettings from "./pages/operator/OperatorSettings";
 import OperatorFeatures from "./pages/operator/OperatorFeatures";
 import OperatorTechStack from "./pages/operator/OperatorTechStack";
 import OperatorGovernmentTraining from "./pages/operator/OperatorGovernmentTraining";
+import OperatorManual from "./pages/operator/OperatorManual";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
@@ -138,6 +140,7 @@ const App = () => {
           <Route path="/operator/features" element={<OperatorFeatures />} />
           <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
           <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
+          <Route path="/operator/manual" element={<OperatorManual />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />
@@ -149,6 +152,7 @@ const App = () => {
           <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
           <Route path="/admin/grades" element={<AdminGrades />} />
           <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
+          <Route path="/admin/manual" element={<AdminManual />} />
           <Route path="/admin/revenue" element={<AdminRevenue />} />
           <Route path="/admin/monitoring" element={<AdminMonitoring />} />
           <Route path="/admin/learning" element={<AdminLearning />} />

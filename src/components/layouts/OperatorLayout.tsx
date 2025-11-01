@@ -17,6 +17,7 @@ import {
   Sparkles,
   Layers,
   Package,
+  BookOpen,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -61,6 +62,7 @@ const menuItems: MenuItem[] = [
   { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
   { icon: Brain, label: "국비환급과정", path: "/operator/government-training" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
+  { icon: BookOpen, label: "매뉴얼", path: "/operator/manual" },
 ];
 
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {

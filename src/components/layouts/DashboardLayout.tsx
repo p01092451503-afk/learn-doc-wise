@@ -195,6 +195,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: DollarSign, label: "전체 매출", path: "/operator/revenue", enabled: true },
         { icon: Shield, label: "시스템 모니터링", path: "/operator/monitoring", enabled: true },
         { icon: Settings, label: "플랫폼 설정", path: "/operator/settings", enabled: true },
+        { icon: BookOpen, label: "매뉴얼", path: "/operator/manual", enabled: true },
       ];
     }
 
@@ -217,6 +218,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
       { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
       { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
+      { icon: BookOpen, label: "매뉴얼", path: "/admin/manual", enabled: true },
     ];
 
     // Only add operator menus if NOT in demo mode (to separate concerns clearly)
