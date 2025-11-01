@@ -58,9 +58,9 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "대시보드", path: "/operator" },
   { icon: Building2, label: "테넌트 관리", path: "/operator/tenants" },
-  { icon: BarChart3, label: "사용량", path: "/operator/usage" },
+  { icon: BarChart3, label: "사용량 관리", path: "/operator/usage" },
   { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
-  { icon: DollarSign, label: "매출", path: "/operator/revenue" },
+  { icon: DollarSign, label: "매출 관리", path: "/operator/revenue" },
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
   { icon: Layers, label: "기능 목록", path: "/operator/features" },
   { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
