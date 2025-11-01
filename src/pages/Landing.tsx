@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star } from "lucide-react";
+import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import {
   Tooltip,
@@ -130,21 +130,69 @@ const Landing = () => {
               title="AI 기반 학습"
               description="Atom AI가 개인화된 학습 경로를 제공하고 실시간으로 피드백합니다"
             />
-            <FeatureCard
-              icon={<Sparkles className="h-10 w-10" />}
-              title="스마트 출석"
-              description="자동 출석 체크와 학습 참여도를 실시간으로 모니터링합니다"
-            />
-            <FeatureCard
-              icon={<TrendingUp className="h-10 w-10" />}
-              title="진도 관리"
-              description="학습 진행 상황을 한눈에 파악하고 목표 달성을 지원합니다"
-            />
-            <FeatureCard
-              icon={<Award className="h-10 w-10" />}
-              title="성취 보상"
-              description="학습 목표 달성 시 배지와 포인트로 동기부여를 제공합니다"
-            />
+          </div>
+          
+          {/* HRD 정부지원 훈련과정 전용 기능 */}
+          <div className="mt-16 pt-16 border-t border-border">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-4">
+                <Award className="h-4 w-4 text-accent" />
+                <span className="text-sm font-semibold text-accent">HRD 정부지원 훈련과정</span>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                정부지원 훈련기관을 위한 전문 기능
+              </h3>
+              <p className="text-muted-foreground">
+                HRD-Net 연계부터 수료 관리까지, 정부지원 훈련과정 운영에 필요한 모든 기능
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <FeatureCard
+                icon={<FileText className="h-10 w-10" />}
+                title="훈련일지 관리"
+                description="일일 훈련 내용과 진행 사항을 체계적으로 기록하고 관리합니다"
+              />
+              <FeatureCard
+                icon={<Calendar className="h-10 w-10" />}
+                title="출석 관리"
+                description="출석, 지각, 결석을 자동으로 체크하고 상세 이력을 관리합니다"
+              />
+              <FeatureCard
+                icon={<MessageSquare className="h-10 w-10" />}
+                title="상담일지"
+                description="학생 상담 내용을 기록하고 맞춤형 학습 지원을 제공합니다"
+              />
+              <FeatureCard
+                icon={<AlertTriangle className="h-10 w-10" />}
+                title="중도탈락 관리"
+                description="중도탈락 위험 학생을 조기 발견하고 적극적으로 지원합니다"
+              />
+              <FeatureCard
+                icon={<Trophy className="h-10 w-10" />}
+                title="수료 관리"
+                description="출석률과 성적을 자동 집계하여 수료 요건을 관리합니다"
+              />
+              <FeatureCard
+                icon={<Wallet className="h-10 w-10" />}
+                title="훈련수당 관리"
+                description="출석 기반 훈련수당을 자동 계산하고 지급 내역을 관리합니다"
+              />
+              <FeatureCard
+                icon={<Star className="h-10 w-10" />}
+                title="만족도 조사"
+                description="중간/최종 만족도 조사를 진행하고 결과를 분석합니다"
+              />
+              <FeatureCard
+                icon={<ClipboardCheck className="h-10 w-10" />}
+                title="성적 관리"
+                description="시험, 과제, 참여도를 종합하여 체계적으로 성적을 관리합니다"
+              />
+              <FeatureCard
+                icon={<UserCheck className="h-10 w-10" />}
+                title="훈련생 관리"
+                description="훈련생 정보와 학습 이력을 통합 관리하고 맞춤 지원합니다"
+              />
+            </div>
           </div>
         </div>
       </section>
