@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck } from "lucide-react";
+import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck, Route, FileQuestion } from "lucide-react";
+import { useState } from "react";
+import { AILearningPathDialog } from "@/components/ai/AILearningPathDialog";
+import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
+import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
+import { AIProgressDialog } from "@/components/ai/AIProgressDialog";
+import { AIStudyMatchDialog } from "@/components/ai/AIStudyMatchDialog";
 import logoIcon from "@/assets/logo-icon.png";
 import {
   Tooltip,
@@ -11,6 +17,12 @@ import {
 
 
 const Landing = () => {
+  const [learningPathOpen, setLearningPathOpen] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [progressOpen, setProgressOpen] = useState(false);
+  const [studyMatchOpen, setStudyMatchOpen] = useState(false);
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background">
@@ -331,6 +343,116 @@ const Landing = () => {
               </div>
             </div>
 
+            {/* AI 학습 경로 추천 */}
+            <div 
+              onClick={() => setLearningPathOpen(true)}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Route className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 경로 추천</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    수준과 목표를 분석하여 최적의 학습 순서와 코스를 추천합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">맞춤 추천</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">단계별 학습</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 퀴즈 생성 */}
+            <div 
+              onClick={() => setQuizOpen(true)}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FileQuestion className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 퀴즈 생성</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    강의 내용을 분석하여 맞춤형 퀴즈와 연습문제를 자동 생성합니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">자동 생성</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">다양한 난이도</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 요약 */}
+            <div 
+              onClick={() => setSummaryOpen(true)}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 요약</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    긴 강의나 문서를 핵심 내용만 간추려 빠르게 이해할 수 있습니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">핵심 요약</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">시간 절약</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 진도 예측 */}
+            <div 
+              onClick={() => setProgressOpen(true)}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 진도 예측</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습 패턴을 분석하여 수료 시점을 예측하고 목표 달성을 돕습니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">패턴 분석</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">목표 관리</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI 스터디 메이트 매칭 */}
+            <div 
+              onClick={() => setStudyMatchOpen(true)}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            >
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 스터디 메이트 매칭</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    학습 수준과 관심사가 비슷한 학습 동료를 AI가 매칭해줍니다
+                  </p>
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">스마트 매칭</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">협업 학습</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* AI 챗봇 */}
             <div className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-3">
               <div className="flex items-start gap-4 max-w-2xl mx-auto">
@@ -478,6 +600,13 @@ const Landing = () => {
           </div>
         </div>
       </footer>
+
+      {/* AI Dialogs */}
+      <AILearningPathDialog open={learningPathOpen} onOpenChange={setLearningPathOpen} />
+      <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
+      <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
+      <AIProgressDialog open={progressOpen} onOpenChange={setProgressOpen} />
+      <AIStudyMatchDialog open={studyMatchOpen} onOpenChange={setStudyMatchOpen} />
     </div>
     </TooltipProvider>
   );
