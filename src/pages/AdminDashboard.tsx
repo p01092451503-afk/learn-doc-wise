@@ -199,9 +199,8 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </Card>
         </div>
 
-        {/* AI Learning Assistant - Only in Demo */}
-        {isDemo && (
-          <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+        {/* AI Learning Assistant */}
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
@@ -274,7 +273,6 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </div>
             </CardContent>
           </Card>
-        )}
 
         {/* Quick Actions */}
           <Card>

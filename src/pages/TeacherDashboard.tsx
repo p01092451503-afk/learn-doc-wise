@@ -173,8 +173,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* AI Features for Teachers */}
-        {isDemo && (
-          <Card className="border-primary/20 bg-primary/5">
+        <Card className="border-primary/20 bg-primary/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brain className="h-5 w-5 text-primary" />
@@ -225,7 +224,6 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               </div>
             </CardContent>
           </Card>
-        )}
 
         {/* AI Dialogs */}
         <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
