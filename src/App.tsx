@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Landing from "./pages/Landing";
+import Features from "./pages/Features";
 import Pricing from "./pages/Pricing";
 import Auth from "./pages/Auth";
 import DemoPreview from "./pages/DemoPreview";
@@ -91,6 +92,7 @@ const App = () => {
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/features-detail" element={<Features />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/features" element={<FeaturesShowcase />} />
           <Route path="/main" element={<PublicMain />} />
