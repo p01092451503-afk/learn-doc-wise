@@ -474,7 +474,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
             {/* 스타터 */}
             <PricingCard
               title="스타터"
@@ -494,7 +494,7 @@ const Landing = () => {
               buttonVariant="outline"
             />
 
-            {/* 스탠다드 (인기) */}
+            {/* 스탠다드 */}
             <PricingCard
               title="스탠다드"
               description="전문 강사 및 중소 교육 기관"
@@ -504,7 +504,6 @@ const Landing = () => {
               features={[
                 "무제한 강좌 개설",
                 "동영상 업로드 100GB",
-                "AI 학습 분석 엔진",
                 "실시간 화상 강의",
                 "자동 채점 시스템",
                 "맞춤형 학습 경로",
@@ -512,6 +511,29 @@ const Landing = () => {
                 "수료증 자동 발급"
               ]}
               buttonText="스탠다드 시작하기"
+              buttonVariant="outline"
+            />
+
+            {/* 프로 (인기) */}
+            <PricingCard
+              title="프로"
+              description="AI 기능이 필요한 교육 기관"
+              price="₩300,000"
+              period="/월"
+              aiTokens="월 최대 수강생 1,000명"
+              features={[
+                "스탠다드의 모든 기능",
+                "AI 자동 채점",
+                "AI 피드백",
+                "AI 번역",
+                "AI 학습 분석",
+                "AI 리포트",
+                "AI 학습 경로 추천",
+                "AI 퀴즈 생성",
+                "AI 요약",
+                "AI 진도 예측"
+              ]}
+              buttonText="프로 시작하기"
               buttonVariant="default"
               isPopular={true}
             />
@@ -520,21 +542,67 @@ const Landing = () => {
             <PricingCard
               title="프로페셔널"
               description="대형 교육 기관 및 기업 교육"
-              price="₩300,000"
+              price="₩500,000"
               period="/월"
               aiTokens="월 최대 수강생 무제한"
               features={[
-                "스탠다드의 모든 기능",
+                "프로의 모든 AI 기능",
                 "동영상 업로드 500GB",
+                "AI 스터디 메이트 매칭",
+                "AI 튜터",
                 "전담 계정 관리자",
                 "24시간 우선 지원",
                 "맞춤형 브랜딩",
                 "API 연동 지원",
-                "실시간 라이브 강의",
                 "고급 분석 대시보드",
                 "SSO 통합 인증"
               ]}
               buttonText="프로페셔널 시작하기"
+              buttonVariant="premium"
+            />
+
+            {/* 엔터프라이즈 */}
+            <PricingCard
+              title="엔터프라이즈"
+              description="대규모 조직 및 정부 기관"
+              price="₩1,000,000"
+              period="/월"
+              aiTokens="무제한 수강생 + AI 기능"
+              features={[
+                "프로페셔널의 모든 기능",
+                "동영상 업로드 무제한",
+                "전용 서버 구축",
+                "온프레미스 설치 지원",
+                "커스터마이징 개발",
+                "통합 관리 시스템",
+                "실시간 기술 지원",
+                "보안 강화 옵션",
+                "전담 개발팀 지원"
+              ]}
+              buttonText="엔터프라이즈 문의"
+              buttonVariant="premium"
+            />
+
+            {/* 엔터프라이즈 HRD */}
+            <PricingCard
+              title="엔터프라이즈 HRD"
+              description="정부지원 교육 운영 기관"
+              price="₩1,700,000"
+              period="/월"
+              aiTokens="HRD 전용 기능 포함"
+              features={[
+                "엔터프라이즈의 모든 기능",
+                "출석 관리 시스템",
+                "훈련수당 관리",
+                "훈련일지 관리",
+                "중도탈락 관리",
+                "만족도 조사",
+                "훈련 이수 관리",
+                "정부 보고서 자동 생성",
+                "HRD-Net 연동",
+                "컨설팅 및 운영 지원"
+              ]}
+              buttonText="HRD 문의하기"
               buttonVariant="premium"
             />
           </div>
