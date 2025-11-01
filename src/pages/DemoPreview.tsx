@@ -121,7 +121,6 @@ const DemoPreview = () => {
         { icon: MessageSquare, label: "커뮤니티", path: "community" },
         { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
         { icon: ClipboardList, label: "상담 이력", path: "counseling-log", isHRD: true },
-        { icon: Trophy, label: "게이미피케이션", path: "gamification" },
         { icon: BarChart3, label: "학습 통계", path: "analytics" },
       ];
     }
