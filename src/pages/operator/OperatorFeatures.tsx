@@ -71,6 +71,10 @@ import {
   Wallet,
   Briefcase,
   Building2,
+  ClipboardCheck,
+  ClipboardList,
+  UserCog,
+  AlertCircle,
 } from "lucide-react";
 
 interface SubFeature {
@@ -516,6 +520,121 @@ const OperatorFeatures = () => {
     },
   ];
 
+  const operatorMenus: MenuSection[] = [
+    {
+      menuName: "국비과정 출석관리",
+      menuPath: "/admin/attendance",
+      icon: ClipboardCheck,
+      description: "HRD 출석 관리 시스템",
+      features: [
+        { name: "일일 출석 체크", description: "학생별 출석/결석/지각 상태 관리" },
+        { name: "출석부 다운로드", description: "엑셀 형식 출석부 내보내기" },
+        { name: "출석률 통계", description: "학생별/과정별 출석률 분석" },
+        { name: "결석 사유 관리", description: "결석 사유 등록 및 확인" },
+        { name: "지각 시간 기록", description: "지각 시간 자동 계산" },
+        { name: "출석 경고 알림", description: "출석률 미달 시 자동 알림" },
+      ],
+    },
+    {
+      menuName: "국비과정 성적관리",
+      menuPath: "/admin/grades",
+      icon: BarChart3,
+      description: "HRD 성적 평가 시스템",
+      features: [
+        { name: "성적 입력", description: "필기/실기/과제 점수 입력" },
+        { name: "성적 산출", description: "가중치 기반 총점 자동 계산" },
+        { name: "성적표 출력", description: "개인별 성적표 PDF 생성" },
+        { name: "등급 부여", description: "점수 구간별 등급 자동 산정" },
+        { name: "성적 통계", description: "평균/최고/최저점 분석" },
+        { name: "재평가 관리", description: "재시험/재평가 기록" },
+      ],
+    },
+    {
+      menuName: "국비과정 상담일지",
+      menuPath: "/admin/counseling-log",
+      icon: MessageSquare,
+      description: "HRD 상담 기록 관리",
+      features: [
+        { name: "상담 일지 작성", description: "1:1 상담 내용 기록" },
+        { name: "상담 유형 분류", description: "진로/학업/생활 상담 구분" },
+        { name: "상담 이력 조회", description: "학생별 전체 상담 이력" },
+        { name: "상담 통계", description: "상담 유형별 통계 분석" },
+        { name: "후속 조치 관리", description: "상담 후 조치사항 추적" },
+        { name: "상담 보고서", description: "월별/분기별 상담 보고서" },
+      ],
+    },
+    {
+      menuName: "국비과정 교육일지",
+      menuPath: "/admin/training-log",
+      icon: ClipboardList,
+      description: "HRD 교육 일지 작성",
+      features: [
+        { name: "일일 교육 기록", description: "교육 내용 및 진행 상황 작성" },
+        { name: "교육 시간 기록", description: "일일 교육 시간 누적 관리" },
+        { name: "교육 자료 첨부", description: "교안 및 자료 파일 첨부" },
+        { name: "특이사항 기록", description: "교육 중 특이사항 메모" },
+        { name: "강사 평가", description: "교육 만족도 및 피드백" },
+        { name: "교육일지 제출", description: "HRD 보고용 일지 제출" },
+      ],
+    },
+    {
+      menuName: "국비과정 중도탈락관리",
+      menuPath: "/admin/dropout-management",
+      icon: AlertCircle,
+      description: "HRD 중도탈락 예방 및 관리",
+      features: [
+        { name: "중도탈락 위험군 식별", description: "출석률/성적 기반 위험도 분석" },
+        { name: "탈락 사유 관리", description: "개인/가정/건강 사유 분류" },
+        { name: "탈락 처리", description: "중도탈락 처리 및 보고" },
+        { name: "예방 상담 계획", description: "위험군 대상 상담 일정 관리" },
+        { name: "탈락률 통계", description: "과정별/기수별 탈락률 분석" },
+        { name: "복귀 관리", description: "재입과 및 복귀 절차 관리" },
+      ],
+    },
+    {
+      menuName: "국비과정 만족도조사",
+      menuPath: "/admin/satisfaction-survey",
+      icon: Star,
+      description: "HRD 교육 만족도 조사",
+      features: [
+        { name: "설문 작성", description: "교육 만족도 설문지 작성" },
+        { name: "설문 배포", description: "학생별 설문 링크 발송" },
+        { name: "응답 수집", description: "실시간 응답 현황 확인" },
+        { name: "만족도 분석", description: "항목별 만족도 통계" },
+        { name: "자유 의견 수집", description: "개선 의견 및 건의사항" },
+        { name: "만족도 보고서", description: "HRD 제출용 보고서 생성" },
+      ],
+    },
+    {
+      menuName: "국비과정 훈련수당",
+      menuPath: "/admin/training-allowance",
+      icon: Wallet,
+      description: "HRD 훈련수당 관리",
+      features: [
+        { name: "수당 지급 기준", description: "출석률 기반 지급 기준 설정" },
+        { name: "수당 산정", description: "개인별 지급액 자동 계산" },
+        { name: "지급 내역 관리", description: "월별 지급 이력 관리" },
+        { name: "수당 보고서", description: "HRD 보고용 수당 내역서" },
+        { name: "미지급 사유", description: "미달자 미지급 사유 관리" },
+        { name: "재지급 처리", description: "오류 정정 및 재지급" },
+      ],
+    },
+    {
+      menuName: "국비과정 수료관리",
+      menuPath: "/admin/training-completion",
+      icon: Award,
+      description: "HRD 수료 판정 및 관리",
+      features: [
+        { name: "수료 기준 설정", description: "출석률/성적 수료 기준 설정" },
+        { name: "수료 판정", description: "기준별 자동 수료 판정" },
+        { name: "수료증 발급", description: "개인별 수료증 PDF 생성" },
+        { name: "미수료 관리", description: "미수료 사유 및 재교육 안내" },
+        { name: "수료율 통계", description: "과정별/기수별 수료율 분석" },
+        { name: "수료 보고서", description: "HRD 제출용 수료 보고서" },
+      ],
+    },
+  ];
+
   const renderMenuSection = (menu: MenuSection) => (
     <Card
       key={menu.menuPath}
@@ -619,14 +738,14 @@ const OperatorFeatures = () => {
               theme === "dark" ? "text-slate-400" : "text-slate-600"
             )}
           >
-            학생, 강사, 관리자 모드의 모든 기능을 확인합니다
+            학생, 강사, 관리자, 국비과정 모드의 모든 기능을 확인합니다
           </p>
         </div>
 
         <Tabs defaultValue="student" className="w-full">
           <TabsList
             className={cn(
-              "grid w-full grid-cols-3 transition-colors",
+              "grid w-full grid-cols-4 transition-colors",
               theme === "dark" ? "bg-slate-900/50" : "bg-slate-100"
             )}
           >
@@ -641,6 +760,10 @@ const OperatorFeatures = () => {
             <TabsTrigger value="admin">
               <Shield className="h-4 w-4 mr-2" />
               관리자
+            </TabsTrigger>
+            <TabsTrigger value="operator">
+              <Building2 className="h-4 w-4 mr-2" />
+              국비과정 HRD
             </TabsTrigger>
           </TabsList>
 
@@ -659,6 +782,12 @@ const OperatorFeatures = () => {
           <TabsContent value="admin" className="space-y-3 mt-6">
             <div className="grid gap-4">
               {adminMenus.map(renderMenuSection)}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="operator" className="space-y-3 mt-6">
+            <div className="grid gap-4">
+              {operatorMenus.map(renderMenuSection)}
             </div>
           </TabsContent>
         </Tabs>
