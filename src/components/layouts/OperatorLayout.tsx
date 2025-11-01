@@ -18,6 +18,7 @@ import {
   Layers,
   Package,
   BookOpen,
+  Network,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -63,6 +64,7 @@ const menuItems: MenuItem[] = [
   { icon: Brain, label: "국비환급과정", path: "/operator/government-training" },
   { icon: Settings, label: "설정", path: "/operator/settings" },
   { icon: BookOpen, label: "매뉴얼", path: "/operator/manual" },
+  { icon: Network, label: "시스템 다이어그램", path: "/operator/system-diagram" },
 ];
 
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {

@@ -74,6 +74,7 @@ import OperatorFeatures from "./pages/operator/OperatorFeatures";
 import OperatorTechStack from "./pages/operator/OperatorTechStack";
 import OperatorGovernmentTraining from "./pages/operator/OperatorGovernmentTraining";
 import OperatorManual from "./pages/operator/OperatorManual";
+import OperatorSystemDiagram from "./pages/operator/OperatorSystemDiagram";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
@@ -141,6 +142,7 @@ const App = () => {
           <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
           <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
           <Route path="/operator/manual" element={<OperatorManual />} />
+          <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />
