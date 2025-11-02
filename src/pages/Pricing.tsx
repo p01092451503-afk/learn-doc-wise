@@ -44,7 +44,7 @@ const Pricing = () => {
               description="개인 강사 및 소규모 학습 그룹"
               price="₩0"
               period="/영구 무료"
-              aiTokens="월 최대 수강생 50명"
+              aiTokens="기본 이러닝 기능만 제공"
               features={[
                 "기본 강좌 개설",
                 "동영상 업로드 5GB",
@@ -63,13 +63,13 @@ const Pricing = () => {
               description="전문 강사 및 중소 교육 기관"
               price="₩150,000"
               period="/월"
-              aiTokens="월 최대 수강생 500명"
+              aiTokens="최대 수강생 200명"
               features={[
+                "스타터의 모든 기능",
                 "무제한 강좌 개설",
-                "동영상 업로드 100GB",
-                "실시간 화상 강의",
+                "동영상 업로드 50GB",
                 "자동 채점 시스템",
-                "맞춤형 학습 경로",
+                "학습 진도 관리",
                 "우선 고객 지원",
                 "수료증 자동 발급"
               ]}
@@ -80,21 +80,19 @@ const Pricing = () => {
             {/* 프로 (인기) */}
             <PricingCard
               title="프로"
-              description="AI 기능이 필요한 교육 기관"
+              description="기본 AI 기능이 필요한 교육 기관"
               price="₩300,000"
               period="/월"
-              aiTokens="월 최대 수강생 1,000명"
+              aiTokens="최대 수강생 500명 · AI 토큰 10만/월"
               features={[
                 "스탠다드의 모든 기능",
+                "동영상 업로드 100GB",
+                "기본 AI 기능",
                 "AI 자동 채점",
                 "AI 피드백",
                 "AI 번역",
-                "AI 학습 분석",
-                "AI 리포트",
-                "AI 학습 경로 추천",
-                "AI 퀴즈 생성",
                 "AI 요약",
-                "AI 진도 예측"
+                "AI 퀴즈 생성"
               ]}
               buttonText="프로 시작하기"
               buttonVariant="default"
@@ -104,21 +102,21 @@ const Pricing = () => {
             {/* 프로페셔널 */}
             <PricingCard
               title="프로페셔널"
-              description="대형 교육 기관 및 기업 교육"
-              price="₩500,000"
+              description="모든 AI 기능이 필요한 대형 교육 기관"
+              price="₩600,000"
               period="/월"
-              aiTokens="월 최대 수강생 무제한"
+              aiTokens="최대 수강생 2,000명 · AI 토큰 50만/월"
               features={[
-                "프로의 모든 AI 기능",
-                "동영상 업로드 500GB",
+                "프로의 모든 기능",
+                "동영상 업로드 300GB",
+                "모든 AI 기능 제공",
+                "AI 학습 경로 추천",
+                "AI 진도 예측",
+                "AI 학습 분석",
+                "AI 리포트 생성",
                 "AI 스터디 메이트 매칭",
                 "AI 튜터",
-                "전담 계정 관리자",
-                "24시간 우선 지원",
-                "맞춤형 브랜딩",
-                "API 연동 지원",
-                "고급 분석 대시보드",
-                "SSO 통합 인증"
+                "전담 계정 관리자"
               ]}
               buttonText="프로페셔널 시작하기"
               buttonVariant="premium"
@@ -127,19 +125,20 @@ const Pricing = () => {
             {/* 엔터프라이즈 */}
             <PricingCard
               title="엔터프라이즈"
-              description="대규모 조직 및 정부 기관"
-              price="₩1,000,000"
+              description="온프레미스 구축이 필요한 대규모 조직"
+              price="₩1,200,000"
               period="/월"
-              aiTokens="무제한 수강생 + AI 기능"
+              aiTokens="무제한 수강생 · AI 토큰 100만/월"
               features={[
                 "프로페셔널의 모든 기능",
+                "시스템의 모든 기능",
                 "동영상 업로드 무제한",
-                "전용 서버 구축",
+                "모든 AI 기능",
                 "온프레미스 설치 지원",
+                "전용 서버 구축",
                 "커스터마이징 개발",
                 "통합 관리 시스템",
-                "실시간 기술 지원",
-                "보안 강화 옵션",
+                "24시간 기술 지원",
                 "전담 개발팀 지원"
               ]}
               buttonText="엔터프라이즈 문의"
@@ -150,15 +149,18 @@ const Pricing = () => {
             <PricingCard
               title="엔터프라이즈 HRD"
               description="정부지원 교육 운영 기관"
-              price="₩1,700,000"
+              price="₩2,000,000"
               period="/월"
-              aiTokens="HRD 전용 기능 포함"
+              aiTokens="무제한 수강생 · AI 토큰 200만/월"
               features={[
                 "엔터프라이즈의 모든 기능",
+                "모든 AI 기능",
+                "HRD 전용 기능",
                 "출석 관리 시스템",
                 "훈련수당 관리",
                 "훈련일지 관리",
                 "중도탈락 관리",
+                "상담일지 관리",
                 "만족도 조사",
                 "훈련 이수 관리",
                 "정부 보고서 자동 생성",
