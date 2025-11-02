@@ -22,6 +22,10 @@ import {
   Users,
   GraduationCap,
   ChevronDown,
+  Database,
+  Key,
+  Server,
+  HardDrive,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -53,6 +57,7 @@ interface MenuItem {
   label: string;
   path: string;
   hasAI?: boolean;
+  onPremise?: boolean;
 }
 
 const menuItems: MenuItem[] = [
@@ -65,6 +70,10 @@ const menuItems: MenuItem[] = [
   { icon: Layers, label: "기능 목록", path: "/operator/features" },
   { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
   { icon: Brain, label: "국비환급과정", path: "/operator/government-training" },
+  { icon: Database, label: "백업/복원", path: "/operator/backup", onPremise: true },
+  { icon: Package, label: "업데이트 관리", path: "/operator/updates", onPremise: true },
+  { icon: Key, label: "라이선스 관리", path: "/operator/license", onPremise: true },
+  { icon: Server, label: "서버 리소스", path: "/operator/resources", onPremise: true },
   { icon: Settings, label: "설정", path: "/operator/settings" },
   { icon: BookOpen, label: "매뉴얼", path: "/operator/manual" },
   { icon: Network, label: "시스템 다이어그램", path: "/operator/system-diagram" },
@@ -443,6 +452,11 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                         {item.hasAI && (
                           <span className="px-1.5 py-0.5 rounded-md bg-violet-500/20 border border-violet-500/30 text-[10px] font-bold text-violet-400 whitespace-nowrap flex-shrink-0">
                             AI
+                          </span>
+                        )}
+                        {item.onPremise && (
+                          <span className="px-1.5 py-0.5 rounded-md bg-blue-500/20 border border-blue-500/30 text-[10px] font-bold text-blue-400 whitespace-nowrap flex-shrink-0">
+                            온프레미스
                           </span>
                         )}
                       </div>

@@ -75,6 +75,10 @@ import OperatorTechStack from "./pages/operator/OperatorTechStack";
 import OperatorGovernmentTraining from "./pages/operator/OperatorGovernmentTraining";
 import OperatorManual from "./pages/operator/OperatorManual";
 import OperatorSystemDiagram from "./pages/operator/OperatorSystemDiagram";
+import OperatorBackup from "./pages/operator/OperatorBackup";
+import OperatorUpdates from "./pages/operator/OperatorUpdates";
+import OperatorLicense from "./pages/operator/OperatorLicense";
+import OperatorResources from "./pages/operator/OperatorResources";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
 const App = () => {
@@ -143,6 +147,10 @@ const App = () => {
           <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
           <Route path="/operator/manual" element={<OperatorManual />} />
           <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
+          <Route path="/operator/backup" element={<OperatorBackup />} />
+          <Route path="/operator/updates" element={<OperatorUpdates />} />
+          <Route path="/operator/license" element={<OperatorLicense />} />
+          <Route path="/operator/resources" element={<OperatorResources />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/courses" element={<AdminCourses />} />
           <Route path="/admin/content" element={<AdminContent />} />
