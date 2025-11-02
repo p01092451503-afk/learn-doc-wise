@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck, Route, FileQuestion } from "lucide-react";
+import { Bot, Brain, Users, BarChart3, CheckCircle, Zap, Sparkles, Award, TrendingUp, Check, Star, FileText, Calendar, MessageSquare, AlertTriangle, Trophy, Wallet, ClipboardCheck, UserCheck, Route, FileQuestion, X, Info } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import {
   Tooltip,
@@ -469,6 +469,260 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* 요금별 상세 기능 비교표 */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              <span className="text-gradient">요금별 상세 기능</span> 비교
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              플랜에 따른 기능을 자세히 비교해보세요
+            </p>
+          </div>
+          
+          <div className="max-w-7xl mx-auto overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-primary">
+                  <th className="p-4 text-left font-bold text-primary-foreground border border-primary/20">기능</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">스타터</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">스탠다드</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 relative">
+                    프로
+                    <div className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold">인기</div>
+                  </th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">프로페셔널</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">엔터프라이즈</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">엔터프라이즈 HRD</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 기본 사양 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">기본 사양</td>
+                </tr>
+                <ComparisonRow
+                  feature="최대 수강생"
+                  values={[
+                    "제한 없음",
+                    "200명",
+                    "500명",
+                    "2,000명",
+                    "무제한",
+                    "무제한"
+                  ]}
+                />
+                <ComparisonRow
+                  feature="동영상 저장공간"
+                  values={[
+                    "5GB",
+                    "50GB",
+                    "100GB",
+                    "300GB",
+                    "무제한",
+                    "무제한"
+                  ]}
+                />
+                <ComparisonRow
+                  feature="AI 토큰 (월)"
+                  values={[
+                    "-",
+                    "-",
+                    "10만 토큰",
+                    "50만 토큰",
+                    "100만 토큰",
+                    "200만 토큰"
+                  ]}
+                />
+                
+                {/* 기본 서비스 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">기본 서비스</td>
+                </tr>
+                <ComparisonRow
+                  feature="도메인 / 보안 SSL"
+                  values={[true, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="출석 체크 기능"
+                  values={[true, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="과제 제출 및 채점"
+                  values={[true, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="커뮤니티 게시판"
+                  values={[true, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="자동 채점 시스템"
+                  values={[false, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="학습 진도 관리"
+                  values={[false, true, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="수료증 자동 발급"
+                  values={[false, true, true, true, true, true]}
+                />
+                
+                {/* AI 기능 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">AI 기능</td>
+                </tr>
+                <ComparisonRow
+                  feature="AI 자동 채점"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 피드백"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 번역"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 요약"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 퀴즈 생성"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 학습 경로 추천"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 진도 예측"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 학습 분석"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 리포트 생성"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 스터디 메이트 매칭"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="AI 튜터"
+                  values={[false, false, false, true, true, true]}
+                />
+                
+                {/* 부가 서비스 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">부가 서비스</td>
+                </tr>
+                <ComparisonRow
+                  feature="게임화 기능 (배지, 포인트)"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="리더보드"
+                  values={[false, false, true, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="학습 전용 앱"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="전담 계정 관리자"
+                  values={[false, false, false, true, true, true]}
+                />
+                <ComparisonRow
+                  feature="24시간 우선 지원"
+                  values={[false, false, false, true, true, true]}
+                />
+                
+                {/* 엔터프라이즈 기능 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">엔터프라이즈 기능</td>
+                </tr>
+                <ComparisonRow
+                  feature="온프레미스 설치"
+                  values={[false, false, false, false, true, true]}
+                />
+                <ComparisonRow
+                  feature="커스터마이징 개발"
+                  values={[false, false, false, false, true, true]}
+                />
+                <ComparisonRow
+                  feature="전담 개발팀 지원"
+                  values={[false, false, false, false, true, true]}
+                />
+                <ComparisonRow
+                  feature="SSO 통합 인증"
+                  values={[false, false, false, false, true, true]}
+                />
+                <ComparisonRow
+                  feature="API 연동"
+                  values={[false, false, false, false, true, true]}
+                />
+                
+                {/* HRD 전용 기능 */}
+                <tr className="bg-muted/50">
+                  <td colSpan={7} className="p-3 font-bold text-foreground border border-border">HRD 정부지원 전용</td>
+                </tr>
+                <ComparisonRow
+                  feature="출석 관리 시스템"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="훈련수당 관리"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="훈련일지 관리"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="중도탈락 관리"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="상담일지 관리"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="만족도 조사"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="훈련 이수 관리"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="정부 보고서 자동 생성"
+                  values={[false, false, false, false, false, true]}
+                />
+                <ComparisonRow
+                  feature="HRD-Net 연동"
+                  values={[false, false, false, false, false, true]}
+                />
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link to="/pricing">
+              <Button size="lg" variant="premium" className="gap-2">
+                <Sparkles className="h-5 w-5" />
+                요금제 자세히 보기
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section - 숨김 처리 */}
       {/* <section className="py-20 bg-muted/30" aria-labelledby="pricing-heading">
         <div className="container mx-auto px-4">
@@ -500,6 +754,27 @@ const Landing = () => {
 
     </div>
     </TooltipProvider>
+  );
+};
+
+const ComparisonRow = ({ feature, values }: { feature: string; values: (string | boolean)[] }) => {
+  return (
+    <tr className="bg-card hover:bg-muted/30 transition-colors">
+      <td className="p-4 text-sm text-card-foreground border border-border">{feature}</td>
+      {values.map((value, index) => (
+        <td key={index} className="p-4 text-center border border-border">
+          {typeof value === 'boolean' ? (
+            value ? (
+              <Check className="h-5 w-5 text-primary mx-auto" />
+            ) : (
+              <X className="h-5 w-5 text-muted-foreground mx-auto" />
+            )
+          ) : (
+            <span className="text-sm text-card-foreground">{value}</span>
+          )}
+        </td>
+      ))}
+    </tr>
   );
 };
 
