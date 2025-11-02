@@ -23,21 +23,6 @@ const Features = () => {
         </div>
       </nav>
 
-      {/* Header */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              <span className="text-gradient">모든 학습 관리</span>를<br />
-              하나의 플랫폼에서
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              atomLMS는 강사와 학생, 교육 기관을 위한 포괄적인 기능을 제공합니다.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Features Content */}
       <section className="py-16">
         <div className="container mx-auto px-4 max-w-6xl">
