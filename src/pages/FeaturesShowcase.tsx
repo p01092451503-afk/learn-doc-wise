@@ -230,7 +230,7 @@ const FeaturesShowcase = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-32 pb-12 px-4">
         <div className="container mx-auto text-center">
           <Badge className="mb-6 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
             <Sparkles className="h-3 w-3 mr-1" />
@@ -286,9 +286,9 @@ const FeaturesShowcase = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4">
+      <section className="py-12 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-8">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               모든 역할을 위한 완벽한 기능
             </h2>
@@ -315,7 +315,7 @@ const FeaturesShowcase = () => {
 
             {rolesData.map((roleData) => (
               <TabsContent key={roleData.role} value={roleData.role} className="animate-fade-in">
-                <div className="text-center mb-12">
+                <div className="text-center mb-6">
                   <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${roleData.color} mb-4`}>
                     <Zap className="h-6 w-6 text-white inline-block" />
                   </div>
