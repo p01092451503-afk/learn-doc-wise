@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  Brain,
   Sparkles,
   FileText,
   Users,
@@ -401,7 +402,7 @@ const OperatorGovernmentTraining = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-primary" />
+            <Brain className="h-8 w-8 text-primary" />
             국비환급과정 기능 관리
           </h1>
           <p className="text-muted-foreground mt-2">

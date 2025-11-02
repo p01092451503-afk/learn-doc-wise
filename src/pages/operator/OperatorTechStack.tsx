@@ -210,7 +210,10 @@ const OperatorTechStack = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">기술 스택 & 버전 관리</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <Package className="h-8 w-8 text-primary" />
+              기술 스택 & 버전 관리
+            </h1>
             <p className="text-muted-foreground mt-2">
               플랫폼의 기술 스택과 버전 히스토리를 확인하고 관리합니다
             </p>
