@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Activity, TrendingUp, Database } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface AILog {
   id: string;
@@ -107,7 +106,7 @@ const AdminAILogs = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold flex items-center gap-3">
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <Brain className="h-7 w-7 text-primary" />
             AI 로그 관리
             <Badge variant="default" className="text-sm">AI</Badge>
           </h1>

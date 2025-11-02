@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, TrendingUp, Users, BookOpen, DollarSign, Activity, Eye, Clock } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { AIReportGenerator } from "@/components/admin/AIReportGenerator";
-import logoIcon from "@/assets/logo-icon.png";
 
 const AdminAnalytics = () => {
   const monthlyData = [
@@ -22,7 +21,7 @@ const AdminAnalytics = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <BarChart3 className="h-7 w-7 text-primary" />
             분석
           </h1>
           <p className="text-muted-foreground mt-2">

@@ -3,8 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
+import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles, LayoutDashboard } from "lucide-react";
 import { Chatbot } from "@/components/Chatbot";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { CourseApprovalDialog } from "@/components/admin/CourseApprovalDialog";
@@ -27,7 +26,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-            <img src={logoIcon} alt="atom" className="h-7 w-7 md:h-8 md:w-8" />
+            <LayoutDashboard className="h-6 w-6 md:h-7 md:w-7 text-primary" />
             관리자 대시보드
           </h1>
           <p className="text-sm md:text-base text-muted-foreground">

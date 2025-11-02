@@ -7,7 +7,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, Check, Palette, Layout, Paintbrush } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface Template {
   id: string;
@@ -196,7 +195,7 @@ const AdminTemplates = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <Palette className="h-7 w-7 text-primary" />
               디자인 템플릿
             </h1>
             <p className="text-muted-foreground mt-2">

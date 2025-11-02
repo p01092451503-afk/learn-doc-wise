@@ -14,7 +14,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Users, UserPlus, Search, CheckCircle, XCircle, Clock, Ban, Eye, Building2 } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface User {
   id: string;
@@ -263,7 +262,7 @@ const AdminUsers = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <Users className="h-7 w-7 text-primary" />
               사용자 관리
             </h1>
             <p className="text-muted-foreground mt-2">회원 승인, 권한 설정 및 조직 관리</p>

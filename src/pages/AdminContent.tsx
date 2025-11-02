@@ -28,13 +28,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle, Tag, Folder, Pencil } from "lucide-react";
+import { FolderOpen, FileText, Video, Plus, Youtube, PlayCircle, Tag, Folder, Pencil, FolderTree } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import logoIcon from "@/assets/logo-icon.png";
 
 const AdminContent = () => {
   const { toast } = useToast();
@@ -354,7 +353,7 @@ const AdminContent = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-logo font-bold tracking-tight flex items-center gap-2">
-            <img src={logoIcon} alt="atom" className="h-9 w-9" />
+            <FolderTree className="h-8 w-8 text-primary" />
             콘텐츠 관리
           </h1>
           <p className="text-muted-foreground mt-2">

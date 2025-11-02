@@ -12,7 +12,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, Plus, Users, HardDrive, TrendingUp, CreditCard } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface Tenant {
   id: string;
@@ -163,7 +162,7 @@ const AdminTenants = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <Building2 className="h-7 w-7 text-primary" />
               고객사 관리
             </h1>
             <p className="text-muted-foreground mt-2">기관별 생성 및 사용량 관리</p>

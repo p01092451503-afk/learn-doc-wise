@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, AlertTriangle, Activity, Server } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface AdminLog {
   id: string;
@@ -91,7 +90,7 @@ const AdminMonitoring = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <Activity className="h-7 w-7 text-primary" />
             시스템 모니터링
           </h1>
           <p className="text-muted-foreground mt-2">보안 및 시스템 로그 모니터링</p>
