@@ -88,7 +88,12 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
-    return (saved as "dark" | "light") || "light";
+    // 저장된 값이 없거나 dark인 경우 light로 설정
+    if (!saved || saved === "dark") {
+      localStorage.setItem("operator-theme", "light");
+      return "light";
+    }
+    return saved as "dark" | "light";
   });
   const navigate = useNavigate();
   const { toast } = useToast();
