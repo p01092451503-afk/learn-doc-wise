@@ -49,7 +49,6 @@ const AdminCourses = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
@@ -330,9 +329,6 @@ const AdminCourses = () => {
     return <Badge variant="outline">{labels[level] || level}</Badge>;
   };
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <DashboardLayout userRole="admin">
@@ -364,16 +360,7 @@ const AdminCourses = () => {
           </TabsList>
 
           <TabsContent value="courses" className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="강좌 검색..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+            <div className="flex items-center justify-end gap-4">
               <Dialog open={isDialogOpen} onOpenChange={(open) => {
                 setIsDialogOpen(open);
                 if (!open) {
@@ -514,7 +501,7 @@ const AdminCourses = () => {
 
             <Card>
               <CardHeader>
-                <CardTitle>강좌 목록 ({filteredCourses.length}개)</CardTitle>
+                <CardTitle>강좌 목록 ({courses.length}개)</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -531,7 +518,7 @@ const AdminCourses = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredCourses.map((course) => (
+                    {courses.map((course) => (
                       <TableRow key={course.id}>
                         <TableCell className="font-medium">{course.title}</TableCell>
                         <TableCell>

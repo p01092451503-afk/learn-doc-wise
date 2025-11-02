@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
 const AdminTrainingLog = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
 
   const { data: courses = [] } = useQuery({
@@ -49,11 +48,6 @@ const AdminTrainingLog = () => {
     },
   });
 
-  const filteredData = trainingLogs.filter((item: any) =>
-    item.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.topic?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <DashboardLayout userRole="admin">
@@ -76,15 +70,6 @@ const AdminTrainingLog = () => {
 
         <Card className="p-6">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="강의명, 강사명, 주제 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
             <Select value={selectedCourse} onValueChange={setSelectedCourse}>
               <SelectTrigger className="w-full md:w-64">
                 <SelectValue placeholder="강의 선택" />
@@ -120,14 +105,14 @@ const AdminTrainingLog = () => {
                       로딩 중...
                     </TableCell>
                   </TableRow>
-                ) : filteredData.length === 0 ? (
+                ) : trainingLogs.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       훈련일지 데이터가 없습니다
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredData.map((item: any) => (
+                  trainingLogs.map((item: any) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">
                         {format(new Date(item.training_date), "yyyy-MM-dd")}

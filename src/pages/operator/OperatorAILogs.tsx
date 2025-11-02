@@ -24,7 +24,6 @@ interface AILog {
 const OperatorAILogs = () => {
   const [logs, setLogs] = useState<AILog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [filterModel, setFilterModel] = useState("all");
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
@@ -90,11 +89,8 @@ const OperatorAILogs = () => {
   };
 
   const filteredLogs = logs.filter((log) => {
-    const matchesSearch =
-      log.tenant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.model_name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesModel = filterModel === "all" || log.model_name === filterModel;
-    return matchesSearch && matchesModel;
+    return matchesModel;
   });
 
   const uniqueModels = Array.from(new Set(logs.map((log) => log.model_name).filter(Boolean)));
@@ -193,19 +189,7 @@ const OperatorAILogs = () => {
               theme === "dark" ? "text-white" : "text-slate-900"
             )}>필터</CardTitle>
           </CardHeader>
-          <CardContent className="flex gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input
-                placeholder="고객사 또는 모델 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={cn(
-                  "pl-10 transition-colors",
-                  theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
-                )}
-              />
-            </div>
+          <CardContent className="flex gap-4 justify-end">
             <Select value={filterModel} onValueChange={setFilterModel}>
               <SelectTrigger className={cn(
                 "w-[200px] transition-colors",

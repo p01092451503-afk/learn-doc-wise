@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const AdminTrainingAllowance = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
 
   const { data: courses = [] } = useQuery({
@@ -86,11 +85,6 @@ const AdminTrainingAllowance = () => {
     },
   });
 
-  const filteredData = enrollments.filter((item: any) =>
-    item.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const calculateAllowance = (enrollment: any) => {
     const baseAllowance = enrollment.courses?.government_training_info?.training_allowance || 0;
@@ -106,7 +100,7 @@ const AdminTrainingAllowance = () => {
     }
   };
 
-  const totalAllowance = filteredData.reduce((sum, item) => sum + calculateAllowance(item), 0);
+  const totalAllowance = enrollments.reduce((sum, item) => sum + calculateAllowance(item), 0);
 
   return (
     <DashboardLayout userRole="admin">
@@ -147,7 +141,7 @@ const AdminTrainingAllowance = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">지급 대상자</p>
                 <p className="text-2xl font-bold truncate">
-                  {filteredData.filter(item => calculateAllowance(item) > 0).length}명
+                  {enrollments.filter(item => calculateAllowance(item) > 0).length}명
                 </p>
               </div>
             </div>
@@ -160,7 +154,7 @@ const AdminTrainingAllowance = () => {
               <div className="min-w-0 flex-1">
                 <p className="text-sm text-muted-foreground">미지급 대상자</p>
                 <p className="text-2xl font-bold truncate">
-                  {filteredData.filter(item => calculateAllowance(item) === 0).length}명
+                  {enrollments.filter(item => calculateAllowance(item) === 0).length}명
                 </p>
               </div>
             </div>
@@ -169,15 +163,6 @@ const AdminTrainingAllowance = () => {
 
         <Card className="p-6">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="학생명, 이메일, 강의명 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
             <Select value={selectedCourse} onValueChange={setSelectedCourse}>
               <SelectTrigger className="w-full md:w-64">
                 <SelectValue placeholder="강의 선택" />
@@ -213,14 +198,14 @@ const AdminTrainingAllowance = () => {
                       로딩 중...
                     </TableCell>
                   </TableRow>
-                ) : filteredData.length === 0 ? (
+                ) : enrollments.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                       수강생 데이터가 없습니다
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredData.map((item: any) => {
+                  enrollments.map((item: any) => {
                     const allowance = calculateAllowance(item);
                     const baseAllowance = item.courses?.government_training_info?.training_allowance || 0;
                     const requiredRate = item.courses?.government_training_info?.required_attendance_rate || 80;

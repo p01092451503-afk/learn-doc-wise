@@ -16,7 +16,6 @@ const StudentSatisfactionSurvey = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedSurvey, setSelectedSurvey] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
   // 참여 가능한 만족도 조사 목록 조회
   const { data: surveys = [], isLoading } = useQuery({
@@ -99,10 +98,6 @@ const StudentSatisfactionSurvey = () => {
     return survey.satisfaction_responses?.some((r: any) => r.user_id);
   };
 
-  const filteredSurveys = surveys.filter((survey: any) =>
-    survey.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    survey.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <DashboardLayout userRole="student">
@@ -117,17 +112,6 @@ const StudentSatisfactionSurvey = () => {
           </p>
         </div>
 
-        {/* 검색 */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="강의, 과제 검색..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
         {/* 만족도 조사 목록 */}
         <div className="grid gap-4">
           {isLoading ? (
@@ -136,14 +120,14 @@ const StudentSatisfactionSurvey = () => {
                 로딩 중...
               </CardContent>
             </Card>
-          ) : filteredSurveys.length === 0 ? (
+          ) : surveys.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
-                {searchTerm ? "검색 결과가 없습니다." : "참여 가능한 만족도 조사가 없습니다."}
+                참여 가능한 만족도 조사가 없습니다.
               </CardContent>
             </Card>
           ) : (
-            filteredSurveys.map((survey: any) => {
+            surveys.map((survey: any) => {
               const completed = isCompleted(survey);
               const isExpanded = selectedSurvey === survey.id;
 

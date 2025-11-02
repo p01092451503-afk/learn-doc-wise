@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
 const AdminDropoutManagement = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
 
   const { data: dropoutRecords = [], isLoading } = useQuery({
@@ -40,11 +39,6 @@ const AdminDropoutManagement = () => {
     },
   });
 
-  const filteredData = dropoutRecords.filter((item: any) =>
-    item.enrollment?.student?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.enrollment?.student?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.enrollment?.course?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const getStatusBadge = (status: string) => {
     const statusMap: Record<string, { label: string; variant: any }> = {
@@ -90,15 +84,6 @@ const AdminDropoutManagement = () => {
 
         <Card className="p-6">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="학생명, 이메일, 강의명 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="환불 상태" />
@@ -134,14 +119,14 @@ const AdminDropoutManagement = () => {
                       로딩 중...
                     </TableCell>
                   </TableRow>
-                ) : filteredData.length === 0 ? (
+                ) : dropoutRecords.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                       중도탈락 기록이 없습니다
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredData.map((item: any) => (
+                  dropoutRecords.map((item: any) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-medium">
                         {format(new Date(item.dropout_date), "yyyy-MM-dd")}

@@ -31,7 +31,6 @@ interface Course {
 const PublicCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
 
   useEffect(() => {
@@ -79,10 +78,8 @@ const PublicCourses = () => {
   };
 
   const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesLevel = levelFilter === "all" || course.level === levelFilter;
-    return matchesSearch && matchesLevel;
+    return matchesLevel;
   });
 
   const getLevelBadgeVariant = (level: string) => {
@@ -150,16 +147,7 @@ const PublicCourses = () => {
           </p>
 
           {/* Filters */}
-          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="강좌 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          <div className="max-w-4xl mx-auto flex justify-center">
             <Select value={levelFilter} onValueChange={setLevelFilter}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="난이도 선택" />

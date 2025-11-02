@@ -45,7 +45,6 @@ const AdminLearning = () => {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [analytics, setAnalytics] = useState<LearningAnalytics[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [analyzingAI, setAnalyzingAI] = useState(false);
   const { toast } = useToast();
 
@@ -325,10 +324,6 @@ const AdminLearning = () => {
     : 0;
   const atRiskCount = analytics.filter(a => a.at_risk_score && a.at_risk_score >= 70).length;
 
-  const filteredEnrollments = enrollments.filter(e =>
-    e.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <DashboardLayout userRole="admin">
@@ -414,16 +409,6 @@ const AdminLearning = () => {
           </TabsList>
 
           <TabsContent value="progress" className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="학생 이름 또는 강좌명으로 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
             <Card>
               <CardHeader>
                 <CardTitle>수강생 진도 현황</CardTitle>
@@ -441,7 +426,7 @@ const AdminLearning = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredEnrollments.map((enrollment) => (
+                    {enrollments.map((enrollment) => (
                       <TableRow key={enrollment.id}>
                         <TableCell className="font-medium">
                           {enrollment.profiles?.full_name || "이름 없음"}

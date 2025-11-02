@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 const AdminTrainingCompletion = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
 
   const { data: courses = [] } = useQuery({
@@ -102,11 +101,6 @@ const AdminTrainingCompletion = () => {
     },
   });
 
-  const filteredData = enrollments.filter((item: any) =>
-    item.student?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.student?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const checkCompletion = (enrollment: any) => {
     const requiredAttendance = enrollment.courses?.government_training_info?.required_attendance_rate || 80;
@@ -139,15 +133,6 @@ const AdminTrainingCompletion = () => {
 
         <Card className="p-6">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="학생명, 이메일, 강의명 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
-              />
-            </div>
             <Select value={selectedCourse} onValueChange={setSelectedCourse}>
               <SelectTrigger className="w-full md:w-64">
                 <SelectValue placeholder="강의 선택" />
@@ -182,14 +167,14 @@ const AdminTrainingCompletion = () => {
                       로딩 중...
                     </TableCell>
                   </TableRow>
-                ) : filteredData.length === 0 ? (
+                ) : enrollments.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                       수강생 데이터가 없습니다
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredData.map((item: any) => {
+                  enrollments.map((item: any) => {
                     const isCompleted = checkCompletion(item);
                     const requiredAttendance = item.courses?.government_training_info?.required_attendance_rate || 80;
                     const requiredGrade = item.courses?.government_training_info?.required_exam_score || 60;

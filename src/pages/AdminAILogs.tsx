@@ -35,7 +35,6 @@ const AdminAILogs = () => {
     todayLogs: 0,
   });
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -91,10 +90,6 @@ const AdminAILogs = () => {
     }
   };
 
-  const filteredLogs = logs.filter(log => 
-    log.prompt_text?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    log.model_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const truncateText = (text: string | null, maxLength: number = 100) => {
     if (!text) return "-";
@@ -169,14 +164,6 @@ const AdminAILogs = () => {
               <Badge variant="default" className="text-xs">AI</Badge>
             </div>
             <CardDescription>최근 100개의 AI 요청 히스토리</CardDescription>
-            <div className="mt-4">
-              <Input
-                placeholder="프롬프트 또는 모델명으로 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="max-w-sm"
-              />
-            </div>
           </CardHeader>
           <CardContent>
             <Table>
@@ -190,7 +177,7 @@ const AdminAILogs = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredLogs.map((log) => (
+                {logs.map((log) => (
                   <TableRow key={log.id}>
                     <TableCell className="text-sm">
                       {new Date(log.created_at).toLocaleString()}

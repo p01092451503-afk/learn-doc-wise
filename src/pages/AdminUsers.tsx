@@ -42,7 +42,6 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
   const [isOrgDialogOpen, setIsOrgDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
@@ -247,14 +246,10 @@ const AdminUsers = () => {
     return <Badge variant="outline">{labels[role] || role}</Badge>;
   };
 
-  const filteredUsers = users.filter(user =>
-    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
-  const pendingUsers = filteredUsers.filter(u => u.approval_status === "pending");
-  const approvedUsers = filteredUsers.filter(u => u.approval_status === "approved");
-  const suspendedUsers = filteredUsers.filter(u => u.approval_status === "suspended");
+  const pendingUsers = users.filter(u => u.approval_status === "pending");
+  const approvedUsers = users.filter(u => u.approval_status === "approved");
+  const suspendedUsers = users.filter(u => u.approval_status === "suspended");
 
   return (
     <DashboardLayout userRole="admin">
@@ -323,19 +318,9 @@ const AdminUsers = () => {
           </TabsList>
 
           <TabsContent value="all" className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="이름 또는 이메일로 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
             <Card>
               <CardHeader>
-                <CardTitle>사용자 목록 ({filteredUsers.length}명)</CardTitle>
+                <CardTitle>사용자 목록 ({users.length}명)</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -350,7 +335,7 @@ const AdminUsers = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredUsers.map((user) => (
+                    {users.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell className="font-medium">{user.full_name || "이름 없음"}</TableCell>
                         <TableCell>{user.email}</TableCell>
