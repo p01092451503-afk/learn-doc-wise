@@ -900,8 +900,8 @@ const Landing = () => {
                     <span className="text-xs text-muted-foreground">※ 네이티브 앱 제공, 앱스토어 등록 포함</span>
                   </td>
                   <td className="p-4 text-center text-sm text-card-foreground border border-border">
-                    유지보수 500,000원/월<br/>
-                    <span className="text-xs text-muted-foreground">앱 배포 초기 비용 10,000,000원</span>
+                    유지보수 300,000원/월<br/>
+                    <span className="text-xs text-muted-foreground">앱 배포 초기 비용 1,000,000원</span>
                   </td>
                 </tr>
                 <tr className="bg-card hover:bg-muted/30 transition-colors">
