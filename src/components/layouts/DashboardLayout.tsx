@@ -317,8 +317,16 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="gap-2 rounded-full">
-                  <Users className="h-4 w-4" />
-                  <span className="hidden sm:inline">역할 전환</span>
+                  {effectiveUserRole === "student" && <GraduationCap className="h-4 w-4" />}
+                  {effectiveUserRole === "teacher" && <BookOpen className="h-4 w-4" />}
+                  {effectiveUserRole === "admin" && <Shield className="h-4 w-4" />}
+                  {effectiveUserRole === "operator" && <Building2 className="h-4 w-4" />}
+                  <span className="hidden sm:inline">
+                    {effectiveUserRole === "student" && "학생"}
+                    {effectiveUserRole === "teacher" && "강사"}
+                    {effectiveUserRole === "admin" && "관리자"}
+                    {effectiveUserRole === "operator" && "운영자"}
+                  </span>
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
