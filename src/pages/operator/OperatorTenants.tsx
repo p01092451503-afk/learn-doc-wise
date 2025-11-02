@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Plus, Search, Filter, CreditCard, X } from "lucide-react";
+import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { cn } from "@/lib/utils";
@@ -53,6 +53,9 @@ const OperatorTenants = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
+  const [specDialogOpen, setSpecDialogOpen] = useState(false);
+  const [planChangeDialogOpen, setPlanChangeDialogOpen] = useState(false);
+  const [newPlan, setNewPlan] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [planFilter, setPlanFilter] = useState<"all" | "starter" | "standard" | "professional">("all");
@@ -178,29 +181,42 @@ const OperatorTenants = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.from("tenants").insert([
+      const { data: newTenant, error } = await supabase.from("tenants").insert([
         {
           name: formData.name,
           subdomain: formData.subdomain,
           custom_domain: formData.custom_domain || null,
           plan: formData.plan as "starter" | "standard" | "professional",
           status: formData.status,
-          max_students: formData.max_students,
-          max_storage_gb: formData.max_storage_gb,
-          max_bandwidth_gb: formData.max_bandwidth_gb,
-          features_enabled: formData.features_enabled,
           contract_end_date: formData.contract_end_date || null,
           trial_end_date: formData.trial_end_date || null,
           is_active: true,
         },
-      ]);
+      ]).select().single();
 
       if (error) throw error;
 
-      toast({
-        title: "성공",
-        description: "새 고객사가 추가되었습니다.",
+      // 요금제에 따라 자동으로 스펙 설정
+      const { error: setupError } = await supabase.functions.invoke('setup-tenant-plan', {
+        body: {
+          tenantId: newTenant.id,
+          plan: formData.plan
+        }
       });
+
+      if (setupError) {
+        console.error("요금제 설정 오류:", setupError);
+        toast({
+          title: "경고",
+          description: "고객사는 생성되었으나 요금제 설정에 실패했습니다. 수동으로 설정해주세요.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "성공",
+          description: "새 고객사가 추가되고 요금제가 설정되었습니다.",
+        });
+      }
 
       setIsDialogOpen(false);
       fetchTenants();
@@ -364,6 +380,66 @@ const OperatorTenants = () => {
   };
 
   const hasActiveFilters = searchQuery || statusFilter !== "all" || planFilter !== "all";
+
+  const handleChangePlan = async () => {
+    if (!selectedTenant || !newPlan) return;
+    
+    try {
+      const { error: setupError } = await supabase.functions.invoke('setup-tenant-plan', {
+        body: {
+          tenantId: selectedTenant.id,
+          plan: newPlan
+        }
+      });
+
+      if (setupError) throw setupError;
+
+      toast({
+        title: "성공",
+        description: `${selectedTenant.name}의 요금제가 ${getPlanLabel(newPlan)}(으)로 변경되었습니다.`,
+      });
+
+      setPlanChangeDialogOpen(false);
+      setSelectedTenant(null);
+      setNewPlan("");
+      fetchTenants();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "요금제 변경에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getExpectedSpecs = (plan: string) => {
+    switch (plan) {
+      case "starter":
+        return { max_students: 50, max_storage_gb: 10, ai_tokens_monthly: 10000 };
+      case "standard":
+        return { max_students: 200, max_storage_gb: 50, ai_tokens_monthly: 50000 };
+      case "pro":
+        return { max_students: 500, max_storage_gb: 200, ai_tokens_monthly: 200000 };
+      case "professional":
+        return { max_students: 1000, max_storage_gb: 500, ai_tokens_monthly: 500000 };
+      case "enterprise":
+        return { max_students: 5000, max_storage_gb: 2000, ai_tokens_monthly: 2000000 };
+      case "enterprise_hrd":
+        return { max_students: 10000, max_storage_gb: 5000, ai_tokens_monthly: 5000000 };
+      default:
+        return { max_students: 50, max_storage_gb: 10, ai_tokens_monthly: 10000 };
+    }
+  };
+
+  const validateSpecs = (tenant: Tenant) => {
+    const expected = getExpectedSpecs(tenant.plan);
+    return {
+      students: tenant.max_students === expected.max_students,
+      storage: tenant.max_storage_gb === expected.max_storage_gb,
+      allValid: tenant.max_students === expected.max_students && 
+                tenant.max_storage_gb === expected.max_storage_gb
+    };
+  };
 
   return (
     <OperatorLayout>
@@ -862,7 +938,41 @@ const OperatorTenants = () => {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTenant(tenant);
+                              setSpecDialogOpen(true);
+                            }}
+                            className={cn(
+                              "gap-1 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+                            )}
+                          >
+                            {validateSpecs(tenant).allValid ? (
+                              <CheckCircle2 className="h-3 w-3 text-green-400" />
+                            ) : (
+                              <AlertCircle className="h-3 w-3 text-orange-400" />
+                            )}
+                            <span className="text-xs">검수</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTenant(tenant);
+                              setNewPlan(tenant.plan);
+                              setPlanChangeDialogOpen(true);
+                            }}
+                            className={cn(
+                              "gap-1 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+                            )}
+                          >
+                            <Settings className="h-3 w-3" />
+                          </Button>
                           {tenant.status === 'suspended' ? (
                             <Button
                               variant="outline"
@@ -923,6 +1033,313 @@ const OperatorTenants = () => {
         tenantName={selectedTenant?.name || ""}
         amount={getPlanAmount(selectedTenant?.plan || "")}
       />
+
+      {/* 스펙 검수 다이얼로그 */}
+      <Dialog open={specDialogOpen} onOpenChange={setSpecDialogOpen}>
+        <DialogContent className={cn(
+          "sm:max-w-[600px] transition-colors",
+          theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+        )}>
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>스펙 검수: {selectedTenant?.name}</DialogTitle>
+          </DialogHeader>
+          {selectedTenant && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <Card className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-200"
+                )}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className={cn(
+                      "text-sm transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>현재 요금제</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Badge className={getPlanBadgeColor(selectedTenant.plan)}>
+                      {getPlanLabel(selectedTenant.plan)}
+                    </Badge>
+                  </CardContent>
+                </Card>
+                <Card className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-200"
+                )}>
+                  <CardHeader className="pb-3">
+                    <CardTitle className={cn(
+                      "text-sm transition-colors",
+                      theme === "dark" ? "text-slate-300" : "text-slate-700"
+                    )}>전체 검수 상태</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {validateSpecs(selectedTenant).allValid ? (
+                      <div className="flex items-center gap-2 text-green-400">
+                        <CheckCircle2 className="h-5 w-5" />
+                        <span className="text-sm font-medium">정상</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 text-orange-400">
+                        <AlertCircle className="h-5 w-5" />
+                        <span className="text-sm font-medium">불일치</span>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-4">
+                <div className={cn(
+                  "text-sm font-medium transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>세부 스펙 비교</div>
+                
+                {(() => {
+                  const expected = getExpectedSpecs(selectedTenant.plan);
+                  const validation = validateSpecs(selectedTenant);
+                  
+                  return (
+                    <div className="space-y-3">
+                      <Card className={cn(
+                        "transition-colors",
+                        validation.students
+                          ? theme === "dark" ? "bg-green-900/20 border-green-800" : "bg-green-50 border-green-200"
+                          : theme === "dark" ? "bg-orange-900/20 border-orange-800" : "bg-orange-50 border-orange-200"
+                      )}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className={cn(
+                              "text-sm transition-colors",
+                              validation.students
+                                ? "text-green-400"
+                                : "text-orange-400"
+                            )}>최대 학생 수</CardTitle>
+                            {validation.students ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-400" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4 text-orange-400" />
+                            )}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            theme === "dark" ? "text-slate-300" : "text-slate-700"
+                          )}>
+                            기대값: <span className="font-semibold">{expected.max_students}명</span>
+                          </div>
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            validation.students
+                              ? theme === "dark" ? "text-green-400" : "text-green-600"
+                              : theme === "dark" ? "text-orange-400" : "text-orange-600"
+                          )}>
+                            실제값: <span className="font-semibold">{selectedTenant.max_students}명</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className={cn(
+                        "transition-colors",
+                        validation.storage
+                          ? theme === "dark" ? "bg-green-900/20 border-green-800" : "bg-green-50 border-green-200"
+                          : theme === "dark" ? "bg-orange-900/20 border-orange-800" : "bg-orange-50 border-orange-200"
+                      )}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className={cn(
+                              "text-sm transition-colors",
+                              validation.storage
+                                ? "text-green-400"
+                                : "text-orange-400"
+                            )}>최대 저장소</CardTitle>
+                            {validation.storage ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-400" />
+                            ) : (
+                              <AlertCircle className="h-4 w-4 text-orange-400" />
+                            )}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            theme === "dark" ? "text-slate-300" : "text-slate-700"
+                          )}>
+                            기대값: <span className="font-semibold">{expected.max_storage_gb}GB</span>
+                          </div>
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            validation.storage
+                              ? theme === "dark" ? "text-green-400" : "text-green-600"
+                              : theme === "dark" ? "text-orange-400" : "text-orange-600"
+                          )}>
+                            실제값: <span className="font-semibold">{selectedTenant.max_storage_gb}GB</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      <Card className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-blue-900/20 border-blue-800" : "bg-blue-50 border-blue-200"
+                      )}>
+                        <CardHeader className="pb-3">
+                          <CardTitle className={cn(
+                            "text-sm text-blue-400"
+                          )}>월간 AI 토큰 (참고)</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className={cn(
+                            "text-sm transition-colors",
+                            theme === "dark" ? "text-slate-300" : "text-slate-700"
+                          )}>
+                            기대값: <span className="font-semibold">{expected.ai_tokens_monthly.toLocaleString()}개</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {!validateSpecs(selectedTenant).allValid && (
+                <div className={cn(
+                  "p-4 rounded-lg border transition-colors",
+                  theme === "dark" ? "bg-orange-900/20 border-orange-800" : "bg-orange-50 border-orange-200"
+                )}>
+                  <div className="flex gap-2">
+                    <AlertCircle className="h-5 w-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <div className={cn(
+                        "text-sm font-medium mb-1 transition-colors",
+                        theme === "dark" ? "text-orange-300" : "text-orange-700"
+                      )}>
+                        스펙 불일치 감지
+                      </div>
+                      <div className={cn(
+                        "text-sm transition-colors",
+                        theme === "dark" ? "text-orange-400" : "text-orange-600"
+                      )}>
+                        현재 설정된 스펙이 요금제 기준과 다릅니다. 요금제 변경 기능을 통해 자동으로 재설정할 수 있습니다.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* 요금제 변경 다이얼로그 */}
+      <Dialog open={planChangeDialogOpen} onOpenChange={setPlanChangeDialogOpen}>
+        <DialogContent className={cn(
+          "sm:max-w-[500px] transition-colors",
+          theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+        )}>
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>요금제 변경: {selectedTenant?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-300" : "text-slate-700"
+              )}>새 요금제 선택</Label>
+              <Select value={newPlan} onValueChange={setNewPlan}>
+                <SelectTrigger className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800 border-slate-700 text-white" : "bg-slate-50 border-slate-300 text-slate-900"
+                )}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+                )}>
+                  <SelectItem value="starter">스타터 (학생 50명, 저장소 10GB)</SelectItem>
+                  <SelectItem value="standard">스탠다드 (학생 200명, 저장소 50GB)</SelectItem>
+                  <SelectItem value="pro">프로 (학생 500명, 저장소 200GB)</SelectItem>
+                  <SelectItem value="professional">프로페셔널 (학생 1,000명, 저장소 500GB)</SelectItem>
+                  <SelectItem value="enterprise">엔터프라이즈 (학생 5,000명, 저장소 2TB)</SelectItem>
+                  <SelectItem value="enterprise_hrd">엔터프라이즈 HRD (학생 10,000명, 저장소 5TB)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {newPlan && (
+              <Card className={cn(
+                "transition-colors",
+                theme === "dark" ? "bg-blue-900/20 border-blue-800" : "bg-blue-50 border-blue-200"
+              )}>
+                <CardHeader className="pb-3">
+                  <CardTitle className={cn(
+                    "text-sm text-blue-400"
+                  )}>변경될 스펙</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  {(() => {
+                    const specs = getExpectedSpecs(newPlan);
+                    return (
+                      <>
+                        <div className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-300" : "text-slate-700"
+                        )}>
+                          • 최대 학생: <span className="font-semibold">{specs.max_students}명</span>
+                        </div>
+                        <div className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-300" : "text-slate-700"
+                        )}>
+                          • 저장소: <span className="font-semibold">{specs.max_storage_gb}GB</span>
+                        </div>
+                        <div className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-300" : "text-slate-700"
+                        )}>
+                          • 월간 AI 토큰: <span className="font-semibold">{specs.ai_tokens_monthly.toLocaleString()}개</span>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
+
+            <div className={cn(
+              "p-3 rounded-lg border text-sm transition-colors",
+              theme === "dark" ? "bg-slate-800 border-slate-700 text-slate-300" : "bg-slate-50 border-slate-200 text-slate-700"
+            )}>
+              요금제를 변경하면 해당 요금제의 스펙이 자동으로 적용됩니다.
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setPlanChangeDialogOpen(false)}
+              className={cn(
+                "transition-colors",
+                theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+              )}
+            >
+              취소
+            </Button>
+            <Button
+              onClick={handleChangePlan}
+              disabled={!newPlan || newPlan === selectedTenant?.plan}
+              className="bg-violet-500 hover:bg-violet-600"
+            >
+              변경 적용
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </OperatorLayout>
   );
 };
