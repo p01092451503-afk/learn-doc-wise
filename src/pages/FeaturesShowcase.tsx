@@ -230,7 +230,7 @@ const FeaturesShowcase = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 px-4">
+      <section className="pt-32 pb-6 px-4">
         <div className="container mx-auto text-center">
           <Badge className="mb-6 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
             <Sparkles className="h-3 w-3 mr-1" />
@@ -286,10 +286,10 @@ const FeaturesShowcase = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 px-4">
+      <section className="py-6 px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <div className="text-center mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-2">
               모든 역할을 위한 완벽한 기능
             </h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">
@@ -298,7 +298,7 @@ const FeaturesShowcase = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 bg-slate-800/50 mb-12">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 bg-slate-800/50 mb-6">
               <TabsTrigger value="student" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
                 <GraduationCap className="h-4 w-4 mr-2" />
                 학생
@@ -315,11 +315,11 @@ const FeaturesShowcase = () => {
 
             {rolesData.map((roleData) => (
               <TabsContent key={roleData.role} value={roleData.role} className="animate-fade-in">
-                <div className="text-center mb-6">
-                  <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${roleData.color} mb-4`}>
+                <div className="text-center mb-3">
+                  <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${roleData.color} mb-2`}>
                     <Zap className="h-6 w-6 text-white inline-block" />
                   </div>
-                  <h3 className="text-3xl font-bold text-white mb-2">{roleData.tagline}</h3>
+                  <h3 className="text-3xl font-bold text-white mb-1">{roleData.tagline}</h3>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
