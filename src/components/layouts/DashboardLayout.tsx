@@ -14,7 +14,6 @@ import {
   Menu,
   X,
   Bell,
-  Search,
   ChevronDown,
   BarChart3,
   DollarSign,
@@ -294,15 +293,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             </TooltipContent>
           </Tooltip>
 
-          <div className="hidden lg:flex flex-1 items-center gap-4 ml-4">
-            <div className="relative w-full max-w-lg">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                placeholder="강의, 과제 검색..."
-                className="pl-12 h-11 rounded-xl border-border/50 focus:border-primary"
-              />
-            </div>
-          </div>
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
             {effectiveUserRole === "admin" && (
