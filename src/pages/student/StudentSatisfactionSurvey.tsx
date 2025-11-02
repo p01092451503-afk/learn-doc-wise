@@ -133,13 +133,13 @@ const StudentSatisfactionSurvey = () => {
                 <Card key={survey.id} className="hover:shadow-md transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle>{survey.title}</CardTitle>
-                    <CardDescription>
-                      {survey.courses?.title}
-                    </CardDescription>
-                  </div>
-                  <Badge variant={completed ? "secondary" : "default"} className="flex-shrink-0">
+                      <div className="flex-1">
+                        <CardTitle className="mb-2">{survey.title}</CardTitle>
+                        <CardDescription className="text-xl font-semibold text-foreground">
+                          {survey.courses?.title}
+                        </CardDescription>
+                      </div>
+                      <Badge variant={completed ? "secondary" : "default"} className="flex-shrink-0">
                     {completed ? (
                       <span className="flex items-center gap-1.5">
                         <CheckCircle2 className="h-3 w-3" />
