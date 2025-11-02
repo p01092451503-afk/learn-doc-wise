@@ -494,15 +494,13 @@ const Landing = () => {
                     스탠다드<br/>
                     <span className="text-sm font-normal">₩150,000/월</span>
                   </th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 relative overflow-visible">
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
                     프로<br/>
                     <span className="text-sm font-normal">₩300,000/월</span>
-                    <div className="absolute -top-3 -right-3 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold shadow-lg z-10">인기</div>
                   </th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 relative overflow-visible">
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
                     프로페셔널<br/>
                     <span className="text-sm font-normal">₩600,000/월</span>
-                    <div className="absolute -top-3 -right-3 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold shadow-lg z-10">인기</div>
                   </th>
                   <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
                     엔터프라이즈<br/>
