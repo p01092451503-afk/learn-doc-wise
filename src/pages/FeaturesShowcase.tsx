@@ -230,20 +230,20 @@ const FeaturesShowcase = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-2 px-4">
+      <section className="pt-20 pb-4 px-4">
         <div className="container mx-auto text-center">
-          <Badge className="mb-6 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
+          <Badge className="mb-3 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
             <Sparkles className="h-3 w-3 mr-1" />
             AI 기반 학습 플랫폼
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-3 animate-fade-in">
             학습의 미래,
             <br />
             <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               atomLMS
             </span>
           </h1>
-          <p className="text-xl text-slate-400 mb-6 max-w-2xl mx-auto animate-fade-in">
+          <p className="text-xl text-slate-400 mb-4 max-w-2xl mx-auto animate-fade-in">
             학생, 강사, 관리자 모두를 위한 올인원 학습 관리 시스템
             <br />
             AI 기술로 더 스마트한 교육을 경험하세요
