@@ -2,8 +2,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Landing from "./pages/Landing";
 import Features from "./pages/Features";
@@ -81,6 +81,17 @@ import OperatorLicense from "./pages/operator/OperatorLicense";
 import OperatorResources from "./pages/operator/OperatorResources";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
 
+// 페이지 전환 시 스크롤을 최상단으로 이동
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const App = () => {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
@@ -97,7 +108,8 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-        <Routes>
+          <ScrollToTop />
+          <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/features-detail" element={<Features />} />
           <Route path="/pricing" element={<Pricing />} />
