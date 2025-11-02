@@ -14,7 +14,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AIGradingButton } from "@/components/assignments/AIGradingButton";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface Assignment {
   id: string;
@@ -299,7 +298,7 @@ const TeacherAssignments = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <FileText className="h-7 w-7 text-primary" />
               과제 관리
               <Badge variant="default" className="text-xs">AI</Badge>
             </h1>

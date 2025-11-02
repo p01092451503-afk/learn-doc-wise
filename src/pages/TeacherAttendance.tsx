@@ -7,12 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CheckCircle, XCircle, Clock, AlertCircle, Calendar as CalendarIcon, Download } from "lucide-react";
+import { CheckCircle, XCircle, Clock, AlertCircle, Calendar as CalendarIcon, Download, CalendarCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface AttendanceRecord {
   id: string;
@@ -304,7 +303,7 @@ const TeacherAttendance = ({ isDemo = false }: TeacherAttendanceProps) => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold flex items-center gap-2">
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <CalendarCheck className="h-7 w-7 text-primary" />
             출석 관리
           </h1>
           <p className="text-muted-foreground">학생들의 출석 현황을 관리하세요</p>

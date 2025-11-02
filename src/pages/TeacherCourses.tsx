@@ -14,7 +14,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import logoIcon from "@/assets/logo-icon.png";
 
 const TeacherCourses = () => {
   const navigate = useNavigate();
@@ -100,7 +99,7 @@ const TeacherCourses = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <BookOpen className="h-7 w-7 text-primary" />
               강의 관리
             </h1>
             <p className="text-muted-foreground">
