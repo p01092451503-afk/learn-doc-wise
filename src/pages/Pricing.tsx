@@ -191,15 +191,32 @@ const Pricing = () => {
               <thead>
                 <tr className="bg-primary">
                   <th className="p-4 text-left font-bold text-primary-foreground border border-primary/20">기능</th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">스타터</th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">스탠다드</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
+                    스타터<br/>
+                    <span className="text-sm font-normal">₩0</span>
+                  </th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
+                    스탠다드<br/>
+                    <span className="text-sm font-normal">₩150,000/월</span>
+                  </th>
                   <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 relative">
-                    프로
+                    프로<br/>
+                    <span className="text-sm font-normal">₩300,000/월</span>
                     <div className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold">인기</div>
                   </th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">프로페셔널</th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">엔터프라이즈</th>
-                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">엔터프라이즈 HRD</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 relative">
+                    프로페셔널<br/>
+                    <span className="text-sm font-normal">₩600,000/월</span>
+                    <div className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs px-2 py-0.5 rounded-full font-bold">인기</div>
+                  </th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
+                    엔터프라이즈<br/>
+                    <span className="text-sm font-normal">₩1,200,000/월</span>
+                  </th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20">
+                    엔터프라이즈 HRD<br/>
+                    <span className="text-sm font-normal">₩2,000,000/월</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
