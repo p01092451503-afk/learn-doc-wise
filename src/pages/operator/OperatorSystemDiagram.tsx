@@ -9,7 +9,7 @@ const OperatorSystemDiagram = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
             <Network className="h-8 w-8 text-primary" />
             시스템 컨텍스트 다이어그램
           </h1>
