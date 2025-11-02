@@ -441,7 +441,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                       isActive
                         ? "bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 border-l-2 border-violet-500"
                         : theme === "dark"
-                          ? "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                          ? "text-slate-200 hover:text-white hover:bg-slate-800/50"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                     )}
                   >

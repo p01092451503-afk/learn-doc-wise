@@ -400,7 +400,7 @@ const OperatorGovernmentTraining = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">국비환급과정 기능 관리</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">국비환급과정 기능 관리</h1>
           <p className="text-muted-foreground mt-2">
             국비환급과정 운영에 필요한 모든 기능의 개발 현황과 노출 설정을 관리합니다
           </p>
