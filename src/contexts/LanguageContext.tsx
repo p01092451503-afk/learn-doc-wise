@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { getTranslation } from '@/i18n/translations';
 
 export type Language = 'ko' | 'en';
 
@@ -37,8 +38,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   };
 
   const t = (key: string): string => {
-    // This will be implemented with translations
-    return key;
+    return getTranslation(language, key);
   };
 
   return (

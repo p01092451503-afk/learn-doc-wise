@@ -317,41 +317,51 @@ const StatsCard = ({ title, value, icon, description }: { title: string; value: 
   </Card>
 );
 
-const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => (
-  <div className="space-y-3 p-4 md:p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-      <div className="flex-1 min-w-0">
-        <h4 className="font-display font-semibold text-base md:text-lg truncate">{title}</h4>
-        <p className="text-xs md:text-sm text-muted-foreground mt-1">{instructor}</p>
+const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => {
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
+  
+  return (
+    <div className="space-y-3 p-4 md:p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <h4 className="font-display font-semibold text-base md:text-lg truncate">{title}</h4>
+          <p className="text-xs md:text-sm text-muted-foreground mt-1">{instructor}</p>
+        </div>
+        <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
+          <PlayCircle className="h-4 w-4 mr-1" />
+          {t('continue')}
+        </Button>
       </div>
-      <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
-        <PlayCircle className="h-4 w-4 mr-1" />
-        {getTranslation('ko', 'continue')}
-      </Button>
-    </div>
-    <div>
-      <div className="flex justify-between mb-2 text-xs md:text-sm">
-        <span className="text-muted-foreground">{getTranslation('ko', 'progress')}</span>
-        <span className="font-semibold text-primary">{progress}%</span>
+      <div>
+        <div className="flex justify-between mb-2 text-xs md:text-sm">
+          <span className="text-muted-foreground">{t('progress')}</span>
+          <span className="font-semibold text-primary">{progress}%</span>
+        </div>
+        <Progress value={progress} className="h-2" />
       </div>
-      <Progress value={progress} className="h-2" />
+      <p className="text-xs md:text-sm text-muted-foreground truncate">{t('nextLesson')}: {nextLesson}</p>
     </div>
-    <p className="text-xs md:text-sm text-muted-foreground truncate">{getTranslation('ko', 'nextLesson')}: {nextLesson}</p>
-  </div>
-);
+  );
+};
 
-const RecommendedCourse = ({ title, instructor, rating, students }: { title: string; instructor: string; rating: number; students: number }) => (
-  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
-    <div className="flex-1 min-w-0">
-      <h4 className="font-medium text-sm truncate">{title}</h4>
-      <p className="text-xs text-muted-foreground truncate">{instructor}</p>
-      <div className="flex items-center gap-2 mt-1 flex-wrap">
-        <span className="text-xs">⭐ {rating}</span>
-        <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
+const RecommendedCourse = ({ title, instructor, rating, students }: { title: string; instructor: string; rating: number; students: number }) => {
+  const { language } = useLanguage();
+  const t = (key: string) => getTranslation(language, key);
+  
+  return (
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
+      <div className="flex-1 min-w-0">
+        <h4 className="font-medium text-sm truncate">{title}</h4>
+        <p className="text-xs text-muted-foreground truncate">{instructor}</p>
+        <div className="flex items-center gap-2 mt-1 flex-wrap">
+          <span className="text-xs">⭐ {rating}</span>
+          <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
+        </div>
       </div>
+      <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{t('viewDetails')}</Button>
     </div>
-    <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{getTranslation('ko', 'viewDetails')}</Button>
-  </div>
-);
+  );
+};
 
 export default StudentDashboard;
