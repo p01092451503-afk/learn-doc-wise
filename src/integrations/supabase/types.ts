@@ -3015,6 +3015,7 @@ export type Database = {
           contract_end_date: string | null
           created_at: string
           custom_domain: string | null
+          enabled_features: string[] | null
           features_enabled: Json | null
           id: string
           is_active: boolean
@@ -3036,6 +3037,7 @@ export type Database = {
           contract_end_date?: string | null
           created_at?: string
           custom_domain?: string | null
+          enabled_features?: string[] | null
           features_enabled?: Json | null
           id?: string
           is_active?: boolean
@@ -3057,6 +3059,7 @@ export type Database = {
           contract_end_date?: string | null
           created_at?: string
           custom_domain?: string | null
+          enabled_features?: string[] | null
           features_enabled?: Json | null
           id?: string
           is_active?: boolean
