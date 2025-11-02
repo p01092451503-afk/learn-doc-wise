@@ -372,14 +372,16 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
             {menuItems.map((item) => {
               const isActive = window.location.pathname === item.path;
               return (
-                <Link key={item.path} to={item.path}>
+                  <Link key={item.path} to={item.path}>
                   <Button
                     variant="ghost"
                     className={cn(
-                      "w-full h-11 transition-all duration-200 overflow-visible",
+                      "w-full h-11 transition-all duration-200 overflow-visible rounded-xl",
                       sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 px-3 pr-2",
                       isActive
-                        ? "bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 hover:text-violet-300 border-l-2 border-violet-500"
+                        ? theme === "dark"
+                          ? "bg-violet-500/10 text-violet-300 hover:bg-violet-500/15"
+                          : "bg-violet-50 text-violet-600 hover:bg-violet-100"
                         : theme === "dark"
                           ? "text-slate-200 hover:text-white hover:bg-slate-800/50"
                           : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
