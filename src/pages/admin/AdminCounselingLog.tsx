@@ -74,7 +74,7 @@ const AdminCounselingLog = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <ClipboardList className="h-8 w-8 text-primary" />
+              <ClipboardList className="h-8 w-8 text-violet-500" />
               상담일지 관리
             </h1>
             <p className="text-muted-foreground mt-1">

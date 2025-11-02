@@ -192,7 +192,7 @@ export default function StudentLearningPath() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-            <Route className="h-8 w-8" />
+            <Route className="h-8 w-8 text-violet-500" />
             맞춤형 학습 경로
           </h1>
           <p className="text-muted-foreground">

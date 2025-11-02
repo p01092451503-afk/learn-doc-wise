@@ -117,7 +117,7 @@ const AdminTrainingCompletion = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Trophy className="h-8 w-8 text-primary" />
+              <Trophy className="h-8 w-8 text-violet-500" />
               수료 관리
             </h1>
             <p className="text-muted-foreground mt-1">

@@ -1587,7 +1587,7 @@ const AdminManual = () => {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
-            <BookOpen className="h-8 w-8" />
+            <BookOpen className="h-8 w-8 text-violet-500" />
             관리자 매뉴얼
           </h1>
           <p className="text-muted-foreground">

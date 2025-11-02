@@ -245,7 +245,7 @@ const StudentCourses = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <BookOpen className="h-8 w-8" />
+            <BookOpen className="h-8 w-8 text-violet-500" />
             {userRole === "admin" ? t("allCoursesAdmin") : t("myCourses")}
             <Badge variant="default" className="text-xs">AI</Badge>
           </h1>

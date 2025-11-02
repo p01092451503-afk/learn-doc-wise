@@ -170,7 +170,7 @@ export default function StudentGamification() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-            <Trophy className="h-8 w-8" />
+            <Trophy className="h-8 w-8 text-violet-500" />
             나의 학습 현황
           </h1>
           <p className="text-muted-foreground">

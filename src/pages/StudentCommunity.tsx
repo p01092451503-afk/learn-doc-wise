@@ -290,7 +290,7 @@ const StudentCommunity = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <MessageSquare className="h-8 w-8" />
+              <MessageSquare className="h-8 w-8 text-violet-500" />
               커뮤니티
             </h1>
             <p className="text-muted-foreground mt-2">

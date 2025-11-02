@@ -353,7 +353,7 @@ const AdminContent = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-logo font-bold tracking-tight flex items-center gap-2">
-            <FolderTree className="h-8 w-8 text-primary" />
+            <FolderTree className="h-8 w-8 text-violet-500" />
             콘텐츠 관리
           </h1>
           <p className="text-muted-foreground mt-2">

@@ -44,7 +44,7 @@ const StudentAnalytics = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <BarChart3 className="h-8 w-8" />
+            <BarChart3 className="h-8 w-8 text-violet-500" />
             학습 통계
           </h1>
           <p className="text-muted-foreground mt-2">

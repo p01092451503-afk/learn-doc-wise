@@ -39,7 +39,7 @@ const StudentCounselingLog = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <ClipboardList className="h-8 w-8 text-primary" />
+            <ClipboardList className="h-8 w-8 text-violet-500" />
             상담 이력
           </h1>
           <p className="text-muted-foreground mt-2">

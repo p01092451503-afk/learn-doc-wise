@@ -153,7 +153,7 @@ const TeacherAttendanceDetail = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <CalendarCheck className="h-8 w-8 text-primary" />
+            <CalendarCheck className="h-8 w-8 text-violet-500" />
             출결 상세 관리
           </h1>
           <p className="text-muted-foreground mt-2">

@@ -204,7 +204,7 @@ const TeacherDropoutManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <Users className="h-8 w-8 text-primary" />
+              <Users className="h-8 w-8 text-violet-500" />
               중도탈락 관리
             </h1>
             <p className="text-muted-foreground mt-2">
