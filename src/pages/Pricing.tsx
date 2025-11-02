@@ -120,6 +120,7 @@ const Pricing = () => {
               ]}
               buttonText="프로페셔널 시작하기"
               buttonVariant="premium"
+              isPopular={true}
             />
 
             {/* 엔터프라이즈 */}
