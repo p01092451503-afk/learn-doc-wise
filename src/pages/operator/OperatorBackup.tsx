@@ -78,22 +78,22 @@ const OperatorBackup = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
               <Database className="h-8 w-8" />
               백업/복원 관리
               <Badge variant="outline" className="ml-2 bg-blue-500/10 text-blue-400 border-blue-500/50">
                 온프레미스
               </Badge>
             </h1>
-            <p className="text-slate-400 mt-2">데이터베이스 및 파일 백업 관리</p>
+            <p className="text-muted-foreground mt-2">데이터베이스 및 파일 백업 관리</p>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Download className="h-5 w-5 text-green-400" />
                 수동 백업
               </CardTitle>
@@ -110,9 +110,9 @@ const OperatorBackup = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Upload className="h-5 w-5 text-orange-400" />
                 데이터 복원
               </CardTitle>
@@ -122,16 +122,16 @@ const OperatorBackup = () => {
               <Button 
                 onClick={handleRestore}
                 variant="outline"
-                className="w-full border-slate-600 hover:bg-slate-700"
+                className="w-full"
               >
                 복원하기
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Clock className="h-5 w-5 text-blue-400" />
                 자동 백업 설정
               </CardTitle>
@@ -140,7 +140,7 @@ const OperatorBackup = () => {
             <CardContent>
               <Button 
                 variant="outline"
-                className="w-full border-slate-600 hover:bg-slate-700"
+                className="w-full"
               >
                 설정 변경
               </Button>
@@ -154,8 +154,8 @@ const OperatorBackup = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">전체 백업</p>
-                  <p className="text-2xl font-bold text-white">24개</p>
+                  <p className="text-sm text-muted-foreground">전체 백업</p>
+                  <p className="text-2xl font-bold text-foreground">24개</p>
                 </div>
                 <Database className="h-8 w-8 text-blue-400" />
               </div>
@@ -166,8 +166,8 @@ const OperatorBackup = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">성공률</p>
-                  <p className="text-2xl font-bold text-white">100%</p>
+                  <p className="text-sm text-muted-foreground">성공률</p>
+                  <p className="text-2xl font-bold text-foreground">100%</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-400" />
               </div>
@@ -178,8 +178,8 @@ const OperatorBackup = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">사용 공간</p>
-                  <p className="text-2xl font-bold text-white">56 GB</p>
+                  <p className="text-sm text-muted-foreground">사용 공간</p>
+                  <p className="text-2xl font-bold text-foreground">56 GB</p>
                 </div>
                 <HardDrive className="h-8 w-8 text-purple-400" />
               </div>
@@ -190,8 +190,8 @@ const OperatorBackup = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">다음 백업</p>
-                  <p className="text-2xl font-bold text-white">2시간</p>
+                  <p className="text-sm text-muted-foreground">다음 백업</p>
+                  <p className="text-2xl font-bold text-foreground">2시간</p>
                 </div>
                 <Clock className="h-8 w-8 text-orange-400" />
               </div>
@@ -200,30 +200,30 @@ const OperatorBackup = () => {
         </div>
 
         {/* Backup History */}
-        <Card className="bg-slate-800/50 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white">백업 기록</CardTitle>
+            <CardTitle className="text-foreground">백업 기록</CardTitle>
             <CardDescription>최근 백업 내역</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
-                <TableRow className="border-slate-700 hover:bg-slate-800/50">
-                  <TableHead className="text-slate-400">유형</TableHead>
-                  <TableHead className="text-slate-400">날짜/시간</TableHead>
-                  <TableHead className="text-slate-400">크기</TableHead>
-                  <TableHead className="text-slate-400">소요시간</TableHead>
-                  <TableHead className="text-slate-400">상태</TableHead>
-                  <TableHead className="text-slate-400">작업</TableHead>
+                <TableRow className="border-border hover:bg-muted/50">
+                  <TableHead className="text-muted-foreground">유형</TableHead>
+                  <TableHead className="text-muted-foreground">날짜/시간</TableHead>
+                  <TableHead className="text-muted-foreground">크기</TableHead>
+                  <TableHead className="text-muted-foreground">소요시간</TableHead>
+                  <TableHead className="text-muted-foreground">상태</TableHead>
+                  <TableHead className="text-muted-foreground">작업</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {backupHistory.map((backup) => (
-                  <TableRow key={backup.id} className="border-slate-700 hover:bg-slate-800/30">
-                    <TableCell className="text-white">{backup.type}</TableCell>
-                    <TableCell className="text-slate-300">{backup.date}</TableCell>
-                    <TableCell className="text-slate-300">{backup.size}</TableCell>
-                    <TableCell className="text-slate-300">{backup.duration}</TableCell>
+                  <TableRow key={backup.id} className="border-border hover:bg-muted/30">
+                    <TableCell className="text-foreground">{backup.type}</TableCell>
+                    <TableCell className="text-foreground/80">{backup.date}</TableCell>
+                    <TableCell className="text-foreground/80">{backup.size}</TableCell>
+                    <TableCell className="text-foreground/80">{backup.duration}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
                         {backup.status}
@@ -231,11 +231,11 @@ const OperatorBackup = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" className="border-slate-600 hover:bg-slate-700">
+                        <Button size="sm" variant="outline">
                           <Download className="h-3 w-3 mr-1" />
                           다운로드
                         </Button>
-                        <Button size="sm" variant="outline" className="border-slate-600 hover:bg-slate-700">
+                        <Button size="sm" variant="outline">
                           <Upload className="h-3 w-3 mr-1" />
                           복원
                         </Button>
@@ -249,9 +249,9 @@ const OperatorBackup = () => {
         </Card>
 
         {/* Backup Schedule */}
-        <Card className="bg-slate-800/50 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Calendar className="h-5 w-5" />
               자동 백업 스케줄
             </CardTitle>
@@ -259,12 +259,12 @@ const OperatorBackup = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-lg bg-slate-900/50 border border-slate-700">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50 border border-border">
                 <div className="flex items-center gap-3">
                   <Server className="h-5 w-5 text-blue-400" />
                   <div>
-                    <p className="text-white font-medium">데이터베이스 전체 백업</p>
-                    <p className="text-sm text-slate-400">매일 오전 3:00</p>
+                    <p className="text-foreground font-medium">데이터베이스 전체 백업</p>
+                    <p className="text-sm text-muted-foreground">매일 오전 3:00</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
@@ -272,12 +272,12 @@ const OperatorBackup = () => {
                 </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-lg bg-slate-900/50 border border-slate-700">
+              <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50 border border-border">
                 <div className="flex items-center gap-3">
                   <HardDrive className="h-5 w-5 text-purple-400" />
                   <div>
-                    <p className="text-white font-medium">파일 스토리지 백업</p>
-                    <p className="text-sm text-slate-400">매주 일요일 오전 2:00</p>
+                    <p className="text-foreground font-medium">파일 스토리지 백업</p>
+                    <p className="text-sm text-muted-foreground">매주 일요일 오전 2:00</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">

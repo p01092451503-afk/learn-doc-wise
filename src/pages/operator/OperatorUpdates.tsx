@@ -53,14 +53,14 @@ const OperatorUpdates = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
               <Package className="h-8 w-8" />
               업데이트 관리
               <Badge variant="outline" className="ml-2 bg-blue-500/10 text-blue-400 border-blue-500/50">
                 온프레미스
               </Badge>
             </h1>
-            <p className="text-slate-400 mt-2">시스템 버전 및 업데이트 관리</p>
+            <p className="text-muted-foreground mt-2">시스템 버전 및 업데이트 관리</p>
           </div>
         </div>
 
@@ -70,8 +70,8 @@ const OperatorUpdates = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">현재 버전</p>
-                  <p className="text-3xl font-bold text-white">{currentVersion}</p>
+                  <p className="text-sm text-muted-foreground">현재 버전</p>
+                  <p className="text-3xl font-bold text-foreground">{currentVersion}</p>
                 </div>
                 <CheckCircle className="h-10 w-10 text-blue-400" />
               </div>
@@ -82,8 +82,8 @@ const OperatorUpdates = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">최신 버전</p>
-                  <p className="text-3xl font-bold text-white">{latestVersion}</p>
+                  <p className="text-sm text-muted-foreground">최신 버전</p>
+                  <p className="text-3xl font-bold text-foreground">{latestVersion}</p>
                 </div>
                 <Zap className="h-10 w-10 text-green-400" />
               </div>
@@ -94,8 +94,8 @@ const OperatorUpdates = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">업데이트 상태</p>
-                  <p className="text-lg font-bold text-white">업데이트 가능</p>
+                  <p className="text-sm text-muted-foreground">업데이트 상태</p>
+                  <p className="text-lg font-bold text-foreground">업데이트 가능</p>
                 </div>
                 <AlertTriangle className="h-10 w-10 text-orange-400" />
               </div>
@@ -104,9 +104,9 @@ const OperatorUpdates = () => {
         </div>
 
         {/* Available Update */}
-        <Card className="bg-slate-800/50 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Download className="h-5 w-5 text-green-400" />
               사용 가능한 업데이트
             </CardTitle>
@@ -117,7 +117,7 @@ const OperatorUpdates = () => {
               <div className="p-6 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-2">버전 2.6.0</h3>
+                    <h3 className="text-xl font-bold text-foreground mb-2">버전 2.6.0</h3>
                     <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
                       권장 업데이트
                     </Badge>
@@ -128,9 +128,9 @@ const OperatorUpdates = () => {
                   </Button>
                 </div>
                 
-                <div className="space-y-3 text-slate-300">
+                <div className="space-y-3 text-foreground/80">
                   <div>
-                    <p className="font-semibold text-white mb-2">새로운 기능:</p>
+                    <p className="font-semibold text-foreground mb-2">새로운 기능:</p>
                     <ul className="list-disc list-inside space-y-1 text-sm">
                       <li>향상된 백업 시스템</li>
                       <li>실시간 모니터링 대시보드</li>
@@ -139,7 +139,7 @@ const OperatorUpdates = () => {
                   </div>
                   
                   <div>
-                    <p className="font-semibold text-white mb-2">개선사항:</p>
+                    <p className="font-semibold text-foreground mb-2">개선사항:</p>
                     <ul className="list-disc list-inside space-y-1 text-sm">
                       <li>시스템 성능 최적화 (30% 향상)</li>
                       <li>보안 패치 적용</li>
@@ -148,7 +148,7 @@ const OperatorUpdates = () => {
                   </div>
 
                   <div>
-                    <p className="font-semibold text-white mb-2">버그 수정:</p>
+                    <p className="font-semibold text-foreground mb-2">버그 수정:</p>
                     <ul className="list-disc list-inside space-y-1 text-sm">
                       <li>데이터베이스 연결 안정성 개선</li>
                       <li>파일 업로드 오류 수정</li>
@@ -162,29 +162,29 @@ const OperatorUpdates = () => {
 
         {/* Update Settings */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <RefreshCw className="h-5 w-5 text-blue-400" />
                 자동 업데이트 설정
               </CardTitle>
               <CardDescription>업데이트 자동화 옵션</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 border border-slate-700">
-                <span className="text-white">보안 패치 자동 설치</span>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                <span className="text-foreground">보안 패치 자동 설치</span>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
                   활성
                 </Badge>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 border border-slate-700">
-                <span className="text-white">메이저 업데이트 알림</span>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                <span className="text-foreground">메이저 업데이트 알림</span>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
                   활성
                 </Badge>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg bg-slate-900/50 border border-slate-700">
-                <span className="text-white">업데이트 전 백업</span>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border">
+                <span className="text-foreground">업데이트 전 백업</span>
                 <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50">
                   활성
                 </Badge>
@@ -192,25 +192,25 @@ const OperatorUpdates = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-800/50 border-slate-700">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
+              <CardTitle className="text-foreground flex items-center gap-2">
                 <Shield className="h-5 w-5 text-purple-400" />
                 롤백 옵션
               </CardTitle>
               <CardDescription>이전 버전으로 복구</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-sm text-slate-400 mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 업데이트 후 문제가 발생하면 이전 버전으로 롤백할 수 있습니다.
               </p>
               <Button 
                 variant="outline" 
-                className="w-full border-slate-600 hover:bg-slate-700"
+                className="w-full"
               >
                 이전 버전으로 복구
               </Button>
-              <p className="text-xs text-slate-500 text-center">
+              <p className="text-xs text-muted-foreground/60 text-center">
                 마지막 안정 버전: 2.5.2
               </p>
             </CardContent>
@@ -218,9 +218,9 @@ const OperatorUpdates = () => {
         </div>
 
         {/* Update History */}
-        <Card className="bg-slate-800/50 border-slate-700">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Clock className="h-5 w-5" />
               업데이트 기록
             </CardTitle>
@@ -231,19 +231,19 @@ const OperatorUpdates = () => {
               {updateHistory.map((update, index) => (
                 <div 
                   key={index}
-                  className="flex items-center justify-between p-4 rounded-lg bg-slate-900/50 border border-slate-700"
+                  className="flex items-center justify-between p-4 rounded-lg bg-muted/50 border border-border"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-2 rounded-lg bg-blue-500/10">
                       <Package className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
-                      <p className="text-white font-medium">버전 {update.version}</p>
-                      <p className="text-sm text-slate-400">{update.date}</p>
+                      <p className="text-foreground font-medium">버전 {update.version}</p>
+                      <p className="text-sm text-muted-foreground">{update.date}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="border-slate-600 text-slate-300">
+                    <Badge variant="outline" className="border-border text-foreground/70">
                       {update.type}
                     </Badge>
                     <Badge 
