@@ -36,8 +36,8 @@ const Pricing = () => {
             </p>
           </div>
 
-          {/* Pricing Cards - 세로 배치 */}
-          <div className="max-w-3xl mx-auto space-y-6">
+          {/* Pricing Cards - 가로 배치 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {/* 스타터 */}
             <PricingCard
               title="스타터"
@@ -226,18 +226,17 @@ const PricingCard = ({
         </div>
       )}
       
-      <div className="flex flex-col md:flex-row gap-8 items-start">
-        {/* 왼쪽: 타이틀과 가격 */}
-        <div className="md:w-1/3">
-          <h3 className="text-2xl font-display font-bold mb-2 text-card-foreground">{title}</h3>
+      <div className="flex flex-col h-full">
+        <div className="mb-6">
+          <h3 className="text-xl font-display font-bold mb-2 text-card-foreground">{title}</h3>
           <p className="text-sm text-muted-foreground mb-4">{description}</p>
           
           <div className="mb-4">
-            <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-display font-bold text-foreground">{price}</span>
-              <span className="text-muted-foreground text-sm">{period}</span>
+            <div className="flex items-baseline gap-0.5 flex-wrap">
+              <span className="text-3xl font-display font-bold text-foreground">{price}</span>
+              <span className="text-lg text-muted-foreground font-medium">{period}</span>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">{aiTokens}</p>
+            <p className="text-xs text-muted-foreground mt-2">{aiTokens}</p>
           </div>
 
           <Link to="/auth">
@@ -251,12 +250,12 @@ const PricingCard = ({
           </Link>
         </div>
 
-        {/* 오른쪽: 기능 목록 */}
-        <div className="md:w-2/3">
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* 기능 목록 */}
+        <div className="flex-1">
+          <ul className="space-y-2">
             {features.map((feature, index) => (
               <li key={index} className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
                 <span className="text-sm text-card-foreground">{feature}</span>
               </li>
             ))}
