@@ -202,43 +202,6 @@ const FeaturesShowcase = () => {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Hero Section */}
-      <section className="pt-8 px-4">
-        <div className="container mx-auto text-center">
-          <Badge className="mb-3 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
-            <Sparkles className="h-3 w-3 mr-1" />
-            AI 기반 학습 플랫폼
-          </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-3 animate-fade-in">
-            학습의 미래,
-            <br />
-            <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              atomLMS
-            </span>
-          </h1>
-          <p className="text-xl text-slate-400 mb-4 max-w-2xl mx-auto animate-fade-in">
-            학생, 강사, 관리자 모두를 위한 올인원 학습 관리 시스템
-            <br />
-            AI 기술로 더 스마트한 교육을 경험하세요
-          </p>
-          <div className="flex gap-4 justify-center animate-fade-in">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-lg"
-              asChild
-            >
-              <Link to="/auth">
-                무료로 시작하기
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-slate-700 text-white hover:bg-slate-800 text-lg" asChild>
-              <Link to="/demo">데모 보기</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Stats Section */}
       <section className="py-12 border-y border-slate-800/50 bg-slate-900/30">
         <div className="container mx-auto px-4">
