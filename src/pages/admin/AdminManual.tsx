@@ -887,7 +887,10 @@ const AdminManual = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">관리자 매뉴얼</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3">
+            <BookOpen className="h-8 w-8" />
+            관리자 매뉴얼
+          </h1>
           <p className="text-muted-foreground">
             시스템 기능별 사용 방법을 확인하세요
           </p>
