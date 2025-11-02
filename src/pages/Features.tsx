@@ -249,39 +249,6 @@ const Features = () => {
               ]}
             />
 
-            {/* 게이미피케이션 */}
-            <FeatureSection
-              icon={<Trophy className="h-8 w-8" />}
-              title="게이미피케이션"
-              description="재미있는 학습 경험으로 동기부여를 높입니다"
-              features={[
-                {
-                  icon: <Trophy className="h-5 w-5" />,
-                  title: "포인트 시스템",
-                  description: "학습 활동마다 포인트를 획득"
-                },
-                {
-                  icon: <Award className="h-5 w-5" />,
-                  title: "배지 및 업적",
-                  description: "다양한 배지를 모으며 성취감 향상"
-                },
-                {
-                  icon: <BarChart3 className="h-5 w-5" />,
-                  title: "리더보드",
-                  description: "학습 순위를 통한 건전한 경쟁"
-                },
-                {
-                  icon: <TrendingUp className="h-5 w-5" />,
-                  title: "레벨 시스템",
-                  description: "경험치를 쌓아 레벨업"
-                },
-                {
-                  icon: <Target className="h-5 w-5" />,
-                  title: "도전 과제",
-                  description: "특별 미션을 완료하고 보상 획득"
-                }
-              ]}
-            />
 
             {/* 분석 및 리포팅 */}
             <FeatureSection
