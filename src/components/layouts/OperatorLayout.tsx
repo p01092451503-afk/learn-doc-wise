@@ -11,7 +11,6 @@ import {
   LogOut,
   Menu,
   Bell,
-  Search,
   ChevronRight,
   Zap,
   Sparkles,
@@ -181,23 +180,6 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
             </Tooltip>
           </div>
 
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <Search className={cn(
-                "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4",
-                theme === "dark" ? "text-slate-400" : "text-slate-500"
-              )} />
-              <Input
-                placeholder="검색..."
-                className={cn(
-                  "pl-10 focus:border-violet-500 focus:ring-violet-500/20 transition-colors",
-                  theme === "dark"
-                    ? "bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-400"
-                    : "bg-slate-100 border-slate-300 text-slate-900 placeholder:text-slate-500"
-                )}
-              />
-            </div>
-          </div>
 
           <div className="flex items-center gap-2">
             {/* Role Switcher */}
