@@ -58,6 +58,7 @@ interface MenuItem {
   path: string;
   hasAI?: boolean;
   onPremise?: boolean;
+  badge?: string;
 }
 
 const menuItems: MenuItem[] = [
@@ -69,7 +70,7 @@ const menuItems: MenuItem[] = [
   { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
   { icon: Layers, label: "기능 목록", path: "/operator/features" },
   { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
-  { icon: Brain, label: "국비환급과정", path: "/operator/government-training" },
+  { icon: GraduationCap, label: "국비환급과정", path: "/operator/government-training", badge: "HRD" },
   { icon: Database, label: "백업/복원", path: "/operator/backup", onPremise: true },
   { icon: Package, label: "업데이트 관리", path: "/operator/updates", onPremise: true },
   { icon: Key, label: "라이선스 관리", path: "/operator/license", onPremise: true },
@@ -457,6 +458,11 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                         {item.onPremise && (
                           <span className="px-1.5 py-0.5 rounded-md bg-blue-500/20 border border-blue-500/30 text-[10px] font-bold text-blue-400 whitespace-nowrap flex-shrink-0">
                             온프레미스
+                          </span>
+                        )}
+                        {item.badge && !item.hasAI && !item.onPremise && (
+                          <span className="px-1.5 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-500/30 text-[10px] font-bold text-emerald-400 whitespace-nowrap flex-shrink-0">
+                            {item.badge}
                           </span>
                         )}
                       </div>
