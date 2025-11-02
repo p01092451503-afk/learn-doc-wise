@@ -202,35 +202,8 @@ const FeaturesShowcase = () => {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-slate-800/50 bg-slate-950/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link to="/" className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-white/10 backdrop-blur-sm">
-                  <img src={logoIcon} alt="atomLMS" className="h-6 w-6 brightness-0 invert" />
-                </div>
-                <span className="text-xl font-bold text-white">atomLMS</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
-              <p>아톰 안녕?</p>
-            </TooltipContent>
-          </Tooltip>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" className="text-slate-300 hover:text-white" asChild>
-              <Link to="/auth">로그인</Link>
-            </Button>
-            <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700" asChild>
-              <Link to="/auth">무료 시작하기</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
-      <section className="pt-16 px-4">
+      <section className="pt-8 px-4">
         <div className="container mx-auto text-center">
           <Badge className="mb-3 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
             <Sparkles className="h-3 w-3 mr-1" />
