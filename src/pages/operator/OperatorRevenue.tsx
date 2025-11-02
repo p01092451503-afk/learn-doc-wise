@@ -141,7 +141,7 @@ const OperatorRevenue = () => {
             "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <DollarSign className="h-8 w-8" />
+            <DollarSign className="h-8 w-8 text-violet-500" />
             매출 관리
           </h1>
           <p className={cn(

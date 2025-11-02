@@ -74,7 +74,7 @@ const OperatorSettings = () => {
             "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <Settings className="h-8 w-8" />
+            <Settings className="h-8 w-8 text-violet-500" />
             플랫폼 설정
           </h1>
           <p className={cn(

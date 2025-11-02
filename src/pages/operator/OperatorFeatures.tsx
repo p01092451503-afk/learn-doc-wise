@@ -790,7 +790,7 @@ const OperatorFeatures = () => {
               theme === "dark" ? "text-white" : "text-slate-900"
             )}
           >
-            <List className="h-8 w-8" />
+            <List className="h-8 w-8 text-violet-500" />
             기능 목록
           </h1>
           <p

@@ -122,7 +122,7 @@ const OperatorMonitoring = () => {
             "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <Activity className="h-8 w-8" />
+            <Activity className="h-8 w-8 text-violet-500" />
             시스템 모니터링
           </h1>
           <p className={cn(

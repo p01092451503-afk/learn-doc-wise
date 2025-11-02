@@ -549,7 +549,7 @@ const OperatorTenants = () => {
               "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
               theme === "dark" ? "text-white" : "text-slate-900"
             )}>
-              <Building2 className="h-8 w-8" />
+              <Building2 className="h-8 w-8 text-violet-500" />
               테넌트 관리
             </h1>
             <p className={cn(

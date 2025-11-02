@@ -109,7 +109,7 @@ const OperatorAILogs = () => {
             "text-3xl font-bold mb-2 flex items-center gap-3 transition-colors",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <Brain className="h-8 w-8" />
+            <Brain className="h-8 w-8 text-violet-500" />
             AI 로그
             <Badge variant="default" className="text-sm">AI</Badge>
           </h1>

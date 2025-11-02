@@ -1587,7 +1587,7 @@ const OperatorManual = () => {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold mb-2 flex items-center gap-2 text-foreground">
-            <BookOpen className="h-8 w-8 text-primary" />
+            <BookOpen className="h-8 w-8 text-violet-500" />
             운영자 매뉴얼
           </h1>
           <p className="text-muted-foreground">
