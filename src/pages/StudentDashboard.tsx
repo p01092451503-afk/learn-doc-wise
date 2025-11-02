@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
+import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users, LayoutDashboard } from "lucide-react";
 import { Chatbot } from "@/components/Chatbot";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
@@ -33,11 +32,11 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-2">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-2 flex items-center gap-2">
+              <LayoutDashboard className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
               <span className="text-gradient">{t('learningDashboard')}</span>
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base lg:text-lg flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5 md:h-6 md:w-6" />
+            <p className="text-muted-foreground text-sm md:text-base lg:text-lg">
               <span className="hidden sm:inline">{language === 'ko' ? '안녕하세요! ' : 'Hello! '}</span>
               {isDemo ? t('aiLearningMessage') : t('welcomeMessage')}
             </p>

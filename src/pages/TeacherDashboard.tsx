@@ -3,8 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText, Bot } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
+import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText, Bot, LayoutDashboard } from "lucide-react";
 import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
@@ -20,9 +19,11 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">강사 대시보드</h1>
-            <p className="text-sm md:text-base text-muted-foreground flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-5 w-5" />
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+              <LayoutDashboard className="h-6 w-6 md:h-7 md:w-7 text-primary" />
+              강사 대시보드
+            </h1>
+            <p className="text-sm md:text-base text-muted-foreground">
               {isDemo ? 'AI 기반 과제 채점으로 더 효율적인 강의 운영을 경험하세요' : '학생들의 학습을 관리하고 분석하세요'}
             </p>
           </div>

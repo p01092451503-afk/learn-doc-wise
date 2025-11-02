@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
 import logoIcon from "@/assets/logo-icon.png";
 import { Chatbot } from "@/components/Chatbot";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
