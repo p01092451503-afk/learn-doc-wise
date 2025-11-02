@@ -258,10 +258,13 @@ const TeacherSatisfactionSurvey = () => {
               <Card key={survey.id}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div>
+                    <div className="space-y-3">
                       <CardTitle>{survey.title}</CardTitle>
-                      <CardDescription>
-                        {survey.courses?.title} • {survey.survey_type === "mid" ? "중간" : "최종"} 만족도
+                      <div className="text-2xl font-bold text-violet-600 dark:text-violet-400">
+                        {survey.courses?.title}
+                      </div>
+                      <CardDescription className="text-base">
+                        {survey.survey_type === "mid" ? "중간" : "최종"} 만족도
                       </CardDescription>
                     </div>
                     <Badge variant={survey.is_active ? "default" : "secondary"}>
