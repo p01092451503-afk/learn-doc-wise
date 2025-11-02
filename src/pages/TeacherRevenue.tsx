@@ -2,7 +2,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { DollarSign, TrendingUp, CreditCard, Download, Calendar } from "lucide-react";
-import logoIcon from "@/assets/logo-icon.png";
 import {
   Table,
   TableBody,
@@ -72,7 +71,7 @@ const TeacherRevenue = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
-              <img src={logoIcon} alt="atom" className="h-8 w-8" />
+              <DollarSign className="h-7 w-7 text-primary" />
               수익 관리
             </h1>
             <p className="text-muted-foreground">
