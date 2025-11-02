@@ -548,12 +548,15 @@ const OperatorTenants = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className={cn(
-                        "transition-colors",
+                        "z-50 transition-colors",
                         theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
                       )}>
-                        <SelectItem value="starter">스타터</SelectItem>
-                        <SelectItem value="standard">스탠다드</SelectItem>
-                        <SelectItem value="professional">프로페셔널</SelectItem>
+                        <SelectItem value="starter">스타터 (학생 50명, 저장소 10GB)</SelectItem>
+                        <SelectItem value="standard">스탠다드 (학생 200명, 저장소 50GB)</SelectItem>
+                        <SelectItem value="pro">프로 (학생 500명, 저장소 200GB)</SelectItem>
+                        <SelectItem value="professional">프로페셔널 (학생 1,000명, 저장소 500GB)</SelectItem>
+                        <SelectItem value="enterprise">엔터프라이즈 (학생 5,000명, 저장소 2TB)</SelectItem>
+                        <SelectItem value="enterprise_hrd">엔터프라이즈 HRD (학생 10,000명, 저장소 5TB)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
