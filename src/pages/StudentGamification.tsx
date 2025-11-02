@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { Trophy } from "lucide-react";
 
 const mockBadges = [
   { id: '1', name: '첫 걸음', description: '첫 강의를 시작했습니다', icon: '🌱', badge_type: 'bronze', requirement_type: 'lessons_completed', requirement_value: 1, earned: true, earned_at: new Date().toISOString() },
@@ -168,7 +169,10 @@ export default function StudentGamification() {
     <DashboardLayout userRole="student">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">나의 학습 현황</h1>
+          <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
+            <Trophy className="h-8 w-8" />
+            나의 학습 현황
+          </h1>
           <p className="text-muted-foreground">
             학습을 통해 포인트를 모으고 배지를 획득하세요!
           </p>

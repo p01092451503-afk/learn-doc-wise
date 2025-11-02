@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BookOpen, Clock, CheckCircle2, Lock, Target } from "lucide-react";
+import { BookOpen, Clock, CheckCircle2, Lock, Target, Route } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 const mockEnrolledPaths = [
@@ -191,7 +191,10 @@ export default function StudentLearningPath() {
     <DashboardLayout userRole="student">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">맞춤형 학습 경로</h1>
+          <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
+            <Route className="h-8 w-8" />
+            맞춤형 학습 경로
+          </h1>
           <p className="text-muted-foreground">
             체계적인 학습 경로를 따라 목표를 달성하세요
           </p>

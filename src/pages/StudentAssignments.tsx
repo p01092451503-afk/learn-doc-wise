@@ -222,7 +222,8 @@ const StudentAssignments = () => {
     <DashboardLayout userRole="student">
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+            <FileText className="h-8 w-8" />
             과제
             {isDemo && <Badge variant="default" className="text-xs">AI</Badge>}
           </h1>

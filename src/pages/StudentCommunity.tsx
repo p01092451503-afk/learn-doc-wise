@@ -289,7 +289,10 @@ const StudentCommunity = () => {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">커뮤니티</h1>
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+              <MessageSquare className="h-8 w-8" />
+              커뮤니티
+            </h1>
             <p className="text-muted-foreground mt-2">
               다른 학습자들과 소통하고 지식을 공유하세요
             </p>

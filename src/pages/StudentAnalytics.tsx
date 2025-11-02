@@ -43,7 +43,10 @@ const StudentAnalytics = () => {
     <DashboardLayout userRole="student">
       <div className="space-y-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">학습 통계</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+            <BarChart3 className="h-8 w-8" />
+            학습 통계
+          </h1>
           <p className="text-muted-foreground mt-2">
             나의 학습 활동과 성과를 확인하세요
           </p>
