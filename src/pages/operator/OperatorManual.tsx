@@ -774,7 +774,10 @@ const OperatorManual = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">운영자 매뉴얼</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+            <BookOpen className="h-8 w-8 text-primary" />
+            운영자 매뉴얼
+          </h1>
           <p className="text-muted-foreground">
             플랫폼 운영 및 관리 방법을 확인하세요
           </p>

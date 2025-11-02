@@ -56,7 +56,7 @@ const OperatorLicense = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-              <Key className="h-8 w-8" />
+              <Key className="h-8 w-8 text-primary" />
               라이선스 관리
               <Badge variant="outline" className="ml-2 bg-blue-500/10 text-blue-400 border-blue-500/50">
                 온프레미스

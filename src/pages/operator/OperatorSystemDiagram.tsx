@@ -9,7 +9,10 @@ const OperatorSystemDiagram = () => {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">시스템 컨텍스트 다이어그램</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+            <Network className="h-8 w-8 text-primary" />
+            시스템 컨텍스트 다이어그램
+          </h1>
           <p className="text-muted-foreground">
             전체 시스템 아키텍처와 구성 요소를 시각화합니다
           </p>
