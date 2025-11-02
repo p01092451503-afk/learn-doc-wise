@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Brain, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logoIcon from "@/assets/logo-icon.png";
 
 interface AILog {
   id: string;
@@ -110,7 +109,7 @@ const OperatorAILogs = () => {
             "text-3xl font-bold mb-2 flex items-center gap-3 transition-colors",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <Brain className="h-8 w-8" />
             AI 로그
             <Badge variant="default" className="text-sm">AI</Badge>
           </h1>

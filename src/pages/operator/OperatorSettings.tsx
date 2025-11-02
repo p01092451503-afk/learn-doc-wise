@@ -9,7 +9,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logoIcon from "@/assets/logo-icon.png";
 
 const OperatorSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -72,10 +71,10 @@ const OperatorSettings = () => {
       <div className="space-y-6">
         <div>
           <h1 className={cn(
-            "text-3xl font-bold mb-2 transition-colors flex items-center gap-2",
+            "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <img src={logoIcon} alt="atom" className="h-8 w-8" />
+            <Settings className="h-8 w-8" />
             플랫폼 설정
           </h1>
           <p className={cn(

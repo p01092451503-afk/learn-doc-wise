@@ -3,12 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
-import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown, FileText } from "lucide-react";
+import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown, FileText, LayoutDashboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
-import logoIcon from "@/assets/logo-icon.png";
 
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
@@ -114,10 +113,10 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className={cn(
-            "text-3xl md:text-4xl font-bold mb-2 transition-colors flex items-center gap-2",
+            "text-3xl md:text-4xl font-bold mb-2 transition-colors flex items-center gap-3",
             theme === "dark" ? "text-white" : "text-slate-900"
           )}>
-            <img src={logoIcon} alt="atom" className="h-8 w-8 md:h-10 md:w-10" />
+            <LayoutDashboard className="h-8 w-8 md:h-10 md:w-10" />
             운영자 대시보드
           </h1>
           <p className={cn(
