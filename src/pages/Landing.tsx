@@ -100,6 +100,110 @@ const Landing = () => {
         </div>
       </header>
 
+      {/* Features Section */}
+      <section className="py-10 bg-muted/30" aria-labelledby="features-heading">
+        <div className="container mx-auto px-4">
+          <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">
+            왜 <span className="font-logo">atomLMS</span>인가?
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <FeatureCard
+              icon={<Brain className="h-10 w-10" />}
+              title="AI 지능형 학습"
+              description="10가지 이상의 AI 기능으로 학습 경로 추천, 퀴즈 생성, 자동 채점, 진도 예측 등을 제공합니다"
+            />
+            <FeatureCard
+              icon={<Award className="h-10 w-10" />}
+              title="HRD 전문 시스템"
+              description="정부지원 훈련과정에 필요한 출석, 훈련일지, 상담일지, 수료 관리 등 모든 기능을 완벽 지원합니다"
+            />
+            <FeatureCard
+              icon={<Zap className="h-10 w-10" />}
+              title="엔터프라이즈급 안정성"
+              description="99.9% 가동률 보장, 자동 백업, 실시간 모니터링으로 언제나 안정적인 서비스를 제공합니다"
+            />
+            <FeatureCard
+              icon={<CheckCircle className="h-10 w-10" />}
+              title="강력한 보안 체계"
+              description="데이터 암호화, RLS 기반 접근 제어, 역할별 권한 관리로 민감한 학습 데이터를 안전하게 보호합니다"
+            />
+            <FeatureCard
+              icon={<BarChart3 className="h-10 w-10" />}
+              title="실시간 분석 대시보드"
+              description="학습 진도, 성적, 참여도, AI 사용량 등 모든 데이터를 실시간으로 분석하고 시각화합니다"
+            />
+            <FeatureCard
+              icon={<Users className="h-10 w-10" />}
+              title="확장 가능한 아키텍처"
+              description="멀티 테넌트 구조로 수천 명의 동시 사용자를 지원하며, 무제한 확장이 가능합니다"
+            />
+          </div>
+          
+          {/* HRD 정부지원 훈련과정 전용 기능 */}
+          <div className="mt-12 pt-12 border-t border-border">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-4">
+                <Award className="h-4 w-4 text-accent" />
+                <span className="text-sm font-semibold text-accent">HRD 정부지원 훈련과정</span>
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                정부지원 훈련기관을 위한 전문 기능
+              </h3>
+              <p className="text-muted-foreground">
+                HRD-Net 연계부터 수료 관리까지, 정부지원 훈련과정 운영에 필요한 모든 기능
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <FeatureCard
+                icon={<FileText className="h-10 w-10" />}
+                title="훈련일지 관리"
+                description="일일 훈련 내용과 진행 사항을 체계적으로 기록하고 관리합니다"
+              />
+              <FeatureCard
+                icon={<Calendar className="h-10 w-10" />}
+                title="출석 관리"
+                description="출석, 지각, 결석을 자동으로 체크하고 상세 이력을 관리합니다"
+              />
+              <FeatureCard
+                icon={<MessageSquare className="h-10 w-10" />}
+                title="상담일지"
+                description="학생 상담 내용을 기록하고 맞춤형 학습 지원을 제공합니다"
+              />
+              <FeatureCard
+                icon={<AlertTriangle className="h-10 w-10" />}
+                title="중도탈락 관리"
+                description="중도탈락 위험 학생을 조기 발견하고 적극적으로 지원합니다"
+              />
+              <FeatureCard
+                icon={<Trophy className="h-10 w-10" />}
+                title="수료 관리"
+                description="출석률과 성적을 자동 집계하여 수료 요건을 관리합니다"
+              />
+              <FeatureCard
+                icon={<Wallet className="h-10 w-10" />}
+                title="훈련수당 관리"
+                description="출석 기반 훈련수당을 자동 계산하고 지급 내역을 관리합니다"
+              />
+              <FeatureCard
+                icon={<Star className="h-10 w-10" />}
+                title="만족도 조사"
+                description="중간/최종 만족도 조사를 진행하고 결과를 분석합니다"
+              />
+              <FeatureCard
+                icon={<ClipboardCheck className="h-10 w-10" />}
+                title="성적 관리"
+                description="시험, 과제, 참여도를 종합하여 체계적으로 성적을 관리합니다"
+              />
+              <FeatureCard
+                icon={<UserCheck className="h-10 w-10" />}
+                title="훈련생 관리"
+                description="훈련생 정보와 학습 이력을 통합 관리하고 맞춤 지원합니다"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* AI Features Section */}
       <section className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
@@ -302,30 +406,30 @@ const Landing = () => {
                 <div className="flex-1">
                   <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 진도 예측</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    학습 패턴을 분석하여 수료 시점을 예측하고 목표 달성을 돕습니다
+                    학습 속도를 분석하여 수료일과 학습 성과를 미리 예측합니다
                   </p>
                   <div className="mt-2.5 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">패턴 분석</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">목표 관리</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">진도 예측</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">성과 추정</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* AI 스터디 메이트 매칭 */}
+            {/* AI 학습 매칭 */}
             <div className="group p-5 rounded-xl bg-card border border-border hover:border-primary/50 hover:shadow-glow transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-start gap-3">
                 <div className="p-2.5 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
                   <Users className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 스터디 메이트 매칭</h3>
+                  <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 학습 매칭</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    학습 수준과 관심사가 비슷한 학습 동료를 AI가 매칭해줍니다
+                    수준이 비슷한 학습자를 매칭하여 스터디 그룹을 형성합니다
                   </p>
                   <div className="mt-2.5 flex items-center gap-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">스마트 매칭</span>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">협업 학습</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">자동 매칭</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">스터디 그룹</span>
                   </div>
                 </div>
               </div>
@@ -340,7 +444,7 @@ const Landing = () => {
                 <div className="flex-1">
                   <h3 className="text-base font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors">AI 챗봇</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    학습 관련 모든 질문에 24시간 답변하고 맞춤형 도움을 제공합니다
+                    학습 관련 질문에 24시간 즉시 응답하는 지능형 챗봇 서비스
                   </p>
                   <div className="mt-2.5 flex items-center gap-2">
                     <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">24/7 지원</span>
@@ -359,110 +463,6 @@ const Landing = () => {
                 AI 기능 체험하기
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-10 bg-muted/30" aria-labelledby="features-heading">
-        <div className="container mx-auto px-4">
-          <h2 id="features-heading" className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">
-            왜 <span className="font-logo">atomLMS</span>인가?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <FeatureCard
-              icon={<Brain className="h-10 w-10" />}
-              title="AI 지능형 학습"
-              description="10가지 이상의 AI 기능으로 학습 경로 추천, 퀴즈 생성, 자동 채점, 진도 예측 등을 제공합니다"
-            />
-            <FeatureCard
-              icon={<Award className="h-10 w-10" />}
-              title="HRD 전문 시스템"
-              description="정부지원 훈련과정에 필요한 출석, 훈련일지, 상담일지, 수료 관리 등 모든 기능을 완벽 지원합니다"
-            />
-            <FeatureCard
-              icon={<Zap className="h-10 w-10" />}
-              title="엔터프라이즈급 안정성"
-              description="99.9% 가동률 보장, 자동 백업, 실시간 모니터링으로 언제나 안정적인 서비스를 제공합니다"
-            />
-            <FeatureCard
-              icon={<CheckCircle className="h-10 w-10" />}
-              title="강력한 보안 체계"
-              description="데이터 암호화, RLS 기반 접근 제어, 역할별 권한 관리로 민감한 학습 데이터를 안전하게 보호합니다"
-            />
-            <FeatureCard
-              icon={<BarChart3 className="h-10 w-10" />}
-              title="실시간 분석 대시보드"
-              description="학습 진도, 성적, 참여도, AI 사용량 등 모든 데이터를 실시간으로 분석하고 시각화합니다"
-            />
-            <FeatureCard
-              icon={<Users className="h-10 w-10" />}
-              title="확장 가능한 아키텍처"
-              description="멀티 테넌트 구조로 수천 명의 동시 사용자를 지원하며, 무제한 확장이 가능합니다"
-            />
-          </div>
-          
-          {/* HRD 정부지원 훈련과정 전용 기능 */}
-          <div className="mt-12 pt-12 border-t border-border">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-4">
-                <Award className="h-4 w-4 text-accent" />
-                <span className="text-sm font-semibold text-accent">HRD 정부지원 훈련과정</span>
-              </div>
-              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                정부지원 훈련기관을 위한 전문 기능
-              </h3>
-              <p className="text-muted-foreground">
-                HRD-Net 연계부터 수료 관리까지, 정부지원 훈련과정 운영에 필요한 모든 기능
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              <FeatureCard
-                icon={<FileText className="h-10 w-10" />}
-                title="훈련일지 관리"
-                description="일일 훈련 내용과 진행 사항을 체계적으로 기록하고 관리합니다"
-              />
-              <FeatureCard
-                icon={<Calendar className="h-10 w-10" />}
-                title="출석 관리"
-                description="출석, 지각, 결석을 자동으로 체크하고 상세 이력을 관리합니다"
-              />
-              <FeatureCard
-                icon={<MessageSquare className="h-10 w-10" />}
-                title="상담일지"
-                description="학생 상담 내용을 기록하고 맞춤형 학습 지원을 제공합니다"
-              />
-              <FeatureCard
-                icon={<AlertTriangle className="h-10 w-10" />}
-                title="중도탈락 관리"
-                description="중도탈락 위험 학생을 조기 발견하고 적극적으로 지원합니다"
-              />
-              <FeatureCard
-                icon={<Trophy className="h-10 w-10" />}
-                title="수료 관리"
-                description="출석률과 성적을 자동 집계하여 수료 요건을 관리합니다"
-              />
-              <FeatureCard
-                icon={<Wallet className="h-10 w-10" />}
-                title="훈련수당 관리"
-                description="출석 기반 훈련수당을 자동 계산하고 지급 내역을 관리합니다"
-              />
-              <FeatureCard
-                icon={<Star className="h-10 w-10" />}
-                title="만족도 조사"
-                description="중간/최종 만족도 조사를 진행하고 결과를 분석합니다"
-              />
-              <FeatureCard
-                icon={<ClipboardCheck className="h-10 w-10" />}
-                title="성적 관리"
-                description="시험, 과제, 참여도를 종합하여 체계적으로 성적을 관리합니다"
-              />
-              <FeatureCard
-                icon={<UserCheck className="h-10 w-10" />}
-                title="훈련생 관리"
-                description="훈련생 정보와 학습 이력을 통합 관리하고 맞춤 지원합니다"
-              />
-            </div>
           </div>
         </div>
       </section>
