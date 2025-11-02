@@ -205,23 +205,8 @@ const StudentCourseDetail = () => {
   };
 
   const checkUserRole = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id);
-
-      if (roles?.some(r => r.role === "admin")) {
-        setUserRole("admin");
-      } else if (roles?.some(r => r.role === "teacher")) {
-        setUserRole("teacher");
-      }
-    } catch (error) {
-      console.error("Error checking user role:", error);
-    }
+    // 학생 페이지에서는 항상 student 역할 유지
+    setUserRole("student");
   };
 
   const fetchCourseDetails = async () => {
