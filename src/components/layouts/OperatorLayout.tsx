@@ -213,8 +213,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                       : "bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
                   )}
                 >
-                  <Users className="h-4 w-4" />
-                  <span className="hidden md:inline-block">역할 전환</span>
+                  <Building2 className="h-4 w-4" />
+                  <span className="hidden md:inline-block">운영자</span>
                   <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
