@@ -401,7 +401,7 @@ const OperatorGovernmentTraining = () => {
     <OperatorLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
             <GraduationCap className="h-8 w-8 text-primary" />
             국비환급과정 기능 관리
             <Badge variant="default" className="text-sm">HRD</Badge>

@@ -210,7 +210,7 @@ const OperatorTechStack = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2 text-foreground">
               <Package className="h-8 w-8 text-primary" />
               기술 스택 & 버전 관리
             </h1>

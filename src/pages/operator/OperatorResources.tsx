@@ -51,7 +51,7 @@ const OperatorResources = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-3xl font-bold flex items-center gap-2 text-foreground">
               <Server className="h-8 w-8 text-primary" />
               서버 리소스 모니터링
               <Badge variant="outline" className="ml-2 bg-blue-500/10 text-blue-400 border-blue-500/50">
