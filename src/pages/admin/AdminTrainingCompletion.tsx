@@ -47,8 +47,7 @@ const AdminTrainingCompletion = () => {
               required_attendance_rate,
               required_exam_score
             )
-          ),
-          student:user_id(full_name, email)
+          )
         `)
         .order("enrolled_at", { ascending: false });
 
@@ -59,9 +58,16 @@ const AdminTrainingCompletion = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      // 각 수강생의 출석률과 성적 계산
+      // 각 수강생의 프로필, 출석률과 성적 계산
       const enrichedData = await Promise.all(
         data.map(async (enrollment: any) => {
+          // 프로필 정보 가져오기
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("full_name, email")
+            .eq("user_id", enrollment.user_id)
+            .single();
+
           // 출석률 계산
           const { data: attendanceData } = await supabase
             .from("attendance")
@@ -85,6 +91,7 @@ const AdminTrainingCompletion = () => {
 
           return {
             ...enrollment,
+            student: profileData,
             attendanceRate,
             avgGrade,
           };

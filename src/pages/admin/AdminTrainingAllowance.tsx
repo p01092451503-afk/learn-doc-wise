@@ -42,8 +42,7 @@ const AdminTrainingAllowance = () => {
               training_allowance,
               required_attendance_rate
             )
-          ),
-          profiles:user_id(full_name, email)
+          )
         `)
         .order("enrolled_at", { ascending: false });
 
@@ -54,9 +53,17 @@ const AdminTrainingAllowance = () => {
       const { data, error } = await query;
       if (error) throw error;
 
-      // 각 수강생의 출석률 계산
+      // 각 수강생의 프로필과 출석률 계산
       const enrichedData = await Promise.all(
         data.map(async (enrollment: any) => {
+          // 프로필 정보 가져오기
+          const { data: profileData } = await supabase
+            .from("profiles")
+            .select("full_name, email")
+            .eq("user_id", enrollment.user_id)
+            .single();
+
+          // 출석률 계산
           const { data: attendanceData } = await supabase
             .from("attendance")
             .select("status")
@@ -69,6 +76,7 @@ const AdminTrainingAllowance = () => {
 
           return {
             ...enrollment,
+            profiles: profileData,
             attendanceRate,
           };
         })
