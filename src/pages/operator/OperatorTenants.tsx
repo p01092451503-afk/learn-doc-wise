@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle } from "lucide-react";
+import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle, SlidersHorizontal } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { cn } from "@/lib/utils";
@@ -55,7 +56,9 @@ const OperatorTenants = () => {
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [specDialogOpen, setSpecDialogOpen] = useState(false);
   const [planChangeDialogOpen, setPlanChangeDialogOpen] = useState(false);
+  const [featuresDialogOpen, setFeaturesDialogOpen] = useState(false);
   const [newPlan, setNewPlan] = useState<string>("");
+  const [editingFeatures, setEditingFeatures] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [planFilter, setPlanFilter] = useState<"all" | "starter" | "standard" | "professional">("all");
@@ -428,6 +431,102 @@ const OperatorTenants = () => {
         return { max_students: 10000, max_storage_gb: 5000, ai_tokens_monthly: 5000000 };
       default:
         return { max_students: 50, max_storage_gb: 10, ai_tokens_monthly: 10000 };
+    }
+  };
+
+  const getExpectedFeatures = (plan: string) => {
+    switch (plan) {
+      case "starter":
+        return {
+          ai: false,
+          analytics: true,
+          community: true,
+          gamification: false,
+          certificates: false,
+        };
+      case "standard":
+        return {
+          ai: true,
+          analytics: true,
+          community: true,
+          gamification: true,
+          certificates: true,
+        };
+      case "pro":
+      case "professional":
+      case "enterprise":
+      case "enterprise_hrd":
+        return {
+          ai: true,
+          analytics: true,
+          community: true,
+          gamification: true,
+          certificates: true,
+        };
+      default:
+        return {
+          ai: false,
+          analytics: true,
+          community: true,
+          gamification: false,
+          certificates: false,
+        };
+    }
+  };
+
+  const handleUpdateFeatures = async (features: any) => {
+    if (!selectedTenant) return;
+    
+    try {
+      const { error } = await supabase
+        .from("tenants")
+        .update({ features_enabled: features })
+        .eq("id", selectedTenant.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "기능 설정이 업데이트되었습니다.",
+      });
+
+      setFeaturesDialogOpen(false);
+      setEditingFeatures(null);
+      fetchTenants();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "기능 설정 업데이트에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const featureInfo = {
+    ai: {
+      name: "AI 기능",
+      description: "AI 튜터, AI 퀴즈 생성, AI 리포트 등",
+      icon: "🤖"
+    },
+    analytics: {
+      name: "분석 대시보드",
+      description: "학습 분석, 성과 추적, 통계 리포트",
+      icon: "📊"
+    },
+    community: {
+      name: "커뮤니티",
+      description: "게시판, 댓글, 좋아요 기능",
+      icon: "💬"
+    },
+    gamification: {
+      name: "게이미피케이션",
+      description: "포인트, 배지, 리더보드",
+      icon: "🎮"
+    },
+    certificates: {
+      name: "수료증",
+      description: "수료증 발급 및 관리",
+      icon: "📜"
     }
   };
 
@@ -947,6 +1046,21 @@ const OperatorTenants = () => {
                             size="sm"
                             onClick={() => {
                               setSelectedTenant(tenant);
+                              setEditingFeatures(tenant.features_enabled);
+                              setFeaturesDialogOpen(true);
+                            }}
+                            className={cn(
+                              "gap-1 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+                            )}
+                          >
+                            <SlidersHorizontal className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTenant(tenant);
                               setSpecDialogOpen(true);
                             }}
                             className={cn(
@@ -1339,6 +1453,230 @@ const OperatorTenants = () => {
               className="bg-violet-500 hover:bg-violet-600"
             >
               변경 적용
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 기능 활성화 관리 다이얼로그 */}
+      <Dialog open={featuresDialogOpen} onOpenChange={(open) => {
+        setFeaturesDialogOpen(open);
+        if (!open) setEditingFeatures(null);
+      }}>
+        <DialogContent className={cn(
+          "sm:max-w-[600px] transition-colors max-h-[90vh] overflow-y-auto",
+          theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+        )}>
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>기능 활성화 관리: {selectedTenant?.name}</DialogTitle>
+          </DialogHeader>
+          {selectedTenant && editingFeatures && (() => {
+            const expectedFeatures = getExpectedFeatures(selectedTenant.plan);
+            
+            return (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <Card className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-200"
+                  )}>
+                    <CardHeader className="pb-3">
+                      <CardTitle className={cn(
+                        "text-sm transition-colors",
+                        theme === "dark" ? "text-slate-300" : "text-slate-700"
+                      )}>현재 요금제</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Badge className={getPlanBadgeColor(selectedTenant.plan)}>
+                        {getPlanLabel(selectedTenant.plan)}
+                      </Badge>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-200"
+                  )}>
+                    <CardHeader className="pb-3">
+                      <CardTitle className={cn(
+                        "text-sm transition-colors",
+                        theme === "dark" ? "text-slate-300" : "text-slate-700"
+                      )}>활성 기능 수</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className={cn(
+                        "text-2xl font-bold transition-colors",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>
+                        {Object.values(editingFeatures).filter(Boolean).length} / 5
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className={cn(
+                  "p-3 rounded-lg border text-sm transition-colors",
+                  theme === "dark" ? "bg-blue-900/20 border-blue-800 text-blue-300" : "bg-blue-50 border-blue-200 text-blue-700"
+                )}>
+                  <div className="font-medium mb-1">요금제 권장 설정</div>
+                  <div className="text-xs opacity-80">
+                    {getPlanLabel(selectedTenant.plan)} 요금제의 경우{' '}
+                    {Object.entries(expectedFeatures)
+                      .filter(([_, enabled]) => enabled)
+                      .map(([key, _]) => featureInfo[key as keyof typeof featureInfo].name)
+                      .join(', ')}{' '}
+                    기능을 권장합니다.
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {Object.entries(featureInfo).map(([key, info]) => {
+                    const isEnabled = editingFeatures[key as keyof typeof editingFeatures];
+                    const isRecommended = expectedFeatures[key as keyof typeof expectedFeatures];
+                    const matchesRecommendation = isEnabled === isRecommended;
+
+                    return (
+                      <Card 
+                        key={key}
+                        className={cn(
+                          "transition-colors",
+                          theme === "dark" 
+                            ? isEnabled 
+                              ? "bg-green-900/20 border-green-800" 
+                              : "bg-slate-800/50 border-slate-700"
+                            : isEnabled
+                              ? "bg-green-50 border-green-200"
+                              : "bg-slate-50 border-slate-200"
+                        )}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-2xl">{info.icon}</span>
+                                <div>
+                                  <div className={cn(
+                                    "font-medium flex items-center gap-2 transition-colors",
+                                    theme === "dark" ? "text-white" : "text-slate-900"
+                                  )}>
+                                    {info.name}
+                                    {isRecommended && (
+                                      <Badge variant="outline" className={cn(
+                                        "text-xs",
+                                        theme === "dark" ? "border-blue-600 text-blue-400" : "border-blue-300 text-blue-600"
+                                      )}>
+                                        권장
+                                      </Badge>
+                                    )}
+                                    {!matchesRecommendation && (
+                                      <AlertCircle className="h-3 w-3 text-orange-400" />
+                                    )}
+                                  </div>
+                                  <div className={cn(
+                                    "text-xs transition-colors",
+                                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                                  )}>
+                                    {info.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <Switch
+                              checked={isEnabled}
+                              onCheckedChange={(checked) => {
+                                setEditingFeatures({
+                                  ...editingFeatures,
+                                  [key]: checked
+                                });
+                              }}
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+
+                {(() => {
+                  const differences = Object.entries(expectedFeatures).filter(
+                    ([key, expected]) => editingFeatures[key as keyof typeof editingFeatures] !== expected
+                  );
+                  
+                  if (differences.length > 0) {
+                    return (
+                      <div className={cn(
+                        "p-4 rounded-lg border transition-colors",
+                        theme === "dark" ? "bg-orange-900/20 border-orange-800" : "bg-orange-50 border-orange-200"
+                      )}>
+                        <div className="flex gap-2">
+                          <AlertCircle className="h-5 w-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className={cn(
+                              "text-sm font-medium mb-2 transition-colors",
+                              theme === "dark" ? "text-orange-300" : "text-orange-700"
+                            )}>
+                              요금제 권장 설정과 차이가 있습니다
+                            </div>
+                            <div className="space-y-1">
+                              {differences.map(([key, expected]) => (
+                                <div 
+                                  key={key}
+                                  className={cn(
+                                    "text-xs transition-colors",
+                                    theme === "dark" ? "text-orange-400" : "text-orange-600"
+                                  )}
+                                >
+                                  • {featureInfo[key as keyof typeof featureInfo].name}: 
+                                  {expected ? " 활성화 권장" : " 비활성화 권장"}
+                                </div>
+                              ))}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setEditingFeatures(expectedFeatures)}
+                              className={cn(
+                                "mt-3 transition-colors",
+                                theme === "dark" 
+                                  ? "border-orange-700 text-orange-300 hover:bg-orange-900/20" 
+                                  : "border-orange-300 text-orange-600 hover:bg-orange-50"
+                              )}
+                            >
+                              권장 설정으로 자동 변경
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+              </div>
+            );
+          })()}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFeaturesDialogOpen(false);
+                setEditingFeatures(null);
+              }}
+              className={cn(
+                "transition-colors",
+                theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+              )}
+            >
+              취소
+            </Button>
+            <Button
+              onClick={() => handleUpdateFeatures(editingFeatures)}
+              disabled={!editingFeatures}
+              className="bg-violet-500 hover:bg-violet-600"
+            >
+              저장
             </Button>
           </DialogFooter>
         </DialogContent>
