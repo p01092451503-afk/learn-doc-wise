@@ -230,7 +230,7 @@ const FeaturesShowcase = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-16 pb-4 px-4">
+      <section className="pt-16 px-4">
         <div className="container mx-auto text-center">
           <Badge className="mb-3 bg-violet-500/10 text-violet-400 border-violet-500/50 animate-fade-in">
             <Sparkles className="h-3 w-3 mr-1" />
