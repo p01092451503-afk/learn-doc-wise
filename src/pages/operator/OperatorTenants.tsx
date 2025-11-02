@@ -550,18 +550,18 @@ const OperatorTenants = () => {
               theme === "dark" ? "text-white" : "text-slate-900"
             )}>
               <Building2 className="h-8 w-8" />
-              고객사 관리
+              테넌트 관리
             </h1>
             <p className={cn(
               "transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"
-            )}>등록된 고객사를 관리하고 모니터링합니다</p>
+            )}>등록된 테넌트를 관리하고 모니터링합니다</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2 bg-violet-500 hover:bg-violet-600">
                 <Plus className="h-4 w-4" />
-                새 고객사 추가
+                새 테넌트 추가
               </Button>
             </DialogTrigger>
             <DialogContent className={cn(
@@ -572,14 +572,14 @@ const OperatorTenants = () => {
                 <DialogTitle className={cn(
                   "transition-colors",
                   theme === "dark" ? "text-white" : "text-slate-900"
-                )}>새 고객사 추가</DialogTitle>
+                )}>새 테넌트 추가</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className={cn(
                     "transition-colors",
                     theme === "dark" ? "text-slate-300" : "text-slate-700"
-                  )}>고객사명</Label>
+                  )}>테넌트명</Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -903,12 +903,12 @@ const OperatorTenants = () => {
             <CardTitle className={cn(
               "text-white transition-colors",
               theme === "dark" ? "text-white" : "text-slate-900"
-            )}>고객사 목록</CardTitle>
+            )}>테넌트 목록</CardTitle>
             <CardDescription className={cn(
               "text-slate-400 transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"
             )}>
-              {filteredTenants.length}개 고객사 {hasActiveFilters && `(전체 ${tenants.length}개 중)`}
+              {filteredTenants.length}개 테넌트 {hasActiveFilters && `(전체 ${tenants.length}개 중)`}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -917,16 +917,16 @@ const OperatorTenants = () => {
             ) : filteredTenants.length === 0 ? (
               <EmptyState
                 icon={Building2}
-                title={hasActiveFilters ? "검색 결과 없음" : "등록된 고객사가 없습니다"}
+                title={hasActiveFilters ? "검색 결과 없음" : "등록된 테넌트가 없습니다"}
                 description={
                   hasActiveFilters
-                    ? "검색 조건에 맞는 고객사가 없습니다. 다른 조건으로 검색해보세요."
-                    : "새 고객사를 추가하여 시작하세요."
+                    ? "검색 조건에 맞는 테넌트가 없습니다. 다른 조건으로 검색해보세요."
+                    : "새 테넌트를 추가하여 시작하세요."
                 }
                 action={
                   hasActiveFilters
                     ? { label: "필터 초기화", onClick: clearFilters }
-                    : { label: "고객사 추가", onClick: () => setIsDialogOpen(true) }
+                    : { label: "테넌트 추가", onClick: () => setIsDialogOpen(true) }
                 }
               />
             ) : (
@@ -939,7 +939,7 @@ const OperatorTenants = () => {
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
-                    )}>고객사명</TableHead>
+                    )}>테넌트명</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
