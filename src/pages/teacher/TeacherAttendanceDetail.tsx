@@ -8,11 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Clock, AlertCircle, FileUp, CheckCircle, Calendar } from "lucide-react";
+import { Clock, AlertCircle, FileUp, CheckCircle, CalendarCheck, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherAttendanceDetail = () => {
   const [selectedCourse, setSelectedCourse] = useState<string>("");
@@ -154,7 +153,7 @@ const TeacherAttendanceDetail = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <img src={atomLogo} alt="atom" className="h-8 w-8" />
+            <CalendarCheck className="h-8 w-8 text-primary" />
             출결 상세 관리
           </h1>
           <p className="text-muted-foreground mt-2">

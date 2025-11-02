@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Award, 
+  Trophy,
   CheckCircle2, 
   XCircle, 
   AlertTriangle, 
@@ -18,7 +19,6 @@ import {
   TrendingDown,
   Users
 } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -223,7 +223,7 @@ const TeacherTrainingCompletion = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <Trophy className="h-8 w-8 text-primary" />
               수료 요건 관리
             </h1>
             <p className="text-muted-foreground mt-2">

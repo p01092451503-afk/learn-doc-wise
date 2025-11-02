@@ -8,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search, Download, DollarSign } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import atomLogo from "@/assets/atom-logo.png";
 
 const AdminTrainingAllowance = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -107,7 +106,7 @@ const AdminTrainingAllowance = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <DollarSign className="h-8 w-8 text-primary" />
               훈련수당 관리
             </h1>
             <p className="text-muted-foreground mt-1">

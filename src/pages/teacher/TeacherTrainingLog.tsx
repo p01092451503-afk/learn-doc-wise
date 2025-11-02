@@ -20,9 +20,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-import { CalendarIcon, Plus, FileText, Download } from "lucide-react";
+import { CalendarIcon, Plus, FileText, Download, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
-import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -234,7 +233,7 @@ const TeacherTrainingLog = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <ClipboardList className="h-8 w-8 text-primary" />
               훈련일지 관리
             </h1>
             <p className="text-muted-foreground mt-2">

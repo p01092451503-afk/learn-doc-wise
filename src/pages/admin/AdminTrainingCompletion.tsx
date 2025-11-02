@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import atomLogo from "@/assets/atom-logo.png";
 
 const AdminTrainingCompletion = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -118,7 +117,7 @@ const AdminTrainingCompletion = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <Trophy className="h-8 w-8 text-primary" />
               수료 관리
             </h1>
             <p className="text-muted-foreground mt-1">

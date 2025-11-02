@@ -8,11 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, AlertTriangle, DollarSign, FileText, CheckCircle } from "lucide-react";
+import { Plus, AlertTriangle, DollarSign, FileText, CheckCircle, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import atomLogo from "@/assets/atom-logo.png";
 
 const TeacherDropoutManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -205,7 +204,7 @@ const TeacherDropoutManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <Users className="h-8 w-8 text-primary" />
               중도탈락 관리
             </h1>
             <p className="text-muted-foreground mt-2">

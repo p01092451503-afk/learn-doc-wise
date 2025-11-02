@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, Download, Eye, AlertCircle } from "lucide-react";
+import { Search, Download, Eye, AlertCircle, Users } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import atomLogo from "@/assets/atom-logo.png";
 
 const AdminDropoutManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,7 +75,7 @@ const AdminDropoutManagement = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <Users className="h-8 w-8 text-primary" />
               중도탈락 관리
             </h1>
             <p className="text-muted-foreground mt-1">

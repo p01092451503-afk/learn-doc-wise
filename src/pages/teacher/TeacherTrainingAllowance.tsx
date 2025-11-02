@@ -17,7 +17,6 @@ import {
   Users,
   TrendingUp
 } from "lucide-react";
-import atomLogo from "@/assets/atom-logo.png";
 
 interface Course {
   id: string;
@@ -191,7 +190,7 @@ const TeacherTrainingAllowance = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-              <img src={atomLogo} alt="atom" className="h-8 w-8" />
+              <DollarSign className="h-8 w-8 text-primary" />
               훈련수당 관리
             </h1>
             <p className="text-muted-foreground mt-2">

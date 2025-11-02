@@ -1,10 +1,9 @@
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, User } from "lucide-react";
+import { Calendar, User, ClipboardList } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import atomLogo from "@/assets/atom-logo.png";
 
 const StudentCounselingLog = () => {
   // 내 상담 이력 조회 (비공개가 아닌 것만)
@@ -40,7 +39,7 @@ const StudentCounselingLog = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-            <img src={atomLogo} alt="atom" className="h-8 w-8" />
+            <ClipboardList className="h-8 w-8 text-primary" />
             상담 이력
           </h1>
           <p className="text-muted-foreground mt-2">
