@@ -61,7 +61,7 @@ const AdminTrainingAllowance = () => {
             .from("profiles")
             .select("full_name, email")
             .eq("user_id", enrollment.user_id)
-            .single();
+            .maybeSingle();
 
           // 출석률 계산
           const { data: attendanceData } = await supabase
