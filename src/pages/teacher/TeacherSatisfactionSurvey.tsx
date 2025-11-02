@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, BarChart3, FileDown, Eye, MessageSquare } from "lucide-react";
+import { Plus, BarChart3, FileDown, Eye, MessageSquare, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 const TeacherSatisfactionSurvey = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -109,6 +110,11 @@ const TeacherSatisfactionSurvey = () => {
       is_active: true,
     });
   };
+
+  const filteredSurveys = surveys.filter((survey: any) =>
+    survey.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    survey.courses?.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <DashboardLayout userRole="teacher">
@@ -215,15 +221,24 @@ const TeacherSatisfactionSurvey = () => {
           </Dialog>
         </div>
 
-        {/* 필터 */}
+        {/* 검색 및 필터 */}
         <Card>
           <CardHeader>
-            <CardTitle>필터</CardTitle>
+            <CardTitle>검색 및 필터</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="강의명, 조사 제목 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
               <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                <SelectTrigger className="w-[300px]">
+                <SelectTrigger className="w-full md:w-[300px]">
                   <SelectValue placeholder="전체 강의" />
                 </SelectTrigger>
                 <SelectContent>
@@ -247,14 +262,14 @@ const TeacherSatisfactionSurvey = () => {
                 로딩 중...
               </CardContent>
             </Card>
-          ) : surveys.length === 0 ? (
+          ) : filteredSurveys.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
-                만족도 조사가 없습니다. 새로 생성해보세요.
+                {searchTerm ? "검색 결과가 없습니다." : "만족도 조사가 없습니다. 새로 생성해보세요."}
               </CardContent>
             </Card>
           ) : (
-            surveys.map((survey: any) => (
+            filteredSurveys.map((survey: any) => (
               <Card key={survey.id}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
