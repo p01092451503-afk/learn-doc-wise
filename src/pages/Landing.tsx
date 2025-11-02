@@ -723,6 +723,208 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* 유료 부가 서비스 */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              <span className="text-gradient">유료 부가 서비스</span>
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              필요한 기능을 선택하여 플랫폼을 확장하세요 (VAT 별도)
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto overflow-x-auto">
+            <table className="w-full border-collapse bg-card rounded-lg overflow-hidden">
+              <thead>
+                <tr className="bg-primary">
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 w-1/4">서비스명</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 w-1/2">서비스 내용</th>
+                  <th className="p-4 text-center font-bold text-primary-foreground border border-primary/20 w-1/4">서비스 요금<br/>(VAT 별도)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* 스토리지/용량 */}
+                <tr className="bg-muted/50">
+                  <td rowSpan={3} className="p-4 text-center font-bold text-foreground border border-border align-top">
+                    스토리지<br/>용량
+                  </td>
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    추가 동영상 저장공간<br/>
+                    <span className="text-xs text-muted-foreground">※ 100GB 단위로 추가 가능</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    30,000원/월<br/>
+                    <span className="text-xs text-muted-foreground">(100GB당)</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    추가 대역폭<br/>
+                    <span className="text-xs text-muted-foreground">※ 100GB 단위로 추가 가능</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    20,000원/월<br/>
+                    <span className="text-xs text-muted-foreground">(100GB당)</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    추가 AI 토큰<br/>
+                    <span className="text-xs text-muted-foreground">※ 10만 토큰 단위로 추가 가능</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    50,000원/월<br/>
+                    <span className="text-xs text-muted-foreground">(10만 토큰당)</span>
+                  </td>
+                </tr>
+
+                {/* 커스터마이징 */}
+                <tr className="bg-muted/50">
+                  <td rowSpan={3} className="p-4 text-center font-bold text-foreground border border-border align-top">
+                    커스터<br/>마이징
+                  </td>
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    맞춤형 브랜딩<br/>
+                    <span className="text-xs text-muted-foreground">※ 로고, 컬러, 폰트 커스터마이징</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    1회 300,000원
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    커스텀 도메인 설정<br/>
+                    <span className="text-xs text-muted-foreground">※ 연 2회까지 무료 도메인 변경 가능</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    50,000원<br/>
+                    <span className="text-xs text-muted-foreground">(1년마다 갱신 납부)</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    화이트 라벨링<br/>
+                    <span className="text-xs text-muted-foreground">※ Atom LMS 브랜딩 완전 제거</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    200,000원/월
+                  </td>
+                </tr>
+
+                {/* 기술 지원 */}
+                <tr className="bg-muted/50">
+                  <td rowSpan={2} className="p-4 text-center font-bold text-foreground border border-border align-top">
+                    기술 지원
+                  </td>
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    우선 기술 지원<br/>
+                    <span className="text-xs text-muted-foreground">※ 24시간 이내 응답 보장, 전화/이메일/채팅</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    100,000원/월
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    전담 계정 관리자 배정<br/>
+                    <span className="text-xs text-muted-foreground">※ 1:1 전담 매니저 지원</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    300,000원/월
+                  </td>
+                </tr>
+
+                {/* 교육/컨설팅 */}
+                <tr className="bg-muted/50">
+                  <td rowSpan={3} className="p-4 text-center font-bold text-foreground border border-border align-top">
+                    교육<br/>컨설팅
+                  </td>
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    교육 운영 컨설팅<br/>
+                    <span className="text-xs text-muted-foreground">※ 교육 과정 설계 및 운영 전략 수립</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    1회 500,000원<br/>
+                    <span className="text-xs text-muted-foreground">(2시간 기준)</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    강사 트레이닝<br/>
+                    <span className="text-xs text-muted-foreground">※ 플랫폼 활용 교육 (최대 10명)</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    1회 300,000원<br/>
+                    <span className="text-xs text-muted-foreground">(3시간 기준)</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    학생 온보딩 지원<br/>
+                    <span className="text-xs text-muted-foreground">※ 학생 대상 플랫폼 사용법 교육</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    1회 200,000원<br/>
+                    <span className="text-xs text-muted-foreground">(2시간 기준, 최대 50명)</span>
+                  </td>
+                </tr>
+
+                {/* 고급 기능 */}
+                <tr className="bg-muted/50">
+                  <td rowSpan={4} className="p-4 text-center font-bold text-foreground border border-border align-top">
+                    고급 기능
+                  </td>
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    화상 강의 시스템 연동<br/>
+                    <span className="text-xs text-muted-foreground">※ Zoom, Google Meet 등 연동</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    150,000원/월
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    결제 게이트웨이 연동<br/>
+                    <span className="text-xs text-muted-foreground">※ 토스페이먼츠, 이니시스, KG이니시스 등<br/>수수료: 결제금액의 3.3% + 250원/건</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    1회 200,000원<br/>
+                    <span className="text-xs text-destructive text-xs">+ 거래 수수료</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    모바일 앱 (iOS/Android)<br/>
+                    <span className="text-xs text-muted-foreground">※ 네이티브 앱 제공, 앱스토어 등록 포함</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    유지보수 500,000원/월<br/>
+                    <span className="text-xs text-muted-foreground">앱 배포 초기 비용 10,000,000원</span>
+                  </td>
+                </tr>
+                <tr className="bg-card hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-card-foreground border border-border">
+                    SMS/알림톡 서비스<br/>
+                    <span className="text-xs text-muted-foreground">※ 수강생 알림 발송 (SMS 15원, 알림톡 8원)</span>
+                  </td>
+                  <td className="p-4 text-center text-sm text-card-foreground border border-border">
+                    사용량에 따라 청구
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="text-center mt-8">
+            <p className="text-sm text-muted-foreground">
+              ※ 모든 가격은 부가세(VAT) 별도이며, 계약 기간에 따라 할인이 적용될 수 있습니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section - 숨김 처리 */}
       {/* <section className="py-20 bg-muted/30" aria-labelledby="pricing-heading">
         <div className="container mx-auto px-4">
