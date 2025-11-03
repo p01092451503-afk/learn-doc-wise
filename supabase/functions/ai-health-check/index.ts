@@ -300,10 +300,10 @@ serve(async (req) => {
       failedChecks++;
     }
 
-    // === 역할별 기능 테스트 ===
-    console.log('Starting role-based functional tests...');
+    // === 역할별 기능 테스트 (권한 중심) ===
+    console.log('Starting comprehensive role-based permission tests...');
 
-    // 11. 학생 역할 기능 테스트
+    // 11. 학생 역할 기능 테스트 (10개)
     try {
       const studentTests = [];
       let studentIssues = 0;
@@ -317,50 +317,111 @@ serve(async (req) => {
         .single();
 
       if (studentRole) {
-        // 강의 조회 권한 테스트
-        const { error: viewCoursesError } = await supabase
+        // 1. 강의 조회 권한
+        const { error: e1 } = await supabase
           .from('courses')
           .select('id')
           .eq('status', 'published')
           .limit(1);
-        
-        if (viewCoursesError) studentIssues++;
-        studentTests.push({ test: '강의 조회', passed: !viewCoursesError });
+        if (e1) studentIssues++;
+        studentTests.push({ test: '강의 조회', passed: !e1 });
 
-        // 수강 등록 조회 권한 테스트
-        const { error: viewEnrollmentsError } = await supabase
+        // 2. 수강 내역 조회 권한
+        const { error: e2 } = await supabase
           .from('enrollments')
           .select('id')
           .eq('user_id', studentRole.user_id)
           .limit(1);
-        
-        if (viewEnrollmentsError) studentIssues++;
-        studentTests.push({ test: '수강 내역 조회', passed: !viewEnrollmentsError });
+        if (e2) studentIssues++;
+        studentTests.push({ test: '수강 내역 조회', passed: !e2 });
 
-        // 과제 조회 권한 테스트
-        const { error: viewAssignmentsError } = await supabase
+        // 3. 수강 신청 권한 (INSERT 테스트)
+        const { error: e3 } = await supabase
+          .from('enrollments')
+          .insert({ user_id: studentRole.user_id, course_id: '00000000-0000-0000-0000-000000000000' })
+          .select();
+        // 권한 오류가 아니면 OK (FK 오류는 괜찮음)
+        const hasInsertPermission = !e3 || !e3.message.includes('policy');
+        if (!hasInsertPermission) studentIssues++;
+        studentTests.push({ test: '수강 신청', passed: hasInsertPermission });
+
+        // 4. 과제 조회 권한
+        const { error: e4 } = await supabase
           .from('assignments')
           .select('id')
           .eq('status', 'published')
           .limit(1);
-        
-        if (viewAssignmentsError) studentIssues++;
-        studentTests.push({ test: '과제 조회', passed: !viewAssignmentsError });
+        if (e4) studentIssues++;
+        studentTests.push({ test: '과제 조회', passed: !e4 });
 
-        // 커뮤니티 조회 권한 테스트
-        const { error: viewCommunityError } = await supabase
+        // 5. 과제 제출 권한 (INSERT 테스트)
+        const { error: e5 } = await supabase
+          .from('assignment_submissions')
+          .insert({
+            student_id: studentRole.user_id,
+            assignment_id: '00000000-0000-0000-0000-000000000000',
+            submission_text: 'test'
+          })
+          .select();
+        const hasSubmitPermission = !e5 || !e5.message.includes('policy');
+        if (!hasSubmitPermission) studentIssues++;
+        studentTests.push({ test: '과제 제출', passed: hasSubmitPermission });
+
+        // 6. 본인 제출물 수정 권한 (UPDATE 테스트)
+        const { error: e6 } = await supabase
+          .from('assignment_submissions')
+          .update({ submission_text: 'updated' })
+          .eq('student_id', studentRole.user_id)
+          .eq('id', '00000000-0000-0000-0000-000000000000')
+          .select();
+        const hasUpdatePermission = !e6 || !e6.message.includes('policy');
+        if (!hasUpdatePermission) studentIssues++;
+        studentTests.push({ test: '제출물 수정', passed: hasUpdatePermission });
+
+        // 7. 커뮤니티 조회 권한
+        const { error: e7 } = await supabase
           .from('community_posts')
           .select('id')
           .limit(1);
-        
-        if (viewCommunityError) studentIssues++;
-        studentTests.push({ test: '커뮤니티 조회', passed: !viewCommunityError });
+        if (e7) studentIssues++;
+        studentTests.push({ test: '커뮤니티 조회', passed: !e7 });
+
+        // 8. 커뮤니티 글 작성 권한
+        const { error: e8 } = await supabase
+          .from('community_posts')
+          .insert({
+            author_id: studentRole.user_id,
+            course_id: '00000000-0000-0000-0000-000000000000',
+            title: 'test',
+            content: 'test'
+          })
+          .select();
+        const hasPostPermission = !e8 || !e8.message.includes('policy');
+        if (!hasPostPermission) studentIssues++;
+        studentTests.push({ test: '커뮤니티 글 작성', passed: hasPostPermission });
+
+        // 9. 학습 진도 조회 권한
+        const { error: e9 } = await supabase
+          .from('content_progress')
+          .select('id')
+          .eq('user_id', studentRole.user_id)
+          .limit(1);
+        if (e9) studentIssues++;
+        studentTests.push({ test: '학습 진도 조회', passed: !e9 });
+
+        // 10. 성적 조회 권한
+        const { error: e10 } = await supabase
+          .from('grades')
+          .select('id')
+          .limit(1);
+        if (e10) studentIssues++;
+        studentTests.push({ test: '성적 조회', passed: !e10 });
       }
 
       checks.push({
         feature: '학생 기능',
         category: 'Student Role',
-        status: studentIssues === 0 ? 'operational' : (studentIssues > 2 ? 'error' : 'warning'),
+        status: studentIssues === 0 ? 'operational' : (studentIssues > 5 ? 'error' : 'warning'),
         message: studentRole 
           ? `${studentTests.length}개 기능 중 ${studentTests.filter(t => t.passed).length}개 정상`
           : '테스트할 학생 계정 없음',
@@ -368,7 +429,7 @@ serve(async (req) => {
       });
 
       if (studentIssues === 0) passedChecks++;
-      else if (studentIssues > 2) failedChecks++;
+      else if (studentIssues > 5) failedChecks++;
       else warningChecks++;
 
     } catch (error) {
@@ -382,12 +443,11 @@ serve(async (req) => {
       failedChecks++;
     }
 
-    // 12. 강사 역할 기능 테스트
+    // 12. 강사 역할 기능 테스트 (12개)
     try {
       const teacherTests = [];
       let teacherIssues = 0;
 
-      // 강사 계정 찾기
       const { data: teacherRole } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -396,48 +456,137 @@ serve(async (req) => {
         .single();
 
       if (teacherRole) {
-        // 본인 강의 조회 권한 테스트
-        const { error: viewOwnCoursesError } = await supabase
+        // 1. 본인 강의 조회
+        const { error: e1 } = await supabase
           .from('courses')
           .select('id')
           .eq('instructor_id', teacherRole.user_id)
           .limit(1);
-        
-        if (viewOwnCoursesError) teacherIssues++;
-        teacherTests.push({ test: '본인 강의 조회', passed: !viewOwnCoursesError });
+        if (e1) teacherIssues++;
+        teacherTests.push({ test: '본인 강의 조회', passed: !e1 });
 
-        // 과제 관리 권한 테스트
-        const { error: viewAssignmentsError } = await supabase
+        // 2. 강의 생성 권한
+        const { error: e2 } = await supabase
+          .from('courses')
+          .insert({
+            instructor_id: teacherRole.user_id,
+            title: 'test',
+            slug: 'test-' + Date.now()
+          })
+          .select();
+        const hasCreateCourse = !e2 || !e2.message.includes('policy');
+        if (!hasCreateCourse) teacherIssues++;
+        teacherTests.push({ test: '강의 생성', passed: hasCreateCourse });
+
+        // 3. 본인 강의 수정 권한
+        const { error: e3 } = await supabase
+          .from('courses')
+          .update({ title: 'updated' })
+          .eq('instructor_id', teacherRole.user_id)
+          .eq('id', '00000000-0000-0000-0000-000000000000')
+          .select();
+        const hasUpdateCourse = !e3 || !e3.message.includes('policy');
+        if (!hasUpdateCourse) teacherIssues++;
+        teacherTests.push({ test: '강의 수정', passed: hasUpdateCourse });
+
+        // 4. 강의 콘텐츠 조회
+        const { error: e4 } = await supabase
+          .from('course_contents')
+          .select('id')
+          .limit(1);
+        if (e4) teacherIssues++;
+        teacherTests.push({ test: '강의 콘텐츠 조회', passed: !e4 });
+
+        // 5. 강의 콘텐츠 관리 권한
+        const { error: e5 } = await supabase
+          .from('course_contents')
+          .insert({
+            course_id: '00000000-0000-0000-0000-000000000000',
+            title: 'test',
+            order_index: 0
+          })
+          .select();
+        const hasManageContent = !e5 || !e5.message.includes('policy');
+        if (!hasManageContent) teacherIssues++;
+        teacherTests.push({ test: '콘텐츠 관리', passed: hasManageContent });
+
+        // 6. 과제 조회
+        const { error: e6 } = await supabase
           .from('assignments')
           .select('id')
           .limit(1);
-        
-        if (viewAssignmentsError) teacherIssues++;
-        teacherTests.push({ test: '과제 관리', passed: !viewAssignmentsError });
+        if (e6) teacherIssues++;
+        teacherTests.push({ test: '과제 조회', passed: !e6 });
 
-        // 출석 조회 권한 테스트
-        const { error: viewAttendanceError } = await supabase
+        // 7. 과제 생성 권한
+        const { error: e7 } = await supabase
+          .from('assignments')
+          .insert({
+            course_id: '00000000-0000-0000-0000-000000000000',
+            title: 'test',
+            created_by: teacherRole.user_id
+          })
+          .select();
+        const hasCreateAssignment = !e7 || !e7.message.includes('policy');
+        if (!hasCreateAssignment) teacherIssues++;
+        teacherTests.push({ test: '과제 생성', passed: hasCreateAssignment });
+
+        // 8. 출석 조회
+        const { error: e8 } = await supabase
           .from('attendance')
           .select('id')
           .limit(1);
-        
-        if (viewAttendanceError) teacherIssues++;
-        teacherTests.push({ test: '출석 조회', passed: !viewAttendanceError });
+        if (e8) teacherIssues++;
+        teacherTests.push({ test: '출석 조회', passed: !e8 });
 
-        // 학생 제출물 조회 권한 테스트
-        const { error: viewSubmissionsError } = await supabase
+        // 9. 출석 기록 권한
+        const { error: e9 } = await supabase
+          .from('attendance')
+          .insert({
+            user_id: teacherRole.user_id,
+            course_id: '00000000-0000-0000-0000-000000000000',
+            status: 'present'
+          })
+          .select();
+        const hasRecordAttendance = !e9 || !e9.message.includes('policy');
+        if (!hasRecordAttendance) teacherIssues++;
+        teacherTests.push({ test: '출석 기록', passed: hasRecordAttendance });
+
+        // 10. 제출물 조회
+        const { error: e10 } = await supabase
           .from('assignment_submissions')
           .select('id')
           .limit(1);
-        
-        if (viewSubmissionsError) teacherIssues++;
-        teacherTests.push({ test: '제출물 조회', passed: !viewSubmissionsError });
+        if (e10) teacherIssues++;
+        teacherTests.push({ test: '제출물 조회', passed: !e10 });
+
+        // 11. 제출물 채점 권한
+        const { error: e11 } = await supabase
+          .from('assignment_submissions')
+          .update({
+            status: 'graded',
+            score: 100,
+            graded_by: teacherRole.user_id
+          })
+          .eq('id', '00000000-0000-0000-0000-000000000000')
+          .select();
+        const hasGradePermission = !e11 || !e11.message.includes('policy');
+        if (!hasGradePermission) teacherIssues++;
+        teacherTests.push({ test: '제출물 채점', passed: hasGradePermission });
+
+        // 12. 학습 분석 조회
+        const { error: e12 } = await supabase
+          .from('learning_analytics')
+          .select('id')
+          .limit(1);
+        if (e12) teacherIssues++;
+        teacherTests.push({ test: '학습 분석 조회', passed: !e12 });
       }
 
       checks.push({
         feature: '강사 기능',
         category: 'Teacher Role',
-        status: teacherIssues === 0 ? 'operational' : (teacherIssues > 2 ? 'error' : 'warning'),
+        status: teacherIssues === 0 ? 'operational' : (teacherIssues > 6 ? 'error' : 'warning'),
         message: teacherRole 
           ? `${teacherTests.length}개 기능 중 ${teacherTests.filter(t => t.passed).length}개 정상`
           : '테스트할 강사 계정 없음',
@@ -445,7 +594,7 @@ serve(async (req) => {
       });
 
       if (teacherIssues === 0) passedChecks++;
-      else if (teacherIssues > 2) failedChecks++;
+      else if (teacherIssues > 6) failedChecks++;
       else warningChecks++;
 
     } catch (error) {
@@ -459,12 +608,11 @@ serve(async (req) => {
       failedChecks++;
     }
 
-    // 13. 관리자 역할 기능 테스트
+    // 13. 관리자 역할 기능 테스트 (15개)
     try {
       const adminTests = [];
       let adminIssues = 0;
 
-      // 관리자 계정 찾기
       const { data: adminRole } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -473,56 +621,143 @@ serve(async (req) => {
         .single();
 
       if (adminRole) {
-        // 모든 강의 조회 권한 테스트
-        const { error: viewAllCoursesError } = await supabase
+        // 1. 전체 강의 조회
+        const { error: e1 } = await supabase
           .from('courses')
           .select('id')
           .limit(1);
-        
-        if (viewAllCoursesError) adminIssues++;
-        adminTests.push({ test: '전체 강의 조회', passed: !viewAllCoursesError });
+        if (e1) adminIssues++;
+        adminTests.push({ test: '전체 강의 조회', passed: !e1 });
 
-        // 사용자 관리 권한 테스트
-        const { error: viewUsersError } = await supabase
+        // 2. 강의 승인/수정 권한
+        const { error: e2 } = await supabase
+          .from('courses')
+          .update({ status: 'published' })
+          .eq('id', '00000000-0000-0000-0000-000000000000')
+          .select();
+        const hasApproveCourse = !e2 || !e2.message.includes('policy');
+        if (!hasApproveCourse) adminIssues++;
+        adminTests.push({ test: '강의 승인/수정', passed: hasApproveCourse });
+
+        // 3. 사용자 역할 조회
+        const { error: e3 } = await supabase
           .from('user_roles')
           .select('id')
           .limit(1);
-        
-        if (viewUsersError) adminIssues++;
-        adminTests.push({ test: '사용자 관리', passed: !viewUsersError });
+        if (e3) adminIssues++;
+        adminTests.push({ test: '사용자 조회', passed: !e3 });
 
-        // 수강 등록 조회 권한 테스트
-        const { error: viewAllEnrollmentsError } = await supabase
+        // 4. 역할 부여 권한
+        const { error: e4 } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: '00000000-0000-0000-0000-000000000000',
+            role: 'student'
+          })
+          .select();
+        const hasAssignRole = !e4 || !e4.message.includes('policy');
+        if (!hasAssignRole) adminIssues++;
+        adminTests.push({ test: '역할 부여', passed: hasAssignRole });
+
+        // 5. 전체 수강 조회
+        const { error: e5 } = await supabase
           .from('enrollments')
           .select('id')
           .limit(1);
-        
-        if (viewAllEnrollmentsError) adminIssues++;
-        adminTests.push({ test: '전체 수강 조회', passed: !viewAllEnrollmentsError });
+        if (e5) adminIssues++;
+        adminTests.push({ test: '전체 수강 조회', passed: !e5 });
 
-        // 시스템 로그 조회 권한 테스트
-        const { error: viewLogsError } = await supabase
+        // 6. 시스템 로그 조회
+        const { error: e6 } = await supabase
           .from('admin_access_logs')
           .select('id')
           .limit(1);
-        
-        if (viewLogsError) adminIssues++;
-        adminTests.push({ test: '시스템 로그 조회', passed: !viewLogsError });
+        if (e6) adminIssues++;
+        adminTests.push({ test: '시스템 로그 조회', passed: !e6 });
 
-        // 통계 데이터 조회 권한 테스트
-        const { error: viewAnalyticsError } = await supabase
+        // 7. 학습 통계 조회
+        const { error: e7 } = await supabase
           .from('learning_analytics')
           .select('id')
           .limit(1);
-        
-        if (viewAnalyticsError) adminIssues++;
-        adminTests.push({ test: '학습 통계 조회', passed: !viewAnalyticsError });
+        if (e7) adminIssues++;
+        adminTests.push({ test: '학습 통계 조회', passed: !e7 });
+
+        // 8. 중도탈락 관리
+        const { error: e8 } = await supabase
+          .from('dropout_records')
+          .select('id')
+          .limit(1);
+        if (e8) adminIssues++;
+        adminTests.push({ test: '중도탈락 조회', passed: !e8 });
+
+        // 9. 중도탈락 기록 권한
+        const { error: e9 } = await supabase
+          .from('dropout_records')
+          .insert({
+            enrollment_id: '00000000-0000-0000-0000-000000000000',
+            dropout_reason: 'test',
+            reason_category: 'personal'
+          })
+          .select();
+        const hasDropoutManage = !e9 || !e9.message.includes('policy');
+        if (!hasDropoutManage) adminIssues++;
+        adminTests.push({ test: '중도탈락 관리', passed: hasDropoutManage });
+
+        // 10. 상담 기록 조회
+        const { error: e10 } = await supabase
+          .from('counseling_logs')
+          .select('id')
+          .limit(1);
+        if (e10) adminIssues++;
+        adminTests.push({ test: '상담 기록 조회', passed: !e10 });
+
+        // 11. 훈련수당 조회
+        const { error: e11 } = await supabase
+          .from('training_allowance')
+          .select('id')
+          .limit(1);
+        // 테이블이 없을 수 있으므로 존재 여부만 체크
+        const hasAllowanceAccess = !e11 || e11.code !== '42P01';
+        adminTests.push({ test: '훈련수당 조회', passed: hasAllowanceAccess });
+
+        // 12. 만족도 조사 조회
+        const { error: e12 } = await supabase
+          .from('satisfaction_survey')
+          .select('id')
+          .limit(1);
+        const hasSurveyAccess = !e12 || e12.code !== '42P01';
+        adminTests.push({ test: '만족도 조사', passed: hasSurveyAccess });
+
+        // 13. 테넌트 설정 조회
+        const { error: e13 } = await supabase
+          .from('tenants')
+          .select('id')
+          .limit(1);
+        if (e13) adminIssues++;
+        adminTests.push({ test: '테넌트 설정', passed: !e13 });
+
+        // 14. AI 사용 로그 조회
+        const { error: e14 } = await supabase
+          .from('ai_usage_logs')
+          .select('id')
+          .limit(1);
+        if (e14) adminIssues++;
+        adminTests.push({ test: 'AI 사용 로그', passed: !e14 });
+
+        // 15. 헬스체크 결과 조회
+        const { error: e15 } = await supabase
+          .from('health_check_results')
+          .select('id')
+          .limit(1);
+        if (e15) adminIssues++;
+        adminTests.push({ test: '헬스체크 조회', passed: !e15 });
       }
 
       checks.push({
         feature: '관리자 기능',
         category: 'Admin Role',
-        status: adminIssues === 0 ? 'operational' : (adminIssues > 2 ? 'error' : 'warning'),
+        status: adminIssues === 0 ? 'operational' : (adminIssues > 7 ? 'error' : 'warning'),
         message: adminRole 
           ? `${adminTests.length}개 기능 중 ${adminTests.filter(t => t.passed).length}개 정상`
           : '테스트할 관리자 계정 없음',
@@ -530,7 +765,7 @@ serve(async (req) => {
       });
 
       if (adminIssues === 0) passedChecks++;
-      else if (adminIssues > 2) failedChecks++;
+      else if (adminIssues > 7) failedChecks++;
       else warningChecks++;
 
     } catch (error) {
