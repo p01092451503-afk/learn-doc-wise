@@ -350,13 +350,10 @@ export const SystemHealthDashboard = () => {
             <div>
               <h3 className="text-lg font-semibold">헬스 체크를 시작하세요</h3>
               <p className="text-sm text-muted-foreground mt-2">
+                상단의 "헬스 체크 실행" 버튼을 눌러<br />
                 시스템의 전체 상태를 자동으로 진단하고 AI 분석 리포트를 받아보세요
               </p>
             </div>
-            <Button onClick={runHealthCheck} size="lg" className="gap-2">
-              <RefreshCw className="h-4 w-4" />
-              첫 헬스 체크 실행
-            </Button>
           </div>
         </Card>
       )}
