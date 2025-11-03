@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Brain, FileText, Users, AlertTriangle, Loader2 } from "lucide-react";
+import { Brain, FileText, Users, AlertTriangle, Loader2, TrendingUp, Target, BarChart3, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { formatAIResponse } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 export const AIReportGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -175,14 +175,75 @@ export const AIReportGenerator = () => {
       {report && (
         <Card className="border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg">분석 리포트</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              분석 리포트
+            </CardTitle>
+            <CardDescription>AI가 생성한 인사이트 및 권장사항</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="prose prose-sm max-w-none dark:prose-invert">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                {formatAIResponse(report)}
-              </div>
-            </div>
+          <CardContent className="space-y-6">
+            {(() => {
+              const sections = report.split('\n\n').filter(s => s.trim());
+              const insights = sections.slice(0, Math.ceil(sections.length / 2));
+              const details = sections.slice(Math.ceil(sections.length / 2));
+              
+              return (
+                <>
+                  {/* 주요 인사이트 */}
+                  <div className="rounded-lg border bg-primary/5 p-5">
+                    <h3 className="font-semibold text-base mb-4 flex items-center gap-2 text-primary">
+                      <Target className="h-5 w-5" />
+                      주요 인사이트
+                    </h3>
+                    <div className="space-y-3">
+                      {insights.map((paragraph, idx) => (
+                        <div key={idx} className="flex gap-3">
+                          <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                          <p className="text-sm leading-relaxed">
+                            {paragraph.replace(/^[#*-]\s*/, '').trim()}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  {/* 상세 분석 */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-base flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-accent" />
+                      상세 분석
+                    </h3>
+                    <div className="space-y-3">
+                      {details.map((section, idx) => {
+                        const text = section.replace(/^[#*-]\s*/, '').trim();
+                        const isWarning = text.match(/(위험|주의|문제|낮은|부족|미흡)/i);
+                        const isPositive = text.match(/(우수|높은|성공|좋은|뛰어난|향상)/i);
+                        
+                        return (
+                          <div 
+                            key={idx} 
+                            className={`rounded-lg border p-4 transition-colors ${
+                              isWarning ? 'border-destructive/50 bg-destructive/5' : 
+                              isPositive ? 'border-primary/50 bg-primary/5' : 
+                              'bg-card hover:bg-muted/50'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              {isWarning && <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />}
+                              {isPositive && <TrendingUp className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />}
+                              {!isWarning && !isPositive && <Users className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />}
+                              <p className="text-sm leading-relaxed flex-1">{text}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
           </CardContent>
         </Card>
       )}
