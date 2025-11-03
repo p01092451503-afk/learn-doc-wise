@@ -1097,6 +1097,59 @@ export type Database = {
           },
         ]
       }
+      feature_status: {
+        Row: {
+          created_at: string | null
+          error_count: number | null
+          feature_category: string
+          feature_name: string
+          id: string
+          last_checked_at: string | null
+          metadata: Json | null
+          status: string
+          status_message: string | null
+          tenant_id: string | null
+          updated_at: string | null
+          uptime_percentage: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_count?: number | null
+          feature_category: string
+          feature_name: string
+          id?: string
+          last_checked_at?: string | null
+          metadata?: Json | null
+          status: string
+          status_message?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+          uptime_percentage?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          error_count?: number | null
+          feature_category?: string
+          feature_name?: string
+          id?: string
+          last_checked_at?: string | null
+          metadata?: Json | null
+          status?: string
+          status_message?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+          uptime_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feature_status_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       government_training_info: {
         Row: {
           course_id: string
@@ -1215,6 +1268,68 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      health_check_results: {
+        Row: {
+          ai_analysis: string | null
+          check_id: string
+          created_at: string | null
+          details: Json
+          executed_by: string | null
+          execution_time_ms: number | null
+          failed_checks: number
+          id: string
+          overall_status: string
+          passed_checks: number
+          recommendations: Json | null
+          tenant_id: string | null
+          total_checks: number
+          updated_at: string | null
+          warning_checks: number
+        }
+        Insert: {
+          ai_analysis?: string | null
+          check_id?: string
+          created_at?: string | null
+          details?: Json
+          executed_by?: string | null
+          execution_time_ms?: number | null
+          failed_checks?: number
+          id?: string
+          overall_status: string
+          passed_checks?: number
+          recommendations?: Json | null
+          tenant_id?: string | null
+          total_checks?: number
+          updated_at?: string | null
+          warning_checks?: number
+        }
+        Update: {
+          ai_analysis?: string | null
+          check_id?: string
+          created_at?: string | null
+          details?: Json
+          executed_by?: string | null
+          execution_time_ms?: number | null
+          failed_checks?: number
+          id?: string
+          overall_status?: string
+          passed_checks?: number
+          recommendations?: Json | null
+          tenant_id?: string | null
+          total_checks?: number
+          updated_at?: string | null
+          warning_checks?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -2735,6 +2850,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "system_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_metrics: {
+        Row: {
+          id: string
+          metadata: Json | null
+          metric_type: string
+          metric_value: number
+          recorded_at: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          metric_value: number
+          recorded_at?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          metric_value?: number
+          recorded_at?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_metrics_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"

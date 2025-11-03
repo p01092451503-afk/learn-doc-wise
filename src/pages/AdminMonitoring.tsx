@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, AlertTriangle, Activity, Server } from "lucide-react";
+import { SystemHealthDashboard } from "@/components/admin/SystemHealthDashboard";
 
 interface AdminLog {
   id: string;
@@ -142,11 +143,16 @@ const AdminMonitoring = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="admin" className="space-y-4">
+        <Tabs defaultValue="health" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="health">시스템 헬스</TabsTrigger>
             <TabsTrigger value="admin">관리자 접근 로그</TabsTrigger>
             <TabsTrigger value="system">시스템 로그</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="health" className="space-y-6">
+            <SystemHealthDashboard />
+          </TabsContent>
 
           <TabsContent value="admin">
             <Card>
