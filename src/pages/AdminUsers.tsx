@@ -13,7 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Users, UserPlus, Search, CheckCircle, XCircle, Clock, Ban, Eye, Building2 } from "lucide-react";
+import { Users, UserPlus, Search, CheckCircle, XCircle, Clock, Ban, Eye, Building2, Edit } from "lucide-react";
+import { EditRoleDialog } from "@/components/admin/EditRoleDialog";
 
 interface User {
   id: string;
@@ -45,6 +46,8 @@ const AdminUsers = () => {
   const [isOrgDialogOpen, setIsOrgDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
+  const [isEditRoleOpen, setIsEditRoleOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const { toast } = useToast();
 
   const [orgForm, setOrgForm] = useState({
@@ -242,8 +245,14 @@ const AdminUsers = () => {
       student: "학생",
       teacher: "강사",
       admin: "관리자",
+      operator: "운영자",
     };
     return <Badge variant="outline">{labels[role] || role}</Badge>;
+  };
+
+  const handleEditRole = (user: User) => {
+    setEditingUser(user);
+    setIsEditRoleOpen(true);
   };
 
 
@@ -344,6 +353,15 @@ const AdminUsers = () => {
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleEditRole(user)}
+                              title="권한 편집"
+                            >
+                              <Edit className="h-4 w-4 mr-1" />
+                              권한
+                            </Button>
                             {user.approval_status === "pending" && (
                               <>
                                 <Button
@@ -556,6 +574,18 @@ const AdminUsers = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Edit Role Dialog */}
+        {editingUser && (
+          <EditRoleDialog
+            open={isEditRoleOpen}
+            onOpenChange={setIsEditRoleOpen}
+            userId={editingUser.user_id}
+            userName={editingUser.full_name || editingUser.email || "사용자"}
+            currentRole={editingUser.role || "student"}
+            onRoleUpdated={fetchData}
+          />
+        )}
       </div>
     </DashboardLayout>
   );
