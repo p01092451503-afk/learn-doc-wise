@@ -9,7 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { CheckCircle2, AlertTriangle, XCircle, Clock, TrendingUp } from "lucide-react";
+import { CheckCircle2, AlertTriangle, XCircle, Clock, TrendingUp, AlertCircle, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,6 +22,7 @@ interface HealthCheckHistory {
   passed_checks: number;
   failed_checks: number;
   warning_checks: number;
+  checks: any[];
   ai_analysis: string;
   execution_time: number;
   created_at: string;
@@ -54,7 +55,10 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
 
       if (error) throw error;
 
-      setHistory(data || []);
+      setHistory((data || []).map(item => ({
+        ...item,
+        checks: Array.isArray(item.checks) ? item.checks : []
+      })));
     } catch (error) {
       console.error('Error fetching health check history:', error);
       toast({
@@ -92,6 +96,47 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
       case 'critical': return '위험';
       default: return status;
     }
+  };
+
+  const getCheckStatusIcon = (status: string) => {
+    switch (status) {
+      case 'operational':
+        return <CheckCircle2 className="h-5 w-5 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case 'error':
+        return <XCircle className="h-5 w-5 text-red-500" />;
+      case 'incomplete':
+        return <AlertCircle className="h-5 w-5 text-orange-500" />;
+      case 'enhancement_needed':
+        return <Wrench className="h-5 w-5 text-blue-500" />;
+      default:
+        return null;
+    }
+  };
+
+  const getCheckStatusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      operational: "default",
+      warning: "secondary",
+      error: "destructive",
+      incomplete: "outline",
+      enhancement_needed: "outline",
+    };
+    
+    const labels: Record<string, string> = {
+      operational: "정상",
+      warning: "경고",
+      error: "오류",
+      incomplete: "미개발",
+      enhancement_needed: "개선필요",
+    };
+
+    return (
+      <Badge variant={variants[status] || "outline"}>
+        {labels[status] || status}
+      </Badge>
+    );
   };
 
   return (
@@ -188,6 +233,63 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
                               );
                             }).filter(Boolean)}
                           </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <Separator />
+
+                    {/* 기능별 상세 상태 */}
+                    {check.checks && Array.isArray(check.checks) && check.checks.length > 0 && (
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-sm">기능별 상세 상태</h4>
+                        <div className="space-y-2">
+                          {check.checks.map((featureCheck: any, checkIdx: number) => (
+                            <div
+                              key={checkIdx}
+                              className="border rounded-lg p-3 hover:bg-secondary/5 transition-colors"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 flex-1">
+                                  {getCheckStatusIcon(featureCheck.status)}
+                                  <div className="flex-1">
+                                    <div className="font-medium text-sm">{featureCheck.feature}</div>
+                                    <div className="text-xs text-muted-foreground">{featureCheck.message}</div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="text-xs">
+                                    {featureCheck.category}
+                                  </Badge>
+                                  {getCheckStatusBadge(featureCheck.status)}
+                                </div>
+                              </div>
+                              
+                              {/* 역할별 상세 테스트 결과 */}
+                              {featureCheck.details?.tests && featureCheck.details.tests.length > 0 && (
+                                <div className="mt-3 pt-3 border-t">
+                                  <div className="text-xs font-medium mb-2">세부 테스트 항목:</div>
+                                  <div className="grid grid-cols-2 gap-1.5">
+                                    {featureCheck.details.tests.map((test: any, testIdx: number) => (
+                                      <div
+                                        key={testIdx}
+                                        className="flex items-center gap-1.5 text-xs p-1.5 rounded bg-background"
+                                      >
+                                        {test.passed ? (
+                                          <CheckCircle2 className="h-3 w-3 text-green-500 flex-shrink-0" />
+                                        ) : (
+                                          <XCircle className="h-3 w-3 text-red-500 flex-shrink-0" />
+                                        )}
+                                        <span className={test.passed ? '' : 'text-red-600'}>
+                                          {test.test}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
