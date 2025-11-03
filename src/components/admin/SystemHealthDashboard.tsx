@@ -373,58 +373,40 @@ export const SystemHealthDashboard = () => {
         </>
       )}
 
-      {!result && !isChecking && (
-        <>
-          {/* 직전 헬스 체크 오류 항목 */}
-          {!loadingRecent && recentFailures.length > 0 && (
-            <Card className="p-6 border-red-200 bg-red-50/50">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <AlertCircle className="h-6 w-6 text-red-600" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-red-900">
-                      직전 헬스 체크에서 발견된 오류 ({recentFailures.length}개)
-                    </h3>
-                    <p className="text-sm text-red-700">
-                      다음 항목들을 확인하고 조치가 필요합니다
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  {recentFailures.map((failure, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 p-3 bg-white border border-red-200 rounded-lg"
-                    >
-                      <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-red-900">{failure.feature}</div>
-                        <div className="text-sm text-red-700 mt-1">{failure.message}</div>
-                      </div>
-                      <Badge variant="outline" className="text-xs border-red-300 text-red-700 flex-shrink-0">
-                        {failure.category}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          )}
-
-          <Card className="p-12">
-            <div className="text-center space-y-4">
-              <Activity className="h-16 w-16 text-muted-foreground mx-auto" />
+      {!result && !isChecking && !loadingRecent && recentFailures.length > 0 && (
+        <Card className="p-6 border-red-200 bg-red-50/50">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-6 w-6 text-red-600" />
               <div>
-                <h3 className="text-lg font-semibold">헬스 체크를 시작하세요</h3>
-                <p className="text-sm text-muted-foreground mt-2">
-                  상단의 "헬스 체크 실행" 버튼을 눌러<br />
-                  시스템의 전체 상태를 자동으로 진단하고 AI 분석 리포트를 받아보세요
+                <h3 className="text-lg font-semibold text-red-900">
+                  직전 헬스 체크에서 발견된 오류 ({recentFailures.length}개)
+                </h3>
+                <p className="text-sm text-red-700">
+                  다음 항목들을 확인하고 조치가 필요합니다
                 </p>
               </div>
             </div>
-          </Card>
-        </>
+            
+            <div className="space-y-2">
+              {recentFailures.map((failure, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-3 bg-white border border-red-200 rounded-lg"
+                >
+                  <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-red-900">{failure.feature}</div>
+                    <div className="text-sm text-red-700 mt-1">{failure.message}</div>
+                  </div>
+                  <Badge variant="outline" className="text-xs border-red-300 text-red-700 flex-shrink-0">
+                    {failure.category}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
       )}
     </div>
   );
