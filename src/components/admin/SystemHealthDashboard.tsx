@@ -63,9 +63,9 @@ export const SystemHealthDashboard = () => {
 
       if (error) throw error;
 
-      if (data && data.checks && data.failed_checks > 0) {
+      if (data && data.checks) {
         const failures = (data.checks as unknown as FeatureCheck[]).filter(
-          check => check.status === 'error'
+          check => check.status !== 'operational'
         );
         setRecentFailures(failures);
       }
@@ -380,7 +380,7 @@ export const SystemHealthDashboard = () => {
               <AlertCircle className="h-6 w-6 text-red-600" />
               <div>
                 <h3 className="text-lg font-semibold text-red-900">
-                  직전 헬스 체크에서 발견된 오류 ({recentFailures.length}개)
+                  직전 헬스 체크에서 발견된 문제 ({recentFailures.length}개)
                 </h3>
                 <p className="text-sm text-red-700">
                   다음 항목들을 확인하고 조치가 필요합니다
@@ -389,21 +389,33 @@ export const SystemHealthDashboard = () => {
             </div>
             
             <div className="space-y-2">
-              {recentFailures.map((failure, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 p-3 bg-white border border-red-200 rounded-lg"
-                >
-                  <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-red-900">{failure.feature}</div>
-                    <div className="text-sm text-red-700 mt-1">{failure.message}</div>
-                  </div>
-                  <Badge variant="outline" className="text-xs border-red-300 text-red-700 flex-shrink-0">
-                    {failure.category}
-                  </Badge>
-                </div>
-              ))}
+                  {recentFailures.map((failure, index) => {
+                    const isError = failure.status === 'error';
+                    const isWarning = failure.status === 'warning';
+                    const borderColor = isError ? 'border-red-200' : isWarning ? 'border-yellow-200' : 'border-orange-200';
+                    const iconColor = isError ? 'text-red-500' : isWarning ? 'text-yellow-500' : 'text-orange-500';
+                    const textColor = isError ? 'text-red-900' : isWarning ? 'text-yellow-900' : 'text-orange-900';
+                    const subtextColor = isError ? 'text-red-700' : isWarning ? 'text-yellow-700' : 'text-orange-700';
+                    
+                    return (
+                      <div
+                        key={index}
+                        className={`flex items-start gap-3 p-3 bg-white border ${borderColor} rounded-lg`}
+                      >
+                        {getStatusIcon(failure.status)}
+                        <div className="flex-1 min-w-0">
+                          <div className={`font-medium ${textColor}`}>{failure.feature}</div>
+                          <div className={`text-sm ${subtextColor} mt-1`}>{failure.message}</div>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {getStatusBadge(failure.status)}
+                          <Badge variant="outline" className="text-xs">
+                            {failure.category}
+                          </Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
             </div>
           </div>
         </Card>
