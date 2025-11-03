@@ -13,9 +13,11 @@ import {
   RefreshCw,
   TrendingUp,
   AlertCircle,
-  Wrench
+  Wrench,
+  History
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { HealthCheckHistoryDialog } from "./HealthCheckHistoryDialog";
 
 interface FeatureCheck {
   feature: string;
@@ -41,6 +43,7 @@ interface HealthCheckResult {
 export const SystemHealthDashboard = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [result, setResult] = useState<HealthCheckResult | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const { toast } = useToast();
 
   const runHealthCheck = async () => {
@@ -51,6 +54,26 @@ export const SystemHealthDashboard = () => {
       if (error) throw error;
 
       setResult(data);
+
+      // DB에 저장
+      const { error: saveError } = await supabase
+        .from('ai_health_check_logs')
+        .insert({
+          check_id: data.checkId,
+          overall_status: data.overallStatus,
+          total_checks: data.totalChecks,
+          passed_checks: data.passedChecks,
+          failed_checks: data.failedChecks,
+          warning_checks: data.warningChecks,
+          checks: data.checks,
+          ai_analysis: data.aiAnalysis,
+          recommendations: data.recommendations,
+          execution_time: data.executionTime,
+        });
+
+      if (saveError) {
+        console.error('Failed to save health check:', saveError);
+      }
       
       toast({
         title: "헬스 체크 완료",
@@ -139,25 +162,38 @@ export const SystemHealthDashboard = () => {
             전체 시스템의 상태를 AI로 자동 진단하고 개선 방안을 제시합니다
           </p>
         </div>
-        <Button
-          onClick={runHealthCheck}
-          disabled={isChecking}
-          size="lg"
-          className="gap-2"
-        >
-          {isChecking ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              검사 중...
-            </>
-          ) : (
-            <>
-              <RefreshCw className="h-4 w-4" />
-              헬스 체크 실행
-            </>
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setHistoryOpen(true)}
+            variant="outline"
+            size="lg"
+            className="gap-2"
+          >
+            <History className="h-4 w-4" />
+            최근 헬스 체크
+          </Button>
+          <Button
+            onClick={runHealthCheck}
+            disabled={isChecking}
+            size="lg"
+            className="gap-2"
+          >
+            {isChecking ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                검사 중...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4" />
+                헬스 체크 실행
+              </>
+            )}
+          </Button>
+        </div>
       </div>
+
+      <HealthCheckHistoryDialog open={historyOpen} onOpenChange={setHistoryOpen} />
 
       {result && (
         <>

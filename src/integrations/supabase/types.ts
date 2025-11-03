@@ -47,6 +47,54 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_health_check_logs: {
+        Row: {
+          ai_analysis: string | null
+          check_id: string
+          checks: Json
+          created_at: string | null
+          created_by: string | null
+          execution_time: number
+          failed_checks: number
+          id: string
+          overall_status: string
+          passed_checks: number
+          recommendations: Json | null
+          total_checks: number
+          warning_checks: number
+        }
+        Insert: {
+          ai_analysis?: string | null
+          check_id: string
+          checks: Json
+          created_at?: string | null
+          created_by?: string | null
+          execution_time: number
+          failed_checks: number
+          id?: string
+          overall_status: string
+          passed_checks: number
+          recommendations?: Json | null
+          total_checks: number
+          warning_checks: number
+        }
+        Update: {
+          ai_analysis?: string | null
+          check_id?: string
+          checks?: Json
+          created_at?: string | null
+          created_by?: string | null
+          execution_time?: number
+          failed_checks?: number
+          id?: string
+          overall_status?: string
+          passed_checks?: number
+          recommendations?: Json | null
+          total_checks?: number
+          warning_checks?: number
+        }
+        Relationships: []
+      }
       ai_usage_logs: {
         Row: {
           created_at: string
