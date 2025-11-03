@@ -141,8 +141,8 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
             직전 헬스 체크 결과
@@ -152,8 +152,9 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-4 pb-4">
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full pr-4">
+            <div className="space-y-4 pb-4">
             {loading ? (
               <div className="text-center py-8 text-muted-foreground">
                 불러오는 중...
@@ -299,6 +300,7 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
             )}
           </div>
         </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
