@@ -166,13 +166,32 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
                       </div>
                     </div>
 
-                    {/* AI 분석 (요약) */}
+                    {/* AI 분석 */}
                     {check.ai_analysis && (
                       <div className="bg-primary/5 p-4 rounded-lg">
                         <div className="flex items-start gap-2">
                           <TrendingUp className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
-                          <div className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere">
-                            {check.ai_analysis}
+                          <div className="text-sm leading-relaxed space-y-3 flex-1">
+                            {check.ai_analysis.split(/\n+/).map((paragraph, idx) => {
+                              // 섹션 제목 감지 (1., 2., 3. 등)
+                              const isSectionTitle = /^\d+\.\s*[\u3131-\uD79D]/.test(paragraph);
+                              // 하위 항목 감지 (-, •, 등)
+                              const isSubItem = /^[-•]\s/.test(paragraph);
+                              
+                              if (!paragraph.trim()) return null;
+                              
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`
+                                    ${isSectionTitle ? 'font-semibold text-primary mt-2' : ''}
+                                    ${isSubItem ? 'ml-4 text-muted-foreground' : ''}
+                                  `}
+                                >
+                                  {paragraph}
+                                </div>
+                              );
+                            }).filter(Boolean)}
                           </div>
                         </div>
                       </div>
