@@ -170,7 +170,7 @@ export const SystemHealthDashboard = () => {
             className="gap-2"
           >
             <History className="h-4 w-4" />
-            최근 헬스 체크
+            직전 헬스 체크
           </Button>
           <Button
             onClick={runHealthCheck}

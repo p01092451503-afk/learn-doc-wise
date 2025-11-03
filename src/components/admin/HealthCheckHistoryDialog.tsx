@@ -50,7 +50,7 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
         .from('ai_health_check_logs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(1);
 
       if (error) throw error;
 
@@ -100,10 +100,10 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            최근 헬스 체크 이력
+            직전 헬스 체크 결과
           </DialogTitle>
           <DialogDescription>
-            최근 5개의 시스템 헬스 체크 결과입니다
+            가장 최근에 실행한 헬스 체크 결과입니다
           </DialogDescription>
         </DialogHeader>
 
@@ -125,19 +125,14 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {getStatusIcon(check.overall_status)}
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className={`font-semibold ${getStatusColor(check.overall_status)}`}>
+                          <div>
+                            <div className={`font-semibold ${getStatusColor(check.overall_status)}`}>
                               {getStatusLabel(check.overall_status)}
-                            </span>
-                            {index === 0 && (
-                              <Badge variant="default" className="text-xs">최신</Badge>
-                            )}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {new Date(check.created_at).toLocaleString('ko-KR')}
+                            </div>
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            {new Date(check.created_at).toLocaleString('ko-KR')}
-                          </div>
-                        </div>
                       </div>
                       <Badge variant="outline" className="text-xs">
                         {(check.execution_time / 1000).toFixed(2)}초
