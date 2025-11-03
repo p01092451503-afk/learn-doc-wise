@@ -864,7 +864,7 @@ serve(async (req) => {
 
     if (lovableApiKey) {
       try {
-        const analysisPrompt = `다음은 학습 관리 시스템의 헬스 체크 결과입니다. 전문가 입장에서 분석하고 개선 방안을 제시해주세요.
+        const analysisPrompt = `LMS 헬스 체크 결과를 분석해주세요.
 
 전체 상태: ${overallStatus}
 총 체크: ${totalChecks}개
@@ -875,10 +875,23 @@ serve(async (req) => {
 상세 결과:
 ${checks.map(c => `- ${c.feature} (${c.category}): ${c.status} - ${c.message}`).join('\n')}
 
-다음 형식으로 답변해주세요:
-1. 전체 시스템 상태 평가 (2-3문장)
-2. 주요 이슈 및 위험 요소 (있는 경우)
-3. 우선순위별 개선 권장사항 (3-5개)`;
+다음 형식으로 작성해주세요:
+
+1. 전체 시스템 상태 (2-3문장, 명확하고 간결하게)
+
+2. 주요 이슈
+매우 낮은 시스템 활용도: 설명
+인증 시스템: 설명
+강의 관리: 설명
+(있는 경우만 나열)
+
+3. 우선순위별 개선 권장사항
+1) 첫 번째 권장사항
+2) 두 번째 권장사항
+3) 세 번째 권장사항
+(3-5개 항목)
+
+※ 중요: 모든 문장은 구어체로 작성해주세요. "~합니다", "~입니다" 같은 격식체는 사용하지 말고, 간결하고 명확하게 핵심만 전달하세요.`;
 
         const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
@@ -889,7 +902,7 @@ ${checks.map(c => `- ${c.feature} (${c.category}): ${c.status} - ${c.message}`).
           body: JSON.stringify({
             model: 'google/gemini-2.5-flash',
             messages: [
-              { role: 'system', content: '당신은 LMS 시스템 전문가입니다. 헬스 체크 결과를 분석하고 실용적인 개선안을 제시합니다.' },
+              { role: 'system', content: 'LMS 헬스 체크 결과를 분석하는 전문가입니다. 간결하고 명확한 구어체로 실용적인 분석과 개선안을 제시합니다. 격식을 차리지 않고 핵심만 전달합니다.' },
               { role: 'user', content: analysisPrompt }
             ],
           }),
@@ -907,13 +920,13 @@ ${checks.map(c => `- ${c.feature} (${c.category}): ${c.status} - ${c.message}`).
             .replace(/`/g, '')          // ` 제거
             .trim();
 
-          // 권장사항 추출
+          // 권장사항 추출 (1), 2), 3) 형식)
           const recMatch = aiAnalysis.match(/3\.\s*우선순위별\s*개선\s*권장사항[:\s]*([\s\S]*)/i);
           if (recMatch) {
             recommendations = recMatch[1]
               .split('\n')
-              .filter(line => line.trim().match(/^[-•\d]/))
-              .map(line => line.trim().replace(/^[-•\d.)\s]+/, ''))
+              .filter(line => line.trim().match(/^\d+\)|^[-•]/))
+              .map(line => line.trim().replace(/^\d+\)\s*|^[-•]\s*/, ''))
               .filter(Boolean)
               .slice(0, 5);
           }
