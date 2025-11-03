@@ -171,7 +171,7 @@ export const HealthCheckHistoryDialog = ({ open, onOpenChange }: HealthCheckHist
                       <div className="bg-primary/5 p-4 rounded-lg">
                         <div className="flex items-start gap-2">
                           <TrendingUp className="h-4 w-4 text-primary flex-shrink-0 mt-1" />
-                          <div className="text-sm leading-relaxed line-clamp-3">
+                          <div className="text-sm leading-relaxed">
                             {check.ai_analysis}
                           </div>
                         </div>
