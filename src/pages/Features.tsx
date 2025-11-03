@@ -510,7 +510,7 @@ const FeatureSection = ({ icon, title, description, features, badge }: FeatureSe
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold mb-2 text-2xl">{feature.title}</h3>
-                <p className="text-base text-muted-foreground leading-relaxed">{feature.description}</p>
+                <p className="text-lg text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             </div>
           </div>
