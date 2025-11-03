@@ -779,7 +779,7 @@ serve(async (req) => {
       failedChecks++;
     }
 
-    // 14. 운영자 역할 기능 테스트
+    // 14. 운영자 역할 기능 테스트 (3개 → 15개 확장)
     try {
       const operatorTests = [];
       let operatorIssues = 0;
@@ -793,16 +793,49 @@ serve(async (req) => {
         .single();
 
       if (operatorRole) {
-        // 테넌트 관리 권한 테스트
+        // 1. 테넌트 조회 권한
         const { error: viewTenantsError } = await supabase
           .from('tenants')
           .select('id')
           .limit(1);
         
         if (viewTenantsError) operatorIssues++;
-        operatorTests.push({ test: '테넌트 관리', passed: !viewTenantsError });
+        operatorTests.push({ test: '테넌트 조회', passed: !viewTenantsError });
 
-        // 사용량 추적 권한 테스트
+        // 2. 테넌트 생성 권한
+        const { error: createTenantError } = await supabase
+          .from('tenants')
+          .insert({ name: 'test-tenant-check', status: 'trial' })
+          .select()
+          .single();
+        
+        operatorTests.push({ test: '테넌트 생성', passed: !createTenantError });
+        if (createTenantError) operatorIssues++;
+
+        // 3. 테넌트 수정 권한
+        if (!createTenantError && createTenantError !== null) {
+          const { error: updateTenantError } = await supabase
+            .from('tenants')
+            .update({ status: 'active' })
+            .eq('id', 'non-existent-id');
+          
+          operatorTests.push({ test: '테넌트 수정', passed: !updateTenantError });
+          if (updateTenantError) operatorIssues++;
+        } else {
+          operatorTests.push({ test: '테넌트 수정', passed: false });
+          operatorIssues++;
+        }
+
+        // 4. 테넌트 삭제 권한
+        const { error: deleteTenantError } = await supabase
+          .from('tenants')
+          .delete()
+          .eq('id', 'non-existent-id');
+        
+        operatorTests.push({ test: '테넌트 삭제', passed: !deleteTenantError });
+        if (deleteTenantError) operatorIssues++;
+
+        // 5. 사용량 조회 권한
         const { error: viewUsageError } = await supabase
           .from('ai_usage_logs')
           .select('id')
@@ -811,14 +844,95 @@ serve(async (req) => {
         if (viewUsageError) operatorIssues++;
         operatorTests.push({ test: '사용량 조회', passed: !viewUsageError });
 
-        // 시스템 설정 조회 권한 테스트
+        // 6. 사용량 분석 권한
+        const { error: viewMetricsError } = await supabase
+          .from('usage_metrics')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '사용량 분석', passed: !viewMetricsError });
+        if (viewMetricsError) operatorIssues++;
+
+        // 7. 시스템 설정 조회
         const { error: viewSettingsError } = await supabase
           .from('hrd_features')
           .select('id')
           .limit(1);
         
         if (viewSettingsError) operatorIssues++;
-        operatorTests.push({ test: '시스템 설정', passed: !viewSettingsError });
+        operatorTests.push({ test: '시스템 설정 조회', passed: !viewSettingsError });
+
+        // 8. 시스템 로그 조회
+        const { error: viewSystemLogsError } = await supabase
+          .from('system_logs')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '시스템 로그', passed: !viewSystemLogsError });
+        if (viewSystemLogsError) operatorIssues++;
+
+        // 9. 관리자 로그 조회
+        const { error: viewAdminLogsError } = await supabase
+          .from('admin_access_logs')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '관리자 로그', passed: !viewAdminLogsError });
+        if (viewAdminLogsError) operatorIssues++;
+
+        // 10. 백업 관리 권한
+        const { error: viewBackupsError } = await supabase
+          .from('backups')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '백업 관리', passed: !viewBackupsError });
+        if (viewBackupsError) operatorIssues++;
+
+        // 11. 라이선스 관리
+        const { error: viewLicensesError } = await supabase
+          .from('licenses')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '라이선스 관리', passed: !viewLicensesError });
+        if (viewLicensesError) operatorIssues++;
+
+        // 12. 기능 토글 조회
+        const { error: viewFeatureTogglesError } = await supabase
+          .from('feature_toggles')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '기능 토글', passed: !viewFeatureTogglesError });
+        if (viewFeatureTogglesError) operatorIssues++;
+
+        // 13. 헬스 체크 이력 조회
+        const { error: viewHealthCheckError } = await supabase
+          .from('ai_health_check_logs')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '헬스 체크 이력', passed: !viewHealthCheckError });
+        if (viewHealthCheckError) operatorIssues++;
+
+        // 14. 전체 사용자 조회
+        const { error: viewAllUsersError } = await supabase
+          .from('profiles')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '전체 사용자 조회', passed: !viewAllUsersError });
+        if (viewAllUsersError) operatorIssues++;
+
+        // 15. 수익 통계 조회
+        const { error: viewRevenueError } = await supabase
+          .from('revenue_records')
+          .select('id')
+          .limit(1);
+        
+        operatorTests.push({ test: '수익 통계', passed: !viewRevenueError });
+        if (viewRevenueError) operatorIssues++;
       }
 
       checks.push({
