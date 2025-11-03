@@ -220,36 +220,7 @@ serve(async (req) => {
       failedChecks++;
     }
 
-    // 7. 게이미피케이션 시스템 체크
-    try {
-      const { count: badgesCount, error } = await supabase
-        .from('badges')
-        .select('*', { count: 'exact', head: true });
-      
-      if (error) throw error;
-
-      const { count: userBadgesCount } = await supabase
-        .from('user_badges')
-        .select('*', { count: 'exact', head: true });
-
-      checks.push({
-        feature: '게이미피케이션',
-        category: 'Gamification',
-        status: 'operational',
-        message: `${badgesCount || 0}개 배지, ${userBadgesCount || 0}건 획득`,
-        details: { totalBadges: badgesCount, earnedBadges: userBadgesCount }
-      });
-      passedChecks++;
-    } catch (error) {
-      checks.push({
-        feature: '게이미피케이션',
-        category: 'Gamification',
-        status: 'error',
-        message: '게이미피케이션 시스템 오류',
-        details: error instanceof Error ? error.message : String(error)
-      });
-      failedChecks++;
-    }
+    // 7. 게이미피케이션 시스템 체크 - 제거됨 (사용하지 않음)
 
     // 8. AI 기능 체크
     if (lovableApiKey) {
@@ -691,7 +662,15 @@ ${checks.map(c => `- ${c.feature} (${c.category}): ${c.status} - ${c.message}`).
 
         if (aiResponse.ok) {
           const aiData = await aiResponse.json();
-          aiAnalysis = aiData.choices[0].message.content;
+          let rawAnalysis = aiData.choices[0].message.content;
+          
+          // 마크다운 기호 제거
+          aiAnalysis = rawAnalysis
+            .replace(/#{1,6}\s/g, '')  // ## 제거
+            .replace(/\*\*/g, '')       // ** 제거
+            .replace(/\*/g, '')         // * 제거
+            .replace(/`/g, '')          // ` 제거
+            .trim();
 
           // 권장사항 추출
           const recMatch = aiAnalysis.match(/3\.\s*우선순위별\s*개선\s*권장사항[:\s]*([\s\S]*)/i);
