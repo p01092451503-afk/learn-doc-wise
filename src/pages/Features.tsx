@@ -36,57 +36,57 @@ const Features = () => {
               badge="AI"
               features={[
                 {
-                  icon: <Bot className="h-5 w-5" />,
+                  icon: <Bot className="h-8 w-8" />,
                   title: "AI 튜터",
                   description: "24시간 질문하고 실시간 답변을 받으세요"
                 },
                 {
-                  icon: <ClipboardCheck className="h-5 w-5" />,
+                  icon: <ClipboardCheck className="h-8 w-8" />,
                   title: "AI 자동 채점",
                   description: "과제를 자동으로 채점하고 상세한 피드백 제공"
                 },
                 {
-                  icon: <MessageSquare className="h-5 w-5" />,
+                  icon: <MessageSquare className="h-8 w-8" />,
                   title: "AI 피드백",
                   description: "개인화된 학습 피드백과 개선 방안 제시"
                 },
                 {
-                  icon: <Languages className="h-5 w-5" />,
+                  icon: <Languages className="h-8 w-8" />,
                   title: "AI 번역",
                   description: "강의 자료를 다양한 언어로 즉시 번역"
                 },
                 {
-                  icon: <BarChart3 className="h-5 w-5" />,
+                  icon: <BarChart3 className="h-8 w-8" />,
                   title: "AI 학습 분석",
                   description: "학습 패턴을 분석하고 최적의 학습 전략 제안"
                 },
                 {
-                  icon: <FileText className="h-5 w-5" />,
+                  icon: <FileText className="h-8 w-8" />,
                   title: "AI 리포트 생성",
                   description: "학습 성과를 자동으로 분석하여 리포트 작성"
                 },
                 {
-                  icon: <Route className="h-5 w-5" />,
+                  icon: <Route className="h-8 w-8" />,
                   title: "AI 학습 경로 추천",
                   description: "개인별 맞춤 학습 경로를 AI가 설계"
                 },
                 {
-                  icon: <FileQuestion className="h-5 w-5" />,
+                  icon: <FileQuestion className="h-8 w-8" />,
                   title: "AI 퀴즈 생성",
                   description: "학습 내용 기반 맞춤형 문제 자동 생성"
                 },
                 {
-                  icon: <FileText className="h-5 w-5" />,
+                  icon: <FileText className="h-8 w-8" />,
                   title: "AI 요약",
                   description: "긴 강의 내용을 핵심만 압축하여 요약"
                 },
                 {
-                  icon: <TrendingUp className="h-5 w-5" />,
+                  icon: <TrendingUp className="h-8 w-8" />,
                   title: "AI 진도 예측",
                   description: "학습 완료 시점을 예측하고 목표 관리"
                 },
                 {
-                  icon: <Users className="h-5 w-5" />,
+                  icon: <Users className="h-8 w-8" />,
                   title: "AI 스터디 메이트 매칭",
                   description: "비슷한 수준의 학습 동료를 자동으로 연결"
                 }
@@ -505,7 +505,7 @@ const FeatureSection = ({ icon, title, description, features, badge }: FeatureSe
             className="p-5 rounded-xl border border-border hover:border-primary/50 hover:shadow-glow transition-all bg-card group"
           >
             <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors flex-shrink-0">
+              <div className="text-primary flex-shrink-0">
                 {feature.icon}
               </div>
               <div className="flex-1 min-w-0">
