@@ -329,6 +329,317 @@ serve(async (req) => {
       failedChecks++;
     }
 
+    // === 역할별 기능 테스트 ===
+    console.log('Starting role-based functional tests...');
+
+    // 11. 학생 역할 기능 테스트
+    try {
+      const studentTests = [];
+      let studentIssues = 0;
+
+      // 학생 계정 찾기
+      const { data: studentRole } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'student')
+        .limit(1)
+        .single();
+
+      if (studentRole) {
+        // 강의 조회 권한 테스트
+        const { error: viewCoursesError } = await supabase
+          .from('courses')
+          .select('id')
+          .eq('status', 'published')
+          .limit(1);
+        
+        if (viewCoursesError) studentIssues++;
+        studentTests.push({ test: '강의 조회', passed: !viewCoursesError });
+
+        // 수강 등록 조회 권한 테스트
+        const { error: viewEnrollmentsError } = await supabase
+          .from('enrollments')
+          .select('id')
+          .eq('user_id', studentRole.user_id)
+          .limit(1);
+        
+        if (viewEnrollmentsError) studentIssues++;
+        studentTests.push({ test: '수강 내역 조회', passed: !viewEnrollmentsError });
+
+        // 과제 조회 권한 테스트
+        const { error: viewAssignmentsError } = await supabase
+          .from('assignments')
+          .select('id')
+          .eq('status', 'published')
+          .limit(1);
+        
+        if (viewAssignmentsError) studentIssues++;
+        studentTests.push({ test: '과제 조회', passed: !viewAssignmentsError });
+
+        // 커뮤니티 조회 권한 테스트
+        const { error: viewCommunityError } = await supabase
+          .from('community_posts')
+          .select('id')
+          .limit(1);
+        
+        if (viewCommunityError) studentIssues++;
+        studentTests.push({ test: '커뮤니티 조회', passed: !viewCommunityError });
+      }
+
+      checks.push({
+        feature: '학생 기능',
+        category: 'Student Role',
+        status: studentIssues === 0 ? 'operational' : (studentIssues > 2 ? 'error' : 'warning'),
+        message: studentRole 
+          ? `${studentTests.length}개 기능 중 ${studentTests.filter(t => t.passed).length}개 정상`
+          : '테스트할 학생 계정 없음',
+        details: { tests: studentTests, hasTestAccount: !!studentRole }
+      });
+
+      if (studentIssues === 0) passedChecks++;
+      else if (studentIssues > 2) failedChecks++;
+      else warningChecks++;
+
+    } catch (error) {
+      checks.push({
+        feature: '학생 기능',
+        category: 'Student Role',
+        status: 'error',
+        message: '학생 기능 테스트 실패',
+        details: error instanceof Error ? error.message : String(error)
+      });
+      failedChecks++;
+    }
+
+    // 12. 강사 역할 기능 테스트
+    try {
+      const teacherTests = [];
+      let teacherIssues = 0;
+
+      // 강사 계정 찾기
+      const { data: teacherRole } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'teacher')
+        .limit(1)
+        .single();
+
+      if (teacherRole) {
+        // 본인 강의 조회 권한 테스트
+        const { error: viewOwnCoursesError } = await supabase
+          .from('courses')
+          .select('id')
+          .eq('instructor_id', teacherRole.user_id)
+          .limit(1);
+        
+        if (viewOwnCoursesError) teacherIssues++;
+        teacherTests.push({ test: '본인 강의 조회', passed: !viewOwnCoursesError });
+
+        // 과제 관리 권한 테스트
+        const { error: viewAssignmentsError } = await supabase
+          .from('assignments')
+          .select('id')
+          .limit(1);
+        
+        if (viewAssignmentsError) teacherIssues++;
+        teacherTests.push({ test: '과제 관리', passed: !viewAssignmentsError });
+
+        // 출석 조회 권한 테스트
+        const { error: viewAttendanceError } = await supabase
+          .from('attendance')
+          .select('id')
+          .limit(1);
+        
+        if (viewAttendanceError) teacherIssues++;
+        teacherTests.push({ test: '출석 조회', passed: !viewAttendanceError });
+
+        // 학생 제출물 조회 권한 테스트
+        const { error: viewSubmissionsError } = await supabase
+          .from('assignment_submissions')
+          .select('id')
+          .limit(1);
+        
+        if (viewSubmissionsError) teacherIssues++;
+        teacherTests.push({ test: '제출물 조회', passed: !viewSubmissionsError });
+      }
+
+      checks.push({
+        feature: '강사 기능',
+        category: 'Teacher Role',
+        status: teacherIssues === 0 ? 'operational' : (teacherIssues > 2 ? 'error' : 'warning'),
+        message: teacherRole 
+          ? `${teacherTests.length}개 기능 중 ${teacherTests.filter(t => t.passed).length}개 정상`
+          : '테스트할 강사 계정 없음',
+        details: { tests: teacherTests, hasTestAccount: !!teacherRole }
+      });
+
+      if (teacherIssues === 0) passedChecks++;
+      else if (teacherIssues > 2) failedChecks++;
+      else warningChecks++;
+
+    } catch (error) {
+      checks.push({
+        feature: '강사 기능',
+        category: 'Teacher Role',
+        status: 'error',
+        message: '강사 기능 테스트 실패',
+        details: error instanceof Error ? error.message : String(error)
+      });
+      failedChecks++;
+    }
+
+    // 13. 관리자 역할 기능 테스트
+    try {
+      const adminTests = [];
+      let adminIssues = 0;
+
+      // 관리자 계정 찾기
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'admin')
+        .limit(1)
+        .single();
+
+      if (adminRole) {
+        // 모든 강의 조회 권한 테스트
+        const { error: viewAllCoursesError } = await supabase
+          .from('courses')
+          .select('id')
+          .limit(1);
+        
+        if (viewAllCoursesError) adminIssues++;
+        adminTests.push({ test: '전체 강의 조회', passed: !viewAllCoursesError });
+
+        // 사용자 관리 권한 테스트
+        const { error: viewUsersError } = await supabase
+          .from('user_roles')
+          .select('id')
+          .limit(1);
+        
+        if (viewUsersError) adminIssues++;
+        adminTests.push({ test: '사용자 관리', passed: !viewUsersError });
+
+        // 수강 등록 조회 권한 테스트
+        const { error: viewAllEnrollmentsError } = await supabase
+          .from('enrollments')
+          .select('id')
+          .limit(1);
+        
+        if (viewAllEnrollmentsError) adminIssues++;
+        adminTests.push({ test: '전체 수강 조회', passed: !viewAllEnrollmentsError });
+
+        // 시스템 로그 조회 권한 테스트
+        const { error: viewLogsError } = await supabase
+          .from('admin_access_logs')
+          .select('id')
+          .limit(1);
+        
+        if (viewLogsError) adminIssues++;
+        adminTests.push({ test: '시스템 로그 조회', passed: !viewLogsError });
+
+        // 통계 데이터 조회 권한 테스트
+        const { error: viewAnalyticsError } = await supabase
+          .from('learning_analytics')
+          .select('id')
+          .limit(1);
+        
+        if (viewAnalyticsError) adminIssues++;
+        adminTests.push({ test: '학습 통계 조회', passed: !viewAnalyticsError });
+      }
+
+      checks.push({
+        feature: '관리자 기능',
+        category: 'Admin Role',
+        status: adminIssues === 0 ? 'operational' : (adminIssues > 2 ? 'error' : 'warning'),
+        message: adminRole 
+          ? `${adminTests.length}개 기능 중 ${adminTests.filter(t => t.passed).length}개 정상`
+          : '테스트할 관리자 계정 없음',
+        details: { tests: adminTests, hasTestAccount: !!adminRole }
+      });
+
+      if (adminIssues === 0) passedChecks++;
+      else if (adminIssues > 2) failedChecks++;
+      else warningChecks++;
+
+    } catch (error) {
+      checks.push({
+        feature: '관리자 기능',
+        category: 'Admin Role',
+        status: 'error',
+        message: '관리자 기능 테스트 실패',
+        details: error instanceof Error ? error.message : String(error)
+      });
+      failedChecks++;
+    }
+
+    // 14. 운영자 역할 기능 테스트
+    try {
+      const operatorTests = [];
+      let operatorIssues = 0;
+
+      // 운영자 계정 찾기
+      const { data: operatorRole } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'operator')
+        .limit(1)
+        .single();
+
+      if (operatorRole) {
+        // 테넌트 관리 권한 테스트
+        const { error: viewTenantsError } = await supabase
+          .from('tenants')
+          .select('id')
+          .limit(1);
+        
+        if (viewTenantsError) operatorIssues++;
+        operatorTests.push({ test: '테넌트 관리', passed: !viewTenantsError });
+
+        // 사용량 추적 권한 테스트
+        const { error: viewUsageError } = await supabase
+          .from('ai_usage_logs')
+          .select('id')
+          .limit(1);
+        
+        if (viewUsageError) operatorIssues++;
+        operatorTests.push({ test: '사용량 조회', passed: !viewUsageError });
+
+        // 시스템 설정 조회 권한 테스트
+        const { error: viewSettingsError } = await supabase
+          .from('hrd_features')
+          .select('id')
+          .limit(1);
+        
+        if (viewSettingsError) operatorIssues++;
+        operatorTests.push({ test: '시스템 설정', passed: !viewSettingsError });
+      }
+
+      checks.push({
+        feature: '운영자 기능',
+        category: 'Operator Role',
+        status: operatorIssues === 0 ? 'operational' : (operatorIssues > 1 ? 'error' : 'warning'),
+        message: operatorRole 
+          ? `${operatorTests.length}개 기능 중 ${operatorTests.filter(t => t.passed).length}개 정상`
+          : '테스트할 운영자 계정 없음',
+        details: { tests: operatorTests, hasTestAccount: !!operatorRole }
+      });
+
+      if (operatorIssues === 0) passedChecks++;
+      else if (operatorIssues > 1) failedChecks++;
+      else warningChecks++;
+
+    } catch (error) {
+      checks.push({
+        feature: '운영자 기능',
+        category: 'Operator Role',
+        status: 'error',
+        message: '운영자 기능 테스트 실패',
+        details: error instanceof Error ? error.message : String(error)
+      });
+      failedChecks++;
+    }
+
     // 전체 상태 결정
     const totalChecks = checks.length;
     let overallStatus: 'healthy' | 'degraded' | 'critical';

@@ -109,6 +109,13 @@ export const SystemHealthDashboard = () => {
     );
   };
 
+  const getCategoryIcon = (category: string) => {
+    if (category.includes('Role')) {
+      return '👤';
+    }
+    return null;
+  };
+
   const getOverallStatusColor = (status: string) => {
     switch (status) {
       case 'healthy': return 'text-green-600';
@@ -237,21 +244,56 @@ export const SystemHealthDashboard = () => {
               {result.checks.map((check, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-secondary/5 transition-colors"
+                  className="border rounded-lg hover:bg-secondary/5 transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-1">
-                    {getStatusIcon(check.status)}
-                    <div>
-                      <div className="font-medium">{check.feature}</div>
-                      <div className="text-sm text-muted-foreground">{check.message}</div>
+                  <div className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      {getCategoryIcon(check.category) && (
+                        <span className="text-2xl">{getCategoryIcon(check.category)}</span>
+                      )}
+                      {getStatusIcon(check.status)}
+                      <div>
+                        <div className="font-medium">{check.feature}</div>
+                        <div className="text-sm text-muted-foreground">{check.message}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className="text-xs">
+                        {check.category}
+                      </Badge>
+                      {getStatusBadge(check.status)}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="text-xs">
-                      {check.category}
-                    </Badge>
-                    {getStatusBadge(check.status)}
-                  </div>
+                  
+                  {/* 역할별 상세 테스트 결과 */}
+                  {check.details?.tests && check.details.tests.length > 0 && (
+                    <div className="px-4 pb-4 pt-2 border-t bg-secondary/5">
+                      <div className="text-sm font-medium mb-2">세부 테스트 항목:</div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {check.details.tests.map((test: any, testIndex: number) => (
+                          <div
+                            key={testIndex}
+                            className="flex items-center gap-2 text-sm p-2 rounded bg-background"
+                          >
+                            {test.passed ? (
+                              <CheckCircle2 className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-red-500" />
+                            )}
+                            <span className={test.passed ? '' : 'text-red-600'}>
+                              {test.test}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      {!check.details.hasTestAccount && (
+                        <div className="mt-2 text-xs text-amber-600 flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3" />
+                          테스트 계정이 없어 실제 기능 테스트를 수행하지 못했습니다
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
