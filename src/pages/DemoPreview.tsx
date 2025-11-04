@@ -93,6 +93,12 @@ import {
 
 type DemoRole = "student" | "teacher" | "admin";
 
+const roleLabels: Record<DemoRole, string> = {
+  student: "학생",
+  teacher: "강사",
+  admin: "관리자",
+};
+
 interface MenuItem {
   icon: any;
   label: string;
@@ -305,9 +311,11 @@ const DemoPreview = () => {
               <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">역할 전환:</span>
               <Select value={activeRole} onValueChange={(value) => setActiveRole(value as DemoRole)}>
                 <SelectTrigger className="w-[100px] md:w-[140px] text-xs md:text-sm">
-                  <SelectValue />
+                  <SelectValue>
+                    {roleLabels[activeRole]}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-background z-[70]">
                   <SelectItem value="student">학생</SelectItem>
                   <SelectItem value="teacher">강사</SelectItem>
                   <SelectItem value="admin">관리자</SelectItem>
