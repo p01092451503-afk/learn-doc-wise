@@ -547,7 +547,8 @@ const Auth = () => {
                   </Button>
                 </form>
 
-                <div className="mt-6">
+                {/* 임시로 숨김 - Google 로그인 */}
+                {/* <div className="mt-6">
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <span className="w-full border-t" />
@@ -585,7 +586,7 @@ const Auth = () => {
                       Google로 계속하기
                     </Button>
                   </div>
-                </div>
+                </div> */}
               </TabsContent>
 
               <TabsContent value="signup">
