@@ -168,7 +168,6 @@ const DemoPreview = () => {
       { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
       { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
       { icon: DollarSign, label: "매출 관리", path: "revenue" },
-      { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
       { icon: BarChart3, label: "분석 도구", path: "analytics" },
       { icon: Settings, label: "시스템 설정", path: "settings" },
     ];
