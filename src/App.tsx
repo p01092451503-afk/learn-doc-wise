@@ -80,6 +80,7 @@ import OperatorUpdates from "./pages/operator/OperatorUpdates";
 import OperatorLicense from "./pages/operator/OperatorLicense";
 import OperatorResources from "./pages/operator/OperatorResources";
 import FeaturesShowcase from "./pages/FeaturesShowcase";
+import AdminDemo from "./pages/AdminDemo";
 
 // 페이지 전환 시 스크롤을 최상단으로 이동
 const ScrollToTop = () => {
@@ -119,6 +120,7 @@ const App = () => {
           <Route path="/courses/:id" element={<PublicCourseDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/demo" element={<DemoPreview />} />
+          <Route path="/admin-demo" element={<AdminDemo />} />
           <Route path="/student" element={<StudentDashboard />} />
           <Route path="/students" element={<StudentDashboard />} />
           <Route path="/student/courses" element={<StudentCourses />} />

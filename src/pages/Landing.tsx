@@ -30,6 +30,9 @@ const Landing = () => {
               </TooltipContent>
             </Tooltip>
           <div className="flex items-center gap-3">
+            <Link to="/admin-demo">
+              <Button variant="ghost" size="default">관리자 데모</Button>
+            </Link>
             <Link to="/features-detail">
               <Button variant="ghost" size="default">세부 기능</Button>
             </Link>
