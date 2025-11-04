@@ -2763,6 +2763,10 @@ export type Database = {
           approved_by: string | null
           avatar_url: string | null
           created_at: string
+          demo_approved: boolean | null
+          demo_approved_at: string | null
+          demo_approved_by: string | null
+          demo_requested_at: string | null
           full_name: string | null
           id: string
           rejection_reason: string | null
@@ -2776,6 +2780,10 @@ export type Database = {
           approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
+          demo_approved?: boolean | null
+          demo_approved_at?: string | null
+          demo_approved_by?: string | null
+          demo_requested_at?: string | null
           full_name?: string | null
           id?: string
           rejection_reason?: string | null
@@ -2789,6 +2797,10 @@ export type Database = {
           approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
+          demo_approved?: boolean | null
+          demo_approved_at?: string | null
+          demo_approved_by?: string | null
+          demo_requested_at?: string | null
           full_name?: string | null
           id?: string
           rejection_reason?: string | null
@@ -3181,6 +3193,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      system_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       tags: {
         Row: {

@@ -32,6 +32,7 @@ import {
   Route,
   ClipboardList,
   Briefcase,
+  UserCheck,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -88,6 +89,7 @@ const iconMap: { [key: string]: any } = {
   Palette,
   Trophy,
   Route,
+  UserCheck,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -204,6 +206,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     const adminItems = [
       ...baseItems,
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
+      { icon: UserCheck, label: "데모 승인", path: "/admin/demo-approval", enabled: true },
       { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },

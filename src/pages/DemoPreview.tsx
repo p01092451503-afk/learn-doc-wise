@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -26,9 +26,12 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -99,15 +102,52 @@ const roleLabels: Record<DemoRole, string> = {
   admin: "관리자",
 };
 
-interface MenuItem {
-  icon: any;
-  label: string;
-  path: string;
-  hasAI?: boolean;
-  isHRD?: boolean;
-}
-
 const DemoPreview = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedRole, setSelectedRole] = useState<DemoRole>("student");
+  const [loading, setLoading] = useState(true);
+  const [approved, setApproved] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Check demo approval
+  useEffect(() => {
+    const checkApproval = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "로그인 필요",
+          description: "데모를 체험하려면 로그인이 필요합니다.",
+          variant: "destructive",
+        });
+        navigate("/");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("demo_approved")
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (!profile?.demo_approved) {
+        toast({
+          title: "승인 대기 중",
+          description: "운영자 승인 후 데모에 접근할 수 있습니다.",
+          variant: "destructive",
+        });
+        navigate("/");
+        return;
+      }
+
+      setApproved(true);
+      setLoading(false);
+    };
+
+    checkApproval();
+  }, [navigate, toast]);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
@@ -193,6 +233,18 @@ const DemoPreview = () => {
   };
 
   const menuItems = getMenuItems();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!approved) {
+    return null;
+  }
 
   const renderContent = () => {
     // Student pages

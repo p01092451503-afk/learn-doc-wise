@@ -5,9 +5,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
+const Main2 = lazy(() => import("./pages/Main2"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -48,6 +50,7 @@ const AdminTrainingCompletion = lazy(() => import("./pages/admin/AdminTrainingCo
 const AdminGrades = lazy(() => import("./pages/admin/AdminGrades"));
 const AdminManual = lazy(() => import("./pages/admin/AdminManual"));
 const AdminTrainingAllowance = lazy(() => import("./pages/admin/AdminTrainingAllowance"));
+const AdminDemoApproval = lazy(() => import("./pages/admin/AdminDemoApproval"));
 const TeacherTrainingLog = lazy(() => import("./pages/teacher/TeacherTrainingLog"));
 const TeacherSatisfactionSurvey = lazy(() => import("./pages/teacher/TeacherSatisfactionSurvey"));
 const TeacherCounselingLog = lazy(() => import("./pages/teacher/TeacherCounselingLog"));
@@ -106,6 +109,23 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
+  const [mainPageVersion, setMainPageVersion] = useState<string | null>(null);
+
+  // Fetch main page version on mount
+  useEffect(() => {
+    const fetchMainPageVersion = async () => {
+      const { data } = await supabase
+        .from("system_settings")
+        .select("setting_value")
+        .eq("setting_key", "main_page_version")
+        .single();
+      
+      setMainPageVersion(data?.setting_value || "main");
+    };
+    
+    fetchMainPageVersion();
+  }, []);
+
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -134,7 +154,18 @@ const App = () => {
             <ScrollToTop />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
-                <Route path="/" element={<Landing />} />
+                <Route 
+                  path="/" 
+                  element={
+                    mainPageVersion === null ? (
+                      <LoadingFallback />
+                    ) : mainPageVersion === "main2" ? (
+                      <Main2 />
+                    ) : (
+                      <Landing />
+                    )
+                  } 
+                />
                 <Route path="/features-detail" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/features" element={<FeaturesShowcase />} />
@@ -200,6 +231,7 @@ const App = () => {
                 <Route path="/admin/grades" element={<AdminGrades />} />
                 <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
                 <Route path="/admin/manual" element={<AdminManual />} />
+                <Route path="/admin/demo-approval" element={<AdminDemoApproval />} />
                 <Route path="/admin/revenue" element={<AdminRevenue />} />
                 <Route path="/admin/monitoring" element={<AdminMonitoring />} />
                 <Route path="/admin/learning" element={<AdminLearning />} />
