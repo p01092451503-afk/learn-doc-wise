@@ -82,6 +82,7 @@ const iconMap: { [key: string]: any } = {
 const defaultMenuItems: MenuItem[] = [
   { icon: BarChart3, label: "대시보드", path: "/operator", enabled: true },
   { icon: Building2, label: "테넌트 관리", path: "/operator/tenants", enabled: true },
+  { icon: Users, label: "데모 승인", path: "/operator/demo-approval", enabled: true },
   { icon: BarChart3, label: "사용량 관리", path: "/operator/usage", enabled: true },
   { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true, enabled: true },
   { icon: DollarSign, label: "매출 관리", path: "/operator/revenue", enabled: true },

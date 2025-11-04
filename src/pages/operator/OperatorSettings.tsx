@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Save } from "lucide-react";
+import { Settings, Save, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 const OperatorSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -46,6 +47,63 @@ const OperatorSettings = () => {
     defaultStudentLimit: 50,
   });
 
+  const [mainPageVersion, setMainPageVersion] = useState<"main" | "main2">("main");
+  const [loadingMainPage, setLoadingMainPage] = useState(false);
+
+  useEffect(() => {
+    fetchMainPageVersion();
+  }, []);
+
+  const fetchMainPageVersion = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("system_settings")
+        .select("setting_value")
+        .eq("setting_key", "main_page_version")
+        .maybeSingle();
+
+      if (error) throw error;
+      if (data) {
+        setMainPageVersion(data.setting_value as "main" | "main2");
+      }
+    } catch (error: any) {
+      console.error("Error fetching main page version:", error);
+    }
+  };
+
+  const handleMainPageToggle = async () => {
+    setLoadingMainPage(true);
+    try {
+      const newVersion = mainPageVersion === "main" ? "main2" : "main";
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { error } = await supabase
+        .from("system_settings")
+        .update({
+          setting_value: newVersion,
+          updated_by: session?.user.id,
+        })
+        .eq("setting_key", "main_page_version");
+
+      if (error) throw error;
+
+      setMainPageVersion(newVersion);
+      toast({
+        title: "메인 페이지 변경 완료",
+        description: `메인 페이지가 ${newVersion === "main" ? "기본" : "데모"} 버전으로 변경되었습니다.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "메인 페이지 변경에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingMainPage(false);
+    }
+  };
+
   const handleSave = async () => {
     setLoading(true);
     try {
@@ -82,6 +140,63 @@ const OperatorSettings = () => {
             theme === "dark" ? "text-slate-400" : "text-slate-600"
           )}>플랫폼 전체 설정을 관리합니다</p>
         </div>
+
+        {/* Main Page Version */}
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
+          <CardHeader>
+            <CardTitle className={cn(
+              "flex items-center gap-2 transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
+              <Globe className="h-5 w-5" />
+              메인 페이지 버전
+            </CardTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>
+              사용자에게 표시될 메인 페이지를 선택합니다
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label className={cn(
+                  "text-sm font-medium transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>
+                  현재 메인 페이지
+                </Label>
+                <p className={cn(
+                  "text-sm transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  {mainPageVersion === "main" 
+                    ? "기본 메인 페이지 (일반 사용자용)" 
+                    : "데모 메인 페이지 (데모 신청 페이지)"}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className={cn(
+                  "transition-colors",
+                  mainPageVersion === "main" 
+                    ? "bg-blue-500/10 text-blue-400 border-blue-500/50"
+                    : "bg-violet-500/10 text-violet-400 border-violet-500/50"
+                )}>
+                  {mainPageVersion === "main" ? "Main" : "Main2"}
+                </Badge>
+                <Switch
+                  checked={mainPageVersion === "main2"}
+                  onCheckedChange={handleMainPageToggle}
+                  disabled={loadingMainPage}
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Platform Settings */}
         <Card className={cn(

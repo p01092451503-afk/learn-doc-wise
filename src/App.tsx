@@ -51,6 +51,7 @@ const AdminGrades = lazy(() => import("./pages/admin/AdminGrades"));
 const AdminManual = lazy(() => import("./pages/admin/AdminManual"));
 const AdminTrainingAllowance = lazy(() => import("./pages/admin/AdminTrainingAllowance"));
 const AdminDemoApproval = lazy(() => import("./pages/admin/AdminDemoApproval"));
+const OperatorDemoApproval = lazy(() => import("./pages/operator/OperatorDemoApproval"));
 const TeacherTrainingLog = lazy(() => import("./pages/teacher/TeacherTrainingLog"));
 const TeacherSatisfactionSurvey = lazy(() => import("./pages/teacher/TeacherSatisfactionSurvey"));
 const TeacherCounselingLog = lazy(() => import("./pages/teacher/TeacherCounselingLog"));
@@ -213,8 +214,9 @@ const App = () => {
                 <Route path="/operator/features" element={<OperatorFeatures />} />
                 <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
                 <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
-                <Route path="/operator/manual" element={<OperatorManual />} />
-                <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
+          <Route path="/operator/manual" element={<OperatorManual />} />
+          <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
+          <Route path="/operator/demo-approval" element={<OperatorDemoApproval />} />
                 <Route path="/operator/backup" element={<OperatorBackup />} />
                 <Route path="/operator/updates" element={<OperatorUpdates />} />
                 <Route path="/operator/license" element={<OperatorLicense />} />
