@@ -346,8 +346,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               </Link>
             )}
             
-            {/* Only show role switcher if user has multiple roles */}
-            {userRoles.length > 1 && (
+            {/* Only show role switcher if user has multiple non-operator roles */}
+            {userRoles.filter(role => role !== 'operator').length > 1 && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size="sm" variant="outline" className="gap-2 rounded-full">
@@ -388,14 +388,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                       <Link to="/admin" className="flex items-center cursor-pointer">
                         <Shield className="mr-2 h-4 w-4" />
                         관리자
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  {userRoles.includes('operator') && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/operator" className="flex items-center cursor-pointer">
-                        <Building2 className="mr-2 h-4 w-4" />
-                        운영자
                       </Link>
                     </DropdownMenuItem>
                   )}
