@@ -237,6 +237,17 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
+    // Set default items immediately, then fetch custom order
+    const defaultItems = getDefaultMenuItems();
+    const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
+    
+    // Filter and set default items immediately for instant display
+    setMenuItems(defaultItems.filter(item => {
+      if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
+      return true;
+    }));
+    
+    // Then fetch custom menu order in background
     fetchMenuOrder();
   }, [effectiveUserRole, isDemoMode]);
 
