@@ -46,6 +46,21 @@ const Auth = () => {
       setLoginEmail(savedEmail);
       setRememberMe(true);
     }
+
+    // Clear any invalid sessions on mount
+    const clearInvalidSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Try to verify if the user actually exists
+        const { error } = await supabase.auth.getUser();
+        if (error) {
+          // Invalid session, clear it
+          await supabase.auth.signOut();
+        }
+      }
+    };
+    
+    clearInvalidSession();
   }, []);
 
   useEffect(() => {
@@ -155,6 +170,9 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // Clear any existing invalid session first
+      await supabase.auth.signOut();
+      
       const { error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
