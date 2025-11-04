@@ -16,6 +16,18 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+
+  const handleView = (courseTitle: string) => {
+    // Mock data이므로 강의 관리 페이지로 이동
+    navigate('/teacher/courses');
+  };
+
+  const handleEdit = (course: any) => {
+    setSelectedCourse(course);
+    setEditDialogOpen(true);
+  };
 
   return (
     <DashboardLayout userRole="teacher" isDemo={isDemo}>
@@ -96,6 +108,17 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 rating={4.9}
                 revenue="₩1,450,000"
                 status="active"
+                onView={() => handleView("React 완벽 가이드")}
+                onEdit={() => handleEdit({
+                  id: "1",
+                  title: "React 완벽 가이드",
+                  description: "React를 완벽하게 마스터하는 강의",
+                  level: "beginner" as const,
+                  duration_hours: 24,
+                  price: 145000,
+                  status: "published" as const,
+                  slug: "react-complete-guide"
+                })}
               />
               <CourseItem
                 title="TypeScript 마스터클래스"
@@ -103,6 +126,17 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 rating={4.7}
                 revenue="₩980,000"
                 status="active"
+                onView={() => handleView("TypeScript 마스터클래스")}
+                onEdit={() => handleEdit({
+                  id: "2",
+                  title: "TypeScript 마스터클래스",
+                  description: "TypeScript를 완벽하게 마스터하는 강의",
+                  level: "intermediate" as const,
+                  duration_hours: 20,
+                  price: 98000,
+                  status: "published" as const,
+                  slug: "typescript-masterclass"
+                })}
               />
               <CourseItem
                 title="Next.js 풀스택 개발"
@@ -110,6 +144,17 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 rating={4.8}
                 revenue="₩760,000"
                 status="active"
+                onView={() => handleView("Next.js 풀스택 개발")}
+                onEdit={() => handleEdit({
+                  id: "3",
+                  title: "Next.js 풀스택 개발",
+                  description: "Next.js로 풀스택 애플리케이션 개발",
+                  level: "advanced" as const,
+                  duration_hours: 30,
+                  price: 76000,
+                  status: "published" as const,
+                  slug: "nextjs-fullstack"
+                })}
               />
             </div>
           </CardContent>
@@ -264,6 +309,16 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             navigate('/teacher/courses');
           }}
         />
+        
+        <CourseFormDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          course={selectedCourse}
+          onSuccess={() => {
+            setEditDialogOpen(false);
+            setSelectedCourse(null);
+          }}
+        />
       </div>
     </DashboardLayout>
   );
@@ -301,13 +356,17 @@ const CourseItem = ({
   students, 
   rating, 
   revenue, 
-  status 
+  status,
+  onView,
+  onEdit
 }: { 
   title: string; 
   students: number; 
   rating: number; 
   revenue: string; 
   status: string;
+  onView: () => void;
+  onEdit: () => void;
 }) => (
   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-lg border hover:border-primary/50 transition-colors">
     <div className="flex-1 min-w-0">
@@ -319,11 +378,11 @@ const CourseItem = ({
       </div>
     </div>
     <div className="flex gap-2 w-full sm:w-auto">
-      <Button size="sm" variant="outline" className="flex-1 sm:flex-none">
+      <Button size="sm" variant="outline" className="flex-1 sm:flex-none" onClick={onView}>
         <Eye className="h-4 w-4 mr-1" />
         보기
       </Button>
-      <Button size="sm" variant="outline" className="flex-1 sm:flex-none">
+      <Button size="sm" variant="outline" className="flex-1 sm:flex-none" onClick={onEdit}>
         <Edit className="h-4 w-4 mr-1" />
         편집
       </Button>
