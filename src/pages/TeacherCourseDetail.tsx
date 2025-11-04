@@ -74,7 +74,7 @@ const TeacherCourseDetail = () => {
         .from("courses")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setCourse(data);

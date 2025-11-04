@@ -72,7 +72,7 @@ const TeacherCourses = () => {
 
   const mockCourses = [
     {
-      id: 1,
+      id: "a1b2c3d4-e5f6-7890-abcd-111111111111",
       title: "React 완벽 가이드",
       category: "프론트엔드",
       students: 145,
@@ -83,7 +83,7 @@ const TeacherCourses = () => {
       lessons: 42,
     },
     {
-      id: 2,
+      id: "a1b2c3d4-e5f6-7890-abcd-222222222222",
       title: "TypeScript 마스터클래스",
       category: "프로그래밍",
       students: 98,
@@ -94,7 +94,7 @@ const TeacherCourses = () => {
       lessons: 38,
     },
     {
-      id: 3,
+      id: "a1b2c3d4-e5f6-7890-abcd-333333333333",
       title: "Next.js 풀스택 개발",
       category: "프론트엔드",
       students: 76,
@@ -105,7 +105,7 @@ const TeacherCourses = () => {
       lessons: 35,
     },
     {
-      id: 4,
+      id: "a1b2c3d4-e5f6-7890-abcd-444444444444",
       title: "Node.js 백엔드 개발",
       category: "백엔드",
       students: 54,
