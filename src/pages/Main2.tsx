@@ -245,6 +245,14 @@ const Main2 = () => {
                         >
                           승인 대기 중
                         </Button>
+                        <Button
+                          size="lg"
+                          variant="ghost"
+                          className="w-full"
+                          onClick={handleLogout}
+                        >
+                          로그아웃하고 다시 로그인
+                        </Button>
                       </div>
                     )}
                   </div>
