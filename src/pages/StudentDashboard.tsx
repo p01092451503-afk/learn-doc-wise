@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -152,12 +153,16 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   instructor="정민수"
                   rating={4.8}
                   students={2450}
+                  courseId="course-1"
+                  isDemo={isDemo}
                 />
                 <RecommendedCourse
                   title="디자인 시스템 구축"
                   instructor="최서연"
                   rating={4.9}
                   students={1823}
+                  courseId="course-2"
+                  isDemo={isDemo}
                 />
               </div>
             </CardContent>
@@ -345,9 +350,14 @@ const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: st
   );
 };
 
-const RecommendedCourse = ({ title, instructor, rating, students }: { title: string; instructor: string; rating: number; students: number }) => {
+const RecommendedCourse = ({ title, instructor, rating, students, courseId, isDemo = false }: { title: string; instructor: string; rating: number; students: number; courseId: string; isDemo?: boolean }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
+  
+  const handleViewDetails = () => {
+    navigate(`/student/courses/${courseId}`);
+  };
   
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
@@ -359,7 +369,7 @@ const RecommendedCourse = ({ title, instructor, rating, students }: { title: str
           <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
         </div>
       </div>
-      <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{t('viewDetails')}</Button>
+      <Button size="sm" className="w-full sm:w-auto flex-shrink-0" onClick={handleViewDetails}>{t('viewDetails')}</Button>
     </div>
   );
 };
