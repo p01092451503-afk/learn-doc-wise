@@ -2,7 +2,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical } from "lucide-react";
+import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical, Eye, MessageSquare, BarChart3 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
@@ -14,6 +21,15 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const TeacherStudents = () => {
+  const { toast } = useToast();
+  
+  const handleStudentAction = (studentName: string, action: string) => {
+    toast({
+      title: "데모 모드",
+      description: `${studentName}의 ${action} 기능은 실제 서비스에서 사용할 수 있습니다.`,
+    });
+  };
+
   const students = [
     {
       id: 1,
@@ -178,9 +194,27 @@ const TeacherStudents = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button size="sm" variant="ghost">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="ghost">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "상세 정보 보기")}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            상세 정보 보기
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "메시지 보내기")}>
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            메시지 보내기
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "학습 현황 분석")}>
+                            <BarChart3 className="mr-2 h-4 w-4" />
+                            학습 현황 분석
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
