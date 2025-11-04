@@ -181,17 +181,23 @@ const MenuOrderSettings = () => {
         .from("menu_order")
         .select("menu_items")
         .eq("user_role", selectedRole)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== "PGRST116") throw error;
+      if (error) {
+        console.error("Error fetching menu order:", error);
+        setMenuItems(defaultMenuItems[selectedRole]);
+        return;
+      }
 
-      if (data) {
-        setMenuItems(JSON.parse(JSON.stringify(data.menu_items)) as MenuItem[]);
+      if (data && data.menu_items) {
+        const savedItems = data.menu_items as any[];
+        setMenuItems(savedItems);
       } else {
         setMenuItems(defaultMenuItems[selectedRole]);
       }
     } catch (error) {
       console.error("Error fetching menu order:", error);
+      setMenuItems(defaultMenuItems[selectedRole]);
     }
   };
 
@@ -210,29 +216,50 @@ const MenuOrderSettings = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase
+      // First check if a record exists
+      const { data: existing } = await supabase
         .from("menu_order")
-        .upsert(
-          {
-            user_role: selectedRole,
-            menu_items: JSON.parse(JSON.stringify(menuItems)),
-          },
-          {
-            onConflict: "user_role",
-          }
-        );
+        .select("id")
+        .eq("user_role", selectedRole)
+        .maybeSingle();
 
-      if (error) throw error;
+      let error;
+      if (existing) {
+        // Update existing record
+        ({ error } = await supabase
+          .from("menu_order")
+          .update({
+            menu_items: menuItems as any,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("user_role", selectedRole));
+      } else {
+        // Insert new record
+        ({ error } = await supabase
+          .from("menu_order")
+          .insert([{
+            user_role: selectedRole,
+            menu_items: menuItems as any,
+          }]));
+      }
+
+      if (error) {
+        console.error("Save error:", error);
+        throw error;
+      }
 
       toast({
         title: "저장 완료",
         description: "메뉴 순서가 성공적으로 저장되었습니다.",
       });
-    } catch (error) {
+      
+      // Reload to confirm
+      await fetchMenuOrder();
+    } catch (error: any) {
       console.error("Error saving menu order:", error);
       toast({
         title: "저장 실패",
-        description: "메뉴 순서 저장 중 오류가 발생했습니다.",
+        description: error.message || "메뉴 순서 저장 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
