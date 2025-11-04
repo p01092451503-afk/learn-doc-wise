@@ -84,6 +84,9 @@ const OperatorLicense = lazy(() => import("./pages/operator/OperatorLicense"));
 const OperatorResources = lazy(() => import("./pages/operator/OperatorResources"));
 const FeaturesShowcase = lazy(() => import("./pages/FeaturesShowcase"));
 const AdminDemo = lazy(() => import("./pages/AdminDemo"));
+const TenantHome = lazy(() => import("./pages/TenantHome"));
+const TenantCourses = lazy(() => import("./pages/TenantCourses"));
+const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
 
 // Loading component
 const LoadingFallback = () => (
@@ -200,6 +203,9 @@ const App = () => {
                 <Route path="/admin/settings" element={<AdminSettings />} />
                 <Route path="/payment/success" element={<PaymentSuccess />} />
                 <Route path="/payment/fail" element={<PaymentFail />} />
+                <Route path="/tenant/:subdomain" element={<TenantHome />} />
+                <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
+                <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
