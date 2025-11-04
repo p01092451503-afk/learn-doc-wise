@@ -110,29 +110,7 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
-  const [mainPageVersion, setMainPageVersion] = useState<string>("main");
-
-  // Fetch main page version on mount
-  useEffect(() => {
-    const fetchMainPageVersion = async () => {
-      try {
-        const { data } = await supabase
-          .from("system_settings")
-          .select("setting_value")
-          .eq("setting_key", "main_page_version")
-          .maybeSingle();
-        
-        if (data?.setting_value) {
-          setMainPageVersion(data.setting_value);
-        }
-      } catch (error) {
-        console.error("Error fetching main page version:", error);
-        // Keep default "main" value
-      }
-    };
-    
-    fetchMainPageVersion();
-  }, []);
+  // Removed complex async loading - using default Landing page
 
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
@@ -162,10 +140,7 @@ const App = () => {
             <ScrollToTop />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
-                <Route 
-                  path="/" 
-                  element={mainPageVersion === "main2" ? <Main2 /> : <Landing />} 
-                />
+                <Route path="/" element={<Landing />} />
                 <Route path="/features-detail" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/features" element={<FeaturesShowcase />} />
