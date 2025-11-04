@@ -137,90 +137,88 @@ const App = () => {
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/features-detail" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/features" element={<FeaturesShowcase />} />
-                <Route path="/main" element={<PublicMain />} />
-                <Route path="/courses" element={<PublicCourses />} />
-                <Route path="/courses/:id" element={<PublicCourseDetail />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/demo" element={<DemoPreview />} />
-                <Route path="/student" element={<StudentDashboard />} />
-                <Route path="/students" element={<StudentDashboard />} />
-                <Route path="/student/courses" element={<StudentCourses />} />
-                <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
-                <Route path="/student/assignments" element={<StudentAssignments />} />
-                <Route path="/student/community" element={<StudentCommunity />} />
-                <Route path="/student/analytics" element={<StudentAnalytics />} />
-                <Route path="/student/gamification" element={<StudentGamification />} />
-                <Route path="/student/learning-path" element={<StudentLearningPath />} />
-                <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
-                <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
-                <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
-                <Route path="/teacher" element={<TeacherDashboard />} />
-                <Route path="/teacher/courses" element={<TeacherCourses />} />
-                <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
-                <Route path="/teacher/students" element={<TeacherStudents />} />
-                <Route path="/teacher/revenue" element={<TeacherRevenue />} />
-                <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
-                <Route path="/teacher/assignments" element={<TeacherAssignments />} />
-                <Route path="/teacher/attendance" element={<TeacherAttendance />} />
-                <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
-                <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
-                <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
-                <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
-                <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
-                <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
-                <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
-                <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/operator" element={<OperatorDashboard />} />
-                <Route path="/operator/tenants" element={<OperatorTenants />} />
-                <Route path="/operator/usage" element={<OperatorUsage />} />
-                <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
-                <Route path="/operator/revenue" element={<OperatorRevenue />} />
-                <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
-                <Route path="/operator/settings" element={<OperatorSettings />} />
-                <Route path="/operator/features" element={<OperatorFeatures />} />
-                <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
-                <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
-          <Route path="/operator/manual" element={<OperatorManual />} />
-          <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
-          <Route path="/operator/demo-approval" element={<OperatorDemoApproval />} />
-                <Route path="/operator/backup" element={<OperatorBackup />} />
-                <Route path="/operator/updates" element={<OperatorUpdates />} />
-                <Route path="/operator/license" element={<OperatorLicense />} />
-                <Route path="/operator/resources" element={<OperatorResources />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/courses" element={<AdminCourses />} />
-                <Route path="/admin/content" element={<AdminContent />} />
-                <Route path="/admin/attendance" element={<AdminAttendance />} />
-                <Route path="/admin/training-log" element={<AdminTrainingLog />} />
-                <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
-                <Route path="/admin/counseling-log" element={<AdminCounselingLog />} />
-                <Route path="/admin/dropout-management" element={<AdminDropoutManagement />} />
-                <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
-                <Route path="/admin/grades" element={<AdminGrades />} />
-                <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
-                <Route path="/admin/manual" element={<AdminManual />} />
-                <Route path="/admin/demo-approval" element={<AdminDemoApproval />} />
-                <Route path="/admin/revenue" element={<AdminRevenue />} />
-                <Route path="/admin/monitoring" element={<AdminMonitoring />} />
-                <Route path="/admin/learning" element={<AdminLearning />} />
-                <Route path="/admin/ai-logs" element={<AdminAILogs />} />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
-                <Route path="/payment/success" element={<PaymentSuccess />} />
-                <Route path="/payment/fail" element={<PaymentFail />} />
-                <Route path="/tenant/:subdomain" element={<TenantHome />} />
-                <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
-                <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/features-detail" element={<Suspense fallback={<LoadingFallback />}><Features /></Suspense>} />
+              <Route path="/pricing" element={<Suspense fallback={<LoadingFallback />}><Pricing /></Suspense>} />
+              <Route path="/features" element={<Suspense fallback={<LoadingFallback />}><FeaturesShowcase /></Suspense>} />
+              <Route path="/main" element={<Suspense fallback={<LoadingFallback />}><PublicMain /></Suspense>} />
+              <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><PublicCourses /></Suspense>} />
+              <Route path="/courses/:id" element={<Suspense fallback={<LoadingFallback />}><PublicCourseDetail /></Suspense>} />
+              <Route path="/auth" element={<Suspense fallback={<LoadingFallback />}><Auth /></Suspense>} />
+              <Route path="/demo" element={<Suspense fallback={<LoadingFallback />}><DemoPreview /></Suspense>} />
+              <Route path="/student" element={<Suspense fallback={<LoadingFallback />}><StudentDashboard /></Suspense>} />
+              <Route path="/students" element={<Suspense fallback={<LoadingFallback />}><StudentDashboard /></Suspense>} />
+              <Route path="/student/courses" element={<Suspense fallback={<LoadingFallback />}><StudentCourses /></Suspense>} />
+              <Route path="/student/courses/:id" element={<Suspense fallback={<LoadingFallback />}><StudentCourseDetail /></Suspense>} />
+              <Route path="/student/assignments" element={<Suspense fallback={<LoadingFallback />}><StudentAssignments /></Suspense>} />
+              <Route path="/student/community" element={<Suspense fallback={<LoadingFallback />}><StudentCommunity /></Suspense>} />
+              <Route path="/student/analytics" element={<Suspense fallback={<LoadingFallback />}><StudentAnalytics /></Suspense>} />
+              <Route path="/student/gamification" element={<Suspense fallback={<LoadingFallback />}><StudentGamification /></Suspense>} />
+              <Route path="/student/learning-path" element={<Suspense fallback={<LoadingFallback />}><StudentLearningPath /></Suspense>} />
+              <Route path="/student/learning-path/:id" element={<Suspense fallback={<LoadingFallback />}><StudentLearningPathDetail /></Suspense>} />
+              <Route path="/student/satisfaction-survey" element={<Suspense fallback={<LoadingFallback />}><StudentSatisfactionSurvey /></Suspense>} />
+              <Route path="/student/counseling-log" element={<Suspense fallback={<LoadingFallback />}><StudentCounselingLog /></Suspense>} />
+              <Route path="/teacher" element={<Suspense fallback={<LoadingFallback />}><TeacherDashboard /></Suspense>} />
+              <Route path="/teacher/courses" element={<Suspense fallback={<LoadingFallback />}><TeacherCourses /></Suspense>} />
+              <Route path="/teacher/courses/:id" element={<Suspense fallback={<LoadingFallback />}><TeacherCourseDetail /></Suspense>} />
+              <Route path="/teacher/students" element={<Suspense fallback={<LoadingFallback />}><TeacherStudents /></Suspense>} />
+              <Route path="/teacher/revenue" element={<Suspense fallback={<LoadingFallback />}><TeacherRevenue /></Suspense>} />
+              <Route path="/teacher/analytics" element={<Suspense fallback={<LoadingFallback />}><TeacherAnalytics /></Suspense>} />
+              <Route path="/teacher/assignments" element={<Suspense fallback={<LoadingFallback />}><TeacherAssignments /></Suspense>} />
+              <Route path="/teacher/attendance" element={<Suspense fallback={<LoadingFallback />}><TeacherAttendance /></Suspense>} />
+              <Route path="/teacher/attendance-detail" element={<Suspense fallback={<LoadingFallback />}><TeacherAttendanceDetail /></Suspense>} />
+              <Route path="/teacher/training-log" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingLog /></Suspense>} />
+              <Route path="/teacher/satisfaction-survey" element={<Suspense fallback={<LoadingFallback />}><TeacherSatisfactionSurvey /></Suspense>} />
+              <Route path="/teacher/counseling-log" element={<Suspense fallback={<LoadingFallback />}><TeacherCounselingLog /></Suspense>} />
+              <Route path="/teacher/dropout-management" element={<Suspense fallback={<LoadingFallback />}><TeacherDropoutManagement /></Suspense>} />
+              <Route path="/teacher/training-completion" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingCompletion /></Suspense>} />
+              <Route path="/teacher/training-allowance" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingAllowance /></Suspense>} />
+              <Route path="/teacher/training-report" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingReport /></Suspense>} />
+              <Route path="/admin" element={<Suspense fallback={<LoadingFallback />}><AdminDashboard /></Suspense>} />
+              <Route path="/operator" element={<Suspense fallback={<LoadingFallback />}><OperatorDashboard /></Suspense>} />
+              <Route path="/operator/tenants" element={<Suspense fallback={<LoadingFallback />}><OperatorTenants /></Suspense>} />
+              <Route path="/operator/usage" element={<Suspense fallback={<LoadingFallback />}><OperatorUsage /></Suspense>} />
+              <Route path="/operator/ai-logs" element={<Suspense fallback={<LoadingFallback />}><OperatorAILogs /></Suspense>} />
+              <Route path="/operator/revenue" element={<Suspense fallback={<LoadingFallback />}><OperatorRevenue /></Suspense>} />
+              <Route path="/operator/monitoring" element={<Suspense fallback={<LoadingFallback />}><OperatorMonitoring /></Suspense>} />
+              <Route path="/operator/settings" element={<Suspense fallback={<LoadingFallback />}><OperatorSettings /></Suspense>} />
+              <Route path="/operator/features" element={<Suspense fallback={<LoadingFallback />}><OperatorFeatures /></Suspense>} />
+              <Route path="/operator/tech-stack" element={<Suspense fallback={<LoadingFallback />}><OperatorTechStack /></Suspense>} />
+              <Route path="/operator/government-training" element={<Suspense fallback={<LoadingFallback />}><OperatorGovernmentTraining /></Suspense>} />
+              <Route path="/operator/manual" element={<Suspense fallback={<LoadingFallback />}><OperatorManual /></Suspense>} />
+              <Route path="/operator/system-diagram" element={<Suspense fallback={<LoadingFallback />}><OperatorSystemDiagram /></Suspense>} />
+              <Route path="/operator/demo-approval" element={<Suspense fallback={<LoadingFallback />}><OperatorDemoApproval /></Suspense>} />
+              <Route path="/operator/backup" element={<Suspense fallback={<LoadingFallback />}><OperatorBackup /></Suspense>} />
+              <Route path="/operator/updates" element={<Suspense fallback={<LoadingFallback />}><OperatorUpdates /></Suspense>} />
+              <Route path="/operator/license" element={<Suspense fallback={<LoadingFallback />}><OperatorLicense /></Suspense>} />
+              <Route path="/operator/resources" element={<Suspense fallback={<LoadingFallback />}><OperatorResources /></Suspense>} />
+              <Route path="/admin/users" element={<Suspense fallback={<LoadingFallback />}><AdminUsers /></Suspense>} />
+              <Route path="/admin/courses" element={<Suspense fallback={<LoadingFallback />}><AdminCourses /></Suspense>} />
+              <Route path="/admin/content" element={<Suspense fallback={<LoadingFallback />}><AdminContent /></Suspense>} />
+              <Route path="/admin/attendance" element={<Suspense fallback={<LoadingFallback />}><AdminAttendance /></Suspense>} />
+              <Route path="/admin/training-log" element={<Suspense fallback={<LoadingFallback />}><AdminTrainingLog /></Suspense>} />
+              <Route path="/admin/satisfaction-survey" element={<Suspense fallback={<LoadingFallback />}><AdminSatisfactionSurvey /></Suspense>} />
+              <Route path="/admin/counseling-log" element={<Suspense fallback={<LoadingFallback />}><AdminCounselingLog /></Suspense>} />
+              <Route path="/admin/dropout-management" element={<Suspense fallback={<LoadingFallback />}><AdminDropoutManagement /></Suspense>} />
+              <Route path="/admin/training-completion" element={<Suspense fallback={<LoadingFallback />}><AdminTrainingCompletion /></Suspense>} />
+              <Route path="/admin/grades" element={<Suspense fallback={<LoadingFallback />}><AdminGrades /></Suspense>} />
+              <Route path="/admin/training-allowance" element={<Suspense fallback={<LoadingFallback />}><AdminTrainingAllowance /></Suspense>} />
+              <Route path="/admin/manual" element={<Suspense fallback={<LoadingFallback />}><AdminManual /></Suspense>} />
+              <Route path="/admin/demo-approval" element={<Suspense fallback={<LoadingFallback />}><AdminDemoApproval /></Suspense>} />
+              <Route path="/admin/revenue" element={<Suspense fallback={<LoadingFallback />}><AdminRevenue /></Suspense>} />
+              <Route path="/admin/monitoring" element={<Suspense fallback={<LoadingFallback />}><AdminMonitoring /></Suspense>} />
+              <Route path="/admin/learning" element={<Suspense fallback={<LoadingFallback />}><AdminLearning /></Suspense>} />
+              <Route path="/admin/ai-logs" element={<Suspense fallback={<LoadingFallback />}><AdminAILogs /></Suspense>} />
+              <Route path="/admin/analytics" element={<Suspense fallback={<LoadingFallback />}><AdminAnalytics /></Suspense>} />
+              <Route path="/admin/settings" element={<Suspense fallback={<LoadingFallback />}><AdminSettings /></Suspense>} />
+              <Route path="/payment/success" element={<Suspense fallback={<LoadingFallback />}><PaymentSuccess /></Suspense>} />
+              <Route path="/payment/fail" element={<Suspense fallback={<LoadingFallback />}><PaymentFail /></Suspense>} />
+              <Route path="/tenant/:subdomain" element={<Suspense fallback={<LoadingFallback />}><TenantHome /></Suspense>} />
+              <Route path="/tenant/:subdomain/courses" element={<Suspense fallback={<LoadingFallback />}><TenantCourses /></Suspense>} />
+              <Route path="/tenant/:subdomain/courses/:courseSlug" element={<Suspense fallback={<LoadingFallback />}><TenantCourseDetail /></Suspense>} />
+              <Route path="*" element={<Suspense fallback={<LoadingFallback />}><NotFound /></Suspense>} />
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </LanguageProvider>
