@@ -19,6 +19,7 @@ import { AITutorDialog } from "@/components/ai/AITutorDialog";
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
   
   const [learningPathOpen, setLearningPathOpen] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
@@ -85,18 +86,24 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                 instructor="김철수"
                 progress={65}
                 nextLesson="State Management 심화"
+                courseId="course-1"
+                isDemo={isDemo}
               />
               <CourseProgress
                 title="TypeScript 마스터클래스"
                 instructor="이영희"
                 progress={42}
                 nextLesson="Generic Types"
+                courseId="course-2"
+                isDemo={isDemo}
               />
               <CourseProgress
                 title="UI/UX 디자인 기초"
                 instructor="박지민"
                 progress={88}
                 nextLesson="사용자 테스트"
+                courseId="course-3"
+                isDemo={isDemo}
               />
             </div>
           </CardContent>
@@ -322,9 +329,14 @@ const StatsCard = ({ title, value, icon, description }: { title: string; value: 
   </Card>
 );
 
-const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => {
+const CourseProgress = ({ title, instructor, progress, nextLesson, courseId, isDemo = false }: { title: string; instructor: string; progress: number; nextLesson: string; courseId: string; isDemo?: boolean }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
+  
+  const handleContinue = () => {
+    navigate(`/student/courses/${courseId}`);
+  };
   
   return (
     <div className="space-y-3 p-4 md:p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
@@ -333,7 +345,7 @@ const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: st
           <h4 className="font-display font-semibold text-base md:text-lg truncate">{title}</h4>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">{instructor}</p>
         </div>
-        <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
+        <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0" onClick={handleContinue}>
           <PlayCircle className="h-4 w-4 mr-1" />
           {t('continue')}
         </Button>
