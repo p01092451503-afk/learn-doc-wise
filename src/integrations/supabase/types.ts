@@ -325,6 +325,48 @@ export type Database = {
           },
         ]
       }
+      auto_encouragement_rules: {
+        Row: {
+          created_at: string
+          days_threshold: number
+          id: string
+          is_active: boolean
+          message_template: string
+          progress_threshold: number | null
+          rule_name: string
+          target_role: string
+          tenant_id: string | null
+          trigger_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          days_threshold?: number
+          id?: string
+          is_active?: boolean
+          message_template: string
+          progress_threshold?: number | null
+          rule_name: string
+          target_role?: string
+          tenant_id?: string | null
+          trigger_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          days_threshold?: number
+          id?: string
+          is_active?: boolean
+          message_template?: string
+          progress_threshold?: number | null
+          rule_name?: string
+          target_role?: string
+          tenant_id?: string | null
+          trigger_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           badge_type: string
@@ -1141,6 +1183,51 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      encouragement_logs: {
+        Row: {
+          id: string
+          metadata: Json | null
+          notification_id: string | null
+          rule_id: string | null
+          sent_at: string
+          trigger_reason: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          notification_id?: string | null
+          rule_id?: string | null
+          sent_at?: string
+          trigger_reason?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          notification_id?: string | null
+          rule_id?: string | null
+          sent_at?: string
+          trigger_reason?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encouragement_logs_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "encouragement_logs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "auto_encouragement_rules"
             referencedColumns: ["id"]
           },
         ]
@@ -2146,6 +2233,99 @@ export type Database = {
           menu_items?: Json
           updated_at?: string
           user_role?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          achievement_notifications: boolean
+          assignment_reminders: boolean
+          course_updates: boolean
+          created_at: string
+          email_enabled: boolean
+          encouragement_messages: boolean
+          id: string
+          push_enabled: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_notifications?: boolean
+          assignment_reminders?: boolean
+          course_updates?: boolean
+          created_at?: string
+          email_enabled?: boolean
+          encouragement_messages?: boolean
+          id?: string
+          push_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_notifications?: boolean
+          assignment_reminders?: boolean
+          course_updates?: boolean
+          created_at?: string
+          email_enabled?: boolean
+          encouragement_messages?: boolean
+          id?: string
+          push_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_read: boolean
+          message: string
+          metadata: Json | null
+          priority: string
+          read_at: string | null
+          tenant_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message: string
+          metadata?: Json | null
+          priority?: string
+          read_at?: string | null
+          tenant_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string
+          metadata?: Json | null
+          priority?: string
+          read_at?: string | null
+          tenant_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -3748,6 +3928,19 @@ export type Database = {
         Returns: boolean
       }
       check_tenant_access: { Args: { p_tenant_id: string }; Returns: Json }
+      create_notification: {
+        Args: {
+          p_action_url?: string
+          p_message: string
+          p_metadata?: Json
+          p_priority?: string
+          p_tenant_id: string
+          p_title: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: string
+      }
       get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
