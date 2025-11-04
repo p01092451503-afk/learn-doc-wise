@@ -259,6 +259,25 @@ const TeacherAssignments = () => {
     if (!selectedSubmission) return;
 
     try {
+      if (isDemo) {
+        // 데모 모드에서는 로컬 상태만 업데이트
+        setSubmissions(prev => prev.map(sub => 
+          sub.id === selectedSubmission.id 
+            ? { ...sub, score: gradeScore, feedback: gradeFeedback, status: 'graded' as const }
+            : sub
+        ));
+        
+        toast({
+          title: "성공",
+          description: "채점이 완료되었습니다.",
+        });
+
+        setSelectedSubmission(null);
+        setGradeScore(0);
+        setGradeFeedback("");
+        return;
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
 
       const { error } = await supabase
