@@ -138,9 +138,10 @@ function SortableItem({ item, onToggle }: SortableItemProps) {
         <span className="font-medium">{item.label}</span>
       </div>
       <Button
-        variant={item.enabled ? "default" : "secondary"}
+        variant={item.enabled ? "default" : "outline"}
         size="sm"
         onClick={() => onToggle(item.id)}
+        className={item.enabled ? "bg-primary hover:bg-primary/90" : ""}
       >
         {item.enabled ? "활성" : "비활성"}
       </Button>
@@ -239,11 +240,20 @@ const MenuOrderSettings = () => {
   };
 
   const handleToggleEnabled = (id: string) => {
-    setMenuItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, enabled: !item.enabled } : item
-      )
-    );
+    setMenuItems((prevItems) => {
+      const newItems = prevItems.map((item) => {
+        if (item.id === id) {
+          return { ...item, enabled: !item.enabled };
+        }
+        return item;
+      });
+      return newItems;
+    });
+    
+    toast({
+      title: "상태 변경",
+      description: "메뉴 상태가 변경되었습니다. 저장 버튼을 클릭하여 변경사항을 저장하세요.",
+    });
   };
 
   return (
