@@ -14,6 +14,7 @@ import VideoPlayer from "@/components/video/VideoPlayer";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
 import { AITranslateDialog } from "@/components/ai/AITranslateDialog";
+import { CourseChatRoom } from "@/components/course/CourseChatRoom";
 
 interface Course {
   id: string;
@@ -440,8 +441,9 @@ const StudentCourseDetail = () => {
                 </Card>
 
                 <Tabs defaultValue="description">
-                  <TabsList className="grid w-full grid-cols-2">
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="description">강의 정보</TabsTrigger>
+                    <TabsTrigger value="chat">실시간 Q&A</TabsTrigger>
                     <TabsTrigger value="notes">학습 노트</TabsTrigger>
                   </TabsList>
                   <TabsContent value="description" className="mt-4">
@@ -452,6 +454,9 @@ const StudentCourseDetail = () => {
                         </p>
                       </CardContent>
                     </Card>
+                  </TabsContent>
+                  <TabsContent value="chat" className="mt-4">
+                    <CourseChatRoom courseId={id!} />
                   </TabsContent>
                   <TabsContent value="notes" className="mt-4">
                     <Card>

@@ -774,6 +774,41 @@ export type Database = {
           },
         ]
       }
+      course_chat_messages: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          message: string
+          user_id: string
+          user_role: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          message: string
+          user_id: string
+          user_role: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          user_id?: string
+          user_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_chat_messages_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_contents: {
         Row: {
           content_type: Database["public"]["Enums"]["content_type"]
