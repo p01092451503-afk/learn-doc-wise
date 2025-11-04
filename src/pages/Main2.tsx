@@ -391,9 +391,9 @@ const Main2 = () => {
                 <p className="text-sm text-muted-foreground">학습 패턴 분석 및 진도 확인</p>
               </div>
               <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <Star className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">만족도 조사</h4>
-                <p className="text-sm text-muted-foreground">강의 평가 및 의견 제출</p>
+                <ClipboardCheck className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">HRD (선택)</h4>
+                <p className="text-sm text-muted-foreground">만족도 조사 등 HRD 기능</p>
               </div>
             </div>
           </div>
@@ -426,41 +426,6 @@ const Main2 = () => {
                 <p className="text-sm text-muted-foreground">자동 채점 및 피드백 생성</p>
               </div>
               <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <Calendar className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">출석 관리</h4>
-                <p className="text-sm text-muted-foreground">실시간 출석 체크 및 이력</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <ClipboardCheck className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">훈련일지</h4>
-                <p className="text-sm text-muted-foreground">HRD 일일 훈련 기록</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <MessageSquare className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">상담일지</h4>
-                <p className="text-sm text-muted-foreground">학생 상담 내용 기록 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <AlertTriangle className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">중도탈락 관리</h4>
-                <p className="text-sm text-muted-foreground">위험군 학생 조기 발견</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <Trophy className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">수료 요건</h4>
-                <p className="text-sm text-muted-foreground">수료 기준 관리 및 추적</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <Wallet className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">훈련수당</h4>
-                <p className="text-sm text-muted-foreground">출석 기반 수당 자동 계산</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
-                <BarChart3 className="h-6 w-6 text-accent mb-2" />
-                <h4 className="font-semibold mb-1">훈련 리포트</h4>
-                <p className="text-sm text-muted-foreground">AI 기반 상세 분석 리포트</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
                 <Users className="h-6 w-6 text-accent mb-2" />
                 <h4 className="font-semibold mb-1">학생 관리</h4>
                 <p className="text-sm text-muted-foreground">수강생 정보 및 진도 관리</p>
@@ -469,6 +434,11 @@ const Main2 = () => {
                 <TrendingUp className="h-6 w-6 text-accent mb-2" />
                 <h4 className="font-semibold mb-1">통계 분석</h4>
                 <p className="text-sm text-muted-foreground">강의 성과 데이터 분석</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <ClipboardCheck className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">HRD (선택)</h4>
+                <p className="text-sm text-muted-foreground">출석, 훈련일지, 상담일지, 수료 등</p>
               </div>
             </div>
           </div>
@@ -516,46 +486,6 @@ const Main2 = () => {
                 <p className="text-sm text-muted-foreground">학습 경로 및 AI 기능 설정</p>
               </div>
               <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <Calendar className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">출석 관리</h4>
-                <p className="text-sm text-muted-foreground">전체 출석 현황 확인</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <ClipboardCheck className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">훈련일지</h4>
-                <p className="text-sm text-muted-foreground">전체 훈련일지 관리 및 검토</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <Star className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">만족도 조사</h4>
-                <p className="text-sm text-muted-foreground">만족도 결과 분석 및 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <MessageSquare className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">상담일지</h4>
-                <p className="text-sm text-muted-foreground">전체 상담 내역 조회 및 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <AlertTriangle className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">중도탈락 관리</h4>
-                <p className="text-sm text-muted-foreground">위험군 학생 통합 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <Trophy className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">수료 관리</h4>
-                <p className="text-sm text-muted-foreground">전체 수료 요건 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <FileText className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">성적 관리</h4>
-                <p className="text-sm text-muted-foreground">전체 성적 조회 및 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
-                <Wallet className="h-6 w-6 text-primary mb-2" />
-                <h4 className="font-semibold mb-1">훈련수당</h4>
-                <p className="text-sm text-muted-foreground">수당 지급 현황 관리</p>
-              </div>
-              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
                 <Sparkles className="h-6 w-6 text-primary mb-2" />
                 <h4 className="font-semibold mb-1">AI 로그</h4>
                 <p className="text-sm text-muted-foreground">AI 사용 내역 및 통계</p>
@@ -564,6 +494,11 @@ const Main2 = () => {
                 <TrendingUp className="h-6 w-6 text-primary mb-2" />
                 <h4 className="font-semibold mb-1">시스템 모니터링</h4>
                 <p className="text-sm text-muted-foreground">시스템 상태 및 성능 모니터링</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <ClipboardCheck className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">HRD (선택)</h4>
+                <p className="text-sm text-muted-foreground">출석, 훈련일지, 상담, 수료, 수당 등</p>
               </div>
             </div>
           </div>
