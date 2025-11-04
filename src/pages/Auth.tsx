@@ -291,13 +291,14 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             name: signupName,
+            full_name: signupName,
           },
         },
       });
@@ -317,6 +318,23 @@ const Auth = () => {
           });
         }
       } else {
+        // Create profile entry
+        if (data.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({
+              user_id: data.user.id,
+              email: signupEmail,
+              full_name: signupName,
+            }, {
+              onConflict: 'user_id'
+            });
+
+          if (profileError) {
+            console.error('Error creating profile:', profileError);
+          }
+        }
+
         toast({
           title: "회원가입 성공",
           description: "가입이 완료되었습니다. 로그인해주세요.",

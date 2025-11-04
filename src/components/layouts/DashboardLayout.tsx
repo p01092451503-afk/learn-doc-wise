@@ -101,6 +101,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const navigate = useNavigate();
   const { toast } = useToast();
   const { roles: userRoles } = useUserRoles();
+  const [userName, setUserName] = useState<string>("사용자");
+  const [userInitial, setUserInitial] = useState<string>("사");
 
   // CRITICAL: Only treat as demo mode if:
   // 1. Explicitly in /demo path, OR
@@ -124,6 +126,40 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       });
     }
   }, [isDemoMode, userRole, effectiveUserRole, searchParams]);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          // First try to get from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (profile?.full_name) {
+            setUserName(profile.full_name);
+            setUserInitial(profile.full_name[0] || "사");
+          } else {
+            // Fallback to user metadata
+            const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || "사용자";
+            setUserName(name);
+            setUserInitial(name[0] || "사");
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    if (!isDemoMode) {
+      fetchUserProfile();
+    }
+  }, [isDemoMode]);
 
   const handleLogout = async () => {
     try {
@@ -406,9 +442,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-1.5 md:gap-2 rounded-xl hover:bg-primary/10 flex-shrink-0">
                   <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-premium">
-                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">홍</span>
+                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">{userInitial}</span>
                   </div>
-                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">홍길동</span>
+                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">{userName}</span>
                   <ChevronDown className="h-4 w-4 hidden sm:block" />
                 </Button>
               </DropdownMenuTrigger>

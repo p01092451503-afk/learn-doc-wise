@@ -118,6 +118,8 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { roles: userRoles } = useUserRoles();
+  const [userName, setUserName] = useState<string>("Operator");
+  const [userInitial, setUserInitial] = useState<string>("O");
 
   useEffect(() => {
     localStorage.setItem("operator-sidebar-collapsed", String(sidebarCollapsed));
@@ -126,6 +128,38 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   useEffect(() => {
     localStorage.setItem("operator-theme", theme);
   }, [theme]);
+
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          // First try to get from profiles table
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('user_id', user.id)
+            .single();
+          
+          if (profile?.full_name) {
+            setUserName(profile.full_name);
+            setUserInitial(profile.full_name[0] || "O");
+          } else {
+            // Fallback to user metadata
+            const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || "Operator";
+            setUserName(name);
+            setUserInitial(name[0] || "O");
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   useEffect(() => {
     fetchMenuOrder();
@@ -289,12 +323,12 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
                   )}
                 >
                   <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                    <Zap className="h-4 w-4 text-white" />
+                    <span className="text-sm font-bold text-white">{userInitial}</span>
                   </div>
                   <span className={cn(
                     "hidden sm:inline-block font-medium transition-colors",
                     theme === "dark" ? "text-white" : "text-slate-900"
-                  )}>Operator</span>
+                  )}>{userName}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
