@@ -80,6 +80,18 @@ const Auth = () => {
           return;
         }
 
+        // Check if user is demo approved
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('demo_approved')
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (profile?.demo_approved) {
+          navigate("/demo");
+          return;
+        }
+
         // Check user role and redirect accordingly
         const { data: roles } = await supabase
           .from('user_roles')
@@ -112,6 +124,18 @@ const Auth = () => {
       if (session) {
         // If from demo, always return to demo
         if (fromDemo) {
+          navigate("/demo");
+          return;
+        }
+
+        // Check if user is demo approved
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('demo_approved')
+          .eq('user_id', session.user.id)
+          .single();
+
+        if (profile?.demo_approved) {
           navigate("/demo");
           return;
         }
