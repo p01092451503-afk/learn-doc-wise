@@ -49,14 +49,19 @@ const Auth = () => {
 
     // Clear any invalid sessions on mount
     const clearInvalidSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        // Try to verify if the user actually exists
-        const { error } = await supabase.auth.getUser();
-        if (error) {
-          // Invalid session, clear it
-          await supabase.auth.signOut();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          // Try to verify if the user actually exists
+          const { error } = await supabase.auth.getUser();
+          if (error) {
+            // Invalid session, clear it silently
+            await supabase.auth.signOut({ scope: 'local' });
+          }
         }
+      } catch (error) {
+        // Ignore errors and clear local session
+        await supabase.auth.signOut({ scope: 'local' });
       }
     };
     
@@ -170,9 +175,6 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      // Clear any existing invalid session first
-      await supabase.auth.signOut();
-      
       const { error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
