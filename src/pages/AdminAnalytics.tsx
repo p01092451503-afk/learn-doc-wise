@@ -113,7 +113,7 @@ const AdminAnalytics = () => {
                       ₩{(item.revenue / 1000000).toFixed(1)}M
                     </span>
                   </div>
-                  <div className="relative h-6 bg-muted rounded-lg overflow-hidden">
+                  <div className="relative h-3 bg-muted rounded-lg overflow-hidden">
                     <div
                       className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary-glow rounded-lg transition-all duration-300"
                       style={{
@@ -146,7 +146,7 @@ const AdminAnalytics = () => {
                         {item.users.toLocaleString()}명
                       </span>
                     </div>
-                    <div className="relative h-5 bg-muted rounded-lg overflow-hidden">
+                    <div className="relative h-3 bg-muted rounded-lg overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent to-accent/70 rounded-lg transition-all duration-300"
                         style={{
@@ -178,7 +178,7 @@ const AdminAnalytics = () => {
                         {item.courses}개
                       </span>
                     </div>
-                    <div className="relative h-5 bg-muted rounded-lg overflow-hidden">
+                    <div className="relative h-3 bg-muted rounded-lg overflow-hidden">
                       <div
                         className="absolute inset-y-0 left-0 bg-gradient-to-r from-secondary to-secondary/70 rounded-lg transition-all duration-300"
                         style={{
