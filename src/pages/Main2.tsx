@@ -98,6 +98,7 @@ const Main2 = () => {
           .from("profiles")
           .insert({
             user_id: data.user.id,
+            email: email,
             full_name: fullName,
             demo_approved: false,
             demo_requested_at: new Date().toISOString(),
