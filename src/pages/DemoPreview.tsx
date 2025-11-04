@@ -112,14 +112,29 @@ const DemoPreview = () => {
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [hrdEnabled, setHrdEnabled] = useState(() => {
+    return localStorage.getItem("hrd_enabled") !== "false";
+  });
+
+  // Listen for HRD toggle events
+  useEffect(() => {
+    const handleHrdToggle = (event: any) => {
+      setHrdEnabled(event.detail.enabled);
+    };
+    
+    window.addEventListener('hrd-toggle', handleHrdToggle);
+    return () => window.removeEventListener('hrd-toggle', handleHrdToggle);
+  }, []);
 
   const setActiveRole = (role: DemoRole) => {
     setSearchParams({ role, page: "dashboard" });
   };
 
   const getMenuItems = (): MenuItem[] => {
+    let items: MenuItem[] = [];
+    
     if (activeRole === "student") {
-      return [
+      items = [
         { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
         { icon: BookOpen, label: "내 강의", path: "courses", hasAI: true },
         { icon: Route, label: "학습 경로", path: "learning-path", hasAI: true },
@@ -129,10 +144,8 @@ const DemoPreview = () => {
         { icon: ClipboardList, label: "상담 이력", path: "counseling-log", isHRD: true },
         { icon: BarChart3, label: "학습 통계", path: "analytics" },
       ];
-    }
-    
-    if (activeRole === "teacher") {
-      return [
+    } else if (activeRole === "teacher") {
+      items = [
         { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
         { icon: BookOpen, label: "강의 관리", path: "courses" },
         { icon: FileText, label: "과제 관리", path: "assignments", hasAI: true },
@@ -149,28 +162,34 @@ const DemoPreview = () => {
         { icon: BarChart3, label: "통계", path: "analytics" },
         { icon: DollarSign, label: "수익", path: "revenue" },
       ];
+    } else {
+      // admin
+      items = [
+        { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+        { icon: Users, label: "사용자 관리", path: "users" },
+        { icon: BookOpen, label: "강좌 관리", path: "courses" },
+        { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
+        { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
+        { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
+        { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+        { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
+        { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
+        { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
+        { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
+        { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
+        { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+        { icon: DollarSign, label: "매출 관리", path: "revenue" },
+        { icon: BarChart3, label: "분석 도구", path: "analytics" },
+        { icon: Settings, label: "시스템 설정", path: "settings" },
+      ];
     }
     
-    // admin
-    return [
-      { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
-      { icon: Users, label: "사용자 관리", path: "users" },
-      { icon: BookOpen, label: "강좌 관리", path: "courses" },
-      { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
-      { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
-      { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
-      { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
-      { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
-      { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
-      { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
-      { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
-      { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
-      { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
-      { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
-      { icon: DollarSign, label: "매출 관리", path: "revenue" },
-      { icon: BarChart3, label: "분석 도구", path: "analytics" },
-      { icon: Settings, label: "시스템 설정", path: "settings" },
-    ];
+    // Filter HRD items if disabled
+    return items.filter(item => {
+      if (!hrdEnabled && item.isHRD) return false;
+      return true;
+    });
   };
 
   const menuItems = getMenuItems();

@@ -20,6 +20,9 @@ const AdminSettings = () => {
     setHrdEnabled(checked);
     localStorage.setItem("hrd_enabled", String(checked));
     
+    // Dispatch custom event to update menus immediately
+    window.dispatchEvent(new CustomEvent('hrd-toggle', { detail: { enabled: checked } }));
+    
     toast({
       title: checked ? "HRD 기능 활성화" : "HRD 기능 비활성화",
       description: checked 
@@ -27,10 +30,10 @@ const AdminSettings = () => {
         : "모든 역할에서 HRD 관련 메뉴가 숨겨집니다.",
     });
 
-    // Reload page to apply changes
+    // Reload page to ensure all components update
     setTimeout(() => {
       window.location.reload();
-    }, 800);
+    }, 1000);
   };
 
   return (

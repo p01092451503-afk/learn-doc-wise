@@ -235,6 +235,16 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     fetchMenuOrder();
   }, [effectiveUserRole, isDemoMode]);
 
+  // Listen for HRD toggle events
+  useEffect(() => {
+    const handleHrdToggle = () => {
+      fetchMenuOrder();
+    };
+    
+    window.addEventListener('hrd-toggle', handleHrdToggle);
+    return () => window.removeEventListener('hrd-toggle', handleHrdToggle);
+  }, [effectiveUserRole, isDemoMode]);
+
   const fetchMenuOrder = async () => {
     try {
       // Check HRD setting from localStorage

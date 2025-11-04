@@ -130,6 +130,16 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
     fetchMenuOrder();
   }, []);
 
+  // Listen for HRD toggle events
+  useEffect(() => {
+    const handleHrdToggle = () => {
+      fetchMenuOrder();
+    };
+    
+    window.addEventListener('hrd-toggle', handleHrdToggle);
+    return () => window.removeEventListener('hrd-toggle', handleHrdToggle);
+  }, []);
+
   const fetchMenuOrder = async () => {
     try {
       // Check HRD setting from localStorage
