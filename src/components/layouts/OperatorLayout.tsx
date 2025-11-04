@@ -129,14 +129,31 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
     localStorage.setItem("operator-theme", theme);
   }, [theme]);
 
-  // Fetch user profile data
+  // Fetch user profile data - optimized to use user_metadata first
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          // First try to get from profiles table
+          // Priority 1: Use user_metadata (fastest, already loaded)
+          const metadataName = user.user_metadata?.full_name || user.user_metadata?.name;
+          
+          if (metadataName) {
+            setUserName(metadataName);
+            setUserInitial(metadataName[0] || "O");
+            return; // Exit early, no need to query database
+          }
+          
+          // Priority 2: Fallback to email username
+          const emailName = user.email?.split('@')[0];
+          if (emailName) {
+            setUserName(emailName);
+            setUserInitial(emailName[0] || "O");
+            return;
+          }
+          
+          // Priority 3: Last resort - query profiles table
           const { data: profile } = await supabase
             .from('profiles')
             .select('full_name')
@@ -146,11 +163,6 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
           if (profile?.full_name) {
             setUserName(profile.full_name);
             setUserInitial(profile.full_name[0] || "O");
-          } else {
-            // Fallback to user metadata
-            const name = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || "Operator";
-            setUserName(name);
-            setUserInitial(name[0] || "O");
           }
         }
       } catch (error) {
