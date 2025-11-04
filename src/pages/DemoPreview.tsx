@@ -423,7 +423,7 @@ const DemoPreview = () => {
         {/* Sidebar */}
         <aside
           className={cn(
-            "sticky left-0 top-[64px] md:top-[80px] h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm z-30",
+            "fixed left-0 top-[64px] md:top-[80px] h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm z-30",
             sidebarCollapsed ? "w-16" : "w-64"
           )}
         >
