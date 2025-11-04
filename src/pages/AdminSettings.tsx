@@ -6,7 +6,6 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Settings, Save } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import MenuOrderSettings from "@/components/admin/MenuOrderSettings";
 
 const AdminSettings = () => {
   return (
@@ -21,9 +20,6 @@ const AdminSettings = () => {
             플랫폼의 전반적인 설정을 관리하세요
           </p>
         </div>
-
-        {/* 메뉴 순서 설정 */}
-        <MenuOrderSettings />
 
         {/* 일반 설정 */}
         <Card className="border-border/50 shadow-sm">
