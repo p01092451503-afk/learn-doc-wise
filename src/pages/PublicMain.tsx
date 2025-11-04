@@ -68,29 +68,32 @@ const PublicMain = () => {
 
       if (error) throw error;
       
-      // 각 코스의 첫 번째 콘텐츠에서 비디오 썸네일 추출
-      const coursesWithThumbnails = await Promise.all(
-        (data || []).map(async (course) => {
-          if (!course.thumbnail_url) {
-            // 첫 번째 콘텐츠 가져오기
-            const { data: contents } = await supabase
-              .from("course_contents")
-              .select("video_url, video_provider")
-              .eq("course_id", course.id)
-              .eq("is_published", true)
-              .order("order_index", { ascending: true })
-              .limit(1);
-            
-            if (contents && contents.length > 0) {
-              const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
-              return { ...course, videoThumbnail: thumbnail };
-            }
-          }
-          return course;
-        })
-      );
+      setCourses(data || []);
       
-      setCourses(coursesWithThumbnails);
+      // 비동기적으로 썸네일 로드 (블로킹하지 않음)
+      if (data) {
+        Promise.all(
+          data.map(async (course) => {
+            if (!course.thumbnail_url) {
+              const { data: contents } = await supabase
+                .from("course_contents")
+                .select("video_url, video_provider")
+                .eq("course_id", course.id)
+                .eq("is_published", true)
+                .order("order_index", { ascending: true })
+                .limit(1);
+              
+              if (contents && contents.length > 0) {
+                const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
+                return { ...course, videoThumbnail: thumbnail };
+              }
+            }
+            return course;
+          })
+        ).then(coursesWithThumbnails => {
+          setCourses(coursesWithThumbnails);
+        });
+      }
     } catch (error) {
       console.error("Error fetching courses:", error);
     } finally {
