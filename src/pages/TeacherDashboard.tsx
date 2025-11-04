@@ -7,11 +7,15 @@ import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkl
 import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
+import { CourseFormDialog } from "@/components/teacher/CourseFormDialog";
+import { useNavigate } from "react-router-dom";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  const navigate = useNavigate();
   const [quizOpen, setQuizOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   return (
     <DashboardLayout userRole="teacher" isDemo={isDemo}>
@@ -27,7 +31,7 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
               {isDemo ? 'AI 기반 과제 채점으로 더 효율적인 강의 운영을 경험하세요' : '학생들의 학습을 관리하고 분석하세요'}
             </p>
           </div>
-          <Button className="gap-2 w-full sm:w-auto flex-shrink-0">
+          <Button className="gap-2 w-full sm:w-auto flex-shrink-0" onClick={() => setCreateDialogOpen(true)}>
             <Plus className="h-4 w-4" />
             새 강의 만들기
           </Button>
@@ -250,6 +254,16 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <AITutorDialog open={aiTutorOpen} onOpenChange={setAiTutorOpen} courseContext="강의 준비" />
         <AIQuizDialog open={quizOpen} onOpenChange={setQuizOpen} />
         <AISummaryDialog open={summaryOpen} onOpenChange={setSummaryOpen} />
+        
+        {/* Course Form Dialog */}
+        <CourseFormDialog
+          open={createDialogOpen}
+          onOpenChange={setCreateDialogOpen}
+          onSuccess={() => {
+            setCreateDialogOpen(false);
+            navigate('/teacher/courses');
+          }}
+        />
       </div>
     </DashboardLayout>
   );
