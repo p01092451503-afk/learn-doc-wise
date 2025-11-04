@@ -132,6 +132,9 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
 
   const fetchMenuOrder = async () => {
     try {
+      // Check HRD setting from localStorage
+      const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
+      
       const { data, error } = await supabase
         .from("menu_order")
         .select("menu_items")

@@ -237,6 +237,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
   const fetchMenuOrder = async () => {
     try {
+      // Check HRD setting from localStorage
+      const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
+      
       const { data, error } = await supabase
         .from("menu_order")
         .select("menu_items")
@@ -262,14 +265,28 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           return defaultItem;
         });
         
-        // Filter out disabled items
-        setMenuItems(mergedItems.filter(item => item.enabled));
+        // Filter out disabled items and HRD items if HRD is disabled
+        setMenuItems(mergedItems.filter(item => {
+          if (!item.enabled) return false;
+          if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
+          return true;
+        }));
       } else {
-        setMenuItems(getDefaultMenuItems());
+        const defaultItems = getDefaultMenuItems();
+        // Filter HRD items if disabled
+        setMenuItems(defaultItems.filter(item => {
+          if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
+          return true;
+        }));
       }
     } catch (error) {
       console.error("Error fetching menu order:", error);
-      setMenuItems(getDefaultMenuItems());
+      const defaultItems = getDefaultMenuItems();
+      const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
+      setMenuItems(defaultItems.filter(item => {
+        if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
+        return true;
+      }));
     }
   };
 

@@ -6,78 +6,31 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Settings, Save, GraduationCap } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminSettings = () => {
-  const [hrdEnabled, setHrdEnabled] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [hrdEnabled, setHrdEnabled] = useState(() => {
+    const saved = localStorage.getItem("hrd_enabled");
+    return saved !== "false";
+  });
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchHrdSetting();
-  }, []);
-
-  const fetchHrdSetting = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("platform_settings")
-        .select("value")
-        .eq("key", "hrd_enabled")
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (data) {
-        setHrdEnabled(data.value === true || data.value === "true");
-      }
-    } catch (error) {
-      console.error("Error fetching HRD setting:", error);
-    }
-  };
-
-  const handleHrdToggle = async (checked: boolean) => {
+  const handleHrdToggle = (checked: boolean) => {
     setHrdEnabled(checked);
-    setLoading(true);
+    localStorage.setItem("hrd_enabled", String(checked));
     
-    try {
-      const { error } = await supabase
-        .from("platform_settings")
-        .upsert(
-          {
-            key: "hrd_enabled",
-            value: checked,
-          },
-          {
-            onConflict: "key",
-          }
-        );
+    toast({
+      title: checked ? "HRD 기능 활성화" : "HRD 기능 비활성화",
+      description: checked 
+        ? "모든 역할에서 HRD 관련 메뉴가 표시됩니다." 
+        : "모든 역할에서 HRD 관련 메뉴가 숨겨집니다.",
+    });
 
-      if (error) throw error;
-
-      toast({
-        title: checked ? "HRD 기능 활성화" : "HRD 기능 비활성화",
-        description: checked 
-          ? "모든 역할에서 HRD 관련 메뉴가 표시됩니다." 
-          : "모든 역할에서 HRD 관련 메뉴가 숨겨집니다.",
-      });
-
-      // Reload page to apply changes
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      console.error("Error saving HRD setting:", error);
-      toast({
-        title: "저장 실패",
-        description: "HRD 설정 저장 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-      setHrdEnabled(!checked);
-    } finally {
-      setLoading(false);
-    }
+    // Reload page to apply changes
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
   };
 
   return (
@@ -118,7 +71,6 @@ const AdminSettings = () => {
                 id="hrd-enabled" 
                 checked={hrdEnabled} 
                 onCheckedChange={handleHrdToggle}
-                disabled={loading}
               />
             </div>
           </CardContent>
