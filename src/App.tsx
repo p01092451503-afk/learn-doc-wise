@@ -115,16 +115,37 @@ const App = () => {
   // Fetch main page version on mount
   useEffect(() => {
     const fetchMainPageVersion = async () => {
-      const { data } = await supabase
-        .from("system_settings")
-        .select("setting_value")
-        .eq("setting_key", "main_page_version")
-        .single();
-      
-      setMainPageVersion(data?.setting_value || "main");
+      try {
+        const { data, error } = await supabase
+          .from("system_settings")
+          .select("setting_value")
+          .eq("setting_key", "main_page_version")
+          .single();
+        
+        if (error) {
+          console.error("Failed to fetch main page version:", error);
+          setMainPageVersion("main"); // Default to "main" on error
+          return;
+        }
+        
+        setMainPageVersion(data?.setting_value || "main");
+      } catch (error) {
+        console.error("Error fetching main page version:", error);
+        setMainPageVersion("main"); // Default to "main" on error
+      }
     };
     
+    // Set timeout to prevent infinite loading
+    const timeoutId = setTimeout(() => {
+      if (mainPageVersion === null) {
+        console.warn("Timeout fetching main page version, using default");
+        setMainPageVersion("main");
+      }
+    }, 5000); // 5 second timeout
+    
     fetchMainPageVersion();
+    
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const [queryClient] = useState(() => new QueryClient({
