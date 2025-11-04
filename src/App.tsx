@@ -5,10 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
+import Landing from "./pages/Landing"; // Eager import to fix loading issue
 
 // Lazy load all pages for better performance
-const Landing = lazy(() => import("./pages/Landing"));
 const Main2 = lazy(() => import("./pages/Main2"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
