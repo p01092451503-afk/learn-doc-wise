@@ -56,6 +56,7 @@ import TeacherTrainingAllowance from "./pages/teacher/TeacherTrainingAllowance";
 import TeacherTrainingReport from "./pages/teacher/TeacherTrainingReport";
 import StudentSatisfactionSurvey from "./pages/student/StudentSatisfactionSurvey";
 import StudentCounselingLog from "./pages/student/StudentCounselingLog";
+import TeacherCourseDetail from "./pages/TeacherCourseDetail";
 import TemplatePreview from "./pages/TemplatePreview";
 import PublicMain from "./pages/PublicMain";
 import PublicCourses from "./pages/PublicCourses";
@@ -135,6 +136,7 @@ const App = () => {
           <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
           <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/teacher/courses" element={<TeacherCourses />} />
+          <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
           <Route path="/teacher/students" element={<TeacherStudents />} />
           <Route path="/teacher/revenue" element={<TeacherRevenue />} />
           <Route path="/teacher/analytics" element={<TeacherAnalytics />} />

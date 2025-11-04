@@ -70,10 +70,7 @@ const TeacherCourses = () => {
   };
 
   const handleView = (courseId: number) => {
-    toast({
-      title: "강의 상세",
-      description: "강의 상세 페이지로 이동합니다.",
-    });
+    navigate(`/teacher/courses/${courseId}`);
   };
 
   const handleEdit = (courseId: number) => {
