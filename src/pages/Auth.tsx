@@ -56,20 +56,35 @@ const Auth = () => {
         
         if (error) {
           console.error('Error creating demo users:', error);
+          toast({
+            title: "알림",
+            description: "데모 계정 생성 중 오류가 발생했습니다. 페이지를 새로고침해주세요.",
+            variant: "destructive",
+          });
         } else {
-          console.log('Demo users setup:', data);
+          console.log('Demo users setup complete:', data);
+          // Mark as created
+          sessionStorage.setItem('demoUsersCreated', 'true');
         }
       } catch (error) {
         console.error('Failed to create demo users:', error);
       }
     };
 
-    // Only create demo users once per session
-    if (!sessionStorage.getItem('demoUsersCreated')) {
-      createDemoUsers();
-      sessionStorage.setItem('demoUsersCreated', 'true');
+    // Always try to create demo users on first load
+    const isCreated = sessionStorage.getItem('demoUsersCreated');
+    if (!isCreated) {
+      // Show a brief message
+      toast({
+        title: "준비 중...",
+        description: "데모 계정을 준비하고 있습니다. 잠시만 기다려주세요.",
+      });
+      
+      setTimeout(() => {
+        createDemoUsers();
+      }, 1000);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     // Check if coming from demo mode
