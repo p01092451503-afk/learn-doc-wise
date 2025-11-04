@@ -56,28 +56,46 @@ interface MenuItem {
   icon: any;
   label: string;
   path: string;
+  enabled?: boolean;
   hasAI?: boolean;
   onPremise?: boolean;
   badge?: string;
 }
 
-const menuItems: MenuItem[] = [
-  { icon: BarChart3, label: "대시보드", path: "/operator" },
-  { icon: Building2, label: "테넌트 관리", path: "/operator/tenants" },
-  { icon: BarChart3, label: "사용량 관리", path: "/operator/usage" },
-  { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
-  { icon: DollarSign, label: "매출 관리", path: "/operator/revenue" },
-  { icon: Shield, label: "모니터링", path: "/operator/monitoring" },
-  { icon: Layers, label: "기능 목록", path: "/operator/features" },
-  { icon: Package, label: "기술 스택", path: "/operator/tech-stack" },
-  { icon: GraduationCap, label: "국비환급과정", path: "/operator/government-training", badge: "HRD" },
-  { icon: Database, label: "백업/복원", path: "/operator/backup", onPremise: true },
-  { icon: Package, label: "업데이트 관리", path: "/operator/updates", onPremise: true },
-  { icon: Key, label: "라이선스 관리", path: "/operator/license", onPremise: true },
-  { icon: Server, label: "서버 리소스", path: "/operator/resources", onPremise: true },
-  { icon: Settings, label: "설정", path: "/operator/settings" },
-  { icon: BookOpen, label: "매뉴얼", path: "/operator/manual" },
-  { icon: Network, label: "시스템 다이어그램", path: "/operator/system-diagram" },
+const iconMap: { [key: string]: any } = {
+  BarChart3,
+  Building2,
+  Brain,
+  DollarSign,
+  Shield,
+  Layers,
+  Package,
+  GraduationCap,
+  Database,
+  Key,
+  Server,
+  Settings,
+  BookOpen,
+  Network,
+};
+
+const defaultMenuItems: MenuItem[] = [
+  { icon: BarChart3, label: "대시보드", path: "/operator", enabled: true },
+  { icon: Building2, label: "테넌트 관리", path: "/operator/tenants", enabled: true },
+  { icon: BarChart3, label: "사용량 관리", path: "/operator/usage", enabled: true },
+  { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true, enabled: true },
+  { icon: DollarSign, label: "매출 관리", path: "/operator/revenue", enabled: true },
+  { icon: Shield, label: "모니터링", path: "/operator/monitoring", enabled: true },
+  { icon: Layers, label: "기능 목록", path: "/operator/features", enabled: true },
+  { icon: Package, label: "기술 스택", path: "/operator/tech-stack", enabled: true },
+  { icon: GraduationCap, label: "국비환급과정", path: "/operator/government-training", badge: "HRD", enabled: true },
+  { icon: Database, label: "백업/복원", path: "/operator/backup", onPremise: true, enabled: true },
+  { icon: Package, label: "업데이트 관리", path: "/operator/updates", onPremise: true, enabled: true },
+  { icon: Key, label: "라이선스 관리", path: "/operator/license", onPremise: true, enabled: true },
+  { icon: Server, label: "서버 리소스", path: "/operator/resources", onPremise: true, enabled: true },
+  { icon: Settings, label: "설정", path: "/operator/settings", enabled: true },
+  { icon: BookOpen, label: "매뉴얼", path: "/operator/manual", enabled: true },
+  { icon: Network, label: "시스템 다이어그램", path: "/operator/system-diagram", enabled: true },
 ];
 
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {
@@ -86,6 +104,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
     return saved === "true";
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
     // 저장된 값이 없거나 dark인 경우 light로 설정
@@ -106,6 +125,47 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   useEffect(() => {
     localStorage.setItem("operator-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    fetchMenuOrder();
+  }, []);
+
+  const fetchMenuOrder = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("menu_order")
+        .select("menu_items")
+        .eq("user_role", "operator")
+        .maybeSingle();
+
+      if (error && error.code !== "PGRST116") throw error;
+
+      if (data && data.menu_items) {
+        const savedItems = data.menu_items as any[];
+        
+        // Merge saved settings with default items
+        const mergedItems = defaultMenuItems.map(defaultItem => {
+          const savedItem = savedItems.find(s => s.path === defaultItem.path);
+          if (savedItem) {
+            return {
+              ...defaultItem,
+              enabled: savedItem.enabled,
+              icon: iconMap[savedItem.icon] || defaultItem.icon,
+            };
+          }
+          return defaultItem;
+        });
+        
+        // Filter out disabled items
+        setMenuItems(mergedItems.filter(item => item.enabled));
+      } else {
+        setMenuItems(defaultMenuItems);
+      }
+    } catch (error) {
+      console.error("Error fetching menu order:", error);
+      setMenuItems(defaultMenuItems);
+    }
+  };
 
   const handleThemeChange = (newTheme: "dark" | "light") => {
     setTheme(newTheme);

@@ -232,9 +232,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
-    // CRITICAL: Always use default menu items to ensure HRD menus are visible
-    // Database menu_order is outdated and doesn't include new HRD menus
-    setMenuItems(getDefaultMenuItems());
+    fetchMenuOrder();
   }, [effectiveUserRole, isDemoMode]);
 
   const fetchMenuOrder = async () => {
@@ -248,12 +246,24 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       if (error && error.code !== "PGRST116") throw error;
 
       if (data && data.menu_items) {
-        // Convert string icons to actual icon components
-        const items = (data.menu_items as any[]).map((item: any) => ({
-          ...item,
-          icon: iconMap[item.icon] || LayoutDashboard,
-        }));
-        setMenuItems(items);
+        const defaultItems = getDefaultMenuItems();
+        const savedItems = data.menu_items as any[];
+        
+        // Merge saved settings with default items
+        const mergedItems = defaultItems.map(defaultItem => {
+          const savedItem = savedItems.find(s => s.path === defaultItem.path);
+          if (savedItem) {
+            return {
+              ...defaultItem,
+              enabled: savedItem.enabled,
+              icon: iconMap[savedItem.icon] || defaultItem.icon,
+            };
+          }
+          return defaultItem;
+        });
+        
+        // Filter out disabled items
+        setMenuItems(mergedItems.filter(item => item.enabled));
       } else {
         setMenuItems(getDefaultMenuItems());
       }

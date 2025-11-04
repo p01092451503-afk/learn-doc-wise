@@ -93,6 +93,15 @@ const defaultMenuItems = {
     { id: "monitoring", icon: "Shield", label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
     { id: "settings", icon: "Settings", label: "시스템 설정", path: "/admin/settings", enabled: true },
   ],
+  operator: [
+    { id: "dashboard", icon: "LayoutDashboard", label: "대시보드", path: "/operator", enabled: true },
+    { id: "tenants", icon: "Building2", label: "테넌트 관리", path: "/operator/tenants", enabled: true },
+    { id: "usage", icon: "BarChart3", label: "사용량 관리", path: "/operator/usage", enabled: true },
+    { id: "ai-logs", icon: "Brain", label: "AI 로그", path: "/operator/ai-logs", enabled: true },
+    { id: "revenue", icon: "DollarSign", label: "매출 관리", path: "/operator/revenue", enabled: true },
+    { id: "monitoring", icon: "Shield", label: "모니터링", path: "/operator/monitoring", enabled: true },
+    { id: "settings", icon: "Settings", label: "설정", path: "/operator/settings", enabled: true },
+  ],
 };
 
 interface SortableItemProps {
@@ -150,7 +159,7 @@ function SortableItem({ item, onToggle }: SortableItemProps) {
 }
 
 const MenuOrderSettings = () => {
-  const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | "admin">("admin");
+  const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | "admin" | "operator">("admin");
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems[selectedRole]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -280,6 +289,7 @@ const MenuOrderSettings = () => {
               <SelectItem value="student">학생</SelectItem>
               <SelectItem value="teacher">강사</SelectItem>
               <SelectItem value="admin">관리자</SelectItem>
+              <SelectItem value="operator">운영자</SelectItem>
             </SelectContent>
           </Select>
         </div>
