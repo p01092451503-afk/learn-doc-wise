@@ -316,13 +316,6 @@ const Main2 = () => {
                         </>
                       )}
                     </Button>
-
-                    <div className="text-center text-sm text-muted-foreground">
-                      이미 계정이 있으신가요?{" "}
-                      <Link to="/auth" className="text-primary hover:underline">
-                        로그인
-                      </Link>
-                    </div>
                   </form>
                 </Card>
               )}
