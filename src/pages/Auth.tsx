@@ -39,39 +39,14 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load remembered email and create demo users on mount
+  // Load remembered email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setLoginEmail(savedEmail);
       setRememberMe(true);
     }
-
-    // Create demo users if they don't exist
-    const createDemoUsers = async () => {
-      try {
-        const { data, error } = await supabase.functions.invoke('create-demo-users');
-        
-        if (error) {
-          console.error('Error creating demo users:', error);
-        } else {
-          console.log('Demo users ready:', data);
-          sessionStorage.setItem('demoUsersCreated', 'true');
-          toast({
-            title: "준비 완료",
-            description: "데모 계정으로 로그인할 수 있습니다.",
-          });
-        }
-      } catch (error) {
-        console.error('Failed to create demo users:', error);
-      }
-    };
-
-    const isCreated = sessionStorage.getItem('demoUsersCreated');
-    if (!isCreated) {
-      createDemoUsers();
-    }
-  }, [toast]);
+  }, []);
 
   useEffect(() => {
     // Check if coming from demo mode
@@ -394,7 +369,7 @@ const Auth = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link to="/" className="flex items-center justify-center mb-8 gap-2">
-              <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
+              <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" loading="eager" />
               <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
             </Link>
           </TooltipTrigger>

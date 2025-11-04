@@ -21,7 +21,7 @@ const Landing = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link to="/" className="flex items-center gap-2" aria-label="Atom LMS 홈페이지">
-                  <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" />
+                  <img src={logoIcon} alt="Atom LMS 로고 - AI 기반 학습관리 플랫폼" className="h-12 w-12" loading="eager" />
                   <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
                 </Link>
               </TooltipTrigger>

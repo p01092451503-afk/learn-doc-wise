@@ -23,13 +23,29 @@ export default defineConfig(({ mode }) => ({
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
           'chart-vendor': ['recharts'],
           'supabase': ['@supabase/supabase-js'],
+          'query-vendor': ['@tanstack/react-query'],
         },
       },
     },
     chunkSizeWarningLimit: 1000,
     sourcemap: false,
+    // Enable minification for production
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'],
+      },
+    },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom',
+      '@tanstack/react-query',
+      '@supabase/supabase-js',
+    ],
   },
 }));
