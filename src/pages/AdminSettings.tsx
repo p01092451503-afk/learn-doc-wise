@@ -111,50 +111,8 @@ const AdminSettings = () => {
           </p>
         </div>
 
-        {/* Main Page Version Toggle */}
-        <Card className="border-border/50 shadow-sm bg-gradient-to-br from-accent/5 to-accent/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Layout className="h-5 w-5 text-accent" />
-              메인 페이지 버전 선택
-            </CardTitle>
-            <CardDescription>
-              사이트 메인 페이지(/) 를 선택합니다
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4 p-4 bg-background rounded-lg border">
-              <div className="space-y-2">
-                <Label className="text-base font-semibold">현재 메인 페이지</Label>
-                <p className="text-sm text-muted-foreground">
-                  • <strong>기본 메인 (Landing)</strong>: 서비스 소개 랜딩 페이지<br />
-                  • <strong>데모 메인 (Main2)</strong>: 데모 신청 및 승인 페이지
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <Button
-                  variant={mainPageVersion === "main" ? "default" : "outline"}
-                  onClick={() => handleMainPageToggle("main")}
-                  disabled={mainPageLoading}
-                  className="flex-1"
-                >
-                  기본 메인 (Landing)
-                </Button>
-                <Button
-                  variant={mainPageVersion === "main2" ? "default" : "outline"}
-                  onClick={() => handleMainPageToggle("main2")}
-                  disabled={mainPageLoading}
-                  className="flex-1"
-                >
-                  데모 메인 (Main2)
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                현재 설정: <strong>{mainPageVersion === "main" ? "기본 메인 (Landing)" : "데모 메인 (Main2)"}</strong>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Main Page Version Toggle - 숨김 처리 */}
+        {/* 메인 페이지 버전 선택 기능은 운영자 페이지로 이동됨 */}
 
         {/* HRD 기능 설정 */}
         <Card className="border-border/50 shadow-sm bg-gradient-to-br from-primary/5 to-primary/10">
