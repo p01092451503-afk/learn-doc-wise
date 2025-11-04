@@ -102,9 +102,11 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const { toast } = useToast();
   const { roles: userRoles } = useUserRoles();
 
-  // CRITICAL: Auto-detect demo mode from URL or use explicit isDemo prop
-  // If URL has "role" param OR path starts with /demo, it's demo mode
-  const isDemoMode = searchParams.has('role') || isDemo === true || location.pathname.startsWith('/demo');
+  // CRITICAL: Only treat as demo mode if:
+  // 1. Explicitly in /demo path, OR
+  // 2. isDemo prop is explicitly true
+  // DO NOT use searchParams.has('role') alone - it's too broad and causes issues
+  const isDemoMode = location.pathname.startsWith('/demo') || isDemo === true;
   
   // In demo mode, use role from URL params, otherwise ALWAYS use the userRole prop
   const effectiveUserRole = (isDemoMode && searchParams.get('role')) 

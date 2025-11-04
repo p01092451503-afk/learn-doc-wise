@@ -80,6 +80,24 @@ const Auth = () => {
           return;
         }
 
+        // Check if coming from Main2 demo signup flow
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromMain2 = urlParams.get('from') === 'main2';
+
+        // If from Main2 and user has demo_approved, redirect to demo
+        if (fromMain2) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('demo_approved')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (profile?.demo_approved) {
+            navigate("/demo");
+            return;
+          }
+        }
+
         // Check user role and redirect accordingly
         const { data: roles } = await supabase
           .from('user_roles')
@@ -114,6 +132,24 @@ const Auth = () => {
         if (fromDemo) {
           navigate("/demo");
           return;
+        }
+
+        // Check if coming from Main2 demo signup flow
+        const urlParams = new URLSearchParams(window.location.search);
+        const fromMain2 = urlParams.get('from') === 'main2';
+
+        // If from Main2 and user has demo_approved, redirect to demo
+        if (fromMain2) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('demo_approved')
+            .eq('user_id', session.user.id)
+            .single();
+
+          if (profile?.demo_approved) {
+            navigate("/demo");
+            return;
+          }
         }
 
         const { data: roles } = await supabase
