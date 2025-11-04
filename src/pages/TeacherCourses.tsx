@@ -78,7 +78,7 @@ const TeacherCourses = () => {
       students: 145,
       rating: 4.9,
       revenue: "₩1,450,000",
-      status: "active",
+      status: "published",
       progress: 100,
       lessons: 42,
     },
@@ -89,7 +89,7 @@ const TeacherCourses = () => {
       students: 98,
       rating: 4.7,
       revenue: "₩980,000",
-      status: "active",
+      status: "published",
       progress: 100,
       lessons: 38,
     },
@@ -100,7 +100,7 @@ const TeacherCourses = () => {
       students: 76,
       rating: 4.8,
       revenue: "₩760,000",
-      status: "active",
+      status: "published",
       progress: 85,
       lessons: 35,
     },
@@ -211,7 +211,7 @@ const TeacherCourses = () => {
             title="전체 강의"
             value={displayCourses.length.toString()}
             icon={<BookOpen className="h-4 w-4" />}
-            description={`${displayCourses.filter(c => c.status === 'published').length} 활성, ${displayCourses.filter(c => c.status === 'draft').length} 준비중`}
+            description={`${displayCourses.filter(c => c.status === 'published').length} 공개, ${displayCourses.filter(c => c.status === 'draft').length} 준비중`}
           />
           <StatsCard
             title="총 수강생"
@@ -284,8 +284,8 @@ const TeacherCourses = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={course.status === "active" ? "default" : "secondary"}>
-                        {course.status === "active" ? "활성" : "준비중"}
+                      <Badge variant={course.status === "published" ? "default" : "secondary"}>
+                        {course.status === "published" ? "공개" : course.status === "draft" ? "준비중" : "보관됨"}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right font-medium">{course.revenue}</TableCell>
