@@ -114,38 +114,52 @@ const App = () => {
 
   // Fetch main page version on mount
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let isCompleted = false;
+    
     const fetchMainPageVersion = async () => {
       try {
         const { data, error } = await supabase
           .from("system_settings")
           .select("setting_value")
           .eq("setting_key", "main_page_version")
-          .single();
+          .maybeSingle();
         
-        if (error) {
-          console.error("Failed to fetch main page version:", error);
-          setMainPageVersion("main"); // Default to "main" on error
-          return;
+        if (!isCompleted) {
+          clearTimeout(timeoutId);
+          if (error) {
+            console.error("Failed to fetch main page version:", error);
+            setMainPageVersion("main");
+          } else {
+            setMainPageVersion(data?.setting_value || "main");
+          }
+          isCompleted = true;
         }
-        
-        setMainPageVersion(data?.setting_value || "main");
       } catch (error) {
-        console.error("Error fetching main page version:", error);
-        setMainPageVersion("main"); // Default to "main" on error
+        if (!isCompleted) {
+          clearTimeout(timeoutId);
+          console.error("Error fetching main page version:", error);
+          setMainPageVersion("main");
+          isCompleted = true;
+        }
       }
     };
     
     // Set timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      if (mainPageVersion === null) {
+    timeoutId = setTimeout(() => {
+      if (!isCompleted) {
         console.warn("Timeout fetching main page version, using default");
         setMainPageVersion("main");
+        isCompleted = true;
       }
-    }, 5000); // 5 second timeout
+    }, 3000);
     
     fetchMainPageVersion();
     
-    return () => clearTimeout(timeoutId);
+    return () => {
+      clearTimeout(timeoutId);
+      isCompleted = true;
+    };
   }, []);
 
   const [queryClient] = useState(() => new QueryClient({
