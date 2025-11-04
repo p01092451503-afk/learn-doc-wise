@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, CheckCircle, Loader2 } from "lucide-react";
+import { Sparkles, CheckCircle, Loader2, BookOpen, BarChart3, Users, Route, FileText, MessageSquare, Trophy, Star, Calendar, ClipboardCheck, AlertTriangle, Wallet, TrendingUp, UserCheck } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import { useToast } from "@/hooks/use-toast";
 import { Session } from "@supabase/supabase-js";
@@ -331,7 +331,7 @@ const Main2 = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section - 역할별 주요 기능 */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -339,23 +339,233 @@ const Main2 = () => {
               데모에서 체험할 수 있는 <span className="text-gradient">주요 기능</span>
             </h2>
             <p className="text-lg text-muted-foreground">
-              실제 학습 환경과 동일한 모든 기능을 체험해보세요
+              학생, 강사, 관리자 각 역할별 모든 기능을 체험해보세요
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <FeatureCard
-              title="AI 튜터"
-              description="24시간 학습 지원 AI 튜터와 대화하며 궁금한 점을 해결하세요"
-            />
-            <FeatureCard
-              title="실시간 대시보드"
-              description="학습 진도와 성취도를 실시간으로 확인하고 분석하세요"
-            />
-            <FeatureCard
-              title="과제 및 퀴즈"
-              description="AI 자동 채점과 피드백으로 효율적인 학습을 경험하세요"
-            />
+          {/* 학생 기능 */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Users className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">학생 대시보드</h3>
+                <p className="text-muted-foreground">자기주도 학습을 위한 스마트한 학습 환경</p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-4 gap-4 max-w-7xl mx-auto">
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <BarChart3 className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">대시보드</h4>
+                <p className="text-sm text-muted-foreground">학습 현황 한눈에 파악</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <BookOpen className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">내 강의</h4>
+                <p className="text-sm text-muted-foreground">수강 중인 모든 강의 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Route className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">AI 학습 경로</h4>
+                <p className="text-sm text-muted-foreground">맞춤형 학습 로드맵 제공</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <FileText className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">과제</h4>
+                <p className="text-sm text-muted-foreground">과제 제출 및 피드백 확인</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <MessageSquare className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">커뮤니티</h4>
+                <p className="text-sm text-muted-foreground">학습자 간 소통과 토론</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Trophy className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">게이미피케이션</h4>
+                <p className="text-sm text-muted-foreground">배지, 포인트, 리더보드</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <BarChart3 className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">학습 통계</h4>
+                <p className="text-sm text-muted-foreground">학습 패턴 분석 및 진도 확인</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Star className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">만족도 조사</h4>
+                <p className="text-sm text-muted-foreground">강의 평가 및 의견 제출</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 강사 기능 */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-xl bg-accent/10">
+                <Users className="h-8 w-8 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">강사 대시보드</h3>
+                <p className="text-muted-foreground">효율적인 강의 운영과 학생 관리</p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-4 gap-4 max-w-7xl mx-auto">
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <BarChart3 className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">대시보드</h4>
+                <p className="text-sm text-muted-foreground">강의 현황 실시간 모니터링</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <BookOpen className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">강의 관리</h4>
+                <p className="text-sm text-muted-foreground">강의 생성 및 콘텐츠 업로드</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <CheckCircle className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">AI 과제 채점</h4>
+                <p className="text-sm text-muted-foreground">자동 채점 및 피드백 생성</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <Calendar className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">출석 관리</h4>
+                <p className="text-sm text-muted-foreground">실시간 출석 체크 및 이력</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <ClipboardCheck className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">훈련일지</h4>
+                <p className="text-sm text-muted-foreground">HRD 일일 훈련 기록</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <MessageSquare className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">상담일지</h4>
+                <p className="text-sm text-muted-foreground">학생 상담 내용 기록 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <AlertTriangle className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">중도탈락 관리</h4>
+                <p className="text-sm text-muted-foreground">위험군 학생 조기 발견</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <Trophy className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">수료 요건</h4>
+                <p className="text-sm text-muted-foreground">수료 기준 관리 및 추적</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <Wallet className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">훈련수당</h4>
+                <p className="text-sm text-muted-foreground">출석 기반 수당 자동 계산</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <BarChart3 className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">훈련 리포트</h4>
+                <p className="text-sm text-muted-foreground">AI 기반 상세 분석 리포트</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <Users className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">학생 관리</h4>
+                <p className="text-sm text-muted-foreground">수강생 정보 및 진도 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-accent/50 transition-all">
+                <TrendingUp className="h-6 w-6 text-accent mb-2" />
+                <h4 className="font-semibold mb-1">통계 분석</h4>
+                <p className="text-sm text-muted-foreground">강의 성과 데이터 분석</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 관리자 기능 */}
+          <div>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <UserCheck className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">관리자 대시보드</h3>
+                <p className="text-muted-foreground">전체 시스템 관리 및 운영 최적화</p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-4 gap-4 max-w-7xl mx-auto">
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <BarChart3 className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">통합 대시보드</h4>
+                <p className="text-sm text-muted-foreground">전체 현황 실시간 모니터링</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Users className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">사용자 관리</h4>
+                <p className="text-sm text-muted-foreground">회원 등록 및 권한 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <CheckCircle className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">데모 승인</h4>
+                <p className="text-sm text-muted-foreground">데모 계정 요청 검토 및 승인</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <BookOpen className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">강좌 관리</h4>
+                <p className="text-sm text-muted-foreground">전체 강좌 승인 및 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <FileText className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">콘텐츠 관리</h4>
+                <p className="text-sm text-muted-foreground">학습 자료 및 콘텐츠 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Route className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">AI 학습 관리</h4>
+                <p className="text-sm text-muted-foreground">학습 경로 및 AI 기능 설정</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Calendar className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">출석 관리</h4>
+                <p className="text-sm text-muted-foreground">전체 출석 현황 확인</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <ClipboardCheck className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">훈련일지</h4>
+                <p className="text-sm text-muted-foreground">전체 훈련일지 관리 및 검토</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Star className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">만족도 조사</h4>
+                <p className="text-sm text-muted-foreground">만족도 결과 분석 및 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <MessageSquare className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">상담일지</h4>
+                <p className="text-sm text-muted-foreground">전체 상담 내역 조회 및 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <AlertTriangle className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">중도탈락 관리</h4>
+                <p className="text-sm text-muted-foreground">위험군 학생 통합 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Trophy className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">수료 관리</h4>
+                <p className="text-sm text-muted-foreground">전체 수료 요건 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <FileText className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">성적 관리</h4>
+                <p className="text-sm text-muted-foreground">전체 성적 조회 및 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Wallet className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">훈련수당</h4>
+                <p className="text-sm text-muted-foreground">수당 지급 현황 관리</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <Sparkles className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">AI 로그</h4>
+                <p className="text-sm text-muted-foreground">AI 사용 내역 및 통계</p>
+              </div>
+              <div className="p-4 rounded-lg bg-card border border-border hover:border-primary/50 transition-all">
+                <TrendingUp className="h-6 w-6 text-primary mb-2" />
+                <h4 className="font-semibold mb-1">시스템 모니터링</h4>
+                <p className="text-sm text-muted-foreground">시스템 상태 및 성능 모니터링</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
