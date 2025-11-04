@@ -48,6 +48,8 @@ const TeacherAssignments = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [gradeScore, setGradeScore] = useState<number>(0);
   const [gradeFeedback, setGradeFeedback] = useState("");
@@ -518,7 +520,14 @@ const TeacherAssignments = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          setSelectedAssignment(assignment);
+                          setIsViewDialogOpen(true);
+                        }}
+                      >
                         <Eye className="h-4 w-4 mr-1" />
                         보기
                       </Button>
@@ -635,6 +644,60 @@ const TeacherAssignments = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* 과제 상세 보기 Dialog */}
+        <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>과제 상세</DialogTitle>
+            </DialogHeader>
+            {selectedAssignment && (
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>과제명</Label>
+                  <p className="font-medium">{selectedAssignment.title}</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>강좌</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedAssignment.courses?.title}
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label>설명</Label>
+                  <p className="text-sm">{selectedAssignment.description || "-"}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>배점</Label>
+                    <p className="text-sm">{selectedAssignment.max_score}점</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>마감일</Label>
+                    <p className="text-sm">
+                      {selectedAssignment.due_date
+                        ? new Date(selectedAssignment.due_date).toLocaleString()
+                        : "-"}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>상태</Label>
+                  <div>
+                    <Badge variant={selectedAssignment.status === "published" ? "default" : "secondary"}>
+                      {selectedAssignment.status === "published" ? "공개" : selectedAssignment.status === "closed" ? "마감" : "초안"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsViewDialogOpen(false)}>
+                닫기
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
