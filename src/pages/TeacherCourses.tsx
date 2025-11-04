@@ -139,6 +139,18 @@ const TeacherCourses = () => {
   const handleDelete = async (courseId: string | number) => {
     if (!confirm("정말 이 강의를 삭제하시겠습니까?")) return;
     
+    // Check if this is a mock course (not in real courses data)
+    const isRealCourse = courses.some(c => c.id === courseId);
+    
+    if (!isRealCourse) {
+      toast({
+        title: "알림",
+        description: "실제 강의를 생성한 후 삭제할 수 있습니다.",
+        variant: "default",
+      });
+      return;
+    }
+    
     try {
       const { error } = await supabase
         .from("courses")
