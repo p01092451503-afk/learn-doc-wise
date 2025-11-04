@@ -6,11 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -389,6 +391,49 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="login">
+                <Alert className="mb-4 border-primary/20 bg-primary/5">
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>데모 계정 안내</AlertTitle>
+                  <AlertDescription className="mt-2 space-y-2">
+                    <p className="text-sm font-medium">아래 계정으로 각 역할의 기능을 체험해보세요:</p>
+                    <div className="grid gap-2 mt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("student@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍🎓 학생</div>
+                        <div className="text-xs text-muted-foreground">student@test.com / test123</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("teacher@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍🏫 강사</div>
+                        <div className="text-xs text-muted-foreground">teacher@test.com / test123</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("admin@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍💼 관리자</div>
+                        <div className="text-xs text-muted-foreground">admin@test.com / test123</div>
+                      </button>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+                
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">이메일</Label>
