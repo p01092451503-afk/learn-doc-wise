@@ -113,7 +113,13 @@ const App = () => {
         gcTime: 10 * 60 * 1000, // 10 minutes
         retry: 1,
         refetchOnWindowFocus: false,
-        refetchOnMount: false, // Prevent unnecessary refetches
+        refetchOnMount: false,
+        refetchOnReconnect: false, // Prevent refetch on reconnect
+        networkMode: 'offlineFirst', // Use cache when offline
+      },
+      mutations: {
+        retry: 1,
+        networkMode: 'offlineFirst',
       },
     },
   }));
@@ -121,7 +127,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <TooltipProvider>
+        <TooltipProvider delayDuration={200}>
           <Toaster />
           <Sonner />
           <BrowserRouter>
