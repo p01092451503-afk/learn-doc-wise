@@ -60,27 +60,14 @@ const OperatorDemoApproval = () => {
 
   const fetchRequests = async () => {
     try {
-      // Fetch profiles with demo requests
-      const { data: profiles, error: profilesError } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
-        .select("user_id, demo_requested_at, demo_approved")
+        .select("user_id, email, demo_requested_at, demo_approved")
         .not("demo_requested_at", "is", null)
         .order("demo_requested_at", { ascending: false });
 
-      if (profilesError) throw profilesError;
-
-      // Get user emails from auth.users using RPC or by fetching individually
-      const requestsWithEmails = await Promise.all(
-        (profiles || []).map(async (profile) => {
-          const { data: { user }, error: userError } = await supabase.auth.admin.getUserById(profile.user_id);
-          return {
-            ...profile,
-            email: user?.email || "Unknown",
-          };
-        })
-      );
-
-      setRequests(requestsWithEmails as DemoRequest[]);
+      if (error) throw error;
+      setRequests(data || []);
     } catch (error: any) {
       toast({
         title: "오류",

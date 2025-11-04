@@ -2767,6 +2767,7 @@ export type Database = {
           demo_approved_at: string | null
           demo_approved_by: string | null
           demo_requested_at: string | null
+          email: string | null
           full_name: string | null
           id: string
           rejection_reason: string | null
@@ -2784,6 +2785,7 @@ export type Database = {
           demo_approved_at?: string | null
           demo_approved_by?: string | null
           demo_requested_at?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           rejection_reason?: string | null
@@ -2801,6 +2803,7 @@ export type Database = {
           demo_approved_at?: string | null
           demo_approved_by?: string | null
           demo_requested_at?: string | null
+          email?: string | null
           full_name?: string | null
           id?: string
           rejection_reason?: string | null
