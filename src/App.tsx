@@ -110,56 +110,28 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
-  const [mainPageVersion, setMainPageVersion] = useState<string | null>(null);
+  const [mainPageVersion, setMainPageVersion] = useState<string>("main");
 
   // Fetch main page version on mount
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    let isCompleted = false;
-    
     const fetchMainPageVersion = async () => {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("system_settings")
           .select("setting_value")
           .eq("setting_key", "main_page_version")
           .maybeSingle();
         
-        if (!isCompleted) {
-          clearTimeout(timeoutId);
-          if (error) {
-            console.error("Failed to fetch main page version:", error);
-            setMainPageVersion("main");
-          } else {
-            setMainPageVersion(data?.setting_value || "main");
-          }
-          isCompleted = true;
+        if (data?.setting_value) {
+          setMainPageVersion(data.setting_value);
         }
       } catch (error) {
-        if (!isCompleted) {
-          clearTimeout(timeoutId);
-          console.error("Error fetching main page version:", error);
-          setMainPageVersion("main");
-          isCompleted = true;
-        }
+        console.error("Error fetching main page version:", error);
+        // Keep default "main" value
       }
     };
-    
-    // Set timeout to prevent infinite loading
-    timeoutId = setTimeout(() => {
-      if (!isCompleted) {
-        console.warn("Timeout fetching main page version, using default");
-        setMainPageVersion("main");
-        isCompleted = true;
-      }
-    }, 3000);
     
     fetchMainPageVersion();
-    
-    return () => {
-      clearTimeout(timeoutId);
-      isCompleted = true;
-    };
   }, []);
 
   const [queryClient] = useState(() => new QueryClient({
@@ -192,15 +164,7 @@ const App = () => {
               <Routes>
                 <Route 
                   path="/" 
-                  element={
-                    mainPageVersion === null ? (
-                      <LoadingFallback />
-                    ) : mainPageVersion === "main2" ? (
-                      <Main2 />
-                    ) : (
-                      <Landing />
-                    )
-                  } 
+                  element={mainPageVersion === "main2" ? <Main2 /> : <Landing />} 
                 />
                 <Route path="/features-detail" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
