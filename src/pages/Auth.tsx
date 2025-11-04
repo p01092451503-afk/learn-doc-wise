@@ -39,12 +39,35 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load remembered email on mount
+  // Load remembered email and create demo users on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setLoginEmail(savedEmail);
       setRememberMe(true);
+    }
+
+    // Create demo users if they don't exist
+    const createDemoUsers = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('create-demo-users', {
+          method: 'POST',
+        });
+        
+        if (error) {
+          console.error('Error creating demo users:', error);
+        } else {
+          console.log('Demo users setup:', data);
+        }
+      } catch (error) {
+        console.error('Failed to create demo users:', error);
+      }
+    };
+
+    // Only create demo users once per session
+    if (!sessionStorage.getItem('demoUsersCreated')) {
+      createDemoUsers();
+      sessionStorage.setItem('demoUsersCreated', 'true');
     }
   }, []);
 
