@@ -83,7 +83,6 @@ const OperatorUpdates = lazy(() => import("./pages/operator/OperatorUpdates"));
 const OperatorLicense = lazy(() => import("./pages/operator/OperatorLicense"));
 const OperatorResources = lazy(() => import("./pages/operator/OperatorResources"));
 const FeaturesShowcase = lazy(() => import("./pages/FeaturesShowcase"));
-const AdminDemo = lazy(() => import("./pages/AdminDemo"));
 const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
@@ -137,7 +136,6 @@ const App = () => {
                 <Route path="/courses/:id" element={<PublicCourseDetail />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/demo" element={<DemoPreview />} />
-                <Route path="/admin-demo" element={<AdminDemo />} />
                 <Route path="/student" element={<StudentDashboard />} />
                 <Route path="/students" element={<StudentDashboard />} />
                 <Route path="/student/courses" element={<StudentCourses />} />
