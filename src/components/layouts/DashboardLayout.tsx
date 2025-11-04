@@ -337,8 +337,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
-            {effectiveUserRole === "admin" && (
-              <Link to="/demo">
+            {(effectiveUserRole === "admin" || effectiveUserRole === "operator") && (
+              <Link to="/demo?role=admin">
                 <Button size="sm" className="gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90">
                   <Briefcase className="h-4 w-4" />
                   <span className="hidden sm:inline">데모 모드</span>
