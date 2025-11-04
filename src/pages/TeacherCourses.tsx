@@ -77,7 +77,7 @@ const TeacherCourses = () => {
       category: "프론트엔드",
       students: 145,
       rating: 4.9,
-      revenue: "₩1,450,000",
+      revenue: 1450000,
       status: "published",
       progress: 100,
       lessons: 42,
@@ -88,7 +88,7 @@ const TeacherCourses = () => {
       category: "프로그래밍",
       students: 98,
       rating: 4.7,
-      revenue: "₩980,000",
+      revenue: 980000,
       status: "published",
       progress: 100,
       lessons: 38,
@@ -99,7 +99,7 @@ const TeacherCourses = () => {
       category: "프론트엔드",
       students: 76,
       rating: 4.8,
-      revenue: "₩760,000",
+      revenue: 760000,
       status: "published",
       progress: 85,
       lessons: 35,
@@ -110,7 +110,7 @@ const TeacherCourses = () => {
       category: "백엔드",
       students: 54,
       rating: 4.6,
-      revenue: "₩540,000",
+      revenue: 540000,
       status: "draft",
       progress: 60,
       lessons: 30,
@@ -288,7 +288,9 @@ const TeacherCourses = () => {
                         {course.status === "published" ? "공개" : course.status === "draft" ? "준비중" : "보관됨"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-medium">{course.revenue}</TableCell>
+                    <TableCell className="text-right font-medium">
+                      {typeof course.revenue === 'number' ? `₩${course.revenue.toLocaleString()}` : course.revenue}
+                    </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Button size="sm" variant="ghost" onClick={() => handlePreview(course.id)} title="미리보기">
