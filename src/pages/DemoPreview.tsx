@@ -40,6 +40,14 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
+interface MenuItem {
+  icon: any;
+  label: string;
+  path: string;
+  hasAI?: boolean;
+  isHRD?: boolean;
+}
+
 import StudentDashboard from "./StudentDashboard";
 import StudentCourses from "./StudentCourses";
 import StudentAssignments from "./StudentAssignments";
@@ -148,7 +156,6 @@ const DemoPreview = () => {
     checkApproval();
   }, [navigate, toast]);
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
