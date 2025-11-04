@@ -52,17 +52,16 @@ Deno.serve(async (req) => {
 
     const results = [];
 
+    // Get existing users once
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    
     for (const demoUser of demoUsers) {
-      // Check if user already exists
-      const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-      const userExists = existingUsers?.users.some(u => u.email === demoUser.email);
 
-      if (userExists) {
-        results.push({
-          email: demoUser.email,
-          status: 'already_exists',
-        });
-        continue;
+      // Delete existing user first if they exist
+      const existingUser = existingUsers?.users.find(u => u.email === demoUser.email);
+      if (existingUser) {
+        await supabaseAdmin.auth.admin.deleteUser(existingUser.id);
+        console.log(`Deleted existing user: ${demoUser.email}`);
       }
 
       // Create user with admin API
@@ -73,6 +72,12 @@ Deno.serve(async (req) => {
         user_metadata: {
           name: demoUser.name,
         },
+      });
+      
+      console.log(`User creation result for ${demoUser.email}:`, { 
+        success: !createError, 
+        userId: newUser?.user?.id,
+        error: createError 
       });
 
       if (createError) {

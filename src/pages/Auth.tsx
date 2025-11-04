@@ -50,39 +50,26 @@ const Auth = () => {
     // Create demo users if they don't exist
     const createDemoUsers = async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('create-demo-users', {
-          method: 'POST',
-        });
+        const { data, error } = await supabase.functions.invoke('create-demo-users');
         
         if (error) {
           console.error('Error creating demo users:', error);
-          toast({
-            title: "알림",
-            description: "데모 계정 생성 중 오류가 발생했습니다. 페이지를 새로고침해주세요.",
-            variant: "destructive",
-          });
         } else {
-          console.log('Demo users setup complete:', data);
-          // Mark as created
+          console.log('Demo users ready:', data);
           sessionStorage.setItem('demoUsersCreated', 'true');
+          toast({
+            title: "준비 완료",
+            description: "데모 계정으로 로그인할 수 있습니다.",
+          });
         }
       } catch (error) {
         console.error('Failed to create demo users:', error);
       }
     };
 
-    // Always try to create demo users on first load
     const isCreated = sessionStorage.getItem('demoUsersCreated');
     if (!isCreated) {
-      // Show a brief message
-      toast({
-        title: "준비 중...",
-        description: "데모 계정을 준비하고 있습니다. 잠시만 기다려주세요.",
-      });
-      
-      setTimeout(() => {
-        createDemoUsers();
-      }, 1000);
+      createDemoUsers();
     }
   }, [toast]);
 
