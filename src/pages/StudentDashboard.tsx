@@ -335,7 +335,11 @@ const CourseProgress = ({ title, instructor, progress, nextLesson, courseId, isD
   const navigate = useNavigate();
   
   const handleContinue = () => {
-    navigate(`/student/courses/${courseId}`);
+    if (isDemo) {
+      navigate(`/student/courses/${courseId}?demo=true&role=student`);
+    } else {
+      navigate(`/student/courses/${courseId}`);
+    }
   };
   
   return (
@@ -368,7 +372,11 @@ const RecommendedCourse = ({ title, instructor, rating, students, courseId, isDe
   const navigate = useNavigate();
   
   const handleViewDetails = () => {
-    navigate(`/student/courses/${courseId}`);
+    if (isDemo) {
+      navigate(`/student/courses/${courseId}?demo=true&role=student`);
+    } else {
+      navigate(`/student/courses/${courseId}`);
+    }
   };
   
   return (
