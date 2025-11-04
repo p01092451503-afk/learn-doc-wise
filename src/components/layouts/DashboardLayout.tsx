@@ -41,6 +41,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { useUserRoles, type UserRole } from "@/hooks/useUserRoles";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,6 +98,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { roles: userRoles } = useUserRoles();
 
   // CRITICAL: Auto-detect demo mode from URL or use explicit isDemo prop
   // If URL has "role" param OR path starts with /demo, it's demo mode
@@ -304,51 +306,62 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               </Link>
             )}
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="sm" variant="outline" className="gap-2 rounded-full">
-                  {effectiveUserRole === "student" && <GraduationCap className="h-4 w-4" />}
-                  {effectiveUserRole === "teacher" && <BookOpen className="h-4 w-4" />}
-                  {effectiveUserRole === "admin" && <Shield className="h-4 w-4" />}
-                  {effectiveUserRole === "operator" && <Building2 className="h-4 w-4" />}
-                  <span className="hidden sm:inline">
-                    {effectiveUserRole === "student" && "학생"}
-                    {effectiveUserRole === "teacher" && "강사"}
-                    {effectiveUserRole === "admin" && "관리자"}
-                    {effectiveUserRole === "operator" && "운영자"}
-                  </span>
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 rounded-xl">
-                <DropdownMenuLabel>역할별 대시보드</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/student" className="flex items-center cursor-pointer">
-                    <GraduationCap className="mr-2 h-4 w-4" />
-                    학생
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/teacher" className="flex items-center cursor-pointer">
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    강사
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/admin" className="flex items-center cursor-pointer">
-                    <Shield className="mr-2 h-4 w-4" />
-                    관리자
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/operator" className="flex items-center cursor-pointer">
-                    <Building2 className="mr-2 h-4 w-4" />
-                    운영자
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Only show role switcher if user has multiple roles */}
+            {userRoles.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="sm" variant="outline" className="gap-2 rounded-full">
+                    {effectiveUserRole === "student" && <GraduationCap className="h-4 w-4" />}
+                    {effectiveUserRole === "teacher" && <BookOpen className="h-4 w-4" />}
+                    {effectiveUserRole === "admin" && <Shield className="h-4 w-4" />}
+                    {effectiveUserRole === "operator" && <Building2 className="h-4 w-4" />}
+                    <span className="hidden sm:inline">
+                      {effectiveUserRole === "student" && "학생"}
+                      {effectiveUserRole === "teacher" && "강사"}
+                      {effectiveUserRole === "admin" && "관리자"}
+                      {effectiveUserRole === "operator" && "운영자"}
+                    </span>
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 rounded-xl">
+                  <DropdownMenuLabel>역할별 대시보드</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {userRoles.includes('student') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/student" className="flex items-center cursor-pointer">
+                        <GraduationCap className="mr-2 h-4 w-4" />
+                        학생
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('teacher') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/teacher" className="flex items-center cursor-pointer">
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        강사
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('admin') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center cursor-pointer">
+                        <Shield className="mr-2 h-4 w-4" />
+                        관리자
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('operator') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/operator" className="flex items-center cursor-pointer">
+                        <Building2 className="mr-2 h-4 w-4" />
+                        운영자
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             
             <NotificationBell />
 

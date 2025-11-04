@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useUserRoles } from "@/hooks/useUserRoles";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -96,6 +97,7 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { roles: userRoles } = useUserRoles();
 
   useEffect(() => {
     localStorage.setItem("operator-sidebar-collapsed", String(sidebarCollapsed));
@@ -182,83 +184,93 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
 
 
           <div className="flex items-center gap-2">
-            {/* Role Switcher */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm"
+            {/* Role Switcher - Only show if user has multiple roles */}
+            {userRoles.length > 1 && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className={cn(
+                      "gap-2 transition-colors hover:border-violet-500",
+                      theme === "dark"
+                        ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
+                        : "bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+                    )}
+                  >
+                    <Building2 className="h-4 w-4" />
+                    <span className="hidden md:inline-block">운영자</span>
+                    <ChevronDown className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="end" 
                   className={cn(
-                    "gap-2 transition-colors hover:border-violet-500",
-                    theme === "dark"
-                      ? "bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800"
-                      : "bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+                    "w-48 transition-colors",
+                    theme === "dark" 
+                      ? "bg-slate-800 border-slate-700" 
+                      : "bg-white border-slate-200"
                   )}
                 >
-                  <Building2 className="h-4 w-4" />
-                  <span className="hidden md:inline-block">운영자</span>
-                  <ChevronDown className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="end" 
-                className={cn(
-                  "w-48 transition-colors",
-                  theme === "dark" 
-                    ? "bg-slate-800 border-slate-700" 
-                    : "bg-white border-slate-200"
-                )}
-              >
-                <DropdownMenuLabel className={theme === "dark" ? "text-slate-200" : "text-slate-900"}>
-                  역할별 대시보드
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className={theme === "dark" ? "bg-slate-700" : "bg-slate-200"} />
-                <DropdownMenuItem asChild>
-                  <Link to="/student" className={cn(
-                    "flex items-center cursor-pointer transition-colors",
-                    theme === "dark"
-                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
-                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
-                  )}>
-                    <GraduationCap className="mr-2 h-4 w-4" />
-                    학생
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/teacher" className={cn(
-                    "flex items-center cursor-pointer transition-colors",
-                    theme === "dark"
-                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
-                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
-                  )}>
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    강사
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/admin" className={cn(
-                    "flex items-center cursor-pointer transition-colors",
-                    theme === "dark"
-                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
-                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
-                  )}>
-                    <Shield className="mr-2 h-4 w-4" />
-                    관리자
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/operator" className={cn(
-                    "flex items-center cursor-pointer transition-colors",
-                    theme === "dark"
-                      ? "text-slate-300 focus:bg-slate-700 focus:text-white"
-                      : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
-                  )}>
-                    <Building2 className="mr-2 h-4 w-4" />
-                    운영자
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuLabel className={theme === "dark" ? "text-slate-200" : "text-slate-900"}>
+                    역할별 대시보드
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className={theme === "dark" ? "bg-slate-700" : "bg-slate-200"} />
+                  {userRoles.includes('student') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/student" className={cn(
+                        "flex items-center cursor-pointer transition-colors",
+                        theme === "dark"
+                          ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                          : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                      )}>
+                        <GraduationCap className="mr-2 h-4 w-4" />
+                        학생
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('teacher') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/teacher" className={cn(
+                        "flex items-center cursor-pointer transition-colors",
+                        theme === "dark"
+                          ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                          : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                      )}>
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        강사
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('admin') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className={cn(
+                        "flex items-center cursor-pointer transition-colors",
+                        theme === "dark"
+                          ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                          : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                      )}>
+                        <Shield className="mr-2 h-4 w-4" />
+                        관리자
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {userRoles.includes('operator') && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/operator" className={cn(
+                        "flex items-center cursor-pointer transition-colors",
+                        theme === "dark"
+                          ? "text-slate-300 focus:bg-slate-700 focus:text-white"
+                          : "text-slate-700 focus:bg-slate-100 focus:text-slate-900"
+                      )}>
+                        <Building2 className="mr-2 h-4 w-4" />
+                        운영자
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
 
             <Button 
