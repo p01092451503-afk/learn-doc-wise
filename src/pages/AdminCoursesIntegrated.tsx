@@ -12,7 +12,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, BookOpen, FolderTree, PlayCircle, ArrowLeft, Video } from "lucide-react";
+import { Plus, Edit, Trash2, BookOpen, FolderTree, PlayCircle, ArrowLeft, Video, Upload, Eye } from "lucide-react";
+import VideoPreview from "@/components/video/VideoPreview";
+import * as XLSX from "xlsx";
 
 interface Course {
   id: string;
@@ -60,6 +62,8 @@ const AdminCoursesIntegrated = () => {
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingContent, setEditingContent] = useState<Content | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewContent, setPreviewContent] = useState<Content | null>(null);
   const { toast } = useToast();
 
   const [courseForm, setCourseForm] = useState({
@@ -392,7 +396,106 @@ const AdminCoursesIntegrated = () => {
       video_url: "",
       video_provider: "youtube",
       duration_minutes: 0,
-      order_index: contents.length,
+      order_index: 0,
+    });
+    setShowPreview(false);
+  };
+
+  const handleBulkUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedCourse) return;
+    
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target?.result as ArrayBuffer);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
+
+          if (jsonData.length === 0) {
+            toast({
+              title: "오류",
+              description: "파일에 데이터가 없습니다.",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          // 일괄 삽입할 데이터 준비
+          const bulkContents = jsonData.map((row, index) => ({
+            course_id: selectedCourse.id,
+            title: row["차시명"] || row["title"] || `차시 ${index + 1}`,
+            description: row["설명"] || row["description"] || "",
+            video_url: row["비디오URL"] || row["video_url"] || "",
+            video_provider: (row["제공자"] || row["provider"] || "youtube").toLowerCase() as "youtube" | "vimeo",
+            duration_minutes: parseInt(row["재생시간"] || row["duration"] || "0"),
+            order_index: contents.length + index,
+            content_type: "video" as const,
+            is_published: true,
+          }));
+
+          const { error } = await supabase.from("course_contents").insert(bulkContents);
+
+          if (error) throw error;
+
+          toast({
+            title: "성공",
+            description: `${bulkContents.length}개의 차시가 추가되었습니다.`,
+          });
+
+          fetchContents(selectedCourse.id);
+        } catch (error: any) {
+          toast({
+            title: "오류",
+            description: error.message || "파일 처리 중 오류가 발생했습니다.",
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "파일 업로드에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+
+    // Reset input
+    event.target.value = "";
+  };
+
+  const downloadTemplate = () => {
+    const template = [
+      {
+        "차시명": "1강. 강의 소개",
+        "설명": "강의의 전반적인 내용을 소개합니다",
+        "비디오URL": "https://youtube.com/watch?v=example",
+        "제공자": "youtube",
+        "재생시간": "15"
+      },
+      {
+        "차시명": "2강. 주요 개념",
+        "설명": "핵심 개념을 설명합니다",
+        "비디오URL": "https://youtube.com/watch?v=example2",
+        "제공자": "youtube",
+        "재생시간": "20"
+      }
+    ];
+
+    const ws = XLSX.utils.json_to_sheet(template);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "차시목록");
+    XLSX.writeFile(wb, "차시_일괄업로드_템플릿.xlsx");
+
+    toast({
+      title: "다운로드 완료",
+      description: "템플릿 파일을 다운로드했습니다.",
     });
   };
 
@@ -736,19 +839,44 @@ const AdminCoursesIntegrated = () => {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     강의 목록으로
                   </Button>
-                  <Dialog open={isContentDialogOpen} onOpenChange={(open) => {
-                    setIsContentDialogOpen(open);
-                    if (!open) {
-                      setEditingContent(null);
-                      resetContentForm();
-                    }
-                  }}>
-                    <DialogTrigger asChild>
-                      <Button>
-                        <Plus className="h-4 w-4 mr-2" />
-                        차시 추가
-                      </Button>
-                    </DialogTrigger>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" onClick={downloadTemplate}>
+                      <PlayCircle className="h-4 w-4 mr-2" />
+                      템플릿 다운로드
+                    </Button>
+                    <Button variant="outline" asChild>
+                      <label className="cursor-pointer">
+                        <Upload className="h-4 w-4 mr-2" />
+                        일괄 업로드
+                        <input
+                          type="file"
+                          accept=".xlsx,.xls,.csv"
+                          className="hidden"
+                          onChange={handleBulkUpload}
+                        />
+                      </label>
+                    </Button>
+                    <Dialog open={isContentDialogOpen} onOpenChange={(open) => {
+                      setIsContentDialogOpen(open);
+                      if (!open) {
+                        setEditingContent(null);
+                        resetContentForm();
+                      } else {
+                        // Dialog 열릴 때 order_index 설정
+                        if (!editingContent) {
+                          setContentForm(prev => ({
+                            ...prev,
+                            order_index: contents.length
+                          }));
+                        }
+                      }
+                    }}>
+                      <DialogTrigger asChild>
+                        <Button>
+                          <Plus className="h-4 w-4 mr-2" />
+                          차시 추가
+                        </Button>
+                      </DialogTrigger>
                     <DialogContent className="max-w-2xl">
                       <DialogHeader>
                         <DialogTitle>{editingContent ? "차시 수정" : "새 차시 생성"}</DialogTitle>
@@ -800,12 +928,33 @@ const AdminCoursesIntegrated = () => {
 
                         <div className="space-y-2">
                           <Label>비디오 URL</Label>
-                          <Input
-                            value={contentForm.video_url}
-                            onChange={(e) => setContentForm({ ...contentForm, video_url: e.target.value })}
-                            placeholder="https://youtube.com/watch?v=..."
-                          />
+                          <div className="flex gap-2">
+                            <Input
+                              value={contentForm.video_url}
+                              onChange={(e) => setContentForm({ ...contentForm, video_url: e.target.value })}
+                              placeholder="https://youtube.com/watch?v=..."
+                              className="flex-1"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setShowPreview(!showPreview)}
+                              disabled={!contentForm.video_url}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
+
+                        {showPreview && contentForm.video_url && (
+                          <div className="space-y-2">
+                            <Label>영상 미리보기</Label>
+                            <VideoPreview
+                              videoUrl={contentForm.video_url}
+                              videoProvider={contentForm.video_provider}
+                            />
+                          </div>
+                        )}
 
                         <div className="space-y-2">
                           <Label>순서</Label>
@@ -826,7 +975,8 @@ const AdminCoursesIntegrated = () => {
                         </Button>
                       </DialogFooter>
                     </DialogContent>
-                  </Dialog>
+                    </Dialog>
+                  </div>
                 </div>
 
                 <Card>
@@ -847,13 +997,14 @@ const AdminCoursesIntegrated = () => {
                           <TableHead>차시명</TableHead>
                           <TableHead>재생시간</TableHead>
                           <TableHead>제공자</TableHead>
+                          <TableHead className="w-24">미리보기</TableHead>
                           <TableHead className="text-right">관리</TableHead>
                         </TableRow>
                       </TableHeader>
-                      <TableBody>
+                        <TableBody>
                         {contents.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                            <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                               차시가 없습니다. 차시를 추가해주세요.
                             </TableCell>
                           </TableRow>
@@ -869,6 +1020,16 @@ const AdminCoursesIntegrated = () => {
                                 <Badge variant="secondary">
                                   {content.video_provider === "youtube" ? "YouTube" : "Vimeo"}
                                 </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => setPreviewContent(content)}
+                                  disabled={!content.video_url}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
                               </TableCell>
                               <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-2">
@@ -906,6 +1067,24 @@ const AdminCoursesIntegrated = () => {
                     </Table>
                   </CardContent>
                 </Card>
+
+                {/* 영상 미리보기 Dialog */}
+                <Dialog open={!!previewContent} onOpenChange={() => setPreviewContent(null)}>
+                  <DialogContent className="max-w-4xl">
+                    <DialogHeader>
+                      <DialogTitle>{previewContent?.title}</DialogTitle>
+                      {previewContent?.description && (
+                        <CardDescription>{previewContent.description}</CardDescription>
+                      )}
+                    </DialogHeader>
+                    {previewContent?.video_url && previewContent?.video_provider && (
+                      <VideoPreview
+                        videoUrl={previewContent.video_url}
+                        videoProvider={previewContent.video_provider as "youtube" | "vimeo"}
+                      />
+                    )}
+                  </DialogContent>
+                </Dialog>
               </>
             )}
           </TabsContent>
