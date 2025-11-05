@@ -218,10 +218,10 @@ export const FeatureShowcaseAnimation = () => {
         </div>
 
         {/* Feature card */}
-        <div className="bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-1">
           <div className="flex flex-col items-center text-center gap-4">
             {/* Icon */}
-            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 shadow-md">
               <FeatureIcon className="h-12 w-12 md:h-14 md:h-14 text-primary" />
             </div>
 
