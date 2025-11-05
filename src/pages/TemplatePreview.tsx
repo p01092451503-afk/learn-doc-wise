@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ModernLayout from "./layouts/ModernLayout";
 import MinimalLayout from "./layouts/MinimalLayout";
 import CardLayout from "./layouts/CardLayout";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface Template {
   id: string;
@@ -95,7 +96,7 @@ const TemplatePreview = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <AtomSpinner size="lg" />
       </div>
     );
   }

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Clock, BarChart } from "lucide-react";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface Course {
   id: string;
@@ -156,7 +157,7 @@ const TenantCourses = () => {
         {/* Courses Grid */}
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <AtomSpinner size="lg" className="mx-auto mb-4" />
             <p className="text-muted-foreground">강좌를 불러오는 중...</p>
           </div>
         ) : filteredCourses.length === 0 ? (

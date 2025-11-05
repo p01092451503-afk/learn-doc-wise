@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, Loader2 } from "lucide-react";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -64,7 +65,7 @@ const PaymentSuccess = () => {
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             {confirming ? (
-              <Loader2 className="h-16 w-16 text-primary animate-spin" />
+              <AtomSpinner size="lg" />
             ) : (
               <CheckCircle2 className="h-16 w-16 text-green-500" />
             )}

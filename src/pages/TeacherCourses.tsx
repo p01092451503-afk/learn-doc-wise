@@ -15,6 +15,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 const TeacherCourses = () => {
   const navigate = useNavigate();
@@ -116,7 +117,7 @@ const TeacherCourses = () => {
       <DashboardLayout userRole="teacher">
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+            <AtomSpinner size="lg" className="mx-auto mb-4" />
             <p className="text-muted-foreground">담당 강의 목록을 불러오는 중...</p>
           </div>
         </div>

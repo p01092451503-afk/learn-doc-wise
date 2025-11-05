@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { AtomSpinner } from "@/components/AtomSpinner";
 import { 
-  Code2, 
+  Code2,
   Package, 
   Layers, 
   Sparkles, 
@@ -199,7 +200,7 @@ const OperatorTechStack = () => {
     return (
       <OperatorLayout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <AtomSpinner size="lg" />
         </div>
       </OperatorLayout>
     );

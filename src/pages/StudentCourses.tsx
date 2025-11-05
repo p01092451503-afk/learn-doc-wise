@@ -11,6 +11,7 @@ import { BookOpen, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface Course {
   id: string;
@@ -261,7 +262,7 @@ const StudentCourses = () => {
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+              <AtomSpinner size="lg" className="mx-auto mb-4" />
               <p className="text-muted-foreground">{t("loadingCourses")}</p>
             </div>
           </div>
