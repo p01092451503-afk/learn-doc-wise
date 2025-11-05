@@ -26,6 +26,7 @@ interface Enrollment {
   id: string;
   course_id: string;
   progress: number;
+  enrolled_at: string;
   courses: Course;
   calculated_progress?: number;
 }
@@ -133,6 +134,7 @@ const StudentCourses = () => {
           id,
           course_id,
           progress,
+          enrolled_at,
           courses (
             id,
             title,
@@ -142,7 +144,8 @@ const StudentCourses = () => {
             duration_hours
           )
         `)
-        .eq("user_id", user.id);
+        .eq("user_id", user.id)
+        .order("enrolled_at", { ascending: false });
 
       if (error) throw error;
 
@@ -241,6 +244,14 @@ const StudentCourses = () => {
     }
   };
 
+  // 최근 7일 이내 또는 진행률 10% 미만인 강의 필터링
+  const recentEnrollments = enrollments.filter(enrollment => {
+    const enrolledDate = new Date(enrollment.enrolled_at);
+    const daysSinceEnrolled = Math.floor((Date.now() - enrolledDate.getTime()) / (1000 * 60 * 60 * 24));
+    const progress = enrollment.calculated_progress || enrollment.progress || 0;
+    return daysSinceEnrolled <= 7 || progress < 10;
+  }).slice(0, 3); // 최대 3개만 표시
+
   return (
     <DashboardLayout userRole={userRole}>
       <div className="space-y-8">
@@ -278,6 +289,82 @@ const StudentCourses = () => {
           </Card>
         ) : (
           <>
+            {/* 최근 수강 신청 강의 */}
+            {!isDemo && recentEnrollments.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                  🎯 최근 수강 신청한 강의
+                  <Badge variant="default" className="text-xs">NEW</Badge>
+                </h2>
+                <div className="grid gap-6 md:grid-cols-3 mb-8">
+                  {recentEnrollments.map((enrollment) => {
+                    const course = enrollment.courses;
+                    if (!course) return null;
+                    
+                    const progress = enrollment.calculated_progress || enrollment.progress || 0;
+                    const levelBadge = getLevelBadge(course.level);
+                    const enrolledDate = new Date(enrollment.enrolled_at);
+                    const daysAgo = Math.floor((Date.now() - enrolledDate.getTime()) / (1000 * 60 * 60 * 24));
+                    
+                    return (
+                      <Card key={enrollment.id} className="border-primary/20 shadow-md hover:shadow-xl transition-all group overflow-hidden">
+                        <div className="aspect-video overflow-hidden bg-muted relative">
+                          {course.thumbnail_url ? (
+                            <img
+                              src={course.thumbnail_url}
+                              alt={course.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                              <BookOpen className="h-16 w-16 text-primary/40" />
+                            </div>
+                          )}
+                          <div className="absolute top-2 left-2">
+                            <Badge variant={levelBadge.variant}>
+                              {levelBadge.text}
+                            </Badge>
+                          </div>
+                          <div className="absolute top-2 right-2">
+                            <Badge variant="default" className="bg-primary/90">
+                              {daysAgo === 0 ? "오늘" : `${daysAgo}일 전`}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardContent className="p-5">
+                          <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {course.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                            {course.description || "강좌 설명이 없습니다"}
+                          </p>
+                          <div className="flex items-center gap-2 mb-4">
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">
+                              {course.duration_hours}{t("hours")}
+                            </span>
+                          </div>
+                          <div className="mb-3">
+                            <div className="flex items-center justify-between text-sm mb-1">
+                              <span className="text-muted-foreground">{t("progress")}</span>
+                              <span className="font-semibold">{Math.round(progress)}%</span>
+                            </div>
+                            <Progress value={progress} className="h-2" />
+                          </div>
+                          <Link to={`/student/courses/${course.id}`}>
+                            <Button variant="premium" size="default" className="w-full gap-2">
+                              <PlayCircle className="h-4 w-4" />
+                              지금 학습 시작하기
+                            </Button>
+                          </Link>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* 학습 진행 현황 */}
             <div className="grid gap-6 md:grid-cols-4">
               <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
