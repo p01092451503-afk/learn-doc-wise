@@ -14,18 +14,19 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(), 
     mode === "development" && componentTagger(),
-    mode === "production" && compression({
-      algorithm: 'gzip',
-      ext: '.gz',
-      threshold: 10240, // Only compress files larger than 10kb
-      deleteOriginFile: false,
-    }),
-    mode === "production" && compression({
-      algorithm: 'brotliCompress',
-      ext: '.br',
-      threshold: 10240,
-      deleteOriginFile: false,
-    })
+    // Compression 임시 비활성화 (테스트용)
+    // mode === "production" && compression({
+    //   algorithm: 'gzip',
+    //   ext: '.gz',
+    //   threshold: 10240, // Only compress files larger than 10kb
+    //   deleteOriginFile: false,
+    // }),
+    // mode === "production" && compression({
+    //   algorithm: 'brotliCompress',
+    //   ext: '.br',
+    //   threshold: 10240,
+    //   deleteOriginFile: false,
+    // })
   ].filter(Boolean),
   resolve: {
     alias: {
