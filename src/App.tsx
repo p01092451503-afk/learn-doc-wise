@@ -126,87 +126,87 @@ const App = () => {
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <Suspense fallback={<LoadingFallback />}>
+              <Suspense fallback={<div className="animate-fade-in"><LoadingFallback /></div>}>
               <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/features-detail" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/features" element={<FeaturesShowcase />} />
-                <Route path="/main" element={<PublicMain />} />
-                <Route path="/courses" element={<PublicCourses />} />
-                <Route path="/courses/:id" element={<PublicCourseDetail />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/demo" element={<DemoPreview />} />
-                <Route path="/admin-demo" element={<AdminDemo />} />
-                <Route path="/student" element={<StudentDashboard />} />
-                <Route path="/students" element={<StudentDashboard />} />
-                <Route path="/student/courses" element={<StudentCourses />} />
-                <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
-                <Route path="/student/assignments" element={<StudentAssignments />} />
-                <Route path="/student/community" element={<StudentCommunity />} />
-                <Route path="/student/analytics" element={<StudentAnalytics />} />
-                <Route path="/student/gamification" element={<StudentGamification />} />
-                <Route path="/student/learning-path" element={<StudentLearningPath />} />
-                <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
-                <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
-                <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
-                <Route path="/teacher" element={<TeacherDashboard />} />
-                <Route path="/teacher/courses" element={<TeacherCourses />} />
-                <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
-                <Route path="/teacher/students" element={<TeacherStudents />} />
-                <Route path="/teacher/revenue" element={<TeacherRevenue />} />
-                <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
-                <Route path="/teacher/assignments" element={<TeacherAssignments />} />
-                <Route path="/teacher/attendance" element={<TeacherAttendance />} />
-                <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
-                <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
-                <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
-                <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
-                <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
-                <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
-                <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
-                <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/operator" element={<OperatorDashboard />} />
-                <Route path="/operator/tenants" element={<OperatorTenants />} />
-                <Route path="/operator/usage" element={<OperatorUsage />} />
-                <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
-                <Route path="/operator/revenue" element={<OperatorRevenue />} />
-                <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
-                <Route path="/operator/settings" element={<OperatorSettings />} />
-                <Route path="/operator/features" element={<OperatorFeatures />} />
-                <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
-                <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
-                <Route path="/operator/manual" element={<OperatorManual />} />
-                <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
-                <Route path="/operator/backup" element={<OperatorBackup />} />
-                <Route path="/operator/updates" element={<OperatorUpdates />} />
-                <Route path="/operator/license" element={<OperatorLicense />} />
-                <Route path="/operator/resources" element={<OperatorResources />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/courses" element={<AdminCoursesIntegrated />} />
-          <Route path="/admin/content" element={<AdminContent />} />
-                <Route path="/admin/attendance" element={<AdminAttendance />} />
-                <Route path="/admin/training-log" element={<AdminTrainingLog />} />
-                <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
-                <Route path="/admin/counseling-log" element={<AdminCounselingLog />} />
-                <Route path="/admin/dropout-management" element={<AdminDropoutManagement />} />
-                <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
-                <Route path="/admin/grades" element={<AdminGrades />} />
-                <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
-                <Route path="/admin/manual" element={<AdminManual />} />
-                <Route path="/admin/revenue" element={<AdminRevenue />} />
-                <Route path="/admin/monitoring" element={<AdminMonitoring />} />
-                <Route path="/admin/learning" element={<AdminLearning />} />
-                <Route path="/admin/ai-logs" element={<AdminAILogs />} />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
-                <Route path="/payment/success" element={<PaymentSuccess />} />
-                <Route path="/payment/fail" element={<PaymentFail />} />
-                <Route path="/tenant/:subdomain" element={<TenantHome />} />
-                <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
-                <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
-                <Route path="*" element={<NotFound />} />
+                <Route key="landing" path="/" element={<div className="animate-fade-in"><Landing /></div>} />
+                <Route key="features-detail" path="/features-detail" element={<div className="animate-fade-in"><Features /></div>} />
+                <Route key="pricing" path="/pricing" element={<div className="animate-fade-in"><Pricing /></div>} />
+                <Route key="features" path="/features" element={<div className="animate-fade-in"><FeaturesShowcase /></div>} />
+                <Route key="main" path="/main" element={<div className="animate-fade-in"><PublicMain /></div>} />
+                <Route key="courses" path="/courses" element={<div className="animate-fade-in"><PublicCourses /></div>} />
+                <Route key="course-detail" path="/courses/:id" element={<div className="animate-fade-in"><PublicCourseDetail /></div>} />
+                <Route key="auth" path="/auth" element={<div className="animate-fade-in"><Auth /></div>} />
+                <Route key="demo" path="/demo" element={<div className="animate-fade-in"><DemoPreview /></div>} />
+                <Route key="admin-demo" path="/admin-demo" element={<div className="animate-fade-in"><AdminDemo /></div>} />
+                <Route key="student" path="/student" element={<div className="animate-fade-in"><StudentDashboard /></div>} />
+                <Route key="students" path="/students" element={<div className="animate-fade-in"><StudentDashboard /></div>} />
+                <Route key="student-courses" path="/student/courses" element={<div className="animate-fade-in"><StudentCourses /></div>} />
+                <Route key="student-course-detail" path="/student/courses/:id" element={<div className="animate-fade-in"><StudentCourseDetail /></div>} />
+                <Route key="student-assignments" path="/student/assignments" element={<div className="animate-fade-in"><StudentAssignments /></div>} />
+                <Route key="student-community" path="/student/community" element={<div className="animate-fade-in"><StudentCommunity /></div>} />
+                <Route key="student-analytics" path="/student/analytics" element={<div className="animate-fade-in"><StudentAnalytics /></div>} />
+                <Route key="student-gamification" path="/student/gamification" element={<div className="animate-fade-in"><StudentGamification /></div>} />
+                <Route key="student-learning-path" path="/student/learning-path" element={<div className="animate-fade-in"><StudentLearningPath /></div>} />
+                <Route key="student-learning-path-detail" path="/student/learning-path/:id" element={<div className="animate-fade-in"><StudentLearningPathDetail /></div>} />
+                <Route key="student-satisfaction" path="/student/satisfaction-survey" element={<div className="animate-fade-in"><StudentSatisfactionSurvey /></div>} />
+                <Route key="student-counseling" path="/student/counseling-log" element={<div className="animate-fade-in"><StudentCounselingLog /></div>} />
+                <Route key="teacher" path="/teacher" element={<div className="animate-fade-in"><TeacherDashboard /></div>} />
+                <Route key="teacher-courses" path="/teacher/courses" element={<div className="animate-fade-in"><TeacherCourses /></div>} />
+                <Route key="teacher-course-detail" path="/teacher/courses/:id" element={<div className="animate-fade-in"><TeacherCourseDetail /></div>} />
+                <Route key="teacher-students" path="/teacher/students" element={<div className="animate-fade-in"><TeacherStudents /></div>} />
+                <Route key="teacher-revenue" path="/teacher/revenue" element={<div className="animate-fade-in"><TeacherRevenue /></div>} />
+                <Route key="teacher-analytics" path="/teacher/analytics" element={<div className="animate-fade-in"><TeacherAnalytics /></div>} />
+                <Route key="teacher-assignments" path="/teacher/assignments" element={<div className="animate-fade-in"><TeacherAssignments /></div>} />
+                <Route key="teacher-attendance" path="/teacher/attendance" element={<div className="animate-fade-in"><TeacherAttendance /></div>} />
+                <Route key="teacher-attendance-detail" path="/teacher/attendance-detail" element={<div className="animate-fade-in"><TeacherAttendanceDetail /></div>} />
+                <Route key="teacher-training-log" path="/teacher/training-log" element={<div className="animate-fade-in"><TeacherTrainingLog /></div>} />
+                <Route key="teacher-satisfaction" path="/teacher/satisfaction-survey" element={<div className="animate-fade-in"><TeacherSatisfactionSurvey /></div>} />
+                <Route key="teacher-counseling" path="/teacher/counseling-log" element={<div className="animate-fade-in"><TeacherCounselingLog /></div>} />
+                <Route key="teacher-dropout" path="/teacher/dropout-management" element={<div className="animate-fade-in"><TeacherDropoutManagement /></div>} />
+                <Route key="teacher-completion" path="/teacher/training-completion" element={<div className="animate-fade-in"><TeacherTrainingCompletion /></div>} />
+                <Route key="teacher-allowance" path="/teacher/training-allowance" element={<div className="animate-fade-in"><TeacherTrainingAllowance /></div>} />
+                <Route key="teacher-report" path="/teacher/training-report" element={<div className="animate-fade-in"><TeacherTrainingReport /></div>} />
+                <Route key="admin" path="/admin" element={<div className="animate-fade-in"><AdminDashboard /></div>} />
+                <Route key="operator" path="/operator" element={<div className="animate-fade-in"><OperatorDashboard /></div>} />
+                <Route key="operator-tenants" path="/operator/tenants" element={<div className="animate-fade-in"><OperatorTenants /></div>} />
+                <Route key="operator-usage" path="/operator/usage" element={<div className="animate-fade-in"><OperatorUsage /></div>} />
+                <Route key="operator-ai-logs" path="/operator/ai-logs" element={<div className="animate-fade-in"><OperatorAILogs /></div>} />
+                <Route key="operator-revenue" path="/operator/revenue" element={<div className="animate-fade-in"><OperatorRevenue /></div>} />
+                <Route key="operator-monitoring" path="/operator/monitoring" element={<div className="animate-fade-in"><OperatorMonitoring /></div>} />
+                <Route key="operator-settings" path="/operator/settings" element={<div className="animate-fade-in"><OperatorSettings /></div>} />
+                <Route key="operator-features" path="/operator/features" element={<div className="animate-fade-in"><OperatorFeatures /></div>} />
+                <Route key="operator-tech-stack" path="/operator/tech-stack" element={<div className="animate-fade-in"><OperatorTechStack /></div>} />
+                <Route key="operator-govt-training" path="/operator/government-training" element={<div className="animate-fade-in"><OperatorGovernmentTraining /></div>} />
+                <Route key="operator-manual" path="/operator/manual" element={<div className="animate-fade-in"><OperatorManual /></div>} />
+                <Route key="operator-system-diagram" path="/operator/system-diagram" element={<div className="animate-fade-in"><OperatorSystemDiagram /></div>} />
+                <Route key="operator-backup" path="/operator/backup" element={<div className="animate-fade-in"><OperatorBackup /></div>} />
+                <Route key="operator-updates" path="/operator/updates" element={<div className="animate-fade-in"><OperatorUpdates /></div>} />
+                <Route key="operator-license" path="/operator/license" element={<div className="animate-fade-in"><OperatorLicense /></div>} />
+                <Route key="operator-resources" path="/operator/resources" element={<div className="animate-fade-in"><OperatorResources /></div>} />
+          <Route key="admin-users" path="/admin/users" element={<div className="animate-fade-in"><AdminUsers /></div>} />
+          <Route key="admin-courses" path="/admin/courses" element={<div className="animate-fade-in"><AdminCoursesIntegrated /></div>} />
+          <Route key="admin-content" path="/admin/content" element={<div className="animate-fade-in"><AdminContent /></div>} />
+                <Route key="admin-attendance" path="/admin/attendance" element={<div className="animate-fade-in"><AdminAttendance /></div>} />
+                <Route key="admin-training-log" path="/admin/training-log" element={<div className="animate-fade-in"><AdminTrainingLog /></div>} />
+                <Route key="admin-satisfaction" path="/admin/satisfaction-survey" element={<div className="animate-fade-in"><AdminSatisfactionSurvey /></div>} />
+                <Route key="admin-counseling" path="/admin/counseling-log" element={<div className="animate-fade-in"><AdminCounselingLog /></div>} />
+                <Route key="admin-dropout" path="/admin/dropout-management" element={<div className="animate-fade-in"><AdminDropoutManagement /></div>} />
+                <Route key="admin-completion" path="/admin/training-completion" element={<div className="animate-fade-in"><AdminTrainingCompletion /></div>} />
+                <Route key="admin-grades" path="/admin/grades" element={<div className="animate-fade-in"><AdminGrades /></div>} />
+                <Route key="admin-allowance" path="/admin/training-allowance" element={<div className="animate-fade-in"><AdminTrainingAllowance /></div>} />
+                <Route key="admin-manual" path="/admin/manual" element={<div className="animate-fade-in"><AdminManual /></div>} />
+                <Route key="admin-revenue" path="/admin/revenue" element={<div className="animate-fade-in"><AdminRevenue /></div>} />
+                <Route key="admin-monitoring" path="/admin/monitoring" element={<div className="animate-fade-in"><AdminMonitoring /></div>} />
+                <Route key="admin-learning" path="/admin/learning" element={<div className="animate-fade-in"><AdminLearning /></div>} />
+                <Route key="admin-ai-logs" path="/admin/ai-logs" element={<div className="animate-fade-in"><AdminAILogs /></div>} />
+                <Route key="admin-analytics" path="/admin/analytics" element={<div className="animate-fade-in"><AdminAnalytics /></div>} />
+                <Route key="admin-settings" path="/admin/settings" element={<div className="animate-fade-in"><AdminSettings /></div>} />
+                <Route key="payment-success" path="/payment/success" element={<div className="animate-fade-in"><PaymentSuccess /></div>} />
+                <Route key="payment-fail" path="/payment/fail" element={<div className="animate-fade-in"><PaymentFail /></div>} />
+                <Route key="tenant-home" path="/tenant/:subdomain" element={<div className="animate-fade-in"><TenantHome /></div>} />
+                <Route key="tenant-courses" path="/tenant/:subdomain/courses" element={<div className="animate-fade-in"><TenantCourses /></div>} />
+                <Route key="tenant-course-detail" path="/tenant/:subdomain/courses/:courseSlug" element={<div className="animate-fade-in"><TenantCourseDetail /></div>} />
+                <Route key="not-found" path="*" element={<div className="animate-fade-in"><NotFound /></div>} />
               </Routes>
             </Suspense>
           </BrowserRouter>
