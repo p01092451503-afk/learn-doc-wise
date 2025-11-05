@@ -191,13 +191,8 @@ export const FeatureShowcaseAnimation = () => {
 
   return (
     <div className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
-      {/* Animated background gradient */}
-      <div 
-        className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor()} transition-all duration-1000`}
-      />
-      
-      {/* Grid pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+      {/* Subtle background pattern only */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
 
       {/* Main feature card */}
       <div
@@ -206,7 +201,7 @@ export const FeatureShowcaseAnimation = () => {
       >
         {/* Category badge */}
         <div className="flex justify-center mb-6 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border shadow-lg">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border">
             <span className={`text-sm font-bold ${categoryLabel.color}`}>
               {categoryLabel.text}
             </span>
@@ -214,10 +209,10 @@ export const FeatureShowcaseAnimation = () => {
         </div>
 
         {/* Feature card */}
-        <div className="bg-card/95 backdrop-blur-xl border-2 border-border rounded-3xl p-8 md:p-12 shadow-2xl hover:shadow-glow transition-all duration-300">
+        <div className="bg-card border border-border/50 rounded-3xl p-8 md:p-12 shadow-xl hover:shadow-2xl transition-all duration-300">
           <div className="flex flex-col items-center text-center gap-6">
             {/* Icon */}
-            <div className="p-6 rounded-2xl bg-primary/10 ring-4 ring-primary/20">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10">
               <FeatureIcon className="h-16 w-16 md:h-20 md:h-20 text-primary" />
             </div>
 
@@ -237,7 +232,7 @@ export const FeatureShowcaseAnimation = () => {
                 {currentFeature.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-2 rounded-full bg-primary/10 text-primary font-medium border border-primary/20 text-sm"
+                    className="px-4 py-2 rounded-full bg-muted text-foreground font-medium border border-border text-sm"
                   >
                     {tag}
                   </span>
