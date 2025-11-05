@@ -376,7 +376,6 @@ const PublicMain = () => {
                 <img src={logoIcon} alt="Atom LMS 로고" className="h-10 w-10" />
                 <span className="text-xl font-logo font-bold">atomLMS</span>
               </div>
-              <p className="text-sm text-muted-foreground mt-2">AI 기반 학습관리 플랫폼</p>
             </div>
             <nav aria-label="회사 정보">
               <h4 className="font-semibold mb-4">{t('aboutUs')}</h4>
@@ -404,7 +403,7 @@ const PublicMain = () => {
             </nav>
           </div>
           <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2025 atomLMS. All rights reserved. | AI 기반 학습관리 플랫폼</p>
+            <p>© 2025 atomLMS. All rights reserved.</p>
           </div>
         </div>
       </footer>
