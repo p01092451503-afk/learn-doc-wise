@@ -205,8 +205,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     const adminItems = [
       ...baseItems,
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
-      { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
-      { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
+      { icon: BookOpen, label: "강좌 & 차시 관리", path: "/admin/courses", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
       { icon: CalendarCheck, label: "출석 관리", path: "/admin/attendance", enabled: true, isHRD: true },
       { icon: ClipboardList, label: "훈련일지", path: "/admin/training-log", enabled: true, isHRD: true },
