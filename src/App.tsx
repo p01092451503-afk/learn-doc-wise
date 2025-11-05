@@ -6,15 +6,18 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import ErrorBoundary from "./components/ErrorBoundary";
-import Landing from "./pages/Landing"; // Eager import to fix loading issue
+import Landing from "./pages/Landing"; // Eager import
+import Auth from "./pages/Auth"; // Eager import - critical for auth flow
+import StudentDashboard from "./pages/StudentDashboard"; // Eager import - frequently accessed
+import TeacherDashboard from "./pages/TeacherDashboard"; // Eager import - frequently accessed  
+import AdminDashboard from "./pages/AdminDashboard"; // Eager import - frequently accessed
+import OperatorDashboard from "./pages/OperatorDashboard"; // Eager import - frequently accessed
 
-// Lazy load all pages for better performance
+// Lazy load less critical pages for better performance
 const Main2 = lazy(() => import("./pages/Main2"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
-const Auth = lazy(() => import("./pages/Auth"));
 const DemoPreview = lazy(() => import("./pages/DemoPreview"));
-const StudentDashboard = lazy(() => import("./pages/StudentDashboard"));
 const StudentCourses = lazy(() => import("./pages/StudentCourses"));
 const StudentAssignments = lazy(() => import("./pages/StudentAssignments"));
 const StudentCommunity = lazy(() => import("./pages/StudentCommunity"));
@@ -22,15 +25,12 @@ const StudentAnalytics = lazy(() => import("./pages/StudentAnalytics"));
 const StudentGamification = lazy(() => import("./pages/StudentGamification"));
 const StudentLearningPath = lazy(() => import("./pages/StudentLearningPath"));
 const StudentLearningPathDetail = lazy(() => import("./pages/StudentLearningPathDetail"));
-const TeacherDashboard = lazy(() => import("./pages/TeacherDashboard"));
 const TeacherCourses = lazy(() => import("./pages/TeacherCourses"));
 const TeacherStudents = lazy(() => import("./pages/TeacherStudents"));
 const TeacherRevenue = lazy(() => import("./pages/TeacherRevenue"));
 const TeacherAnalytics = lazy(() => import("./pages/TeacherAnalytics"));
 const TeacherAssignments = lazy(() => import("./pages/TeacherAssignments"));
 const TeacherAttendance = lazy(() => import("./pages/TeacherAttendance"));
-const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
-const OperatorDashboard = lazy(() => import("./pages/OperatorDashboard"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminCourses = lazy(() => import("./pages/AdminCourses"));
 const AdminContent = lazy(() => import("./pages/AdminContent"));
@@ -156,10 +156,10 @@ const App = () => {
               <Route path="/features" element={<Suspense fallback={<LoadingFallback />}><FeaturesShowcase /></Suspense>} />
               <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><PublicCourses /></Suspense>} />
               <Route path="/courses/:id" element={<Suspense fallback={<LoadingFallback />}><PublicCourseDetail /></Suspense>} />
-              <Route path="/auth" element={<Suspense fallback={<LoadingFallback />}><Auth /></Suspense>} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/demo" element={<Suspense fallback={<LoadingFallback />}><DemoPreview /></Suspense>} />
-              <Route path="/student" element={<Suspense fallback={<LoadingFallback />}><StudentDashboard /></Suspense>} />
-              <Route path="/students" element={<Suspense fallback={<LoadingFallback />}><StudentDashboard /></Suspense>} />
+              <Route path="/student" element={<StudentDashboard />} />
+              <Route path="/students" element={<StudentDashboard />} />
               <Route path="/student/courses" element={<Suspense fallback={<LoadingFallback />}><StudentCourses /></Suspense>} />
               <Route path="/student/courses/:id" element={<Suspense fallback={<LoadingFallback />}><StudentCourseDetail /></Suspense>} />
               <Route path="/student/assignments" element={<Suspense fallback={<LoadingFallback />}><StudentAssignments /></Suspense>} />
@@ -170,7 +170,7 @@ const App = () => {
               <Route path="/student/learning-path/:id" element={<Suspense fallback={<LoadingFallback />}><StudentLearningPathDetail /></Suspense>} />
               <Route path="/student/satisfaction-survey" element={<Suspense fallback={<LoadingFallback />}><StudentSatisfactionSurvey /></Suspense>} />
               <Route path="/student/counseling-log" element={<Suspense fallback={<LoadingFallback />}><StudentCounselingLog /></Suspense>} />
-              <Route path="/teacher" element={<Suspense fallback={<LoadingFallback />}><TeacherDashboard /></Suspense>} />
+              <Route path="/teacher" element={<TeacherDashboard />} />
               <Route path="/teacher/courses" element={<Suspense fallback={<LoadingFallback />}><TeacherCourses /></Suspense>} />
               <Route path="/teacher/courses/:id" element={<Suspense fallback={<LoadingFallback />}><TeacherCourseDetail /></Suspense>} />
               <Route path="/teacher/students" element={<Suspense fallback={<LoadingFallback />}><TeacherStudents /></Suspense>} />
@@ -186,8 +186,8 @@ const App = () => {
               <Route path="/teacher/training-completion" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingCompletion /></Suspense>} />
               <Route path="/teacher/training-allowance" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingAllowance /></Suspense>} />
               <Route path="/teacher/training-report" element={<Suspense fallback={<LoadingFallback />}><TeacherTrainingReport /></Suspense>} />
-              <Route path="/admin" element={<Suspense fallback={<LoadingFallback />}><AdminDashboard /></Suspense>} />
-              <Route path="/operator" element={<Suspense fallback={<LoadingFallback />}><OperatorDashboard /></Suspense>} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/operator" element={<OperatorDashboard />} />
               <Route path="/operator/tenants" element={<Suspense fallback={<LoadingFallback />}><OperatorTenants /></Suspense>} />
               <Route path="/operator/usage" element={<Suspense fallback={<LoadingFallback />}><OperatorUsage /></Suspense>} />
               <Route path="/operator/ai-logs" element={<Suspense fallback={<LoadingFallback />}><OperatorAILogs /></Suspense>} />
