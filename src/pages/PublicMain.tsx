@@ -59,43 +59,58 @@ const PublicMain = () => {
 
   const fetchPublishedCourses = async () => {
     try {
-      const { data, error } = await supabase
+      // 타임아웃 설정 (10초)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      );
+
+      const fetchPromise = supabase
         .from("courses")
         .select("*")
         .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(6);
 
+      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+
       if (error) throw error;
       
       setCourses(data || []);
       
-      // 비동기적으로 썸네일 로드 (블로킹하지 않음)
+      // 비동기적으로 썸네일 로드 (블로킹하지 않음, 에러 처리 추가)
       if (data) {
         Promise.all(
           data.map(async (course) => {
-            if (!course.thumbnail_url) {
-              const { data: contents } = await supabase
-                .from("course_contents")
-                .select("video_url, video_provider")
-                .eq("course_id", course.id)
-                .eq("is_published", true)
-                .order("order_index", { ascending: true })
-                .limit(1);
-              
-              if (contents && contents.length > 0) {
-                const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
-                return { ...course, videoThumbnail: thumbnail };
+            try {
+              if (!course.thumbnail_url) {
+                const { data: contents } = await supabase
+                  .from("course_contents")
+                  .select("video_url, video_provider")
+                  .eq("course_id", course.id)
+                  .eq("is_published", true)
+                  .order("order_index", { ascending: true })
+                  .limit(1);
+                
+                if (contents && contents.length > 0) {
+                  const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
+                  return { ...course, videoThumbnail: thumbnail };
+                }
               }
+            } catch (err) {
+              console.error('Error loading thumbnail:', err);
             }
             return course;
           })
         ).then(coursesWithThumbnails => {
           setCourses(coursesWithThumbnails);
+        }).catch(err => {
+          console.error('Error loading thumbnails:', err);
         });
       }
     } catch (error) {
       console.error("Error fetching courses:", error);
+      // 에러 발생해도 빈 배열로 설정하여 UI는 표시
+      setCourses([]);
     } finally {
       setLoading(false);
     }

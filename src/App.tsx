@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Landing from "./pages/Landing"; // Eager import to fix loading issue
 
 // Lazy load all pages for better performance
@@ -130,14 +131,15 @@ const App = () => {
   }));
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <TooltipProvider delayDuration={200}>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <ScrollToTop />
-            <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <LanguageProvider>
+          <TooltipProvider delayDuration={200}>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/main" element={<Suspense fallback={<LoadingFallback />}><PublicMain /></Suspense>} />
               <Route path="/features-detail" element={<Suspense fallback={<LoadingFallback />}><Features /></Suspense>} />
@@ -218,11 +220,12 @@ const App = () => {
               <Route path="/tenant/:subdomain/courses" element={<Suspense fallback={<LoadingFallback />}><TenantCourses /></Suspense>} />
               <Route path="/tenant/:subdomain/courses/:courseSlug" element={<Suspense fallback={<LoadingFallback />}><TenantCourseDetail /></Suspense>} />
               <Route path="*" element={<Suspense fallback={<LoadingFallback />}><NotFound /></Suspense>} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </LanguageProvider>
-    </QueryClientProvider>
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </LanguageProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 
