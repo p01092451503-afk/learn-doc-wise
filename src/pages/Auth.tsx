@@ -67,9 +67,19 @@ const Auth = () => {
   }, []);
 
   useEffect(() => {
-    // Check if coming from demo mode
+    // URL 파라미터에서 'logout'이 있는지 확인
     const urlParams = new URLSearchParams(window.location.search);
+    const shouldLogout = urlParams.get('logout') === 'true';
     const fromDemo = urlParams.get('from') === 'demo';
+
+    // logout 파라미터가 있으면 즉시 로그아웃 후 파라미터 제거
+    if (shouldLogout) {
+      supabase.auth.signOut().then(() => {
+        // URL에서 logout 파라미터 제거
+        window.history.replaceState({}, '', '/auth');
+      });
+      return;
+    }
 
     // Check if user is already logged in
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {

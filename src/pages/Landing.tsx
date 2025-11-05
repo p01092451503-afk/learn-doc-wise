@@ -34,7 +34,7 @@ const Landing = () => {
               <Link to="/pricing">
                 <Button variant="ghost" size="default">요금제</Button>
               </Link>
-              <Link to="/auth">
+              <Link to="/auth?logout=true">
                 <Button variant="ghost" size="default">로그인</Button>
               </Link>
               <Link to="/auth">
