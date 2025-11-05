@@ -157,8 +157,9 @@ export const FeatureShowcaseAnimation = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % allFeatures.length);
         setIsExiting(false);
-      }, 250); // 더 빠른 전환을 위해 500ms에서 250ms로 단축
-    }, 3000);
+      }, 400); // 더 부드러운 전환을 위해 250ms에서 400ms로 증가
+    }, 3500); // 카드 표시 시간도 3초에서 3.5초로 증가
+
 
     return () => clearInterval(interval);
   }, []);
@@ -202,7 +203,7 @@ export const FeatureShowcaseAnimation = () => {
       {/* Main feature card */}
       <div
         key={currentIndex}
-        className={`relative z-10 max-w-2xl mx-auto px-4 transition-all duration-500 ${
+        className={`relative z-10 max-w-2xl mx-auto px-4 transition-all duration-700 ${
           isExiting 
             ? 'animate-slide-out-right opacity-0' 
             : 'animate-slide-in-left opacity-100'
@@ -297,11 +298,11 @@ export const FeatureShowcaseAnimation = () => {
         }
         
         .animate-slide-in-left {
-          animation: slide-in-left 0.4s ease-out;
+          animation: slide-in-left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .animate-slide-out-right {
-          animation: slide-out-right 0.4s ease-out;
+          animation: slide-out-right 0.6s cubic-bezier(0.4, 0, 0.6, 1);
         }
       `}</style>
     </div>
