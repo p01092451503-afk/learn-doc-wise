@@ -40,7 +40,7 @@ const StudentCart = () => {
       if (!user) return;
 
       const { data, error } = await supabase
-        .from("cart")
+        .from("cart" as any)
         .select(`
           id,
           course_id,
@@ -57,7 +57,7 @@ const StudentCart = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      setCartItems(data || []);
+      setCartItems((data || []) as any);
     } catch (error) {
       console.error("Error fetching cart:", error);
       toast({
@@ -73,7 +73,7 @@ const StudentCart = () => {
   const removeFromCart = async (itemId: string) => {
     try {
       const { error } = await supabase
-        .from("cart")
+        .from("cart" as any)
         .delete()
         .eq("id", itemId);
 

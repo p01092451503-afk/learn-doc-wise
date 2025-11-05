@@ -61,6 +61,9 @@ const TeacherTrainingAllowance = lazy(() => import("./pages/teacher/TeacherTrain
 const TeacherTrainingReport = lazy(() => import("./pages/teacher/TeacherTrainingReport"));
 const StudentSatisfactionSurvey = lazy(() => import("./pages/student/StudentSatisfactionSurvey"));
 const StudentCounselingLog = lazy(() => import("./pages/student/StudentCounselingLog"));
+const StudentCart = lazy(() => import("./pages/student/StudentCart"));
+const StudentPaymentHistory = lazy(() => import("./pages/student/StudentPaymentHistory"));
+const StudentPoints = lazy(() => import("./pages/student/StudentPoints"));
 const TeacherCourseDetail = lazy(() => import("./pages/TeacherCourseDetail"));
 const TemplatePreview = lazy(() => import("./pages/TemplatePreview"));
 const PublicMain = lazy(() => import("./pages/PublicMain"));
@@ -134,6 +137,9 @@ const AppRoutes = () => {
         <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
         <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
         <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
+        <Route path="/student/cart" element={<StudentCart />} />
+        <Route path="/student/payment-history" element={<StudentPaymentHistory />} />
+        <Route path="/student/points" element={<StudentPoints />} />
         <Route path="/teacher" element={<TeacherDashboard />} />
         <Route path="/teacher/courses" element={<TeacherCourses />} />
         <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
