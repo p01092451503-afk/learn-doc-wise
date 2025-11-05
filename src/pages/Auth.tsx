@@ -75,46 +75,48 @@ const Auth = () => {
     // Check if coming from demo mode
     const urlParams = new URLSearchParams(window.location.search);
     const fromDemo = urlParams.get('from') === 'demo';
-    let isRedirecting = false; // 중복 리다이렉트 방지
 
     const redirectUser = async (session: any) => {
-      if (isRedirecting) return; // 이미 리다이렉트 중이면 스킵
-      
-      // If from demo, always return to demo
-      if (fromDemo) {
-        isRedirecting = true;
-        navigate("/demo");
-        return;
-      }
+      try {
+        // If from demo, always return to demo
+        if (fromDemo) {
+          navigate("/demo", { replace: true });
+          return;
+        }
 
-      // Check user role and redirect accordingly (operator 제외)
-      const { data: allRoles, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .neq('role', 'operator'); // operator 역할 제외
+        // Check user role and redirect accordingly (operator 제외)
+        const { data: allRoles, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .neq('role', 'operator'); // operator 역할 제외
 
-      if (error) {
-        console.error('Error fetching roles:', error);
-        return;
-      }
+        if (error) {
+          console.error('Error fetching roles:', error);
+          // 에러 발생 시 기본 페이지로 리다이렉트
+          navigate("/student", { replace: true });
+          return;
+        }
 
-      if (allRoles && allRoles.length > 0) {
-        isRedirecting = true;
-        
         // 우선순위: admin > teacher > student
-        const hasAdmin = allRoles.some(r => r.role === 'admin');
-        const hasTeacher = allRoles.some(r => r.role === 'teacher');
-        
-        if (hasAdmin) {
-          navigate("/admin", { replace: true });
-        } else if (hasTeacher) {
-          navigate("/teacher", { replace: true });
+        if (allRoles && allRoles.length > 0) {
+          const hasAdmin = allRoles.some(r => r.role === 'admin');
+          const hasTeacher = allRoles.some(r => r.role === 'teacher');
+          
+          if (hasAdmin) {
+            navigate("/admin", { replace: true });
+          } else if (hasTeacher) {
+            navigate("/teacher", { replace: true });
+          } else {
+            navigate("/student", { replace: true });
+          }
         } else {
+          // 역할이 없으면 기본 student로
           navigate("/student", { replace: true });
         }
-      } else {
-        isRedirecting = true;
+      } catch (error) {
+        console.error('Redirect error:', error);
+        // 모든 에러 상황에서 기본 페이지로
         navigate("/student", { replace: true });
       }
     };
