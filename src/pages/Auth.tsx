@@ -95,9 +95,6 @@ const Auth = () => {
 
         if (roles) {
           switch (roles.role) {
-            case 'operator':
-              navigate("/operator");
-              break;
             case 'admin':
               navigate("/admin");
               break;
@@ -133,9 +130,6 @@ const Auth = () => {
 
         if (roles) {
           switch (roles.role) {
-            case 'operator':
-              navigate("/operator");
-              break;
             case 'admin':
               navigate("/admin");
               break;
