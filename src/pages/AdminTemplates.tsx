@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, Check, Palette, Layout, Paintbrush } from "lucide-react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface Template {
   id: string;
@@ -182,7 +183,7 @@ const AdminTemplates = () => {
     return (
       <DashboardLayout userRole="admin">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <AtomSpinner size="lg" />
         </div>
       </DashboardLayout>
     );

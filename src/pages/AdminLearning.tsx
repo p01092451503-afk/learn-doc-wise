@@ -3,8 +3,9 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AtomSpinner } from "@/components/AtomSpinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
@@ -473,7 +474,7 @@ const AdminLearning = () => {
                     </Badge>
                     {analyzingAI ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                        <AtomSpinner size="sm" className="mr-2" />
                         분석 중...
                       </>
                     ) : (

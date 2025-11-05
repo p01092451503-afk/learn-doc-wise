@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server, ArrowUp, ArrowDown, FileText, LayoutDashboard } from "lucide-react";
+import { AtomSpinner } from "@/components/AtomSpinner";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -68,7 +69,7 @@ const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
       <OperatorLayout>
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-500 mx-auto mb-4"></div>
+            <AtomSpinner size="lg" className="mx-auto mb-4" />
             <p className="text-slate-400">로딩 중...</p>
           </div>
         </div>
