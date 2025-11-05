@@ -138,12 +138,11 @@ const App = () => {
           <BrowserRouter>
             <ScrollToTop />
             <Routes>
-              <Route path="/" element={<Suspense fallback={<LoadingFallback />}><PublicMain /></Suspense>} />
-              <Route path="/landing" element={<Landing />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/main" element={<Suspense fallback={<LoadingFallback />}><PublicMain /></Suspense>} />
               <Route path="/features-detail" element={<Suspense fallback={<LoadingFallback />}><Features /></Suspense>} />
               <Route path="/pricing" element={<Suspense fallback={<LoadingFallback />}><Pricing /></Suspense>} />
               <Route path="/features" element={<Suspense fallback={<LoadingFallback />}><FeaturesShowcase /></Suspense>} />
-              <Route path="/main" element={<Suspense fallback={<LoadingFallback />}><PublicMain /></Suspense>} />
               <Route path="/courses" element={<Suspense fallback={<LoadingFallback />}><PublicCourses /></Suspense>} />
               <Route path="/courses/:id" element={<Suspense fallback={<LoadingFallback />}><PublicCourseDetail /></Suspense>} />
               <Route path="/auth" element={<Suspense fallback={<LoadingFallback />}><Auth /></Suspense>} />
