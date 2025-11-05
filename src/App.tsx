@@ -91,12 +91,16 @@ const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
 
-// Loading component
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-  </div>
-);
+// Loading component with better visibility
+const LoadingFallback = () => {
+  console.log('[LoadingFallback] Rendering loading state');
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary mb-4"></div>
+      <p className="text-muted-foreground text-lg">로딩 중...</p>
+    </div>
+  );
+};
 
 // 페이지 전환 시 스크롤을 최상단으로 이동
 const ScrollToTop = () => {
@@ -110,25 +114,30 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
-  // Removed complex async loading - using default Landing page
+  console.log('[App] Initializing...');
 
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        gcTime: 10 * 60 * 1000, // 10 minutes
-        retry: 1,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false, // Prevent refetch on reconnect
-        networkMode: 'offlineFirst', // Use cache when offline
+  const [queryClient] = useState(() => {
+    console.log('[App] Creating QueryClient');
+    return new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 5 * 60 * 1000,
+          gcTime: 10 * 60 * 1000,
+          retry: 1,
+          refetchOnWindowFocus: false,
+          refetchOnMount: false,
+          refetchOnReconnect: false,
+          networkMode: 'offlineFirst',
+        },
+        mutations: {
+          retry: 1,
+          networkMode: 'offlineFirst',
+        },
       },
-      mutations: {
-        retry: 1,
-        networkMode: 'offlineFirst',
-      },
-    },
-  }));
+    });
+  });
+
+  console.log('[App] Rendering App component');
 
   return (
     <ErrorBoundary>
