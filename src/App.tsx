@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { UserProvider } from "./contexts/UserContext";
-import { DashboardSkeleton } from "./components/LoadingSkeleton";
+import { AtomLoader } from "./components/AtomLoader";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
@@ -91,8 +91,8 @@ const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
 
-// Loading component with better skeleton
-const LoadingFallback = () => <DashboardSkeleton />;
+// Loading component with atom logo animation
+const LoadingFallback = () => <AtomLoader />;
 
 // 페이지 전환 시 스크롤을 최상단으로 이동하고 이전 컨텐츠 제거
 const ScrollToTop = () => {
