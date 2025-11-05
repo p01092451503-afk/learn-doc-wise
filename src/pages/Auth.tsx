@@ -66,23 +66,27 @@ const Auth = () => {
     clearInvalidSession();
   }, []);
 
+  // Handle logout parameter separately
   useEffect(() => {
-    // URL 파라미터에서 'logout'이 있는지 확인
     const urlParams = new URLSearchParams(window.location.search);
     const shouldLogout = urlParams.get('logout') === 'true';
-    const fromDemo = urlParams.get('from') === 'demo';
 
-    // logout 파라미터가 있으면 즉시 로그아웃 후 파라미터 제거
     if (shouldLogout) {
       supabase.auth.signOut().then(() => {
         // URL에서 logout 파라미터 제거
         window.history.replaceState({}, '', '/auth');
       });
-      return;
     }
+  }, []);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromDemo = urlParams.get('from') === 'demo';
 
     // Check if user is already logged in
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email);
+      
       if (session) {
         // If from demo, always return to demo
         if (fromDemo) {
@@ -114,12 +118,16 @@ const Auth = () => {
           .select('role')
           .eq('user_id', session.user.id);
 
+        console.log('User roles:', userRoles);
+
         if (userRoles && userRoles.length > 0) {
           // Priority order: admin > operator > teacher > student
           const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
           const primaryRole = rolesPriority.find(role => 
             userRoles.some(ur => ur.role === role)
           ) || 'student';
+
+          console.log('Redirecting to:', primaryRole);
 
           switch (primaryRole) {
             case 'admin':
@@ -138,6 +146,7 @@ const Auth = () => {
           }
         } else {
           // Default to student if no role found
+          console.log('No roles found, redirecting to student');
           navigate("/student");
         }
       }
