@@ -99,17 +99,24 @@ const Auth = () => {
         }
 
         // Check user role and redirect accordingly
-        const { data: roles } = await supabase
+        const { data: userRoles } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', session.user.id)
-          .limit(1)
-          .maybeSingle();
+          .eq('user_id', session.user.id);
 
-        if (roles) {
-          switch (roles.role) {
+        if (userRoles && userRoles.length > 0) {
+          // Priority order: admin > operator > teacher > student
+          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
+          const primaryRole = rolesPriority.find(role => 
+            userRoles.some(ur => ur.role === role)
+          ) || 'student';
+
+          switch (primaryRole) {
             case 'admin':
               navigate("/admin");
+              break;
+            case 'operator':
+              navigate("/operator");
               break;
             case 'teacher':
               navigate("/teacher");
@@ -152,17 +159,24 @@ const Auth = () => {
           }
         }
 
-        const { data: roles } = await supabase
+        const { data: userRoles } = await supabase
           .from('user_roles')
           .select('role')
-          .eq('user_id', session.user.id)
-          .limit(1)
-          .maybeSingle();
+          .eq('user_id', session.user.id);
 
-        if (roles) {
-          switch (roles.role) {
+        if (userRoles && userRoles.length > 0) {
+          // Priority order: admin > operator > teacher > student
+          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
+          const primaryRole = rolesPriority.find(role => 
+            userRoles.some(ur => ur.role === role)
+          ) || 'student';
+
+          switch (primaryRole) {
             case 'admin':
               navigate("/admin");
+              break;
+            case 'operator':
+              navigate("/operator");
               break;
             case 'teacher':
               navigate("/teacher");
