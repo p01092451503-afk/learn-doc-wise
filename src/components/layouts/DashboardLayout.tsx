@@ -34,6 +34,9 @@ import {
   Briefcase,
   Play,
   ArrowRight,
+  ShoppingCart,
+  CreditCard,
+  Coins,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -89,6 +92,9 @@ const iconMap: { [key: string]: any } = {
   Palette,
   Trophy,
   Route,
+  ShoppingCart,
+  CreditCard,
+  Coins,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -160,6 +166,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: Route, label: "학습 경로", path: "/student/learning-path", enabled: true, hasAI: true },
         { icon: FileText, label: "과제", path: "/student/assignments", enabled: true },
         { icon: MessageSquare, label: "커뮤니티", path: "/student/community", enabled: true },
+        { icon: ShoppingCart, label: "장바구니", path: "/student/cart", enabled: true },
+        { icon: CreditCard, label: "결제 내역", path: "/student/payment-history", enabled: true },
+        { icon: Coins, label: "포인트/마일리지", path: "/student/points", enabled: true },
         { icon: MessageSquare, label: "만족도 조사", path: "/student/satisfaction-survey", enabled: true, isHRD: true },
         { icon: ClipboardList, label: "상담 이력", path: "/student/counseling-log", enabled: true, isHRD: true },
         { icon: Trophy, label: "게이미피케이션", path: "/student/gamification", enabled: false },
