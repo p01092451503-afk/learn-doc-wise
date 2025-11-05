@@ -157,7 +157,7 @@ export const FeatureShowcaseAnimation = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % allFeatures.length);
         setIsExiting(false);
-      }, 500);
+      }, 250); // 더 빠른 전환을 위해 500ms에서 250ms로 단축
     }, 3000);
 
     return () => clearInterval(interval);
@@ -297,11 +297,11 @@ export const FeatureShowcaseAnimation = () => {
         }
         
         .animate-slide-in-left {
-          animation: slide-in-left 0.5s ease-out;
+          animation: slide-in-left 0.4s ease-out;
         }
         
         .animate-slide-out-right {
-          animation: slide-out-right 0.5s ease-out;
+          animation: slide-out-right 0.4s ease-out;
         }
       `}</style>
     </div>
