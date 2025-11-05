@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Clock, Users, PlayCircle, CheckCircle, ArrowLeft, Star } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import VideoPreview from "@/components/video/VideoPreview";
+import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -41,16 +42,46 @@ interface CourseContent {
 
 const PublicCourseDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [course, setCourse] = useState<Course | null>(null);
   const [contents, setContents] = useState<CourseContent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    checkUser();
     if (id) {
       fetchCourseDetails();
       fetchCourseContents();
     }
   }, [id]);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    if (user && id) {
+      checkEnrollment(user.id);
+    }
+  };
+
+  const checkEnrollment = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("enrollments")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("course_id", id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setIsEnrolled(!!data);
+    } catch (error) {
+      console.error("Error checking enrollment:", error);
+    }
+  };
 
   const fetchCourseDetails = async () => {
     try {
@@ -83,6 +114,50 @@ const PublicCourseDetail = () => {
       setContents(data || []);
     } catch (error) {
       console.error("Error fetching course contents:", error);
+    }
+  };
+
+  const handleEnrollment = async () => {
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    if (isEnrolled) {
+      navigate(`/student/courses/${id}`);
+      return;
+    }
+
+    setEnrolling(true);
+    try {
+      const { error } = await supabase
+        .from("enrollments")
+        .insert({
+          user_id: user.id,
+          course_id: id,
+          progress: 0
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "수강 신청 완료!",
+        description: "강의 학습을 시작하세요.",
+      });
+
+      setIsEnrolled(true);
+      setTimeout(() => {
+        navigate(`/student/courses/${id}`);
+      }, 1000);
+    } catch (error: any) {
+      console.error("Error enrolling:", error);
+      toast({
+        title: "수강 신청 실패",
+        description: error.message || "다시 시도해주세요.",
+        variant: "destructive",
+      });
+    } finally {
+      setEnrolling(false);
     }
   };
 
@@ -147,15 +222,27 @@ const PublicCourseDetail = () => {
             <Link to="/courses" className="text-foreground hover:text-primary transition-colors">
               전체 강좌
             </Link>
-            <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
-              로그인
-            </Link>
+            {!user && (
+              <Link to="/auth" className="text-foreground hover:text-primary transition-colors">
+                로그인
+              </Link>
+            )}
           </nav>
-          <Link to="/auth">
-            <Button variant="premium" size="default">
-              수강 신청
+          {user ? (
+            <Button 
+              variant="premium" 
+              size="default"
+              onClick={() => navigate("/student/courses")}
+            >
+              내 강의
             </Button>
-          </Link>
+          ) : (
+            <Link to="/auth">
+              <Button variant="premium" size="default">
+                수강 신청
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
@@ -262,11 +349,15 @@ const PublicCourseDetail = () => {
                     <p className="text-sm text-muted-foreground">부가세 포함</p>
                   )}
                 </div>
-                <Link to="/auth" className="block">
-                  <Button variant="premium" size="default" className="w-full mb-3">
-                    지금 수강 신청하기
-                  </Button>
-                </Link>
+                <Button 
+                  variant="premium" 
+                  size="default" 
+                  className="w-full mb-3"
+                  onClick={handleEnrollment}
+                  disabled={enrolling}
+                >
+                  {enrolling ? "처리 중..." : isEnrolled ? "학습 계속하기" : user ? "지금 수강 신청하기" : "로그인하고 수강하기"}
+                </Button>
                 <div className="space-y-1.5 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CheckCircle className="h-4 w-4 text-primary" />
