@@ -170,10 +170,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     if (effectiveUserRole === "teacher") {
       return [
         ...baseItems,
-        { icon: BookOpen, label: "강의 관리", path: "/teacher/courses", enabled: true },
+        { icon: BookOpen, label: "담당 강의", path: "/teacher/courses", enabled: true },
+        { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: CalendarCheck, label: "출결 상세", path: "/teacher/attendance-detail", enabled: true, isHRD: true },
+        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: ClipboardList, label: "훈련일지", path: "/teacher/training-log", enabled: true, isHRD: true },
         { icon: MessageSquare, label: "만족도 조사", path: "/teacher/satisfaction-survey", enabled: true, isHRD: true },
         { icon: ClipboardList, label: "상담일지", path: "/teacher/counseling-log", enabled: true, isHRD: true },
@@ -181,8 +183,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         { icon: Trophy, label: "수료 요건", path: "/teacher/training-completion", enabled: true, isHRD: true },
         { icon: DollarSign, label: "훈련수당", path: "/teacher/training-allowance", enabled: true, isHRD: true },
         { icon: BarChart3, label: "훈련 리포트", path: "/teacher/training-report", enabled: true, isHRD: true },
-        { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
-        { icon: BarChart3, label: "통계", path: "/teacher/analytics", enabled: true },
         { icon: DollarSign, label: "수익", path: "/teacher/revenue", enabled: true },
       ];
     }
