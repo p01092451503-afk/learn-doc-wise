@@ -51,17 +51,38 @@ const Auth = () => {
 
     const checkSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        // If there's a session error, clear everything
+        if (error) {
+          console.error('[Auth] Session error, clearing:', error);
+          await supabase.auth.signOut();
+          return;
+        }
         
         if (!mounted || !session) return;
 
-        // Get user roles
+        // Verify the session is actually valid by making a test request
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .limit(1);
+
+        // If we get a 403 or auth error, the session is invalid
+        if (roleError && (roleError.message.includes('session') || roleError.message.includes('JWT'))) {
+          console.error('[Auth] Invalid session detected, signing out:', roleError);
+          await supabase.auth.signOut();
+          return;
+        }
+
+        if (!mounted) return;
+
+        // Now get the actual roles
         const { data: userRoles } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id);
-
-        if (!mounted) return;
 
         if (userRoles && userRoles.length > 0) {
           const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
@@ -82,6 +103,8 @@ const Auth = () => {
         }
       } catch (error) {
         console.error('[Auth] Session check error:', error);
+        // On any error, sign out to reset state
+        await supabase.auth.signOut();
       }
     };
 
