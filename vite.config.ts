@@ -39,45 +39,26 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            // Core React packages
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
+            // Keep React in the main vendor bundle - DO NOT split it
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor';
             }
-            // Radix UI components - split by usage frequency
-            if (id.includes('@radix-ui')) {
-              if (id.includes('dialog') || id.includes('dropdown-menu') || id.includes('select')) {
-                return 'ui-core';
-              }
-              return 'ui-extended';
+            // React Router with React
+            if (id.includes('react-router')) {
+              return 'vendor';
             }
-            // Charts - only load when needed
-            if (id.includes('recharts')) {
-              return 'chart-vendor';
-            }
-            // Supabase
+            // Supabase in separate chunk
             if (id.includes('@supabase')) {
               return 'supabase';
             }
-            // TanStack Query
-            if (id.includes('@tanstack/react-query')) {
-              return 'query-vendor';
-            }
-            // Other smaller packages
-            if (id.includes('lucide-react')) {
-              return 'icons';
-            }
-            if (id.includes('date-fns')) {
-              return 'date-utils';
-            }
-            // All other node_modules
-            return 'vendor';
+            // All other dependencies
+            return 'libs';
           }
         },
       },
     },
     chunkSizeWarningLimit: 1000,
     sourcemap: false,
-    // Use esbuild for minification (faster and no extra dependency)
     minify: 'esbuild',
   },
   optimizeDeps: {
