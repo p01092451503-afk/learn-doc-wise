@@ -59,36 +59,37 @@ const PublicMain = () => {
 
   const fetchPublishedCourses = async () => {
     try {
+      // 단일 쿼리로 강의와 첫 번째 콘텐츠를 함께 조회 (N+1 문제 해결)
       const { data, error } = await supabase
         .from("courses")
-        .select("*")
+        .select(`
+          *,
+          course_contents!inner(
+            video_url,
+            video_provider,
+            order_index
+          )
+        `)
         .eq("status", "published")
+        .eq("course_contents.is_published", true)
         .order("created_at", { ascending: false })
         .limit(6);
 
       if (error) throw error;
       
-      // 각 코스의 첫 번째 콘텐츠에서 비디오 썸네일 추출
-      const coursesWithThumbnails = await Promise.all(
-        (data || []).map(async (course) => {
-          if (!course.thumbnail_url) {
-            // 첫 번째 콘텐츠 가져오기
-            const { data: contents } = await supabase
-              .from("course_contents")
-              .select("video_url, video_provider")
-              .eq("course_id", course.id)
-              .eq("is_published", true)
-              .order("order_index", { ascending: true })
-              .limit(1);
-            
-            if (contents && contents.length > 0) {
-              const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
-              return { ...course, videoThumbnail: thumbnail };
-            }
-          }
-          return course;
-        })
-      );
+      // 각 강의의 첫 번째 콘텐츠만 사용하여 썸네일 생성
+      const coursesWithThumbnails = (data || []).map((course: any) => {
+        if (!course.thumbnail_url && course.course_contents && course.course_contents.length > 0) {
+          // order_index로 정렬하여 첫 번째 콘텐츠 선택
+          const sortedContents = [...course.course_contents].sort((a, b) => a.order_index - b.order_index);
+          const firstContent = sortedContents[0];
+          const thumbnail = getVideoThumbnail(firstContent.video_url, firstContent.video_provider);
+          const { course_contents, ...courseData } = course;
+          return { ...courseData, videoThumbnail: thumbnail };
+        }
+        const { course_contents, ...courseData } = course;
+        return courseData;
+      });
       
       setCourses(coursesWithThumbnails);
     } catch (error) {
@@ -260,9 +261,10 @@ const PublicMain = () => {
                         {course.thumbnail_url || course.videoThumbnail ? (
                           <img
                             src={course.thumbnail_url || course.videoThumbnail}
-                            alt={`${course.title} 강의 썸네일 - ${course.description}`}
+                            alt={`${course.title} 강의 썸네일`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             loading="lazy"
+                            decoding="async"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-accent/10" role="img" aria-label={`${course.title} 기본 이미지`}>
