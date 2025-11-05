@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/contexts/UserContext";
 import { 
   Bot, 
   LayoutDashboard, 
@@ -106,6 +107,7 @@ const DemoPreview = () => {
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const { user } = useUser();
 
   const setActiveRole = (role: DemoRole) => {
     setSearchParams({ role, page: "dashboard" });
@@ -326,9 +328,11 @@ const DemoPreview = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Link to="/auth?from=demo">
-              <Button size="sm" className="text-xs md:text-sm">회원가입</Button>
-            </Link>
+            {!user && (
+              <Link to="/auth?from=demo">
+                <Button size="sm" className="text-xs md:text-sm">회원가입</Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -427,15 +431,6 @@ const DemoPreview = () => {
             {renderContent()}
           </div>
         </main>
-      </div>
-
-      {/* Floating CTA */}
-      <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-xs md:max-w-none md:w-auto">
-        <Link to="/auth?from=demo" className="block">
-          <Button size="lg" variant="gold" className="w-full md:w-auto shadow-glow hover:shadow-elegant transition-all text-sm md:text-base">
-            실제 서비스 시작하기
-          </Button>
-        </Link>
       </div>
     </div>
     </TooltipProvider>
