@@ -299,9 +299,9 @@ const StudentCourses = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                         {t("avgProgress")}
-                      </div>
+                      </p>
                       <p className="text-3xl font-bold mt-2">
                         {enrollments.length > 0 
                           ? Math.round(enrollments.reduce((acc, e) => acc + (e.calculated_progress || e.progress || 0), 0) / enrollments.length)
@@ -320,10 +320,10 @@ const StudentCourses = () => {
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                         {t("aiLearningAnalysisActive")}
                         <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                      </div>
+                      </p>
                       <p className="text-3xl font-bold mt-2">{t("active")}</p>
                     </div>
                       <div className="h-12 w-12 bg-primary/20 rounded-xl flex items-center justify-center">

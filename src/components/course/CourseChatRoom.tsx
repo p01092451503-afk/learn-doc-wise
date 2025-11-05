@@ -26,10 +26,9 @@ interface ChatMessage {
 
 interface CourseChatRoomProps {
   courseId: string;
-  isDemo?: boolean;
 }
 
-export const CourseChatRoom = ({ courseId, isDemo = false }: CourseChatRoomProps) => {
+export const CourseChatRoom = ({ courseId }: CourseChatRoomProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -40,16 +39,10 @@ export const CourseChatRoom = ({ courseId, isDemo = false }: CourseChatRoomProps
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isDemo) {
-      // 데모 모드에서는 실제 데이터 로드 건너뛰기
-      setLoading(false);
-      return;
-    }
     loadCurrentUser();
     loadMessages();
-    const unsubscribe = subscribeToMessages();
-    return unsubscribe;
-  }, [courseId, isDemo]);
+    subscribeToMessages();
+  }, [courseId]);
 
   useEffect(() => {
     scrollToBottom();

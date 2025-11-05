@@ -6,17 +6,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Link, useNavigate } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 
 const emailSchema = z.string().email("유효한 이메일 주소를 입력하세요");
 const passwordSchema = z.string().min(6, "비밀번호는 최소 6자 이상이어야 합니다");
@@ -36,122 +39,183 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load remembered email on mount
+  // Load remembered email and create demo users on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
       setLoginEmail(savedEmail);
       setRememberMe(true);
     }
-  }, []);
 
-  // Check session ONCE on mount - NO AUTOMATIC REDIRECT
-  useEffect(() => {
-    let mounted = true;
-
-    const checkSession = async () => {
+    // Create demo users if they don't exist
+    const createDemoUsers = async () => {
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data, error } = await supabase.functions.invoke('create-demo-users', {
+          method: 'POST',
+        });
         
-        // If there's a session error, silently clear it
         if (error) {
-          console.error('[Auth] Session error:', error);
-          await supabase.auth.signOut();
-          return;
+          console.error('Error creating demo users:', error);
+        } else {
+          console.log('Demo users setup:', data);
         }
-        
-        // DO NOT AUTO-REDIRECT - Let user manually login
-        // This prevents infinite loops and allows proper login flow
       } catch (error) {
-        console.error('[Auth] Session check error:', error);
+        console.error('Failed to create demo users:', error);
       }
     };
 
-    if (mounted) {
-      checkSession();
+    // Only create demo users once per session
+    if (!sessionStorage.getItem('demoUsersCreated')) {
+      createDemoUsers();
+      sessionStorage.setItem('demoUsersCreated', 'true');
     }
+  }, []);
 
-    return () => {
-      mounted = false;
-    };
-  }, []); // Empty deps - run ONCE only
+  useEffect(() => {
+    // Check if coming from demo mode
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromDemo = urlParams.get('from') === 'demo';
+
+    // Check if user is already logged in
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        // If from demo, always return to demo
+        if (fromDemo) {
+          navigate("/demo");
+          return;
+        }
+
+        // Check user role and redirect accordingly
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .limit(1)
+          .maybeSingle();
+
+        if (roles) {
+          switch (roles.role) {
+            case 'admin':
+              navigate("/admin");
+              break;
+            case 'teacher':
+              navigate("/teacher");
+              break;
+            case 'student':
+            default:
+              navigate("/student");
+              break;
+          }
+        } else {
+          // Default to student if no role found
+          navigate("/student");
+        }
+      }
+    });
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        // If from demo, always return to demo
+        if (fromDemo) {
+          navigate("/demo");
+          return;
+        }
+
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .limit(1)
+          .maybeSingle();
+
+        if (roles) {
+          switch (roles.role) {
+            case 'admin':
+              navigate("/admin");
+              break;
+            case 'teacher':
+              navigate("/teacher");
+              break;
+            case 'student':
+            default:
+              navigate("/student");
+              break;
+          }
+        } else {
+          navigate("/student");
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    try {
-      emailSchema.parse(loginEmail);
-      passwordSchema.parse(loginPassword);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast({
-          title: "입력 오류",
-          description: error.errors[0].message,
-          variant: "destructive",
-        });
-      }
+    // Validate inputs
+    const emailValidation = emailSchema.safeParse(loginEmail);
+    const passwordValidation = passwordSchema.safeParse(loginPassword);
+
+    if (!emailValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: emailValidation.error.errors[0].message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!passwordValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: passwordValidation.error.errors[0].message,
+        variant: "destructive",
+      });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
       });
 
-      if (error) throw error;
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedEmail", loginEmail);
-      } else {
-        localStorage.removeItem("rememberedEmail");
-      }
-
-      toast({
-        title: "로그인 성공",
-        description: "환영합니다!",
-      });
-
-      // Redirect based on role
-      if (data.session) {
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', data.session.user.id);
-
-        if (userRoles && userRoles.length > 0) {
-          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
-          const primaryRole = rolesPriority.find(role => 
-            userRoles.some(ur => ur.role === role)
-          ) || 'student';
-
-          const roleRoutes: Record<string, string> = {
-            admin: "/admin",
-            operator: "/operator",
-            teacher: "/teacher",
-            student: "/student"
-          };
-
-          navigate(roleRoutes[primaryRole] || "/student", { replace: true });
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          toast({
+            title: "로그인 실패",
+            description: "이메일 또는 비밀번호가 올바르지 않습니다.",
+            variant: "destructive",
+          });
         } else {
-          navigate("/student", { replace: true });
+          toast({
+            title: "로그인 실패",
+            description: error.message,
+            variant: "destructive",
+          });
         }
-      }
-    } catch (error: any) {
-      console.error('[Auth] Login error:', error);
-      
-      let errorMessage = "로그인에 실패했습니다.";
-      if (error.message?.includes("Invalid login credentials")) {
-        errorMessage = "이메일 또는 비밀번호가 올바르지 않습니다.";
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
+      } else {
+        // Save email if remember me is checked
+        if (rememberMe) {
+          localStorage.setItem("rememberedEmail", loginEmail);
+        } else {
+          localStorage.removeItem("rememberedEmail");
+        }
 
+        toast({
+          title: "로그인 성공",
+          description: "환영합니다!",
+        });
+        
+        // Role-based redirect will be handled by useEffect
+      }
+    } catch (error) {
       toast({
-        title: "로그인 실패",
-        description: errorMessage,
+        title: "오류 발생",
+        description: "로그인 중 문제가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -162,17 +226,25 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      emailSchema.parse(signupEmail);
-      passwordSchema.parse(signupPassword);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast({
-          title: "입력 오류",
-          description: error.errors[0].message,
-          variant: "destructive",
-        });
-      }
+    // Validate inputs
+    const emailValidation = emailSchema.safeParse(signupEmail);
+    const passwordValidation = passwordSchema.safeParse(signupPassword);
+
+    if (!emailValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: emailValidation.error.errors[0].message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!passwordValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: passwordValidation.error.errors[0].message,
+        variant: "destructive",
+      });
       return;
     }
 
@@ -185,55 +257,49 @@ const Auth = () => {
       return;
     }
 
-    if (!signupName.trim()) {
-      toast({
-        title: "이름 입력 필요",
-        description: "이름을 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
       const { error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
-            full_name: signupName,
+            name: signupName,
           },
         },
       });
 
-      if (error) throw error;
-
-      toast({
-        title: "회원가입 성공",
-        description: "이메일 확인 후 로그인해주세요.",
-      });
-
-      setSignupName("");
-      setSignupEmail("");
-      setSignupPassword("");
-      setSignupConfirm("");
-    } catch (error: any) {
-      console.error('[Auth] Signup error:', error);
-      
-      let errorMessage = "회원가입에 실패했습니다.";
-      if (error.message?.includes("already registered")) {
-        errorMessage = "이미 등록된 이메일입니다.";
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (error) {
+        if (error.message.includes("already registered")) {
+          toast({
+            title: "회원가입 실패",
+            description: "이미 가입된 이메일입니다.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "회원가입 실패",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "회원가입 성공",
+          description: "가입이 완료되었습니다. 로그인해주세요.",
+        });
+        // Clear signup form
+        setSignupName("");
+        setSignupEmail("");
+        setSignupPassword("");
+        setSignupConfirm("");
       }
-
+    } catch (error) {
       toast({
-        title: "회원가입 실패",
-        description: errorMessage,
+        title: "오류 발생",
+        description: "회원가입 중 문제가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -243,17 +309,14 @@ const Auth = () => {
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      emailSchema.parse(resetEmail);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        toast({
-          title: "입력 오류",
-          description: error.errors[0].message,
-          variant: "destructive",
-        });
-      }
+    
+    const emailValidation = emailSchema.safeParse(resetEmail);
+    if (!emailValidation.success) {
+      toast({
+        title: "입력 오류",
+        description: emailValidation.error.errors[0].message,
+        variant: "destructive",
+      });
       return;
     }
 
@@ -264,20 +327,24 @@ const Auth = () => {
         redirectTo: `${window.location.origin}/auth`,
       });
 
-      if (error) throw error;
-
+      if (error) {
+        toast({
+          title: "오류 발생",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "이메일 전송 완료",
+          description: "비밀번호 재설정 링크를 이메일로 전송했습니다.",
+        });
+        setIsResetDialogOpen(false);
+        setResetEmail("");
+      }
+    } catch (error) {
       toast({
-        title: "비밀번호 재설정 이메일 발송",
-        description: "이메일을 확인해주세요.",
-      });
-
-      setIsResetDialogOpen(false);
-      setResetEmail("");
-    } catch (error: any) {
-      console.error('[Auth] Password reset error:', error);
-      toast({
-        title: "비밀번호 재설정 실패",
-        description: error.message || "비밀번호 재설정에 실패했습니다.",
+        title: "오류 발생",
+        description: "비밀번호 재설정 중 문제가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -285,86 +352,171 @@ const Auth = () => {
     }
   };
 
+  const handleFindId = () => {
+    toast({
+      title: "아이디 찾기",
+      description: "가입 시 사용한 이메일 주소가 아이디입니다. 기억나지 않으시면 관리자에게 문의해주세요.",
+    });
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "로그인 실패",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "오류 발생",
+        description: "Google 로그인 중 문제가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <TooltipProvider>
-      <div className="min-h-screen flex flex-col bg-background">
-        <header className="border-b bg-background/95 backdrop-blur-xl">
-          <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link to="/" className="flex items-center gap-2">
-                  <img src={logoIcon} alt="Atom LMS 로고" className="h-12 w-12" />
-                  <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="bg-primary text-primary-foreground border-primary">
-                <p>아톰 안녕?</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </header>
+      <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--gradient-hero)] relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      <div className="w-full max-w-md relative z-10">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link to="/" className="flex items-center justify-center mb-8 gap-2">
+              <img src={logoIcon} alt="Logo" className="h-12 w-12 animate-nod" />
+              <span className="text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
+            <p>아톰 안녕?</p>
+          </TooltipContent>
+        </Tooltip>
 
-        <main className="flex-1 flex items-center justify-center p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">환영합니다</CardTitle>
-              <CardDescription>atomLMS에 로그인하거나 회원가입하세요</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login">로그인</TabsTrigger>
-                  <TabsTrigger value="signup">회원가입</TabsTrigger>
-                </TabsList>
+        <Card className="shadow-elegant border-border/50 backdrop-blur-sm">
+          <CardHeader className="space-y-3">
+            <CardTitle className="text-center">환영합니다</CardTitle>
+            <CardDescription className="text-center text-base">계정에 로그인하거나 새로 가입하세요</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="login">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">로그인</TabsTrigger>
+                <TabsTrigger value="signup">회원가입</TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="login-email">이메일</Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="이메일을 입력하세요"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
+              <TabsContent value="login">
+                <Alert className="mb-4 border-primary/20 bg-primary/5">
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>데모 계정 안내</AlertTitle>
+                  <AlertDescription className="mt-2 space-y-2">
+                    <p className="text-sm font-medium">아래 계정으로 각 역할의 기능을 체험해보세요:</p>
+                    <div className="grid gap-2 mt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("student@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍🎓 학생</div>
+                        <div className="text-xs text-muted-foreground">student@test.com / test123</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("teacher@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍🏫 강사</div>
+                        <div className="text-xs text-muted-foreground">teacher@test.com / test123</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail("admin@test.com");
+                          setLoginPassword("test123");
+                        }}
+                        className="text-left p-2 rounded-md hover:bg-primary/10 transition-colors border border-primary/20"
+                      >
+                        <div className="font-semibold text-sm">👨‍💼 관리자</div>
+                        <div className="text-xs text-muted-foreground">admin@test.com / test123</div>
+                      </button>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="login-password">비밀번호</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="비밀번호를 입력하세요"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        disabled={isLoading}
-                        required
+                  </AlertDescription>
+                </Alert>
+                
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">이메일</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">비밀번호</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                       />
+                      <label
+                        htmlFor="remember"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        아이디 기억하기
+                      </label>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="remember"
-                          checked={rememberMe}
-                          onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                        />
-                        <label htmlFor="remember" className="text-sm font-medium">
-                          이메일 기억하기
-                        </label>
-                      </div>
+                    <div className="flex gap-2 text-sm">
+                      <button
+                        type="button"
+                        onClick={handleFindId}
+                        className="text-primary hover:underline"
+                      >
+                        아이디 찾기
+                      </button>
+                      <span className="text-muted-foreground">|</span>
                       <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
                         <DialogTrigger asChild>
-                          <Button variant="link" className="p-0 h-auto text-sm">
+                          <button
+                            type="button"
+                            className="text-primary hover:underline"
+                          >
                             비밀번호 찾기
-                          </Button>
+                          </button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
                             <DialogTitle>비밀번호 재설정</DialogTitle>
                             <DialogDescription>
-                              등록된 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
+                              가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를 보내드립니다.
                             </DialogDescription>
                           </DialogHeader>
                           <form onSubmit={handlePasswordReset} className="space-y-4">
@@ -373,86 +525,132 @@ const Auth = () => {
                               <Input
                                 id="reset-email"
                                 type="email"
-                                placeholder="이메일을 입력하세요"
+                                placeholder="your@email.com"
                                 value={resetEmail}
                                 onChange={(e) => setResetEmail(e.target.value)}
-                                disabled={isResetLoading}
                                 required
                               />
                             </div>
                             <Button type="submit" className="w-full" disabled={isResetLoading}>
-                              {isResetLoading ? "처리 중..." : "재설정 링크 보내기"}
+                              {isResetLoading ? "전송 중..." : "재설정 링크 보내기"}
                             </Button>
                           </form>
                         </DialogContent>
                       </Dialog>
                     </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "로그인 중..." : "로그인"}
-                    </Button>
-                  </form>
-                </TabsContent>
+                  </div>
 
-                <TabsContent value="signup">
-                  <form onSubmit={handleSignup} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name">이름</Label>
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        placeholder="이름을 입력하세요"
-                        value={signupName}
-                        onChange={(e) => setSignupName(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
+                    {isLoading ? "로그인 중..." : "로그인"}
+                  </Button>
+                </form>
+
+                <div className="mt-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-email">이메일</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="이메일을 입력하세요"
-                        value={signupEmail}
-                        onChange={(e) => setSignupEmail(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-card px-2 text-muted-foreground">또는</span>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-password">비밀번호</Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="비밀번호를 입력하세요 (최소 6자)"
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-confirm">비밀번호 확인</Label>
-                      <Input
-                        id="signup-confirm"
-                        type="password"
-                        placeholder="비밀번호를 다시 입력하세요"
-                        value={signupConfirm}
-                        onChange={(e) => setSignupConfirm(e.target.value)}
-                        disabled={isLoading}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                      {isLoading ? "처리 중..." : "회원가입"}
+                  </div>
+
+                  <div className="mt-6 space-y-3">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      type="button"
+                      onClick={handleGoogleSignIn}
+                    >
+                      <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+                        <path
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                          fill="#4285F4"
+                        />
+                        <path
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                          fill="#34A853"
+                        />
+                        <path
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                          fill="#FBBC05"
+                        />
+                        <path
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                          fill="#EA4335"
+                        />
+                      </svg>
+                      Google로 계속하기
                     </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </main>
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="signup">
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-name">이름</Label>
+                    <Input
+                      id="signup-name"
+                      placeholder="홍길동"
+                      value={signupName}
+                      onChange={(e) => setSignupName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">이메일</Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={signupEmail}
+                      onChange={(e) => setSignupEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">비밀번호</Label>
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-confirm">비밀번호 확인</Label>
+                    <Input
+                      id="signup-confirm"
+                      type="password"
+                      value={signupConfirm}
+                      onChange={(e) => setSignupConfirm(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
+                    {isLoading ? "가입 중..." : "회원가입"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+
+        <p className="mt-4 text-center text-sm text-muted-foreground">
+          계속 진행하면{" "}
+          <a href="#" className="underline">
+            서비스 약관
+          </a>{" "}
+          및{" "}
+          <a href="#" className="underline">
+            개인정보처리방침
+          </a>
+          에 동의하는 것으로 간주됩니다.
+        </p>
       </div>
+    </div>
     </TooltipProvider>
   );
 };

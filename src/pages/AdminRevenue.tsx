@@ -7,7 +7,6 @@ import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { DollarSign, TrendingUp, CreditCard, Calendar, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
 
 interface Payment {
   id: string;
@@ -89,58 +88,6 @@ const AdminRevenue = () => {
     }
   };
 
-  const handleDownloadReport = () => {
-    try {
-      // 거래 내역 데이터 준비
-      const transactionSheet = payments.map(payment => ({
-        '거래 ID': payment.id,
-        '청구서 번호': payment.invoice_number || '-',
-        '금액': parseFloat(payment.amount.toString()),
-        '결제 수단': payment.payment_method || '-',
-        '결제일': payment.paid_at ? new Date(payment.paid_at).toLocaleDateString() : '-',
-        '상태': payment.status === 'completed' ? '완료' : 
-                payment.status === 'pending' ? '대기' : 
-                payment.status === 'failed' ? '실패' : 
-                payment.status === 'refunded' ? '환불' : payment.status,
-        '생성일': new Date(payment.created_at).toLocaleDateString(),
-      }));
-
-      // 요약 데이터 시트
-      const summarySheet = [
-        { '항목': '총 매출', '값': stats.totalRevenue },
-        { '항목': '이번 달 매출', '값': stats.monthlyRevenue },
-        { '항목': '평균 거래액', '값': Math.round(stats.avgTransactionValue) },
-        { '항목': '총 거래 건수', '값': stats.totalTransactions },
-      ];
-
-      // 워크북 생성
-      const workbook = XLSX.utils.book_new();
-      
-      // 요약 시트 추가
-      const summaryWS = XLSX.utils.json_to_sheet(summarySheet);
-      XLSX.utils.book_append_sheet(workbook, summaryWS, '매출 요약');
-      
-      // 거래 내역 시트 추가
-      const transactionWS = XLSX.utils.json_to_sheet(transactionSheet);
-      XLSX.utils.book_append_sheet(workbook, transactionWS, '거래 내역');
-
-      // 파일 다운로드
-      const today = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(workbook, `매출리포트_${today}.xlsx`);
-
-      toast({
-        title: "다운로드 완료",
-        description: "매출 리포트가 성공적으로 다운로드되었습니다.",
-      });
-    } catch (error) {
-      toast({
-        title: "오류",
-        description: "리포트 다운로드 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
       completed: "default",
@@ -168,7 +115,7 @@ const AdminRevenue = () => {
             </h1>
             <p className="text-muted-foreground mt-2">플랫폼 매출 현황 및 정산 관리</p>
           </div>
-          <Button onClick={handleDownloadReport}>
+          <Button>
             <Download className="h-4 w-4 mr-2" />
             리포트 다운로드
           </Button>

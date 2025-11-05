@@ -32,7 +32,6 @@ import {
   Route,
   ClipboardList,
   Briefcase,
-  UserCheck,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import chatbotIcon from "@/assets/chatbot-icon.png";
@@ -42,7 +41,6 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-import { useUserRoles, type UserRole } from "@/hooks/useUserRoles";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -89,7 +87,6 @@ const iconMap: { [key: string]: any } = {
   Palette,
   Trophy,
   Route,
-  UserCheck,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -100,15 +97,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { roles: userRoles } = useUserRoles();
-  const [userName, setUserName] = useState<string>("사용자");
-  const [userInitial, setUserInitial] = useState<string>("사");
 
-  // CRITICAL: Only treat as demo mode if:
-  // 1. Explicitly in /demo path, OR
-  // 2. isDemo prop is explicitly true
-  // DO NOT use searchParams.has('role') alone - it's too broad and causes issues
-  const isDemoMode = location.pathname.startsWith('/demo') || isDemo === true;
+  // CRITICAL: Auto-detect demo mode from URL or use explicit isDemo prop
+  // If URL has "role" param OR path starts with /demo, it's demo mode
+  const isDemoMode = searchParams.has('role') || isDemo === true || location.pathname.startsWith('/demo');
   
   // In demo mode, use role from URL params, otherwise ALWAYS use the userRole prop
   const effectiveUserRole = (isDemoMode && searchParams.get('role')) 
@@ -126,52 +118,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       });
     }
   }, [isDemoMode, userRole, effectiveUserRole, searchParams]);
-
-  // Fetch user profile data - optimized to use user_metadata first
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          // Priority 1: Use user_metadata (fastest, already loaded)
-          const metadataName = user.user_metadata?.full_name || user.user_metadata?.name;
-          
-          if (metadataName) {
-            setUserName(metadataName);
-            setUserInitial(metadataName[0] || "사");
-            return; // Exit early, no need to query database
-          }
-          
-          // Priority 2: Fallback to email username
-          const emailName = user.email?.split('@')[0];
-          if (emailName) {
-            setUserName(emailName);
-            setUserInitial(emailName[0] || "사");
-            return;
-          }
-          
-          // Priority 3: Last resort - query profiles table
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('user_id', user.id)
-            .single();
-          
-          if (profile?.full_name) {
-            setUserName(profile.full_name);
-            setUserInitial(profile.full_name[0] || "사");
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      }
-    };
-
-    if (!isDemoMode) {
-      fetchUserProfile();
-    }
-  }, [isDemoMode]);
 
   const handleLogout = async () => {
     try {
@@ -256,7 +202,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     const adminItems = [
       ...baseItems,
       { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
-      { icon: UserCheck, label: "데모 승인", path: "/admin/demo-approval", enabled: true },
       { icon: BookOpen, label: "강좌 관리", path: "/admin/courses", enabled: true },
       { icon: FolderOpen, label: "콘텐츠 관리", path: "/admin/content", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
@@ -285,35 +230,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
-    // Set default items immediately, then fetch custom order
-    const defaultItems = getDefaultMenuItems();
-    const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
-    
-    // Filter and set default items immediately for instant display
-    setMenuItems(defaultItems.filter(item => {
-      if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
-      return true;
-    }));
-    
-    // Then fetch custom menu order in background
-    fetchMenuOrder();
-  }, [effectiveUserRole, isDemoMode]);
-
-  // Listen for HRD toggle events
-  useEffect(() => {
-    const handleHrdToggle = () => {
-      fetchMenuOrder();
-    };
-    
-    window.addEventListener('hrd-toggle', handleHrdToggle);
-    return () => window.removeEventListener('hrd-toggle', handleHrdToggle);
+    // CRITICAL: Always use default menu items to ensure HRD menus are visible
+    // Database menu_order is outdated and doesn't include new HRD menus
+    setMenuItems(getDefaultMenuItems());
   }, [effectiveUserRole, isDemoMode]);
 
   const fetchMenuOrder = async () => {
     try {
-      // Check HRD setting from localStorage
-      const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
-      
       const { data, error } = await supabase
         .from("menu_order")
         .select("menu_items")
@@ -323,44 +246,18 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       if (error && error.code !== "PGRST116") throw error;
 
       if (data && data.menu_items) {
-        const defaultItems = getDefaultMenuItems();
-        const savedItems = data.menu_items as any[];
-        
-        // Merge saved settings with default items
-        const mergedItems = defaultItems.map(defaultItem => {
-          const savedItem = savedItems.find(s => s.path === defaultItem.path);
-          if (savedItem) {
-            return {
-              ...defaultItem,
-              enabled: savedItem.enabled,
-              icon: iconMap[savedItem.icon] || defaultItem.icon,
-            };
-          }
-          return defaultItem;
-        });
-        
-        // Filter out disabled items and HRD items if HRD is disabled
-        setMenuItems(mergedItems.filter(item => {
-          if (!item.enabled) return false;
-          if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
-          return true;
+        // Convert string icons to actual icon components
+        const items = (data.menu_items as any[]).map((item: any) => ({
+          ...item,
+          icon: iconMap[item.icon] || LayoutDashboard,
         }));
+        setMenuItems(items);
       } else {
-        const defaultItems = getDefaultMenuItems();
-        // Filter HRD items if disabled
-        setMenuItems(defaultItems.filter(item => {
-          if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
-          return true;
-        }));
+        setMenuItems(getDefaultMenuItems());
       }
     } catch (error) {
       console.error("Error fetching menu order:", error);
-      const defaultItems = getDefaultMenuItems();
-      const hrdEnabled = localStorage.getItem("hrd_enabled") !== "false";
-      setMenuItems(defaultItems.filter(item => {
-        if (!hrdEnabled && ('isHRD' in item && item.isHRD === true)) return false;
-        return true;
-      }));
+      setMenuItems(getDefaultMenuItems());
     }
   };
 
@@ -398,8 +295,8 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
-            {(effectiveUserRole === "admin" || effectiveUserRole === "operator") && (
-              <Link to="/demo?role=admin">
+            {effectiveUserRole === "admin" && (
+              <Link to="/demo">
                 <Button size="sm" className="gap-2 rounded-full bg-foreground text-background hover:bg-foreground/90">
                   <Briefcase className="h-4 w-4" />
                   <span className="hidden sm:inline">데모 모드</span>
@@ -407,7 +304,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               </Link>
             )}
             
-            {/* Role switcher - always show student, teacher, admin (exclude operator) */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline" className="gap-2 rounded-full">
@@ -445,6 +341,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                     관리자
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/operator" className="flex items-center cursor-pointer">
+                    <Building2 className="mr-2 h-4 w-4" />
+                    운영자
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             
@@ -454,9 +356,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-1.5 md:gap-2 rounded-xl hover:bg-primary/10 flex-shrink-0">
                   <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-premium">
-                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">{userInitial}</span>
+                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">홍</span>
                   </div>
-                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">{userName}</span>
+                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">홍길동</span>
                   <ChevronDown className="h-4 w-4 hidden sm:block" />
                 </Button>
               </DropdownMenuTrigger>
@@ -616,6 +518,17 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
+
+      {/* AI Chatbot Button - Only for admin and operator */}
+      {!isDemoMode && (effectiveUserRole === "admin" || effectiveUserRole === "operator") && (
+        <Button
+          size="icon"
+          variant="premium"
+          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 h-14 w-14 md:h-16 md:w-16 rounded-full shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
+        >
+          <img src={chatbotIcon} alt="AI Chatbot" className="h-7 w-7 md:h-8 md:w-8" />
+        </Button>
+      )}
     </div>
       )}
     </TooltipProvider>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -26,12 +26,9 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
-  Loader2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -39,14 +36,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
-interface MenuItem {
-  icon: any;
-  label: string;
-  path: string;
-  hasAI?: boolean;
-  isHRD?: boolean;
-}
 
 import StudentDashboard from "./StudentDashboard";
 import StudentCourses from "./StudentCourses";
@@ -104,84 +93,27 @@ import {
 
 type DemoRole = "student" | "teacher" | "admin";
 
-const roleLabels: Record<DemoRole, string> = {
-  student: "학생",
-  teacher: "강사",
-  admin: "관리자",
-};
+interface MenuItem {
+  icon: any;
+  label: string;
+  path: string;
+  hasAI?: boolean;
+  isHRD?: boolean;
+}
 
 const DemoPreview = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedRole, setSelectedRole] = useState<DemoRole>("student");
-  const [loading, setLoading] = useState(true);
-  const [approved, setApproved] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  // Check demo approval
-  useEffect(() => {
-    const checkApproval = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        toast({
-          title: "로그인 필요",
-          description: "데모를 체험하려면 로그인이 필요합니다.",
-          variant: "destructive",
-        });
-        navigate("/");
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("demo_approved")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
-
-      if (!profile?.demo_approved) {
-        toast({
-          title: "승인 대기 중",
-          description: "운영자 승인 후 데모에 접근할 수 있습니다.",
-          variant: "destructive",
-        });
-        navigate("/");
-        return;
-      }
-
-      setApproved(true);
-      setLoading(false);
-    };
-
-    checkApproval();
-  }, [navigate, toast]);
-
   const activeRole = (searchParams.get("role") as DemoRole) || "student";
   const activePage = searchParams.get("page") || "dashboard";
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [hrdEnabled, setHrdEnabled] = useState(() => {
-    return localStorage.getItem("hrd_enabled") !== "false";
-  });
-
-  // Listen for HRD toggle events
-  useEffect(() => {
-    const handleHrdToggle = (event: any) => {
-      setHrdEnabled(event.detail.enabled);
-    };
-    
-    window.addEventListener('hrd-toggle', handleHrdToggle);
-    return () => window.removeEventListener('hrd-toggle', handleHrdToggle);
-  }, []);
 
   const setActiveRole = (role: DemoRole) => {
     setSearchParams({ role, page: "dashboard" });
   };
 
   const getMenuItems = (): MenuItem[] => {
-    let items: MenuItem[] = [];
-    
     if (activeRole === "student") {
-      items = [
+      return [
         { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
         { icon: BookOpen, label: "내 강의", path: "courses", hasAI: true },
         { icon: Route, label: "학습 경로", path: "learning-path", hasAI: true },
@@ -191,8 +123,10 @@ const DemoPreview = () => {
         { icon: ClipboardList, label: "상담 이력", path: "counseling-log", isHRD: true },
         { icon: BarChart3, label: "학습 통계", path: "analytics" },
       ];
-    } else if (activeRole === "teacher") {
-      items = [
+    }
+    
+    if (activeRole === "teacher") {
+      return [
         { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
         { icon: BookOpen, label: "강의 관리", path: "courses" },
         { icon: FileText, label: "과제 관리", path: "assignments", hasAI: true },
@@ -209,49 +143,32 @@ const DemoPreview = () => {
         { icon: BarChart3, label: "통계", path: "analytics" },
         { icon: DollarSign, label: "수익", path: "revenue" },
       ];
-    } else {
-      // admin
-      items = [
-        { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
-        { icon: Users, label: "사용자 관리", path: "users" },
-        { icon: BookOpen, label: "강좌 관리", path: "courses" },
-        { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
-        { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
-        { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
-        { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
-        { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
-        { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
-        { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
-        { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
-        { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
-        { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
-        { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
-        { icon: DollarSign, label: "매출 관리", path: "revenue" },
-        { icon: BarChart3, label: "분석 도구", path: "analytics" },
-        { icon: Settings, label: "시스템 설정", path: "settings" },
-      ];
     }
     
-    // Filter HRD items if disabled
-    return items.filter(item => {
-      if (!hrdEnabled && item.isHRD) return false;
-      return true;
-    });
+    // admin
+    return [
+      { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+      { icon: Users, label: "사용자 관리", path: "users" },
+      { icon: BookOpen, label: "강좌 관리", path: "courses" },
+      { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
+      { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
+      { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
+      { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
+      { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+      { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
+      { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
+      { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
+      { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
+      { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
+      { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+      { icon: DollarSign, label: "매출 관리", path: "revenue" },
+      { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
+      { icon: BarChart3, label: "분석 도구", path: "analytics" },
+      { icon: Settings, label: "시스템 설정", path: "settings" },
+    ];
   };
 
   const menuItems = getMenuItems();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!approved) {
-    return null;
-  }
 
   const renderContent = () => {
     // Student pages
@@ -381,6 +298,18 @@ const DemoPreview = () => {
               <Bot className="h-3.5 w-3.5" />
               데모 모드
             </Button>
+            <Link 
+              to={
+                activeRole === "student" ? "/student" : 
+                activeRole === "teacher" ? "/teacher" : 
+                "/admin"
+              }
+            >
+              <Button variant="outline" size="sm" className="text-xs hidden sm:inline-flex gap-1.5">
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                일반 모드
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4 ml-auto">
@@ -388,18 +317,18 @@ const DemoPreview = () => {
               <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">역할 전환:</span>
               <Select value={activeRole} onValueChange={(value) => setActiveRole(value as DemoRole)}>
                 <SelectTrigger className="w-[100px] md:w-[140px] text-xs md:text-sm">
-                  <SelectValue>
-                    {roleLabels[activeRole]}
-                  </SelectValue>
+                  <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-background z-[70]">
+                <SelectContent>
                   <SelectItem value="student">학생</SelectItem>
                   <SelectItem value="teacher">강사</SelectItem>
                   <SelectItem value="admin">관리자</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            {/* 데모 모드에서는 회원가입 버튼 숨김 */}
+            <Link to="/auth?from=demo">
+              <Button size="sm" className="text-xs md:text-sm">회원가입</Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -423,7 +352,7 @@ const DemoPreview = () => {
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed left-0 top-[64px] md:top-[80px] h-[calc(100vh-64px)] md:h-[calc(100vh-80px)] border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm z-30",
+            "fixed left-0 top-[120px] md:top-[132px] h-[calc(100vh-120px)] md:h-[calc(100vh-132px)] border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm z-30",
             sidebarCollapsed ? "w-16" : "w-64"
           )}
         >
@@ -500,7 +429,14 @@ const DemoPreview = () => {
         </main>
       </div>
 
-      {/* Floating CTA - 데모 모드에서는 숨김 */}
+      {/* Floating CTA */}
+      <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-xs md:max-w-none md:w-auto">
+        <Link to="/auth?from=demo" className="block">
+          <Button size="lg" variant="gold" className="w-full md:w-auto shadow-glow hover:shadow-elegant transition-all text-sm md:text-base">
+            실제 서비스 시작하기
+          </Button>
+        </Link>
+      </div>
     </div>
     </TooltipProvider>
   );

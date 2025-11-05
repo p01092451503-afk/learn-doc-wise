@@ -10,12 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
-import * as XLSX from "xlsx";
 
 const TeacherRevenue = () => {
-  const { toast } = useToast();
-  
   const revenueData = [
     { month: "10월", revenue: 4250000, students: 342, courses: 8 },
     { month: "9월", revenue: 3600000, students: 320, courses: 7 },
@@ -68,53 +64,6 @@ const TeacherRevenue = () => {
     },
   ];
 
-  const handleDownloadReport = () => {
-    try {
-      // 월별 수익 데이터 시트
-      const revenueSheet = revenueData.map(data => ({
-        '월': data.month,
-        '수익': data.revenue,
-        '학생 수': data.students,
-        '강의 수': data.courses,
-      }));
-
-      // 거래 내역 시트
-      const transactionSheet = transactions.map(transaction => ({
-        '날짜': transaction.date,
-        '강의명': transaction.course,
-        '학생': transaction.student,
-        '금액': transaction.amount,
-        '상태': transaction.status === 'completed' ? '완료' : '대기중',
-      }));
-
-      // 워크북 생성
-      const workbook = XLSX.utils.book_new();
-      
-      // 월별 수익 시트 추가
-      const revenueWS = XLSX.utils.json_to_sheet(revenueSheet);
-      XLSX.utils.book_append_sheet(workbook, revenueWS, '월별 수익');
-      
-      // 거래 내역 시트 추가
-      const transactionWS = XLSX.utils.json_to_sheet(transactionSheet);
-      XLSX.utils.book_append_sheet(workbook, transactionWS, '거래 내역');
-
-      // 파일 다운로드
-      const today = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(workbook, `수익리포트_${today}.xlsx`);
-
-      toast({
-        title: "다운로드 완료",
-        description: "수익 리포트가 성공적으로 다운로드되었습니다.",
-      });
-    } catch (error) {
-      toast({
-        title: "오류",
-        description: "리포트 다운로드 중 오류가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <DashboardLayout userRole="teacher">
       <div className="space-y-6">
@@ -129,7 +78,7 @@ const TeacherRevenue = () => {
               수익 현황과 거래 내역을 확인하세요
             </p>
           </div>
-          <Button className="gap-2" onClick={handleDownloadReport}>
+          <Button className="gap-2">
             <Download className="h-4 w-4" />
             수익 리포트 다운로드
           </Button>
@@ -265,9 +214,9 @@ const StatsCard = ({
       <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
       <div className="text-muted-foreground flex-shrink-0">{icon}</div>
     </CardHeader>
-    <CardContent className="space-y-1">
-      <div className="text-2xl font-bold whitespace-nowrap">{value}</div>
-      <p className={`text-xs ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
+    <CardContent className="space-y-1 min-w-0">
+      <div className="text-xl font-bold break-all">{value}</div>
+      <p className={`text-xs whitespace-nowrap ${trend === "up" ? "text-green-600" : "text-muted-foreground"}`}>
         {description}
       </p>
     </CardContent>

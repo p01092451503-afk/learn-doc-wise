@@ -72,45 +72,45 @@ const TeacherCourses = () => {
 
   const mockCourses = [
     {
-      id: "a1b2c3d4-e5f6-7890-abcd-111111111111",
+      id: 1,
       title: "React 완벽 가이드",
       category: "프론트엔드",
       students: 145,
       rating: 4.9,
-      revenue: 1450000,
+      revenue: "₩1,450,000",
       status: "published",
       progress: 100,
       lessons: 42,
     },
     {
-      id: "a1b2c3d4-e5f6-7890-abcd-222222222222",
+      id: 2,
       title: "TypeScript 마스터클래스",
       category: "프로그래밍",
       students: 98,
       rating: 4.7,
-      revenue: 980000,
+      revenue: "₩980,000",
       status: "published",
       progress: 100,
       lessons: 38,
     },
     {
-      id: "a1b2c3d4-e5f6-7890-abcd-333333333333",
+      id: 3,
       title: "Next.js 풀스택 개발",
       category: "프론트엔드",
       students: 76,
       rating: 4.8,
-      revenue: 760000,
+      revenue: "₩760,000",
       status: "published",
       progress: 85,
       lessons: 35,
     },
     {
-      id: "a1b2c3d4-e5f6-7890-abcd-444444444444",
+      id: 4,
       title: "Node.js 백엔드 개발",
       category: "백엔드",
       students: 54,
       rating: 4.6,
-      revenue: 540000,
+      revenue: "₩540,000",
       status: "draft",
       progress: 60,
       lessons: 30,
@@ -138,18 +138,6 @@ const TeacherCourses = () => {
 
   const handleDelete = async (courseId: string | number) => {
     if (!confirm("정말 이 강의를 삭제하시겠습니까?")) return;
-    
-    // Check if this is a mock course (not in real courses data)
-    const isRealCourse = courses.some(c => c.id === courseId);
-    
-    if (!isRealCourse) {
-      toast({
-        title: "알림",
-        description: "실제 강의를 생성한 후 삭제할 수 있습니다.",
-        variant: "default",
-      });
-      return;
-    }
     
     try {
       const { error } = await supabase
@@ -300,9 +288,7 @@ const TeacherCourses = () => {
                         {course.status === "published" ? "공개" : course.status === "draft" ? "준비중" : "보관됨"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {typeof course.revenue === 'number' ? `₩${course.revenue.toLocaleString()}` : course.revenue}
-                    </TableCell>
+                    <TableCell className="text-right font-medium">{course.revenue}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Button size="sm" variant="ghost" onClick={() => handlePreview(course.id)} title="미리보기">

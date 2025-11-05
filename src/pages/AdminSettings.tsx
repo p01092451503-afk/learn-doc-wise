@@ -4,100 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Save, GraduationCap, Layout } from "lucide-react";
+import { Settings, Save } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import MenuOrderSettings from "@/components/admin/MenuOrderSettings";
 
 const AdminSettings = () => {
-  const [hrdEnabled, setHrdEnabled] = useState(() => {
-    const saved = localStorage.getItem("hrd_enabled");
-    return saved !== "false";
-  });
-  const [mainPageVersion, setMainPageVersion] = useState<"main" | "main2">("main");
-  const [mainPageLoading, setMainPageLoading] = useState(false);
-  const { toast } = useToast();
-
-  // Fetch main page version setting
-  useQuery({
-    queryKey: ["main-page-version"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("system_settings")
-        .select("setting_value")
-        .eq("setting_key", "main_page_version")
-        .single();
-
-      if (error) throw error;
-      
-      const version = data.setting_value as "main" | "main2";
-      setMainPageVersion(version);
-      return version;
-    },
-  });
-
-  const handleMainPageToggle = async (version: "main" | "main2") => {
-    setMainPageLoading(true);
-    
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { error } = await supabase
-        .from("system_settings")
-        .update({
-          setting_value: version,
-          updated_by: user.id,
-        })
-        .eq("setting_key", "main_page_version");
-
-      if (error) throw error;
-
-      setMainPageVersion(version);
-      
-      toast({
-        title: "설정 변경 완료",
-        description: `메인 페이지가 ${version === "main" ? "기본 메인" : "데모 메인"}으로 변경되었습니다.`,
-      });
-
-      // Reload to apply changes
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error: any) {
-      console.error("Error updating main page version:", error);
-      toast({
-        title: "설정 변경 실패",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setMainPageLoading(false);
-    }
-  };
-
-  const handleHrdToggle = (checked: boolean) => {
-    setHrdEnabled(checked);
-    localStorage.setItem("hrd_enabled", String(checked));
-    
-    // Dispatch custom event to update menus immediately
-    window.dispatchEvent(new CustomEvent('hrd-toggle', { detail: { enabled: checked } }));
-    
-    toast({
-      title: checked ? "HRD 기능 활성화" : "HRD 기능 비활성화",
-      description: checked 
-        ? "모든 역할에서 HRD 관련 메뉴가 표시됩니다." 
-        : "모든 역할에서 HRD 관련 메뉴가 숨겨집니다.",
-    });
-
-    // Reload page to ensure all components update
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
-  };
-
   return (
     <DashboardLayout userRole="admin">
       <div className="space-y-8">
@@ -111,38 +22,8 @@ const AdminSettings = () => {
           </p>
         </div>
 
-        {/* Main Page Version Toggle - 숨김 처리 */}
-        {/* 메인 페이지 버전 선택 기능은 운영자 페이지로 이동됨 */}
-
-        {/* HRD 기능 설정 */}
-        <Card className="border-border/50 shadow-sm bg-gradient-to-br from-primary/5 to-primary/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              HRD 국비환급과정 기능
-            </CardTitle>
-            <CardDescription>
-              국비환급과정 관련 메뉴를 모든 역할에서 한 번에 숨기거나 표시합니다
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between p-4 bg-background rounded-lg border">
-              <div className="space-y-1">
-                <Label htmlFor="hrd-enabled" className="text-base font-semibold">
-                  HRD 기능 활성화
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  비활성화 시 출석관리, 훈련일지, 만족도조사, 상담일지, 중도탈락관리, 수료관리, 성적관리, 훈련수당 등 HRD 관련 메뉴가 모두 숨겨집니다
-                </p>
-              </div>
-              <Switch 
-                id="hrd-enabled" 
-                checked={hrdEnabled} 
-                onCheckedChange={handleHrdToggle}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        {/* 메뉴 순서 설정 */}
+        <MenuOrderSettings />
 
         {/* 일반 설정 */}
         <Card className="border-border/50 shadow-sm">

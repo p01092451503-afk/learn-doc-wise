@@ -31,9 +31,7 @@ serve(async (req) => {
 
     const systemPrompt = `당신은 전문 번역가입니다. ${sourceLanguage ? languageNames[sourceLanguage] : "원문"}에서 ${languageNames[targetLanguage] || targetLanguage}로 정확하고 자연스럽게 번역하세요.
 학습 콘텐츠의 의미와 뉘앙스를 정확히 전달하고, 전문 용어는 적절하게 번역하세요.
-번역문만 출력하고 추가 설명은 하지 마세요.
-
-**중요 제한사항:** 오직 학습 자료, 교육 콘텐츠, 강의 내용만 번역하세요. 학습과 무관한 내용(일상 대화, 뉴스, 엔터테인먼트 등)은 "죄송합니다. 학습 콘텐츠만 번역할 수 있습니다."라고 거절하세요.`;
+번역문만 출력하고 추가 설명은 하지 마세요.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

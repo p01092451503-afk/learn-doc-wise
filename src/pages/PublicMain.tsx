@@ -59,58 +59,40 @@ const PublicMain = () => {
 
   const fetchPublishedCourses = async () => {
     try {
-      // 타임아웃 설정 (10초)
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout')), 10000)
-      );
-
-      const fetchPromise = supabase
+      const { data, error } = await supabase
         .from("courses")
         .select("*")
         .eq("status", "published")
         .order("created_at", { ascending: false })
         .limit(6);
 
-      const { data, error } = await Promise.race([fetchPromise, timeoutPromise]) as any;
-
       if (error) throw error;
       
-      setCourses(data || []);
-      
-      // 비동기적으로 썸네일 로드 (블로킹하지 않음, 에러 처리 추가)
-      if (data) {
-        Promise.all(
-          data.map(async (course) => {
-            try {
-              if (!course.thumbnail_url) {
-                const { data: contents } = await supabase
-                  .from("course_contents")
-                  .select("video_url, video_provider")
-                  .eq("course_id", course.id)
-                  .eq("is_published", true)
-                  .order("order_index", { ascending: true })
-                  .limit(1);
-                
-                if (contents && contents.length > 0) {
-                  const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
-                  return { ...course, videoThumbnail: thumbnail };
-                }
-              }
-            } catch (err) {
-              console.error('Error loading thumbnail:', err);
+      // 각 코스의 첫 번째 콘텐츠에서 비디오 썸네일 추출
+      const coursesWithThumbnails = await Promise.all(
+        (data || []).map(async (course) => {
+          if (!course.thumbnail_url) {
+            // 첫 번째 콘텐츠 가져오기
+            const { data: contents } = await supabase
+              .from("course_contents")
+              .select("video_url, video_provider")
+              .eq("course_id", course.id)
+              .eq("is_published", true)
+              .order("order_index", { ascending: true })
+              .limit(1);
+            
+            if (contents && contents.length > 0) {
+              const thumbnail = getVideoThumbnail(contents[0].video_url, contents[0].video_provider);
+              return { ...course, videoThumbnail: thumbnail };
             }
-            return course;
-          })
-        ).then(coursesWithThumbnails => {
-          setCourses(coursesWithThumbnails);
-        }).catch(err => {
-          console.error('Error loading thumbnails:', err);
-        });
-      }
+          }
+          return course;
+        })
+      );
+      
+      setCourses(coursesWithThumbnails);
     } catch (error) {
       console.error("Error fetching courses:", error);
-      // 에러 발생해도 빈 배열로 설정하여 UI는 표시
-      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -394,6 +376,7 @@ const PublicMain = () => {
                 <img src={logoIcon} alt="Atom LMS 로고" className="h-10 w-10" />
                 <span className="text-xl font-logo font-bold">atomLMS</span>
               </div>
+              <p className="text-sm text-muted-foreground mt-2">AI 기반 학습관리 플랫폼</p>
             </div>
             <nav aria-label="회사 정보">
               <h4 className="font-semibold mb-4">{t('aboutUs')}</h4>
@@ -421,7 +404,7 @@ const PublicMain = () => {
             </nav>
           </div>
           <div className="border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2025 atomLMS. All rights reserved.</p>
+            <p>© 2025 atomLMS. All rights reserved. | AI 기반 학습관리 플랫폼</p>
           </div>
         </div>
       </footer>

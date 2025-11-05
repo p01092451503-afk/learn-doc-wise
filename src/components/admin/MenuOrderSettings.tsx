@@ -93,15 +93,6 @@ const defaultMenuItems = {
     { id: "monitoring", icon: "Shield", label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
     { id: "settings", icon: "Settings", label: "시스템 설정", path: "/admin/settings", enabled: true },
   ],
-  operator: [
-    { id: "dashboard", icon: "LayoutDashboard", label: "대시보드", path: "/operator", enabled: true },
-    { id: "tenants", icon: "Building2", label: "테넌트 관리", path: "/operator/tenants", enabled: true },
-    { id: "usage", icon: "BarChart3", label: "사용량 관리", path: "/operator/usage", enabled: true },
-    { id: "ai-logs", icon: "Brain", label: "AI 로그", path: "/operator/ai-logs", enabled: true },
-    { id: "revenue", icon: "DollarSign", label: "매출 관리", path: "/operator/revenue", enabled: true },
-    { id: "monitoring", icon: "Shield", label: "모니터링", path: "/operator/monitoring", enabled: true },
-    { id: "settings", icon: "Settings", label: "설정", path: "/operator/settings", enabled: true },
-  ],
 };
 
 interface SortableItemProps {
@@ -147,10 +138,9 @@ function SortableItem({ item, onToggle }: SortableItemProps) {
         <span className="font-medium">{item.label}</span>
       </div>
       <Button
-        variant={item.enabled ? "default" : "outline"}
+        variant={item.enabled ? "default" : "secondary"}
         size="sm"
         onClick={() => onToggle(item.id)}
-        className={item.enabled ? "bg-primary hover:bg-primary/90" : ""}
       >
         {item.enabled ? "활성" : "비활성"}
       </Button>
@@ -159,7 +149,7 @@ function SortableItem({ item, onToggle }: SortableItemProps) {
 }
 
 const MenuOrderSettings = () => {
-  const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | "admin" | "operator">("admin");
+  const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | "admin">("admin");
   const [menuItems, setMenuItems] = useState<MenuItem[]>(defaultMenuItems[selectedRole]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -181,23 +171,17 @@ const MenuOrderSettings = () => {
         .from("menu_order")
         .select("menu_items")
         .eq("user_role", selectedRole)
-        .maybeSingle();
+        .single();
 
-      if (error) {
-        console.error("Error fetching menu order:", error);
-        setMenuItems(defaultMenuItems[selectedRole]);
-        return;
-      }
+      if (error && error.code !== "PGRST116") throw error;
 
-      if (data && data.menu_items) {
-        const savedItems = data.menu_items as any[];
-        setMenuItems(savedItems);
+      if (data) {
+        setMenuItems(JSON.parse(JSON.stringify(data.menu_items)) as MenuItem[]);
       } else {
         setMenuItems(defaultMenuItems[selectedRole]);
       }
     } catch (error) {
       console.error("Error fetching menu order:", error);
-      setMenuItems(defaultMenuItems[selectedRole]);
     }
   };
 
@@ -216,50 +200,29 @@ const MenuOrderSettings = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      // First check if a record exists
-      const { data: existing } = await supabase
+      const { error } = await supabase
         .from("menu_order")
-        .select("id")
-        .eq("user_role", selectedRole)
-        .maybeSingle();
-
-      let error;
-      if (existing) {
-        // Update existing record
-        ({ error } = await supabase
-          .from("menu_order")
-          .update({
-            menu_items: menuItems as any,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("user_role", selectedRole));
-      } else {
-        // Insert new record
-        ({ error } = await supabase
-          .from("menu_order")
-          .insert([{
+        .upsert(
+          {
             user_role: selectedRole,
-            menu_items: menuItems as any,
-          }]));
-      }
+            menu_items: JSON.parse(JSON.stringify(menuItems)),
+          },
+          {
+            onConflict: "user_role",
+          }
+        );
 
-      if (error) {
-        console.error("Save error:", error);
-        throw error;
-      }
+      if (error) throw error;
 
       toast({
         title: "저장 완료",
         description: "메뉴 순서가 성공적으로 저장되었습니다.",
       });
-      
-      // Reload to confirm
-      await fetchMenuOrder();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error saving menu order:", error);
       toast({
         title: "저장 실패",
-        description: error.message || "메뉴 순서 저장 중 오류가 발생했습니다.",
+        description: "메뉴 순서 저장 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
@@ -276,20 +239,11 @@ const MenuOrderSettings = () => {
   };
 
   const handleToggleEnabled = (id: string) => {
-    setMenuItems((prevItems) => {
-      const newItems = prevItems.map((item) => {
-        if (item.id === id) {
-          return { ...item, enabled: !item.enabled };
-        }
-        return item;
-      });
-      return newItems;
-    });
-    
-    toast({
-      title: "상태 변경",
-      description: "메뉴 상태가 변경되었습니다. 저장 버튼을 클릭하여 변경사항을 저장하세요.",
-    });
+    setMenuItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, enabled: !item.enabled } : item
+      )
+    );
   };
 
   return (
@@ -316,7 +270,6 @@ const MenuOrderSettings = () => {
               <SelectItem value="student">학생</SelectItem>
               <SelectItem value="teacher">강사</SelectItem>
               <SelectItem value="admin">관리자</SelectItem>
-              <SelectItem value="operator">운영자</SelectItem>
             </SelectContent>
           </Select>
         </div>

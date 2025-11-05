@@ -2,25 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical, Eye, MessageSquare, BarChart3 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -32,36 +14,6 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const TeacherStudents = () => {
-  const { toast } = useToast();
-  const [showMessageDialog, setShowMessageDialog] = useState(false);
-  const [messageContent, setMessageContent] = useState("");
-  
-  const handleStudentAction = (studentName: string, action: string) => {
-    toast({
-      title: "데모 모드",
-      description: `${studentName}의 ${action} 기능은 실제 서비스에서 사용할 수 있습니다.`,
-    });
-  };
-
-  const handleSendBulkMessage = () => {
-    if (!messageContent.trim()) {
-      toast({
-        title: "오류",
-        description: "메시지 내용을 입력해주세요.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "메시지 전송 완료",
-      description: `전체 학생 ${students.length}명에게 메시지가 전송되었습니다.`,
-    });
-    
-    setShowMessageDialog(false);
-    setMessageContent("");
-  };
-
   const students = [
     {
       id: 1,
@@ -129,7 +81,7 @@ const TeacherStudents = () => {
               학생들의 학습 진행 상황과 활동을 모니터링하세요
             </p>
           </div>
-          <Button className="gap-2" onClick={() => setShowMessageDialog(true)}>
+          <Button className="gap-2">
             <Mail className="h-4 w-4" />
             전체 메시지 보내기
           </Button>
@@ -226,27 +178,9 @@ const TeacherStudents = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="sm" variant="ghost">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "상세 정보 보기")}>
-                            <Eye className="mr-2 h-4 w-4" />
-                            상세 정보 보기
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "메시지 보내기")}>
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            메시지 보내기
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleStudentAction(student.name, "학습 현황 분석")}>
-                            <BarChart3 className="mr-2 h-4 w-4" />
-                            학습 현황 분석
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Button size="sm" variant="ghost">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -254,40 +188,6 @@ const TeacherStudents = () => {
             </Table>
           </CardContent>
         </Card>
-
-        {/* Bulk Message Dialog */}
-        <Dialog open={showMessageDialog} onOpenChange={setShowMessageDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>전체 학생에게 메시지 보내기</DialogTitle>
-              <DialogDescription>
-                전체 학생 {students.length}명에게 메시지를 전송합니다.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="message">메시지 내용</Label>
-                <Textarea
-                  id="message"
-                  placeholder="학생들에게 전달할 메시지를 입력하세요..."
-                  value={messageContent}
-                  onChange={(e) => setMessageContent(e.target.value)}
-                  rows={6}
-                  className="resize-none"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowMessageDialog(false)}>
-                취소
-              </Button>
-              <Button onClick={handleSendBulkMessage}>
-                <Mail className="h-4 w-4 mr-2" />
-                전송
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     </DashboardLayout>
   );

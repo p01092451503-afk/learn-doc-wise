@@ -52,9 +52,7 @@ serve(async (req) => {
     const highEngagement = analytics?.filter(a => a.engagement_score > 70).length || 0;
 
     // AI 리포트 생성 프롬프트
-    const systemPrompt = `당신은 교육 플랫폼의 데이터 분석 전문가입니다. 제공된 학습 데이터를 분석하여 종합적인 리포트를 생성하세요.
-
-**중요 제한사항:** 오직 LMS 플랫폼의 학습 데이터, 교육 분석, 학업 성과만 다루세요. 학습과 무관한 분석은 제공하지 마세요.`;
+    const systemPrompt = `당신은 교육 플랫폼의 데이터 분석 전문가입니다. 제공된 학습 데이터를 분석하여 종합적인 리포트를 생성하세요.`;
 
     let reportPrompt = '';
     

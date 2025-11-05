@@ -456,7 +456,7 @@ const StudentCourseDetail = () => {
                     </Card>
                   </TabsContent>
                   <TabsContent value="chat" className="mt-4">
-                    <CourseChatRoom courseId={id!} isDemo={isDemoMode} />
+                    <CourseChatRoom courseId={id!} />
                   </TabsContent>
                   <TabsContent value="notes" className="mt-4">
                     <Card>
