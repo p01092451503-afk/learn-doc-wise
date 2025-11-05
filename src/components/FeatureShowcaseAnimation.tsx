@@ -149,10 +149,15 @@ const allFeatures: FeatureCard[] = [
 
 export const FeatureShowcaseAnimation = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % allFeatures.length);
+      setIsExiting(true);
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % allFeatures.length);
+        setIsExiting(false);
+      }, 500);
     }, 3000);
 
     return () => clearInterval(interval);
@@ -190,39 +195,43 @@ export const FeatureShowcaseAnimation = () => {
   const categoryLabel = getCategoryLabel();
 
   return (
-    <div className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+    <div className="relative w-full min-h-[400px] md:min-h-[450px] flex items-center justify-center overflow-hidden">
       {/* Subtle background pattern only */}
       <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
 
       {/* Main feature card */}
       <div
         key={currentIndex}
-        className="relative z-10 max-w-3xl mx-auto px-4 animate-scale-in"
+        className={`relative z-10 max-w-2xl mx-auto px-4 transition-all duration-500 ${
+          isExiting 
+            ? 'animate-slide-out-right opacity-0' 
+            : 'animate-slide-in-left opacity-100'
+        }`}
       >
         {/* Category badge */}
-        <div className="flex justify-center mb-6 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border">
-            <span className={`text-sm font-bold ${categoryLabel.color}`}>
+        <div className="flex justify-center mb-4 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted border border-border">
+            <span className={`text-xs font-bold ${categoryLabel.color}`}>
               {categoryLabel.text}
             </span>
           </div>
         </div>
 
         {/* Feature card */}
-        <div className="bg-card border border-border/50 rounded-3xl p-8 md:p-12 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <div className="flex flex-col items-center text-center gap-6">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="flex flex-col items-center text-center gap-4">
             {/* Icon */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10">
-              <FeatureIcon className="h-16 w-16 md:h-20 md:h-20 text-primary" />
+            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10">
+              <FeatureIcon className="h-12 w-12 md:h-14 md:h-14 text-primary" />
             </div>
 
             {/* Title */}
-            <h3 className="text-3xl md:text-4xl font-bold text-foreground">
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground">
               {currentFeature.title}
             </h3>
 
             {/* Description */}
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
               {currentFeature.description}
             </p>
 
@@ -232,7 +241,7 @@ export const FeatureShowcaseAnimation = () => {
                 {currentFeature.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-4 py-2 rounded-full bg-muted text-foreground font-medium border border-border text-sm"
+                    className="px-3 py-1.5 rounded-full bg-muted text-foreground font-medium border border-border text-xs"
                   >
                     {tag}
                   </span>
@@ -243,26 +252,58 @@ export const FeatureShowcaseAnimation = () => {
         </div>
 
         {/* Progress indicators */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-2 mt-6">
           {allFeatures.map((_, index) => (
             <div
               key={index}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              className={`h-1 rounded-full transition-all duration-300 ${
                 index === currentIndex 
-                  ? 'bg-primary w-12' 
-                  : 'bg-muted-foreground/30 w-1.5'
+                  ? 'bg-primary w-10' 
+                  : 'bg-muted-foreground/30 w-1'
               }`}
             />
           ))}
         </div>
 
         {/* Counter */}
-        <div className="text-center mt-4">
-          <span className="text-sm text-muted-foreground font-medium">
+        <div className="text-center mt-3">
+          <span className="text-xs text-muted-foreground font-medium">
             {currentIndex + 1} / {allFeatures.length}
           </span>
         </div>
       </div>
+
+      <style>{`
+        @keyframes slide-in-left {
+          from {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes slide-out-right {
+          from {
+            transform: translateX(0);
+            opacity: 1;
+          }
+          to {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        
+        .animate-slide-in-left {
+          animation: slide-in-left 0.5s ease-out;
+        }
+        
+        .animate-slide-out-right {
+          animation: slide-out-right 0.5s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
