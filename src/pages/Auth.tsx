@@ -85,26 +85,24 @@ const Auth = () => {
           return;
         }
 
-        // Check user role and redirect accordingly
-        const { data: roles } = await supabase
+        // Check user role and redirect accordingly (operator 제외)
+        const { data: allRoles } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .limit(1)
-          .maybeSingle();
+          .neq('role', 'operator'); // operator 역할 제외
 
-        if (roles) {
-          switch (roles.role) {
-            case 'admin':
-              navigate("/admin");
-              break;
-            case 'teacher':
-              navigate("/teacher");
-              break;
-            case 'student':
-            default:
-              navigate("/student");
-              break;
+        if (allRoles && allRoles.length > 0) {
+          // 우선순위: admin > teacher > student
+          const hasAdmin = allRoles.some(r => r.role === 'admin');
+          const hasTeacher = allRoles.some(r => r.role === 'teacher');
+          
+          if (hasAdmin) {
+            navigate("/admin");
+          } else if (hasTeacher) {
+            navigate("/teacher");
+          } else {
+            navigate("/student");
           }
         } else {
           // Default to student if no role found
@@ -121,25 +119,23 @@ const Auth = () => {
           return;
         }
 
-        const { data: roles } = await supabase
+        const { data: allRoles } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .limit(1)
-          .maybeSingle();
+          .neq('role', 'operator'); // operator 역할 제외
 
-        if (roles) {
-          switch (roles.role) {
-            case 'admin':
-              navigate("/admin");
-              break;
-            case 'teacher':
-              navigate("/teacher");
-              break;
-            case 'student':
-            default:
-              navigate("/student");
-              break;
+        if (allRoles && allRoles.length > 0) {
+          // 우선순위: admin > teacher > student
+          const hasAdmin = allRoles.some(r => r.role === 'admin');
+          const hasTeacher = allRoles.some(r => r.role === 'teacher');
+          
+          if (hasAdmin) {
+            navigate("/admin");
+          } else if (hasTeacher) {
+            navigate("/teacher");
+          } else {
+            navigate("/student");
           }
         } else {
           navigate("/student");
