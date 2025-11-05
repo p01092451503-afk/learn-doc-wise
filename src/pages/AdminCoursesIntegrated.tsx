@@ -1,0 +1,918 @@
+import { useState, useEffect } from "react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Edit, Trash2, BookOpen, FolderTree, PlayCircle, ArrowLeft, Video } from "lucide-react";
+
+interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  status: string;
+  level: string;
+  price: number;
+  duration_hours: number;
+  category_id: string | null;
+  created_at: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  is_active: boolean;
+}
+
+interface Content {
+  id: string;
+  title: string;
+  description: string | null;
+  content_type: string;
+  video_url: string | null;
+  video_provider: string | null;
+  duration_minutes: number;
+  order_index: number;
+  is_published: boolean;
+  course_id: string;
+}
+
+const AdminCoursesIntegrated = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [contents, setContents] = useState<Content[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isCourseDialogOpen, setIsCourseDialogOpen] = useState(false);
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+  const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingContent, setEditingContent] = useState<Content | null>(null);
+  const { toast } = useToast();
+
+  const [courseForm, setCourseForm] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    status: "draft",
+    level: "beginner",
+    price: 0,
+    duration_hours: 0,
+    category_id: "",
+  });
+
+  const [categoryForm, setCategoryForm] = useState({
+    name: "",
+    slug: "",
+    description: "",
+  });
+
+  const [contentForm, setContentForm] = useState({
+    title: "",
+    description: "",
+    video_url: "",
+    video_provider: "youtube" as "youtube" | "vimeo",
+    duration_minutes: 0,
+    order_index: 0,
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCourse) {
+      fetchContents(selectedCourse.id);
+    }
+  }, [selectedCourse]);
+
+  const fetchData = async () => {
+    try {
+      const [coursesResult, categoriesResult] = await Promise.all([
+        supabase.from("courses").select("*").order("created_at", { ascending: false }),
+        supabase.from("categories").select("*").eq("is_active", true),
+      ]);
+
+      if (coursesResult.error) throw coursesResult.error;
+      if (categoriesResult.error) throw categoriesResult.error;
+
+      setCourses(coursesResult.data || []);
+      setCategories(categoriesResult.data || []);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "데이터를 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchContents = async (courseId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("course_contents")
+        .select("*")
+        .eq("course_id", courseId)
+        .order("order_index");
+
+      if (error) throw error;
+      setContents(data || []);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "차시 목록을 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateCourse = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const baseSlug = courseForm.slug || courseForm.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      
+      const courseData: any = {
+        title: courseForm.title,
+        slug: baseSlug,
+        description: courseForm.description,
+        status: courseForm.status,
+        level: courseForm.level,
+        price: courseForm.price,
+        duration_hours: courseForm.duration_hours,
+        category_id: courseForm.category_id || null,
+        instructor_id: user?.id,
+      };
+
+      if (editingCourse) {
+        const { error } = await supabase
+          .from("courses")
+          .update(courseData)
+          .eq("id", editingCourse.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "강좌가 수정되었습니다.",
+        });
+      } else {
+        const { error } = await supabase.from("courses").insert([courseData]);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "강좌가 생성되었습니다.",
+        });
+      }
+
+      setIsCourseDialogOpen(false);
+      setEditingCourse(null);
+      fetchData();
+      resetCourseForm();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "강좌 저장에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateCategory = async () => {
+    try {
+      const categoryData: any = {
+        name: categoryForm.name,
+        slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, "-"),
+        description: categoryForm.description,
+      };
+
+      if (editingCategory) {
+        const { error } = await supabase
+          .from("categories")
+          .update(categoryData)
+          .eq("id", editingCategory.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "분류가 수정되었습니다.",
+        });
+      } else {
+        const { error } = await supabase.from("categories").insert([categoryData]);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "분류가 생성되었습니다.",
+        });
+      }
+
+      setIsCategoryDialogOpen(false);
+      setEditingCategory(null);
+      fetchData();
+      resetCategoryForm();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "분류 저장에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCreateContent = async () => {
+    if (!selectedCourse) return;
+
+    try {
+      const contentData: any = {
+        course_id: selectedCourse.id,
+        title: contentForm.title,
+        description: contentForm.description,
+        video_url: contentForm.video_url,
+        video_provider: contentForm.video_provider,
+        duration_minutes: contentForm.duration_minutes,
+        order_index: contentForm.order_index,
+        content_type: "video",
+        is_published: true,
+      };
+
+      if (editingContent) {
+        const { error } = await supabase
+          .from("course_contents")
+          .update(contentData)
+          .eq("id", editingContent.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "차시가 수정되었습니다.",
+        });
+      } else {
+        const { error } = await supabase.from("course_contents").insert([contentData]);
+
+        if (error) throw error;
+
+        toast({
+          title: "성공",
+          description: "차시가 생성되었습니다.",
+        });
+      }
+
+      setIsContentDialogOpen(false);
+      setEditingContent(null);
+      fetchContents(selectedCourse.id);
+      resetContentForm();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "차시 저장에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      const { error } = await supabase.from("courses").delete().eq("id", courseId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "강좌가 삭제되었습니다.",
+      });
+
+      if (selectedCourse?.id === courseId) {
+        setSelectedCourse(null);
+      }
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      const { error } = await supabase.from("categories").delete().eq("id", categoryId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "분류가 삭제되었습니다.",
+      });
+
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteContent = async (contentId: string) => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    try {
+      const { error } = await supabase.from("course_contents").delete().eq("id", contentId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "차시가 삭제되었습니다.",
+      });
+
+      if (selectedCourse) {
+        fetchContents(selectedCourse.id);
+      }
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "삭제에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const resetCourseForm = () => {
+    setCourseForm({
+      title: "",
+      slug: "",
+      description: "",
+      status: "draft",
+      level: "beginner",
+      price: 0,
+      duration_hours: 0,
+      category_id: "",
+    });
+  };
+
+  const resetCategoryForm = () => {
+    setCategoryForm({
+      name: "",
+      slug: "",
+      description: "",
+    });
+  };
+
+  const resetContentForm = () => {
+    setContentForm({
+      title: "",
+      description: "",
+      video_url: "",
+      video_provider: "youtube",
+      duration_minutes: 0,
+      order_index: contents.length,
+    });
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+      published: "default",
+      draft: "secondary",
+      scheduled: "outline",
+      archived: "destructive",
+    };
+    const labels: Record<string, string> = {
+      published: "공개",
+      draft: "초안",
+      scheduled: "예약",
+      archived: "보관",
+    };
+    return <Badge variant={variants[status] || "default"}>{labels[status] || status}</Badge>;
+  };
+
+  const getLevelBadge = (level: string) => {
+    const labels: Record<string, string> = {
+      beginner: "초급",
+      intermediate: "중급",
+      advanced: "고급",
+      all: "전체",
+    };
+    return <Badge variant="outline">{labels[level] || level}</Badge>;
+  };
+
+  return (
+    <DashboardLayout userRole="admin">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-display font-bold flex items-center gap-2">
+              <BookOpen className="h-7 w-7 text-primary" />
+              강좌 & 차시 관리
+            </h1>
+            <p className="text-muted-foreground mt-2">강좌 생성 및 차시 관리를 한곳에서</p>
+          </div>
+        </div>
+
+        <Tabs defaultValue="categories" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="categories">
+              <FolderTree className="h-4 w-4 mr-2" />
+              분류 관리
+            </TabsTrigger>
+            <TabsTrigger value="courses">
+              <BookOpen className="h-4 w-4 mr-2" />
+              강의 관리
+            </TabsTrigger>
+          </TabsList>
+
+          {/* 분류 관리 탭 */}
+          <TabsContent value="categories" className="space-y-4">
+            <div className="flex items-center justify-end">
+              <Dialog open={isCategoryDialogOpen} onOpenChange={(open) => {
+                setIsCategoryDialogOpen(open);
+                if (!open) {
+                  setEditingCategory(null);
+                  resetCategoryForm();
+                }
+              }}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    분류 추가
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{editingCategory ? "분류 수정" : "새 분류 생성"}</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>분류명 *</Label>
+                      <Input
+                        value={categoryForm.name}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+                        placeholder="예: 프로그래밍"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>슬러그</Label>
+                      <Input
+                        value={categoryForm.slug}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
+                        placeholder="자동 생성"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>설명</Label>
+                      <Textarea
+                        value={categoryForm.description}
+                        onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
+                        placeholder="분류 설명"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>
+                      취소
+                    </Button>
+                    <Button onClick={handleCreateCategory}>
+                      {editingCategory ? "수정" : "생성"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>분류명</TableHead>
+                      <TableHead>슬러그</TableHead>
+                      <TableHead>설명</TableHead>
+                      <TableHead className="text-right">관리</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {categories.map((category) => (
+                      <TableRow key={category.id}>
+                        <TableCell className="font-medium">{category.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{category.slug}</Badge>
+                        </TableCell>
+                        <TableCell className="max-w-md truncate">{category.description}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditingCategory(category);
+                                setCategoryForm({
+                                  name: category.name,
+                                  slug: category.slug,
+                                  description: category.description || "",
+                                });
+                                setIsCategoryDialogOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDeleteCategory(category.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 강의 관리 탭 */}
+          <TabsContent value="courses" className="space-y-4">
+            {!selectedCourse ? (
+              // 강의 목록 뷰
+              <>
+                <div className="flex items-center justify-end">
+                  <Dialog open={isCourseDialogOpen} onOpenChange={(open) => {
+                    setIsCourseDialogOpen(open);
+                    if (!open) {
+                      setEditingCourse(null);
+                      resetCourseForm();
+                    }
+                  }}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="h-4 w-4 mr-2" />
+                        강의 개설
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>{editingCourse ? "강의 수정" : "새 강의 개설"}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>강의명 *</Label>
+                          <Input
+                            value={courseForm.title}
+                            onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
+                            placeholder="예: React 완벽 가이드"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>분류 *</Label>
+                          <Select value={courseForm.category_id} onValueChange={(value) => setCourseForm({ ...courseForm, category_id: value })}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="분류 선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>설명</Label>
+                          <Textarea
+                            value={courseForm.description}
+                            onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
+                            placeholder="강의 설명을 입력하세요"
+                            rows={4}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>난이도</Label>
+                            <Select value={courseForm.level} onValueChange={(value) => setCourseForm({ ...courseForm, level: value })}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="beginner">초급</SelectItem>
+                                <SelectItem value="intermediate">중급</SelectItem>
+                                <SelectItem value="advanced">고급</SelectItem>
+                                <SelectItem value="all">전체</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>가격 (원)</Label>
+                            <Input
+                              type="number"
+                              value={courseForm.price}
+                              onChange={(e) => setCourseForm({ ...courseForm, price: parseFloat(e.target.value) || 0 })}
+                              placeholder="0"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>상태</Label>
+                          <Select value={courseForm.status} onValueChange={(value) => setCourseForm({ ...courseForm, status: value })}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="draft">초안</SelectItem>
+                              <SelectItem value="published">공개</SelectItem>
+                              <SelectItem value="archived">보관</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsCourseDialogOpen(false)}>
+                          취소
+                        </Button>
+                        <Button onClick={handleCreateCourse}>
+                          {editingCourse ? "수정" : "생성"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {courses.map((course) => (
+                    <Card key={course.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setSelectedCourse(course)}>
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <CardTitle className="text-lg line-clamp-2">{course.title}</CardTitle>
+                            <div className="flex items-center gap-2 mt-2">
+                              {getStatusBadge(course.status)}
+                              {getLevelBadge(course.level)}
+                            </div>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <CardDescription className="line-clamp-3 mb-4">
+                          {course.description || "설명이 없습니다."}
+                        </CardDescription>
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span>{course.price > 0 ? `₩${course.price.toLocaleString()}` : "무료"}</span>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingCourse(course);
+                                setCourseForm({
+                                  title: course.title,
+                                  slug: course.slug,
+                                  description: course.description || "",
+                                  status: course.status,
+                                  level: course.level,
+                                  price: parseFloat(course.price.toString()),
+                                  duration_hours: course.duration_hours,
+                                  category_id: course.category_id || "",
+                                });
+                                setIsCourseDialogOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteCourse(course.id);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </>
+            ) : (
+              // 차시 관리 뷰
+              <>
+                <div className="flex items-center justify-between">
+                  <Button variant="ghost" onClick={() => setSelectedCourse(null)}>
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    강의 목록으로
+                  </Button>
+                  <Dialog open={isContentDialogOpen} onOpenChange={(open) => {
+                    setIsContentDialogOpen(open);
+                    if (!open) {
+                      setEditingContent(null);
+                      resetContentForm();
+                    }
+                  }}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="h-4 w-4 mr-2" />
+                        차시 추가
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>{editingContent ? "차시 수정" : "새 차시 생성"}</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label>차시명 *</Label>
+                          <Input
+                            value={contentForm.title}
+                            onChange={(e) => setContentForm({ ...contentForm, title: e.target.value })}
+                            placeholder="예: 1강. React 소개"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>설명</Label>
+                          <Textarea
+                            value={contentForm.description}
+                            onChange={(e) => setContentForm({ ...contentForm, description: e.target.value })}
+                            placeholder="차시 설명"
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>비디오 제공자</Label>
+                            <Select value={contentForm.video_provider} onValueChange={(value: "youtube" | "vimeo") => setContentForm({ ...contentForm, video_provider: value })}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="youtube">YouTube</SelectItem>
+                                <SelectItem value="vimeo">Vimeo</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>재생 시간 (분)</Label>
+                            <Input
+                              type="number"
+                              value={contentForm.duration_minutes}
+                              onChange={(e) => setContentForm({ ...contentForm, duration_minutes: parseInt(e.target.value) || 0 })}
+                              placeholder="0"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>비디오 URL</Label>
+                          <Input
+                            value={contentForm.video_url}
+                            onChange={(e) => setContentForm({ ...contentForm, video_url: e.target.value })}
+                            placeholder="https://youtube.com/watch?v=..."
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>순서</Label>
+                          <Input
+                            type="number"
+                            value={contentForm.order_index}
+                            onChange={(e) => setContentForm({ ...contentForm, order_index: parseInt(e.target.value) || 0 })}
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsContentDialogOpen(false)}>
+                          취소
+                        </Button>
+                        <Button onClick={handleCreateContent}>
+                          {editingContent ? "수정" : "생성"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Video className="h-5 w-5 text-primary" />
+                      {selectedCourse.title} - 차시 목록
+                    </CardTitle>
+                    <CardDescription>
+                      총 {contents.length}개의 차시
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-16">순서</TableHead>
+                          <TableHead>차시명</TableHead>
+                          <TableHead>재생시간</TableHead>
+                          <TableHead>제공자</TableHead>
+                          <TableHead className="text-right">관리</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {contents.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                              차시가 없습니다. 차시를 추가해주세요.
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          contents.map((content) => (
+                            <TableRow key={content.id}>
+                              <TableCell>
+                                <Badge variant="outline">{content.order_index + 1}</Badge>
+                              </TableCell>
+                              <TableCell className="font-medium">{content.title}</TableCell>
+                              <TableCell>{content.duration_minutes}분</TableCell>
+                              <TableCell>
+                                <Badge variant="secondary">
+                                  {content.video_provider === "youtube" ? "YouTube" : "Vimeo"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      setEditingContent(content);
+                                      setContentForm({
+                                        title: content.title,
+                                        description: content.description || "",
+                                        video_url: content.video_url || "",
+                                        video_provider: (content.video_provider as "youtube" | "vimeo") || "youtube",
+                                        duration_minutes: content.duration_minutes,
+                                        order_index: content.order_index,
+                                      });
+                                      setIsContentDialogOpen(true);
+                                    }}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => handleDeleteContent(content.id)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </DashboardLayout>
+  );
+};
+
+export default AdminCoursesIntegrated;

@@ -33,6 +33,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const OperatorDashboard = lazy(() => import("./pages/OperatorDashboard"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 const AdminCourses = lazy(() => import("./pages/AdminCourses"));
+const AdminCoursesIntegrated = lazy(() => import("./pages/AdminCoursesIntegrated"));
 const AdminContent = lazy(() => import("./pages/AdminContent"));
 const AdminAnalytics = lazy(() => import("./pages/AdminAnalytics"));
 const AdminRevenue = lazy(() => import("./pages/AdminRevenue"));
@@ -182,9 +183,9 @@ const App = () => {
                 <Route path="/operator/updates" element={<OperatorUpdates />} />
                 <Route path="/operator/license" element={<OperatorLicense />} />
                 <Route path="/operator/resources" element={<OperatorResources />} />
-                <Route path="/admin/users" element={<AdminUsers />} />
-                <Route path="/admin/courses" element={<AdminCourses />} />
-                <Route path="/admin/content" element={<AdminContent />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/courses" element={<AdminCoursesIntegrated />} />
+          <Route path="/admin/content" element={<AdminContent />} />
                 <Route path="/admin/attendance" element={<AdminAttendance />} />
                 <Route path="/admin/training-log" element={<AdminTrainingLog />} />
                 <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
