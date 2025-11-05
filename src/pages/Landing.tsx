@@ -72,11 +72,11 @@ const Landing = () => {
                     지금 시작하기
                   </Button>
                 </Link>
-                <Link to="/demo">
-                  <Button size="lg" variant="outline" className="text-lg px-10">
-                    데모 체험하기
-                  </Button>
-                </Link>
+              <Link to="/features-detail">
+                <Button size="lg" variant="outline" className="text-lg px-10">
+                  데모 체험하기
+                </Button>
+              </Link>
               </div>
               
               {/* Trust Indicators */}
