@@ -11,7 +11,6 @@ import logoIcon from "@/assets/logo-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
-import type { Session, User } from "@supabase/supabase-js";
 import {
   Tooltip,
   TooltipContent,
@@ -34,13 +33,10 @@ const Auth = () => {
   const [resetEmail, setResetEmail] = useState("");
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isResetLoading, setIsResetLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [authInitialized, setAuthInitialized] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load remembered email
+  // Load remembered email on mount
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberedEmail");
     if (savedEmail) {
@@ -49,147 +45,56 @@ const Auth = () => {
     }
   }, []);
 
-  // SINGLE auth initialization effect
+  // Check if already logged in and redirect - ONE TIME ONLY
   useEffect(() => {
     let mounted = true;
-    let authListener: { data: { subscription: { unsubscribe: () => void } } } | null = null;
 
-    const initializeAuth = async () => {
+    const checkSession = async () => {
       try {
-        console.log('[Auth] Initializing authentication...');
+        const { data: { session } } = await supabase.auth.getSession();
         
-        // Check URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const shouldLogout = urlParams.get('logout') === 'true';
-        const fromDemo = urlParams.get('from') === 'demo';
-        const fromMain2 = urlParams.get('from') === 'main2';
+        if (!mounted || !session) return;
 
-        // Handle explicit logout request
-        if (shouldLogout && mounted) {
-          console.log('[Auth] Logout requested, signing out...');
-          await supabase.auth.signOut();
-          window.history.replaceState({}, '', '/auth');
-          setAuthInitialized(true);
-          return;
-        }
+        // Get user roles
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id);
 
-        // Set up auth state listener
-        authListener = supabase.auth.onAuthStateChange(async (event, newSession) => {
-          if (!mounted) return;
-          
-          console.log('[Auth] Auth event:', event);
-          setSession(newSession);
-          setUser(newSession?.user ?? null);
+        if (!mounted) return;
 
-          // Only redirect on SIGNED_IN event
-          if (event === 'SIGNED_IN' && newSession) {
-            await handleRedirect(newSession, fromDemo, fromMain2);
-          }
-        });
+        if (userRoles && userRoles.length > 0) {
+          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
+          const primaryRole = rolesPriority.find(role => 
+            userRoles.some(ur => ur.role === role)
+          ) || 'student';
 
-        // Check for existing session
-        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.warn('[Auth] Session error:', error);
-          await supabase.auth.signOut({ scope: 'local' });
-        }
+          const roleRoutes: Record<string, string> = {
+            admin: "/admin",
+            operator: "/operator",
+            teacher: "/teacher",
+            student: "/student"
+          };
 
-        if (mounted) {
-          setSession(currentSession);
-          setUser(currentSession?.user ?? null);
-          setAuthInitialized(true);
-
-          // Redirect if already logged in
-          if (currentSession) {
-            await handleRedirect(currentSession, fromDemo, fromMain2);
-          }
+          navigate(roleRoutes[primaryRole] || "/student", { replace: true });
+        } else {
+          navigate("/student", { replace: true });
         }
       } catch (error) {
-        console.error('[Auth] Initialization error:', error);
-        if (mounted) {
-          setAuthInitialized(true);
-        }
+        console.error('[Auth] Session check error:', error);
       }
     };
 
-    initializeAuth();
+    checkSession();
 
     return () => {
       mounted = false;
-      if (authListener) {
-        authListener.data.subscription.unsubscribe();
-      }
     };
-  }, []);
-
-  // Redirect handler
-  const handleRedirect = async (session: Session, fromDemo: boolean, fromMain2: boolean) => {
-    try {
-      // Demo flow
-      if (fromDemo) {
-        navigate("/demo");
-        return;
-      }
-
-      // Main2 demo approval flow
-      if (fromMain2) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('demo_approved')
-          .eq('user_id', session.user.id)
-          .maybeSingle();
-
-        if (profile?.demo_approved) {
-          navigate("/demo");
-          return;
-        }
-      }
-
-      // Get user roles
-      const { data: userRoles, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id);
-
-      if (error) {
-        console.error('[Auth] Error fetching roles:', error);
-        navigate("/student");
-        return;
-      }
-
-      console.log('[Auth] User roles:', userRoles);
-
-      if (userRoles && userRoles.length > 0) {
-        const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
-        const primaryRole = rolesPriority.find(role => 
-          userRoles.some(ur => ur.role === role)
-        ) || 'student';
-
-        console.log('[Auth] Redirecting to dashboard:', primaryRole);
-
-        const roleRoutes: Record<string, string> = {
-          admin: "/admin",
-          operator: "/operator",
-          teacher: "/teacher",
-          student: "/student"
-        };
-
-        navigate(roleRoutes[primaryRole] || "/student");
-      } else {
-        console.log('[Auth] No roles found, defaulting to student');
-        navigate("/student");
-      }
-    } catch (error) {
-      console.error('[Auth] Redirect error:', error);
-      navigate("/student");
-    }
-  };
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate inputs
     try {
       emailSchema.parse(loginEmail);
       passwordSchema.parse(loginPassword);
@@ -207,16 +112,13 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      // Handle remember me
       if (rememberMe) {
         localStorage.setItem("rememberedEmail", loginEmail);
       } else {
@@ -228,7 +130,31 @@ const Auth = () => {
         description: "환영합니다!",
       });
 
-      // Redirect will be handled by onAuthStateChange
+      // Redirect based on role
+      if (data.session) {
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.session.user.id);
+
+        if (userRoles && userRoles.length > 0) {
+          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
+          const primaryRole = rolesPriority.find(role => 
+            userRoles.some(ur => ur.role === role)
+          ) || 'student';
+
+          const roleRoutes: Record<string, string> = {
+            admin: "/admin",
+            operator: "/operator",
+            teacher: "/teacher",
+            student: "/student"
+          };
+
+          navigate(roleRoutes[primaryRole] || "/student", { replace: true });
+        } else {
+          navigate("/student", { replace: true });
+        }
+      }
     } catch (error: any) {
       console.error('[Auth] Login error:', error);
       
@@ -252,7 +178,6 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate inputs
     try {
       emailSchema.parse(signupEmail);
       passwordSchema.parse(signupPassword);
@@ -290,7 +215,7 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
@@ -308,7 +233,6 @@ const Auth = () => {
         description: "이메일 확인 후 로그인해주세요.",
       });
 
-      // Clear form
       setSignupName("");
       setSignupEmail("");
       setSignupPassword("");
@@ -377,19 +301,9 @@ const Auth = () => {
     }
   };
 
-  // Show nothing while initializing
-  if (!authInitialized) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
     <TooltipProvider>
       <div className="min-h-screen flex flex-col bg-background">
-        {/* Header */}
         <header className="border-b bg-background/95 backdrop-blur-xl">
           <div className="container mx-auto px-4 h-20 flex items-center justify-between">
             <Tooltip>
@@ -406,7 +320,6 @@ const Auth = () => {
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="flex-1 flex items-center justify-center p-4">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
@@ -420,7 +333,6 @@ const Auth = () => {
                   <TabsTrigger value="signup">회원가입</TabsTrigger>
                 </TabsList>
 
-                {/* Login Tab */}
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
@@ -454,10 +366,7 @@ const Auth = () => {
                           checked={rememberMe}
                           onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                         />
-                        <label
-                          htmlFor="remember"
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
+                        <label htmlFor="remember" className="text-sm font-medium">
                           이메일 기억하기
                         </label>
                       </div>
@@ -500,7 +409,6 @@ const Auth = () => {
                   </form>
                 </TabsContent>
 
-                {/* Signup Tab */}
                 <TabsContent value="signup">
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div className="space-y-2">
