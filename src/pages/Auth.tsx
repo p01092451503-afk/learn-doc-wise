@@ -75,71 +75,61 @@ const Auth = () => {
     // Check if coming from demo mode
     const urlParams = new URLSearchParams(window.location.search);
     const fromDemo = urlParams.get('from') === 'demo';
+    let isRedirecting = false; // 중복 리다이렉트 방지
 
-    // Check if user is already logged in
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        // If from demo, always return to demo
-        if (fromDemo) {
-          navigate("/demo");
-          return;
-        }
+    const redirectUser = async (session: any) => {
+      if (isRedirecting) return; // 이미 리다이렉트 중이면 스킵
+      
+      // If from demo, always return to demo
+      if (fromDemo) {
+        isRedirecting = true;
+        navigate("/demo");
+        return;
+      }
 
-        // Check user role and redirect accordingly (operator 제외)
-        const { data: allRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .neq('role', 'operator'); // operator 역할 제외
+      // Check user role and redirect accordingly (operator 제외)
+      const { data: allRoles, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .neq('role', 'operator'); // operator 역할 제외
 
-        if (allRoles && allRoles.length > 0) {
-          // 우선순위: admin > teacher > student
-          const hasAdmin = allRoles.some(r => r.role === 'admin');
-          const hasTeacher = allRoles.some(r => r.role === 'teacher');
-          
-          if (hasAdmin) {
-            navigate("/admin");
-          } else if (hasTeacher) {
-            navigate("/teacher");
-          } else {
-            navigate("/student");
-          }
+      if (error) {
+        console.error('Error fetching roles:', error);
+        return;
+      }
+
+      if (allRoles && allRoles.length > 0) {
+        isRedirecting = true;
+        
+        // 우선순위: admin > teacher > student
+        const hasAdmin = allRoles.some(r => r.role === 'admin');
+        const hasTeacher = allRoles.some(r => r.role === 'teacher');
+        
+        if (hasAdmin) {
+          navigate("/admin", { replace: true });
+        } else if (hasTeacher) {
+          navigate("/teacher", { replace: true });
         } else {
-          // Default to student if no role found
-          navigate("/student");
+          navigate("/student", { replace: true });
         }
+      } else {
+        isRedirecting = true;
+        navigate("/student", { replace: true });
+      }
+    };
+
+    // Auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session && event === 'SIGNED_IN') {
+        await redirectUser(session);
       }
     });
 
+    // Check existing session on mount
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session) {
-        // If from demo, always return to demo
-        if (fromDemo) {
-          navigate("/demo");
-          return;
-        }
-
-        const { data: allRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .neq('role', 'operator'); // operator 역할 제외
-
-        if (allRoles && allRoles.length > 0) {
-          // 우선순위: admin > teacher > student
-          const hasAdmin = allRoles.some(r => r.role === 'admin');
-          const hasTeacher = allRoles.some(r => r.role === 'teacher');
-          
-          if (hasAdmin) {
-            navigate("/admin");
-          } else if (hasTeacher) {
-            navigate("/teacher");
-          } else {
-            navigate("/student");
-          }
-        } else {
-          navigate("/student");
-        }
+        await redirectUser(session);
       }
     });
 
