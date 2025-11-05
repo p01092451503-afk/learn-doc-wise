@@ -45,7 +45,7 @@ const Auth = () => {
     }
   }, []);
 
-  // Check if already logged in and redirect - ONE TIME ONLY
+  // Check session ONCE on mount - NO AUTOMATIC REDIRECT
   useEffect(() => {
     let mounted = true;
 
@@ -53,67 +53,28 @@ const Auth = () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         
-        // If there's a session error, clear everything
+        // If there's a session error, silently clear it
         if (error) {
-          console.error('[Auth] Session error, clearing:', error);
+          console.error('[Auth] Session error:', error);
           await supabase.auth.signOut();
           return;
         }
         
-        if (!mounted || !session) return;
-
-        // Verify the session is actually valid by making a test request
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .limit(1);
-
-        // If we get a 403 or auth error, the session is invalid
-        if (roleError && (roleError.message.includes('session') || roleError.message.includes('JWT'))) {
-          console.error('[Auth] Invalid session detected, signing out:', roleError);
-          await supabase.auth.signOut();
-          return;
-        }
-
-        if (!mounted) return;
-
-        // Now get the actual roles
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id);
-
-        if (userRoles && userRoles.length > 0) {
-          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
-          const primaryRole = rolesPriority.find(role => 
-            userRoles.some(ur => ur.role === role)
-          ) || 'student';
-
-          const roleRoutes: Record<string, string> = {
-            admin: "/admin",
-            operator: "/operator",
-            teacher: "/teacher",
-            student: "/student"
-          };
-
-          navigate(roleRoutes[primaryRole] || "/student", { replace: true });
-        } else {
-          navigate("/student", { replace: true });
-        }
+        // DO NOT AUTO-REDIRECT - Let user manually login
+        // This prevents infinite loops and allows proper login flow
       } catch (error) {
         console.error('[Auth] Session check error:', error);
-        // On any error, sign out to reset state
-        await supabase.auth.signOut();
       }
     };
 
-    checkSession();
+    if (mounted) {
+      checkSession();
+    }
 
     return () => {
       mounted = false;
     };
-  }, [navigate]);
+  }, []); // Empty deps - run ONCE only
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
