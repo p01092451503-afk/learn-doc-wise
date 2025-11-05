@@ -84,71 +84,80 @@ const Auth = () => {
     const fromDemo = urlParams.get('from') === 'demo';
 
     // Check if user is already logged in
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[Auth] Auth state changed:', event, session?.user?.email);
       
       if (session) {
-        // If from demo, always return to demo
-        if (fromDemo) {
-          navigate("/demo");
-          return;
-        }
+        // CRITICAL: Use setTimeout to prevent deadlock when calling other Supabase functions
+        setTimeout(async () => {
+          try {
+            // If from demo, always return to demo
+            if (fromDemo) {
+              navigate("/demo");
+              return;
+            }
 
-        // Check if coming from Main2 demo signup flow
-        const urlParams = new URLSearchParams(window.location.search);
-        const fromMain2 = urlParams.get('from') === 'main2';
+            // Check if coming from Main2 demo signup flow
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromMain2 = urlParams.get('from') === 'main2';
 
-        // If from Main2 and user has demo_approved, redirect to demo
-        if (fromMain2) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('demo_approved')
-            .eq('user_id', session.user.id)
-            .single();
+            // If from Main2 and user has demo_approved, redirect to demo
+            if (fromMain2) {
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('demo_approved')
+                .eq('user_id', session.user.id)
+                .maybeSingle();
 
-          if (profile?.demo_approved) {
-            navigate("/demo");
-            return;
-          }
-        }
+              if (profile?.demo_approved) {
+                navigate("/demo");
+                return;
+              }
+            }
 
-        // Check user role and redirect accordingly
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id);
+            // Check user role and redirect accordingly
+            const { data: userRoles, error: rolesError } = await supabase
+              .from('user_roles')
+              .select('role')
+              .eq('user_id', session.user.id);
 
-        console.log('User roles:', userRoles);
+            console.log('[Auth] User roles:', userRoles, 'Error:', rolesError);
 
-        if (userRoles && userRoles.length > 0) {
-          // Priority order: admin > operator > teacher > student
-          const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
-          const primaryRole = rolesPriority.find(role => 
-            userRoles.some(ur => ur.role === role)
-          ) || 'student';
+            if (userRoles && userRoles.length > 0) {
+              // Priority order: admin > operator > teacher > student
+              const rolesPriority = ['admin', 'operator', 'teacher', 'student'];
+              const primaryRole = rolesPriority.find(role => 
+                userRoles.some(ur => ur.role === role)
+              ) || 'student';
 
-          console.log('Redirecting to:', primaryRole);
+              console.log('[Auth] Redirecting to:', primaryRole);
 
-          switch (primaryRole) {
-            case 'admin':
-              navigate("/admin");
-              break;
-            case 'operator':
-              navigate("/operator");
-              break;
-            case 'teacher':
-              navigate("/teacher");
-              break;
-            case 'student':
-            default:
+              switch (primaryRole) {
+                case 'admin':
+                  navigate("/admin");
+                  break;
+                case 'operator':
+                  navigate("/operator");
+                  break;
+                case 'teacher':
+                  navigate("/teacher");
+                  break;
+                case 'student':
+                default:
+                  navigate("/student");
+                  break;
+              }
+            } else {
+              // Default to student if no role found
+              console.log('[Auth] No roles found, redirecting to student');
               navigate("/student");
-              break;
+            }
+          } catch (error) {
+            console.error('[Auth] Error during redirect:', error);
+            // Fallback to student on error
+            navigate("/student");
           }
-        } else {
-          // Default to student if no role found
-          console.log('No roles found, redirecting to student');
-          navigate("/student");
-        }
+        }, 0);
       }
     });
 
