@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { AtomFeatureAnimation } from "@/components/AtomFeatureAnimation";
+import { FeatureShowcaseAnimation } from "@/components/FeatureShowcaseAnimation";
 
 
 const Landing = () => {
@@ -101,22 +101,18 @@ const Landing = () => {
         </div>
       </header>
 
-      {/* Animated Feature Demo Section */}
-      <section className="py-16 bg-background" aria-labelledby="demo-animation-heading">
+      {/* Feature Showcase Animation */}
+      <section className="py-16 bg-background" aria-labelledby="feature-showcase-heading">
         <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 id="demo-animation-heading" className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                <span className="text-gradient">AI 기반</span> 주요 기능
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                atomLMS의 강력한 AI 기능들을 확인해보세요
-              </p>
-            </div>
-            <div className="relative">
-              <AtomFeatureAnimation />
-            </div>
+          <div className="text-center mb-10">
+            <h2 id="feature-showcase-heading" className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              <span className="text-gradient">atomLMS</span>의 강력한 기능들
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              AI, HRD, 그리고 엔터프라이즈급 기능들을 만나보세요
+            </p>
           </div>
+          <FeatureShowcaseAnimation />
         </div>
       </section>
 
