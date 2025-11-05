@@ -95,6 +95,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [userName, setUserName] = useState<string>("사용자");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -235,6 +236,36 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     setMenuItems(getDefaultMenuItems());
   }, [effectiveUserRole, isDemoMode]);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (profile?.full_name) {
+            setUserName(profile.full_name);
+          } else {
+            // 이메일에서 이름 추출 시도
+            const email = user.email || '';
+            const emailName = email.split('@')[0];
+            setUserName(emailName);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    if (!isDemoMode) {
+      fetchUserProfile();
+    }
+  }, [isDemoMode]);
+
   const fetchMenuOrder = async () => {
     try {
       const { data, error } = await supabase
@@ -356,9 +387,11 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-1.5 md:gap-2 rounded-xl hover:bg-primary/10 flex-shrink-0">
                   <div className="h-8 w-8 md:h-9 md:w-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-premium">
-                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">홍</span>
+                    <span className="text-xs md:text-sm font-semibold text-primary-foreground">
+                      {userName.charAt(0)}
+                    </span>
                   </div>
-                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">홍길동</span>
+                  <span className="hidden sm:inline-block font-medium text-sm md:text-base">{userName}</span>
                   <ChevronDown className="h-4 w-4 hidden sm:block" />
                 </Button>
               </DropdownMenuTrigger>
