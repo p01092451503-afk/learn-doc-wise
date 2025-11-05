@@ -27,6 +27,7 @@ import {
   Package,
   ChevronLeft,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import logoIcon from "@/assets/logo-icon.png";
@@ -296,10 +297,10 @@ const DemoPreview = () => {
                 <p>아톰 안녕?</p>
               </TooltipContent>
             </Tooltip>
-            <Button variant="secondary" size="sm" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">
+            <Badge variant="secondary" className="text-xs hidden sm:inline-flex gap-1.5 pointer-events-none">
               <Bot className="h-3.5 w-3.5" />
               데모 모드
-            </Button>
+            </Badge>
             <Link 
               to={
                 activeRole === "student" ? "/student" : 
@@ -307,9 +308,9 @@ const DemoPreview = () => {
                 "/admin"
               }
             >
-              <Button variant="outline" size="sm" className="text-xs hidden sm:inline-flex gap-1.5">
-                <LayoutDashboard className="h-3.5 w-3.5" />
-                일반 모드
+              <Button variant="default" size="sm" className="text-xs hidden sm:inline-flex gap-1.5">
+                일반 모드로 전환
+                <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             </Link>
           </div>
