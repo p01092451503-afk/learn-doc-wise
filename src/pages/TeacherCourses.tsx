@@ -37,14 +37,7 @@ const TeacherCourses = () => {
         .from("courses")
         .select(`
           *,
-          categories(name),
-          enrollments(
-            id,
-            user_id,
-            progress,
-            profiles(full_name)
-          ),
-          assignments:course_assignments(count)
+          categories(name)
         `)
         .eq("instructor_id", user.id)
         .eq("status", "published")
@@ -52,25 +45,37 @@ const TeacherCourses = () => {
 
       if (error) throw error;
 
-      // 각 강의의 통계 계산
+      // 각 강의의 통계를 개별적으로 계산
       const coursesWithStats = await Promise.all(
         (data || []).map(async (course: any) => {
-          const studentCount = course.enrollments?.length || 0;
-          
-          // 평균 진행률 계산
-          const avgProgress = studentCount > 0
-            ? course.enrollments.reduce((sum: number, e: any) => sum + (e.progress || 0), 0) / studentCount
+          // 수강생 수 조회
+          const { count: enrollmentCount } = await supabase
+            .from("enrollments")
+            .select("*", { count: "exact", head: true })
+            .eq("course_id", course.id);
+
+          // 평균 진행률 조회
+          const { data: enrollments } = await supabase
+            .from("enrollments")
+            .select("progress")
+            .eq("course_id", course.id);
+
+          const avgProgress = enrollments && enrollments.length > 0
+            ? Math.round(enrollments.reduce((sum: number, e: any) => sum + (e.progress || 0), 0) / enrollments.length)
             : 0;
 
-          // 과제 수
-          const assignmentCount = course.assignments?.[0]?.count || 0;
+          // 과제 수 조회
+          const { count: assignmentCount } = await supabase
+            .from("assignments")
+            .select("*", { count: "exact", head: true })
+            .eq("course_id", course.id);
 
           return {
             ...course,
             category_name: course.categories?.name || "미분류",
-            students: studentCount,
-            avg_progress: Math.round(avgProgress),
-            assignment_count: assignmentCount,
+            students: enrollmentCount || 0,
+            avg_progress: avgProgress,
+            assignment_count: assignmentCount || 0,
           };
         })
       );
@@ -83,6 +88,8 @@ const TeacherCourses = () => {
         description: "담당 강의 목록을 불러오는 중 오류가 발생했습니다.",
         variant: "destructive",
       });
+      // 에러가 발생해도 빈 배열로 설정하여 UI가 정상 표시되도록
+      setCourses([]);
     } finally {
       setLoading(false);
     }
