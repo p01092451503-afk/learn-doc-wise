@@ -94,7 +94,7 @@ const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
 // Loading component with better skeleton
 const LoadingFallback = () => <DashboardSkeleton />;
 
-// 페이지 전환 시 스크롤을 최상단으로 이동
+// 페이지 전환 시 스크롤을 최상단으로 이동하고 이전 컨텐츠 제거
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 
@@ -103,6 +103,97 @@ const ScrollToTop = () => {
   }, [pathname]);
 
   return null;
+};
+
+// Routes wrapper with location-based key for complete remount
+const AppRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <Suspense fallback={<LoadingFallback />} key={location.pathname}>
+      <Routes location={location}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/features-detail" element={<Features />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/features" element={<FeaturesShowcase />} />
+        <Route path="/main" element={<PublicMain />} />
+        <Route path="/courses" element={<PublicCourses />} />
+        <Route path="/courses/:id" element={<PublicCourseDetail />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/demo" element={<DemoPreview />} />
+        <Route path="/admin-demo" element={<AdminDemo />} />
+        <Route path="/student" element={<StudentDashboard />} />
+        <Route path="/students" element={<StudentDashboard />} />
+        <Route path="/student/courses" element={<StudentCourses />} />
+        <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
+        <Route path="/student/assignments" element={<StudentAssignments />} />
+        <Route path="/student/community" element={<StudentCommunity />} />
+        <Route path="/student/analytics" element={<StudentAnalytics />} />
+        <Route path="/student/gamification" element={<StudentGamification />} />
+        <Route path="/student/learning-path" element={<StudentLearningPath />} />
+        <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
+        <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
+        <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
+        <Route path="/teacher" element={<TeacherDashboard />} />
+        <Route path="/teacher/courses" element={<TeacherCourses />} />
+        <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
+        <Route path="/teacher/students" element={<TeacherStudents />} />
+        <Route path="/teacher/revenue" element={<TeacherRevenue />} />
+        <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
+        <Route path="/teacher/assignments" element={<TeacherAssignments />} />
+        <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+        <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
+        <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
+        <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
+        <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
+        <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
+        <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
+        <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
+        <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/operator" element={<OperatorDashboard />} />
+        <Route path="/operator/tenants" element={<OperatorTenants />} />
+        <Route path="/operator/usage" element={<OperatorUsage />} />
+        <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
+        <Route path="/operator/revenue" element={<OperatorRevenue />} />
+        <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
+        <Route path="/operator/settings" element={<OperatorSettings />} />
+        <Route path="/operator/features" element={<OperatorFeatures />} />
+        <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
+        <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
+        <Route path="/operator/manual" element={<OperatorManual />} />
+        <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
+        <Route path="/operator/backup" element={<OperatorBackup />} />
+        <Route path="/operator/updates" element={<OperatorUpdates />} />
+        <Route path="/operator/license" element={<OperatorLicense />} />
+        <Route path="/operator/resources" element={<OperatorResources />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/courses" element={<AdminCoursesIntegrated />} />
+        <Route path="/admin/content" element={<AdminContent />} />
+        <Route path="/admin/attendance" element={<AdminAttendance />} />
+        <Route path="/admin/training-log" element={<AdminTrainingLog />} />
+        <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
+        <Route path="/admin/counseling-log" element={<AdminCounselingLog />} />
+        <Route path="/admin/dropout-management" element={<AdminDropoutManagement />} />
+        <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
+        <Route path="/admin/grades" element={<AdminGrades />} />
+        <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
+        <Route path="/admin/manual" element={<AdminManual />} />
+        <Route path="/admin/revenue" element={<AdminRevenue />} />
+        <Route path="/admin/monitoring" element={<AdminMonitoring />} />
+        <Route path="/admin/learning" element={<AdminLearning />} />
+        <Route path="/admin/ai-logs" element={<AdminAILogs />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/fail" element={<PaymentFail />} />
+        <Route path="/tenant/:subdomain" element={<TenantHome />} />
+        <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
+        <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
 };
 
 const App = () => {
@@ -126,92 +217,10 @@ const App = () => {
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
-              <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/features-detail" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/features" element={<FeaturesShowcase />} />
-                <Route path="/main" element={<PublicMain />} />
-                <Route path="/courses" element={<PublicCourses />} />
-                <Route path="/courses/:id" element={<PublicCourseDetail />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/demo" element={<DemoPreview />} />
-                <Route path="/admin-demo" element={<AdminDemo />} />
-                <Route path="/student" element={<StudentDashboard />} />
-                <Route path="/students" element={<StudentDashboard />} />
-                <Route path="/student/courses" element={<StudentCourses />} />
-                <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
-                <Route path="/student/assignments" element={<StudentAssignments />} />
-                <Route path="/student/community" element={<StudentCommunity />} />
-                <Route path="/student/analytics" element={<StudentAnalytics />} />
-                <Route path="/student/gamification" element={<StudentGamification />} />
-                <Route path="/student/learning-path" element={<StudentLearningPath />} />
-                <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
-                <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
-                <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
-                <Route path="/teacher" element={<TeacherDashboard />} />
-                <Route path="/teacher/courses" element={<TeacherCourses />} />
-                <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
-                <Route path="/teacher/students" element={<TeacherStudents />} />
-                <Route path="/teacher/revenue" element={<TeacherRevenue />} />
-                <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
-                <Route path="/teacher/assignments" element={<TeacherAssignments />} />
-                <Route path="/teacher/attendance" element={<TeacherAttendance />} />
-                <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
-                <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
-                <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
-                <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
-                <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
-                <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
-                <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
-                <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/operator" element={<OperatorDashboard />} />
-                <Route path="/operator/tenants" element={<OperatorTenants />} />
-                <Route path="/operator/usage" element={<OperatorUsage />} />
-                <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
-                <Route path="/operator/revenue" element={<OperatorRevenue />} />
-                <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
-                <Route path="/operator/settings" element={<OperatorSettings />} />
-                <Route path="/operator/features" element={<OperatorFeatures />} />
-                <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
-                <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
-                <Route path="/operator/manual" element={<OperatorManual />} />
-                <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
-                <Route path="/operator/backup" element={<OperatorBackup />} />
-                <Route path="/operator/updates" element={<OperatorUpdates />} />
-                <Route path="/operator/license" element={<OperatorLicense />} />
-                <Route path="/operator/resources" element={<OperatorResources />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/courses" element={<AdminCoursesIntegrated />} />
-          <Route path="/admin/content" element={<AdminContent />} />
-                <Route path="/admin/attendance" element={<AdminAttendance />} />
-                <Route path="/admin/training-log" element={<AdminTrainingLog />} />
-                <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
-                <Route path="/admin/counseling-log" element={<AdminCounselingLog />} />
-                <Route path="/admin/dropout-management" element={<AdminDropoutManagement />} />
-                <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
-                <Route path="/admin/grades" element={<AdminGrades />} />
-                <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
-                <Route path="/admin/manual" element={<AdminManual />} />
-                <Route path="/admin/revenue" element={<AdminRevenue />} />
-                <Route path="/admin/monitoring" element={<AdminMonitoring />} />
-                <Route path="/admin/learning" element={<AdminLearning />} />
-                <Route path="/admin/ai-logs" element={<AdminAILogs />} />
-                <Route path="/admin/analytics" element={<AdminAnalytics />} />
-                <Route path="/admin/settings" element={<AdminSettings />} />
-                <Route path="/payment/success" element={<PaymentSuccess />} />
-                <Route path="/payment/fail" element={<PaymentFail />} />
-                <Route path="/tenant/:subdomain" element={<TenantHome />} />
-                <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
-                <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-        </TooltipProvider>
-      </LanguageProvider>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </LanguageProvider>
       </UserProvider>
     </QueryClientProvider>
   );
