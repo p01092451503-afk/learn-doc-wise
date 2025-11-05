@@ -157,9 +157,8 @@ export const FeatureShowcaseAnimation = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % allFeatures.length);
         setIsExiting(false);
-      }, 400); // 더 부드러운 전환을 위해 250ms에서 400ms로 증가
-    }, 3500); // 카드 표시 시간도 3초에서 3.5초로 증가
-
+      }, 250); // 더 빠른 전환을 위해 500ms에서 250ms로 단축
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
@@ -203,7 +202,7 @@ export const FeatureShowcaseAnimation = () => {
       {/* Main feature card */}
       <div
         key={currentIndex}
-        className={`relative z-10 max-w-2xl mx-auto px-4 transition-all duration-700 ${
+        className={`relative z-10 max-w-2xl mx-auto px-4 transition-all duration-500 ${
           isExiting 
             ? 'animate-slide-out-right opacity-0' 
             : 'animate-slide-in-left opacity-100'
@@ -219,10 +218,10 @@ export const FeatureShowcaseAnimation = () => {
         </div>
 
         {/* Feature card */}
-        <div className="bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] transition-all duration-300 hover:-translate-y-1">
+        <div className="bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col items-center text-center gap-4">
             {/* Icon */}
-            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10 shadow-md">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/10">
               <FeatureIcon className="h-12 w-12 md:h-14 md:h-14 text-primary" />
             </div>
 
@@ -298,11 +297,11 @@ export const FeatureShowcaseAnimation = () => {
         }
         
         .animate-slide-in-left {
-          animation: slide-in-left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+          animation: slide-in-left 0.4s ease-out;
         }
         
         .animate-slide-out-right {
-          animation: slide-out-right 0.6s cubic-bezier(0.4, 0, 0.6, 1);
+          animation: slide-out-right 0.4s ease-out;
         }
       `}</style>
     </div>
