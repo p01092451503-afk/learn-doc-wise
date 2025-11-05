@@ -121,9 +121,6 @@ const Auth = () => {
 
     // Auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth event:', event, 'Session:', !!session);
-      
-      // SIGNED_IN 이벤트뿐만 아니라 모든 세션이 있는 경우 처리
       if (session) {
         await redirectUser(session);
       }

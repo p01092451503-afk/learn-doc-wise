@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { UserProvider } from "./contexts/UserContext";
+import { DashboardSkeleton } from "./components/LoadingSkeleton";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
@@ -88,12 +90,8 @@ const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
 
-// Loading component
-const LoadingFallback = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-  </div>
-);
+// Loading component with better skeleton
+const LoadingFallback = () => <DashboardSkeleton />;
 
 // 페이지 전환 시 스크롤을 최상단으로 이동
 const ScrollToTop = () => {
@@ -120,13 +118,14 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <ScrollToTop />
-            <Suspense fallback={<LoadingFallback />}>
+      <UserProvider>
+        <LanguageProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <ScrollToTop />
+              <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/features-detail" element={<Features />} />
@@ -212,6 +211,7 @@ const App = () => {
           </BrowserRouter>
         </TooltipProvider>
       </LanguageProvider>
+      </UserProvider>
     </QueryClientProvider>
   );
 };
