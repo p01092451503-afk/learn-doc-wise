@@ -34,7 +34,6 @@ const ROLE_OPTIONS = [
   { value: "student", label: "학생", description: "강의 수강 및 학습" },
   { value: "teacher", label: "강사", description: "강의 생성 및 관리" },
   { value: "admin", label: "관리자", description: "시스템 전체 관리" },
-  { value: "operator", label: "운영자", description: "테넌트 및 시스템 운영" },
 ];
 
 export const EditRoleDialog = ({
