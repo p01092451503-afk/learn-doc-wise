@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock, MessageCircle, FileCheck, Languages } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock, MessageCircle, FileCheck, Languages, Video, ExternalLink } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import VideoPlayer from "@/components/video/VideoPlayer";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
@@ -24,6 +24,10 @@ interface Course {
   thumbnail_url: string;
   level: string;
   duration_hours: number;
+  course_type: string;
+  live_scheduled_at: string | null;
+  live_meeting_url: string | null;
+  live_meeting_provider: string | null;
 }
 
 interface CourseContent {
@@ -68,7 +72,11 @@ const StudentCourseDetail = () => {
       description: "최신 AI 도구를 활용한 웹 개발 실무 과정입니다. React, TypeScript, Tailwind CSS를 사용하여 현대적인 웹 애플리케이션을 개발하는 방법을 배웁니다.",
       thumbnail_url: "",
       level: "intermediate",
-      duration_hours: 24
+      duration_hours: 24,
+      course_type: "vod",
+      live_scheduled_at: null,
+      live_meeting_url: null,
+      live_meeting_provider: null
     };
 
     const mockContents: CourseContent[] = [
@@ -292,6 +300,27 @@ const StudentCourseDetail = () => {
     }
   };
 
+  // 라이브 강의 입장 가능 여부 확인
+  const canJoinLiveSession = (scheduledAt: string | null) => {
+    if (!scheduledAt) return false;
+    const scheduledTime = new Date(scheduledAt).getTime();
+    const now = Date.now();
+    const thirtyMinutesInMs = 30 * 60 * 1000;
+    return now >= scheduledTime - thirtyMinutesInMs;
+  };
+
+  const formatLiveSchedule = (scheduledAt: string | null) => {
+    if (!scheduledAt) return "";
+    const date = new Date(scheduledAt);
+    return new Intl.DateTimeFormat('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  };
+
   const overallProgress = contents.length > 0
     ? (progress.filter(p => contents.some(c => c.id === p.content_id && p.completed)).length / contents.length) * 100
     : 0;
@@ -349,21 +378,63 @@ const StudentCourseDetail = () => {
           </div>
         </div>
 
-        {/* Progress */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium">전체 진행률</span>
-                <span className="font-semibold">{Math.round(overallProgress)}%</span>
+        {/* Live Session Banner or Progress */}
+        {course.course_type === 'live' ? (
+          <Card className="border-primary/50 bg-primary/5">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-3 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Video className="h-5 w-5 text-primary" />
+                    <span className="font-semibold text-lg">라이브 강의</span>
+                    <Badge variant="default">LIVE</Badge>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">예정 시간</p>
+                    <p className="font-medium">{formatLiveSchedule(course.live_scheduled_at)}</p>
+                  </div>
+                  {course.live_meeting_provider && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>플랫폼:</span>
+                      <span className="capitalize">{course.live_meeting_provider.replace('_', ' ')}</span>
+                    </div>
+                  )}
+                </div>
+                {canJoinLiveSession(course.live_scheduled_at) && course.live_meeting_url ? (
+                  <Button 
+                    size="lg" 
+                    variant="premium"
+                    className="gap-2"
+                    onClick={() => window.open(course.live_meeting_url!, '_blank')}
+                  >
+                    <ExternalLink className="h-5 w-5" />
+                    라이브 강의 입장
+                  </Button>
+                ) : (
+                  <div className="text-center px-4 py-2 bg-muted rounded-lg">
+                    <p className="text-xs text-muted-foreground mb-1">입장 가능 시간</p>
+                    <p className="font-medium text-sm">시작 30분 전부터</p>
+                  </div>
+                )}
               </div>
-              <Progress value={overallProgress} className="h-3" />
-              <p className="text-xs text-muted-foreground">
-                {progress.filter(p => contents.some(c => c.id === p.content_id && p.completed)).length}/{contents.length} 차시 완료
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="font-medium">전체 진행률</span>
+                  <span className="font-semibold">{Math.round(overallProgress)}%</span>
+                </div>
+                <Progress value={overallProgress} className="h-3" />
+                <p className="text-xs text-muted-foreground">
+                  {progress.filter(p => contents.some(c => c.id === p.content_id && p.completed)).length}/{contents.length} 차시 완료
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* AI 기능 버튼 */}
         <Card>

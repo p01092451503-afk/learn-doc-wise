@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { BookOpen, Clock, PlayCircle, CheckCircle2 } from "lucide-react";
+import { BookOpen, Clock, PlayCircle, CheckCircle2, Video, ExternalLink } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
@@ -20,6 +20,10 @@ interface Course {
   thumbnail_url: string;
   level: string;
   duration_hours: number;
+  course_type: string;
+  live_scheduled_at: string | null;
+  live_meeting_url: string | null;
+  live_meeting_provider: string | null;
 }
 
 interface Enrollment {
@@ -141,7 +145,11 @@ const StudentCourses = () => {
             description,
             thumbnail_url,
             level,
-            duration_hours
+            duration_hours,
+            course_type,
+            live_scheduled_at,
+            live_meeting_url,
+            live_meeting_provider
           )
         `)
         .eq("user_id", user.id)
@@ -244,6 +252,42 @@ const StudentCourses = () => {
     }
   };
 
+  // 라이브 강의 입장 가능 여부 확인 (예정 시간 30분 전부터)
+  const canJoinLiveSession = (scheduledAt: string | null) => {
+    if (!scheduledAt) return false;
+    const scheduledTime = new Date(scheduledAt).getTime();
+    const now = Date.now();
+    const thirtyMinutesInMs = 30 * 60 * 1000;
+    return now >= scheduledTime - thirtyMinutesInMs;
+  };
+
+  const getLiveSessionStatus = (scheduledAt: string | null) => {
+    if (!scheduledAt) return null;
+    const scheduledTime = new Date(scheduledAt).getTime();
+    const now = Date.now();
+    const thirtyMinutesInMs = 30 * 60 * 1000;
+    
+    if (now >= scheduledTime - thirtyMinutesInMs && now <= scheduledTime + 2 * 60 * 60 * 1000) {
+      return { text: "입장 가능", variant: "default" as const, canJoin: true };
+    } else if (now < scheduledTime - thirtyMinutesInMs) {
+      const timeUntil = Math.floor((scheduledTime - now) / (1000 * 60));
+      return { text: `${timeUntil}분 후 시작`, variant: "secondary" as const, canJoin: false };
+    } else {
+      return { text: "종료됨", variant: "outline" as const, canJoin: false };
+    }
+  };
+
+  const formatLiveSchedule = (scheduledAt: string | null) => {
+    if (!scheduledAt) return "";
+    const date = new Date(scheduledAt);
+    return new Intl.DateTimeFormat('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  };
+
   // 최근 7일 이내 또는 진행률 10% 미만인 강의 필터링
   const recentEnrollments = enrollments.filter(enrollment => {
     const enrolledDate = new Date(enrollment.enrolled_at);
@@ -344,19 +388,58 @@ const StudentCourses = () => {
                               {course.duration_hours}{t("hours")}
                             </span>
                           </div>
-                          <div className="mb-3">
-                            <div className="flex items-center justify-between text-sm mb-1">
-                              <span className="text-muted-foreground">{t("progress")}</span>
-                              <span className="font-semibold">{Math.round(progress)}%</span>
-                            </div>
-                            <Progress value={progress} className="h-2" />
-                          </div>
-                          <Link to={`/student/courses/${course.id}`}>
-                            <Button variant="premium" size="default" className="w-full gap-2">
-                              <PlayCircle className="h-4 w-4" />
-                              지금 학습 시작하기
-                            </Button>
-                          </Link>
+                          {course.course_type === 'live' ? (
+                            <>
+                              <div className="mb-3 space-y-2">
+                                <div className="flex items-center gap-2 text-sm">
+                                  <Video className="h-4 w-4 text-primary" />
+                                  <span className="font-medium">라이브 강의</span>
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {formatLiveSchedule(course.live_scheduled_at)}
+                                </div>
+                                {getLiveSessionStatus(course.live_scheduled_at) && (
+                                  <Badge variant={getLiveSessionStatus(course.live_scheduled_at)!.variant}>
+                                    {getLiveSessionStatus(course.live_scheduled_at)!.text}
+                                  </Badge>
+                                )}
+                              </div>
+                              {canJoinLiveSession(course.live_scheduled_at) && course.live_meeting_url ? (
+                                <Button 
+                                  variant="premium" 
+                                  size="default" 
+                                  className="w-full gap-2"
+                                  onClick={() => window.open(course.live_meeting_url!, '_blank')}
+                                >
+                                  <ExternalLink className="h-4 w-4" />
+                                  라이브 강의 입장
+                                </Button>
+                              ) : (
+                                <Link to={`/student/courses/${course.id}`}>
+                                  <Button variant="outline" size="default" className="w-full gap-2">
+                                    <PlayCircle className="h-4 w-4" />
+                                    강의 정보 보기
+                                  </Button>
+                                </Link>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <div className="mb-3">
+                                <div className="flex items-center justify-between text-sm mb-1">
+                                  <span className="text-muted-foreground">{t("progress")}</span>
+                                  <span className="font-semibold">{Math.round(progress)}%</span>
+                                </div>
+                                <Progress value={progress} className="h-2" />
+                              </div>
+                              <Link to={`/student/courses/${course.id}`}>
+                                <Button variant="premium" size="default" className="w-full gap-2">
+                                  <PlayCircle className="h-4 w-4" />
+                                  지금 학습 시작하기
+                                </Button>
+                              </Link>
+                            </>
+                          )}
                         </CardContent>
                       </Card>
                     );
@@ -528,12 +611,24 @@ const StudentCourses = () => {
                             </TableCell>
                           )}
                           <TableCell className="text-right">
-                            <Link to={`/student/courses/${course.id}${isDemo ? '?demo=true' : ''}`}>
-                              <Button size="sm" className="gap-2">
-                                <PlayCircle className="h-4 w-4" />
-                                {userRole === "admin" ? "강좌 보기" : "학습하기"}
+                            {course.course_type === 'live' && canJoinLiveSession(course.live_scheduled_at) && course.live_meeting_url ? (
+                              <Button 
+                                size="sm" 
+                                variant="premium" 
+                                className="gap-2"
+                                onClick={() => window.open(course.live_meeting_url!, '_blank')}
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                입장하기
                               </Button>
-                            </Link>
+                            ) : (
+                              <Link to={`/student/courses/${course.id}${isDemo ? '?demo=true' : ''}`}>
+                                <Button size="sm" className="gap-2">
+                                  <PlayCircle className="h-4 w-4" />
+                                  {userRole === "admin" ? "강좌 보기" : course.course_type === 'live' ? '정보 보기' : "학습하기"}
+                                </Button>
+                              </Link>
+                            )}
                           </TableCell>
                         </TableRow>
                       );
