@@ -271,8 +271,14 @@ const AdminCourses = () => {
     }
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleCreateCategory = async () => {
+    if (isSubmitting) return; // 중복 클릭 방지
+    
     try {
+      setIsSubmitting(true);
+      
       // 폼 검증
       if (!categoryForm.name.trim()) {
         toast({
@@ -292,11 +298,10 @@ const AdminCourses = () => {
       const { data, error } = await supabase.from("categories").insert([categoryData]).select();
 
       if (error) {
-        // 중복 name 또는 slug 에러 처리
         if (error.code === '23505') {
           toast({
-            title: "오류",
-            description: "이미 존재하는 카테고리명입니다. 다른 이름을 사용해주세요.",
+            title: "중복 오류",
+            description: `'${categoryForm.name.trim()}' 카테고리명이 이미 존재합니다. 다른 이름을 사용해주세요.`,
             variant: "destructive",
           });
           return;
@@ -318,6 +323,8 @@ const AdminCourses = () => {
         description: error.message || "카테고리 생성에 실패했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -728,10 +735,19 @@ const AdminCourses = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsCategoryDialogOpen(false)}
+                      disabled={isSubmitting}
+                    >
                       취소
                     </Button>
-                    <Button onClick={handleCreateCategory}>생성</Button>
+                    <Button 
+                      onClick={handleCreateCategory}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "처리 중..." : "생성"}
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

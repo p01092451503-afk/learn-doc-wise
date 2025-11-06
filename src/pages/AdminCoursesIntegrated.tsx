@@ -71,6 +71,7 @@ const AdminCoursesIntegrated = () => {
   const [editingContent, setEditingContent] = useState<Content | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [previewContent, setPreviewContent] = useState<Content | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const [courseForm, setCourseForm] = useState({
@@ -229,7 +230,11 @@ const AdminCoursesIntegrated = () => {
   };
 
   const handleCreateCategory = async () => {
+    if (isSubmitting) return; // 중복 클릭 방지
+    
     try {
+      setIsSubmitting(true);
+      
       // 폼 검증
       if (!categoryForm.name.trim()) {
         toast({
@@ -240,15 +245,11 @@ const AdminCoursesIntegrated = () => {
         return;
       }
 
-      console.log("Creating category with data:", categoryForm);
-
       const categoryData: any = {
         name: categoryForm.name.trim(),
         slug: categoryForm.slug?.trim() || categoryForm.name.trim().toLowerCase().replace(/\s+/g, "-"),
         description: categoryForm.description?.trim() || null,
       };
-
-      console.log("Category data to be saved:", categoryData);
 
       if (editingCategory) {
         const { error } = await supabase
@@ -257,7 +258,14 @@ const AdminCoursesIntegrated = () => {
           .eq("id", editingCategory.id);
 
         if (error) {
-          console.error("Update error:", error);
+          if (error.code === '23505') {
+            toast({
+              title: "중복 오류",
+              description: "이미 존재하는 분류명 또는 슬러그입니다. 다른 이름을 사용해주세요.",
+              variant: "destructive",
+            });
+            return;
+          }
           throw error;
         }
 
@@ -269,20 +277,16 @@ const AdminCoursesIntegrated = () => {
         const { data, error } = await supabase.from("categories").insert([categoryData]).select();
 
         if (error) {
-          console.error("Insert error:", error);
-          // 중복 slug 에러 처리
           if (error.code === '23505') {
             toast({
-              title: "오류",
-              description: "이미 존재하는 분류명 또는 슬러그입니다. 다른 이름을 사용해주세요.",
+              title: "중복 오류",
+              description: `'${categoryForm.name.trim()}' 분류명이 이미 존재합니다. 다른 이름을 사용해주세요.`,
               variant: "destructive",
             });
             return;
           }
           throw error;
         }
-
-        console.log("Category created:", data);
 
         toast({
           title: "성공",
@@ -295,12 +299,13 @@ const AdminCoursesIntegrated = () => {
       fetchData();
       resetCategoryForm();
     } catch (error: any) {
-      console.error("handleCreateCategory error:", error);
       toast({
         title: "오류",
         description: error.message || "분류 저장에 실패했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -668,11 +673,18 @@ const AdminCoursesIntegrated = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsCategoryDialogOpen(false)}
+                      disabled={isSubmitting}
+                    >
                       취소
                     </Button>
-                    <Button onClick={handleCreateCategory}>
-                      {editingCategory ? "수정" : "생성"}
+                    <Button 
+                      onClick={handleCreateCategory}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "처리 중..." : (editingCategory ? "수정" : "생성")}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
