@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,11 +32,76 @@ import {
 
 export default function OperatorImpersonationLogs() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "expired">("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [statsView, setStatsView] = useState<"daily" | "weekly" | "monthly">("daily");
+
+  // Setup real-time subscription for session updates
+  useEffect(() => {
+    console.log("Setting up real-time subscription for impersonation sessions...");
+    
+    const channel = supabase
+      .channel("impersonation-sessions-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "impersonation_sessions",
+        },
+        (payload) => {
+          console.log("New session started:", payload);
+          
+          // Refetch sessions data
+          queryClient.invalidateQueries({ queryKey: ["impersonation-sessions"] });
+          queryClient.invalidateQueries({ queryKey: ["impersonation-stats"] });
+          
+          // Show toast notification
+          toast({
+            title: "새로운 대리 로그인 세션",
+            description: "새로운 대리 로그인 세션이 시작되었습니다.",
+          });
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "impersonation_sessions",
+        },
+        (payload) => {
+          console.log("Session updated:", payload);
+          
+          // Refetch sessions data
+          queryClient.invalidateQueries({ queryKey: ["impersonation-sessions"] });
+          queryClient.invalidateQueries({ queryKey: ["impersonation-stats"] });
+          
+          // Show toast notification if session ended
+          if (payload.new && !payload.new.is_active && payload.old && payload.old.is_active) {
+            toast({
+              title: "세션 종료",
+              description: "대리 로그인 세션이 종료되었습니다.",
+              variant: "default",
+            });
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log("Realtime subscription status:", status);
+        if (status === "SUBSCRIBED") {
+          console.log("✅ Successfully subscribed to impersonation sessions updates");
+        }
+      });
+
+    return () => {
+      console.log("Cleaning up real-time subscription...");
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient, toast]);
 
   // Fetch impersonation sessions
   const { data: sessions, refetch: refetchSessions } = useQuery({
@@ -208,6 +273,10 @@ export default function OperatorImpersonationLogs() {
           <p className="text-muted-foreground mt-1">
             운영자의 대리 로그인 세션 및 감사 로그를 관리합니다
           </p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-sm font-medium text-green-600">실시간 모니터링 중</span>
         </div>
       </div>
 
