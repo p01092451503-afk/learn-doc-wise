@@ -306,7 +306,7 @@ export default function OperatorImpersonationLogs() {
             <p className={cn(
               "transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"
-            )}>운영자의 대리 로그인 세션 및 감사 로그를 관리합니다</p>
+            )}>운영자의 대리 로그인 세션 및 접속 이력을 관리합니다</p>
           </div>
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
             <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -376,7 +376,7 @@ export default function OperatorImpersonationLogs() {
               <CardTitle className={cn(
                 "text-sm font-medium transition-colors",
                 theme === "dark" ? "text-slate-400" : "text-slate-600"
-              )}>감사 로그</CardTitle>
+              )}>접속 이력</CardTitle>
               <AlertCircle className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
@@ -630,7 +630,7 @@ export default function OperatorImpersonationLogs() {
               : "bg-slate-100 border-slate-200"
           )}>
             <TabsTrigger value="sessions">세션 목록</TabsTrigger>
-            <TabsTrigger value="audit">감사 로그</TabsTrigger>
+            <TabsTrigger value="audit">접속 이력</TabsTrigger>
           </TabsList>
 
           <TabsContent value="sessions" className="space-y-4">
@@ -729,7 +729,7 @@ export default function OperatorImpersonationLogs() {
               <CardTitle className={cn(
                 "transition-colors",
                 theme === "dark" ? "text-white" : "text-slate-900"
-              )}>감사 로그</CardTitle>
+              )}>접속 이력</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -745,11 +745,9 @@ export default function OperatorImpersonationLogs() {
                 </TableHeader>
                 <TableBody>
                   {auditLogs?.length === 0 ? (
-                    <TableRow>
                       <TableCell colSpan={6} className="text-center text-muted-foreground">
-                        감사 로그가 없습니다
+                        접속 이력이 없습니다
                       </TableCell>
-                    </TableRow>
                   ) : (
                     auditLogs?.map((log: any) => (
                       <TableRow key={log.id}>
