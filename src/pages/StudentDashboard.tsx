@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users, LayoutDashboard } from "lucide-react";
+import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users, LayoutDashboard, Video, Calendar } from "lucide-react";
 import { Chatbot } from "@/components/Chatbot";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
@@ -14,10 +14,27 @@ import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
 import { AIProgressDialog } from "@/components/ai/AIProgressDialog";
 import { AIStudyMatchDialog } from "@/components/ai/AIStudyMatchDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+
+interface LiveSession {
+  id: string;
+  title: string;
+  description: string | null;
+  instructor_id: string;
+  status: string;
+  scheduled_at: string;
+  instructor_name?: string;
+}
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   const [learningPathOpen, setLearningPathOpen] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
@@ -25,6 +42,66 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [progressOpen, setProgressOpen] = useState(false);
   const [studyMatchOpen, setStudyMatchOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
+  const [liveSessions, setLiveSessions] = useState<LiveSession[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(true);
+
+  useEffect(() => {
+    loadLiveSessions();
+  }, []);
+
+  const loadLiveSessions = async () => {
+    try {
+      const { data: sessions, error } = await supabase
+        .from('live_sessions')
+        .select('*')
+        .in('status', ['scheduled', 'live'])
+        .gte('scheduled_at', new Date().toISOString())
+        .order('scheduled_at', { ascending: true })
+        .limit(5);
+
+      if (error) throw error;
+
+      if (sessions) {
+        // Get instructor names
+        const sessionsWithInstructors = await Promise.all(
+          sessions.map(async (session) => {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', session.instructor_id)
+              .single();
+
+            return {
+              ...session,
+              instructor_name: profile?.full_name || '강사',
+            };
+          })
+        );
+
+        setLiveSessions(sessionsWithInstructors);
+      }
+    } catch (error) {
+      console.error('Error loading live sessions:', error);
+      toast({
+        title: "오류",
+        description: "라이브 세션을 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
+
+  const handleJoinSession = (sessionId: string, status: string) => {
+    if (status === 'live') {
+      navigate(`/student/live-session/${sessionId}`);
+    } else {
+      toast({
+        title: "예정된 세션",
+        description: "세션이 시작되면 참여할 수 있습니다.",
+      });
+    }
+  };
   
   return (
     <DashboardLayout userRole="student" isDemo={isDemo}>
@@ -70,6 +147,33 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description="+3 new"
           />
         </div>
+
+        {/* Live Sessions */}
+        {!loadingSessions && liveSessions.length > 0 && (
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Video className="h-5 w-5 text-primary" />
+                예정된 라이브 세션
+                <Badge variant="default" className="text-xs">LIVE</Badge>
+              </CardTitle>
+              <CardDescription>
+                실시간으로 강사와 소통하며 학습하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {liveSessions.map((session) => (
+                  <LiveSessionCard
+                    key={session.id}
+                    session={session}
+                    onJoin={handleJoinSession}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Current Courses */}
         <Card>
@@ -360,6 +464,58 @@ const RecommendedCourse = ({ title, instructor, rating, students }: { title: str
         </div>
       </div>
       <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{t('viewDetails')}</Button>
+    </div>
+  );
+};
+
+const LiveSessionCard = ({ 
+  session, 
+  onJoin 
+}: { 
+  session: LiveSession; 
+  onJoin: (sessionId: string, status: string) => void;
+}) => {
+  const isLive = session.status === 'live';
+  const scheduledDate = new Date(session.scheduled_at);
+  
+  return (
+    <div className="p-4 rounded-xl border border-border/50 bg-background hover:border-primary/50 hover:shadow-glow transition-all duration-300">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h4 className="font-semibold text-base">{session.title}</h4>
+            {isLive && (
+              <Badge variant="destructive" className="text-xs animate-pulse">
+                🔴 LIVE
+              </Badge>
+            )}
+          </div>
+          {session.description && (
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {session.description}
+            </p>
+          )}
+          <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+            <span className="flex items-center gap-1">
+              <Users className="h-3 w-3" />
+              {session.instructor_name}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {format(scheduledDate, 'MM월 dd일 HH:mm', { locale: ko })}
+            </span>
+          </div>
+        </div>
+        <Button
+          onClick={() => onJoin(session.id, session.status)}
+          variant={isLive ? "default" : "outline"}
+          size="sm"
+          className="w-full sm:w-auto flex-shrink-0"
+        >
+          <Video className="h-4 w-4 mr-2" />
+          {isLive ? "지금 참여하기" : "대기"}
+        </Button>
+      </div>
     </div>
   );
 };
