@@ -75,7 +75,16 @@ const AdminTenantSettings = () => {
         .single();
 
       setTenantInfo({
-        ...tenant,
+        id: tenant.id,
+        name: tenant.name,
+        subdomain: tenant.subdomain,
+        plan: tenant.plan || 'starter',
+        status: tenant.status,
+        max_students: tenant.max_students || 50,
+        max_storage_gb: tenant.max_storage_gb || 10,
+        max_ai_tokens: 10000, // Default value since field doesn't exist yet
+        contract_start_date: tenant.contract_start_date,
+        contract_end_date: tenant.contract_end_date,
         current_students: usage?.student_count || 0,
         storage_used_gb: usage?.storage_used_gb || 0,
         ai_tokens_used: usage?.ai_tokens_used || 0,
@@ -125,7 +134,7 @@ const AdminTenantSettings = () => {
 
   if (loading) {
     return (
-      <DashboardLayout role="admin">
+      <DashboardLayout userRole="admin">
         <div className="flex items-center justify-center min-h-screen">
           <AtomLoader />
         </div>
@@ -135,7 +144,7 @@ const AdminTenantSettings = () => {
 
   if (!tenantInfo) {
     return (
-      <DashboardLayout role="admin">
+      <DashboardLayout userRole="admin">
         <div className="container mx-auto p-6">
           <Card>
             <CardContent className="p-6">
@@ -150,7 +159,7 @@ const AdminTenantSettings = () => {
   }
 
   return (
-    <DashboardLayout role="admin">
+    <DashboardLayout userRole="admin">
       <div className="container mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -45,7 +45,7 @@ const BillingHistory = ({ tenantId }: BillingHistoryProps) => {
 
       if (error) throw error;
 
-      setBillingRecords(data || []);
+      setBillingRecords((data || []) as BillingRecord[]);
     } catch (error: any) {
       console.error("Error fetching billing history:", error);
       toast({

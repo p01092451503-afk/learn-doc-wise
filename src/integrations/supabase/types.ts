@@ -495,6 +495,62 @@ export type Database = {
           },
         ]
       }
+      billing_history: {
+        Row: {
+          amount: number
+          billing_date: string
+          billing_period_end: string
+          billing_period_start: string
+          created_at: string
+          id: string
+          invoice_number: string
+          metadata: Json | null
+          payment_method: string | null
+          plan_name: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          billing_date?: string
+          billing_period_end: string
+          billing_period_start: string
+          created_at?: string
+          id?: string
+          invoice_number: string
+          metadata?: Json | null
+          payment_method?: string | null
+          plan_name: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          billing_date?: string
+          billing_period_end?: string
+          billing_period_start?: string
+          created_at?: string
+          id?: string
+          invoice_number?: string
+          metadata?: Json | null
+          payment_method?: string | null
+          plan_name?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_history_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cart: {
         Row: {
           course_id: string

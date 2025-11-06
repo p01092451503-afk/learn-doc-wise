@@ -45,13 +45,13 @@ const TenantUsageStats = ({ tenantId, tenantInfo }: TenantUsageStatsProps) => {
         .from("usage_metrics")
         .select("*")
         .eq("tenant_id", tenantId)
-        .order("collected_at", { ascending: true })
+        .order("created_at", { ascending: true })
         .limit(30);
 
       if (error) throw error;
 
       const trends = data.map((metric) => ({
-        date: new Date(metric.collected_at).toLocaleDateString("ko-KR", {
+        date: new Date(metric.metric_date).toLocaleDateString("ko-KR", {
           month: "short",
           day: "numeric",
         }),
