@@ -15,13 +15,15 @@ import {
   BarChart3,
   HardDrive,
   Users,
-  Zap
+  Zap,
+  Plus
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlanChangeDialog from "@/components/admin/PlanChangeDialog";
 import BillingHistory from "@/components/admin/BillingHistory";
 import TenantUsageStats from "@/components/admin/TenantUsageStats";
 import { AtomLoader } from "@/components/AtomLoader";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface TenantInfo {
   id: string;
@@ -43,8 +45,9 @@ const AdminTenantSettings = () => {
   const [tenantInfo, setTenantInfo] = useState<TenantInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
+  const [creatingTestData, setCreatingTestData] = useState(false);
   const { toast } = useToast();
-  const { tenantId, user } = useUser();
+  const { tenantId, user, refetch: refetchUser } = useUser();
 
   useEffect(() => {
     if (tenantId) {
@@ -53,6 +56,129 @@ const AdminTenantSettings = () => {
       setLoading(false);
     }
   }, [tenantId]);
+
+  const createTestTenantMembership = async () => {
+    if (!user) {
+      toast({
+        title: "오류",
+        description: "로그인이 필요합니다.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setCreatingTestData(true);
+
+      // 1. 테스트 테넌트 확인
+      const { data: existingTenant } = await supabase
+        .from("tenants")
+        .select("id")
+        .eq("id", "11111111-1111-1111-1111-111111111111")
+        .maybeSingle();
+
+      if (!existingTenant) {
+        // 테넌트 생성
+        const { error: tenantError } = await supabase
+          .from("tenants")
+          .insert({
+            id: "11111111-1111-1111-1111-111111111111",
+            name: "테스트 교육기관",
+            subdomain: "test-org",
+            slug: "test-org",
+            plan: "professional",
+            status: "active",
+            max_students: 500,
+            max_storage_gb: 100,
+          });
+
+        if (tenantError) throw tenantError;
+      }
+
+      // 2. 현재 사용자를 admin으로 추가
+      const { error: membershipError } = await supabase
+        .from("memberships")
+        .upsert({
+          user_id: user.id,
+          tenant_id: "11111111-1111-1111-1111-111111111111",
+          role: "admin",
+          is_active: true,
+        }, {
+          onConflict: "user_id,tenant_id"
+        });
+
+      if (membershipError) throw membershipError;
+
+      // 3. 사용량 데이터 추가 (간단한 버전)
+      const today = new Date();
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        
+        await supabase
+          .from("usage_metrics")
+          .insert({
+            tenant_id: "11111111-1111-1111-1111-111111111111",
+            student_count: Math.floor(Math.random() * 300 + 50),
+            storage_used_gb: Math.floor(Math.random() * 50 + 10),
+            ai_tokens_used: Math.floor(Math.random() * 50000 + 10000),
+            bandwidth_gb: Math.floor(Math.random() * 100 + 20),
+            metric_date: date.toISOString().split('T')[0],
+          });
+      }
+
+      // 4. 청구 내역 추가
+      const invoices = [
+        {
+          tenant_id: "11111111-1111-1111-1111-111111111111",
+          invoice_number: `INV-TEST-${Date.now()}-1`,
+          billing_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          amount: 500000,
+          status: "paid",
+          payment_method: "credit_card",
+          plan_name: "Professional",
+          billing_period_start: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          billing_period_end: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        },
+        {
+          tenant_id: "11111111-1111-1111-1111-111111111111",
+          invoice_number: `INV-TEST-${Date.now()}-2`,
+          billing_date: new Date().toISOString(),
+          amount: 500000,
+          status: "paid",
+          payment_method: "credit_card",
+          plan_name: "Professional",
+          billing_period_start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          billing_period_end: new Date().toISOString().split('T')[0],
+        },
+      ];
+
+      for (const invoice of invoices) {
+        await supabase.from("billing_history").insert(invoice);
+      }
+
+      toast({
+        title: "테스트 데이터 생성 완료",
+        description: "페이지를 새로고침합니다...",
+      });
+
+      // UserContext 새로고침
+      setTimeout(() => {
+        refetchUser();
+        window.location.reload();
+      }, 1000);
+
+    } catch (error: any) {
+      console.error("Error creating test data:", error);
+      toast({
+        title: "오류",
+        description: error.message || "테스트 데이터 생성 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setCreatingTestData(false);
+    }
+  };
 
   const fetchTenantInfo = async () => {
     try {
@@ -84,7 +210,7 @@ const AdminTenantSettings = () => {
         status: tenant.status,
         max_students: tenant.max_students || 50,
         max_storage_gb: tenant.max_storage_gb || 10,
-        max_ai_tokens: 10000, // Default value since field doesn't exist yet
+        max_ai_tokens: 10000,
         contract_start_date: tenant.contract_start_date,
         contract_end_date: tenant.contract_end_date,
         current_students: usage?.student_count || 0,
@@ -147,7 +273,7 @@ const AdminTenantSettings = () => {
   if (!tenantId || !tenantInfo) {
     return (
       <DashboardLayout userRole="admin">
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto p-6 space-y-4">
           <Card>
             <CardContent className="p-6 text-center space-y-4">
               <Building2 className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
@@ -163,6 +289,20 @@ const AdminTenantSettings = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Alert>
+            <AlertDescription className="flex items-center justify-between">
+              <span>테스트를 위해 샘플 테넌트 데이터를 생성하시겠습니까?</span>
+              <Button 
+                onClick={createTestTenantMembership}
+                disabled={creatingTestData}
+                size="sm"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                {creatingTestData ? "생성 중..." : "테스트 데이터 생성"}
+              </Button>
+            </AlertDescription>
+          </Alert>
         </div>
       </DashboardLayout>
     );
