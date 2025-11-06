@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Settings, Save } from "lucide-react";
+import { Settings, Save, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const OperatorSettings = () => {
@@ -45,16 +46,61 @@ const OperatorSettings = () => {
     defaultStorageLimit: 10,
     defaultStudentLimit: 50,
   });
+  
+  const [hideHrdFeatures, setHideHrdFeatures] = useState(false);
+
+  useEffect(() => {
+    // HRD 기능 숨김 설정 불러오기
+    const fetchHrdSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('system_settings')
+          .select('setting_value')
+          .eq('setting_key', 'hide_hrd_features')
+          .maybeSingle();
+        
+        if (error) throw error;
+        
+        if (data && data.setting_value) {
+          const value = typeof data.setting_value === 'string' 
+            ? JSON.parse(data.setting_value) 
+            : data.setting_value;
+          setHideHrdFeatures(value?.enabled === true);
+        }
+      } catch (error) {
+        console.error('Error fetching HRD settings:', error);
+      }
+    };
+    
+    fetchHrdSettings();
+  }, []);
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      // Here you would save settings to a configuration table
-      // For now, just show a success message
+      // HRD 기능 숨김 설정 저장
+      const settingValue = JSON.stringify({ enabled: hideHrdFeatures });
+      
+      const { error: hrdError } = await supabase
+        .from('system_settings')
+        .upsert({
+          setting_key: 'hide_hrd_features',
+          setting_value: settingValue
+        } as any, {
+          onConflict: 'setting_key'
+        });
+      
+      if (hrdError) throw hrdError;
+      
       toast({
         title: "설정 저장 완료",
         description: "플랫폼 설정이 저장되었습니다.",
       });
+      
+      // 페이지 새로고침하여 메뉴 변경사항 적용
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error: any) {
       toast({
         title: "오류",
@@ -197,6 +243,53 @@ const OperatorSettings = () => {
                 <Save className="h-4 w-4" />
                 {loading ? "저장 중..." : "설정 저장"}
               </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Feature Visibility Settings */}
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
+        )}>
+          <CardHeader>
+            <CardTitle className={cn(
+              "flex items-center gap-2 transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
+              <EyeOff className="h-5 w-5" />
+              기능 표시 설정
+            </CardTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>전체 플랫폼의 기능 표시를 제어합니다</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className={cn(
+              "flex items-center justify-between p-4 rounded-lg border transition-colors",
+              theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-300"
+            )}>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="hide-hrd" className={cn(
+                    "text-base font-medium transition-colors cursor-pointer",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>HRD 기능 숨기기</Label>
+                  <Badge className="bg-orange-500/10 text-orange-400 border-orange-500/50">HRD</Badge>
+                </div>
+                <p className={cn(
+                  "text-sm transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  모든 역할의 메뉴에서 HRD 관련 기능(출결 상세, 훈련일지, 만족도 조사, 상담일지, 중도탈락 관리, 수료 관리, 성적 관리, 훈련수당 등)을 숨깁니다
+                </p>
+              </div>
+              <Switch
+                id="hide-hrd"
+                checked={hideHrdFeatures}
+                onCheckedChange={setHideHrdFeatures}
+              />
             </div>
           </CardContent>
         </Card>

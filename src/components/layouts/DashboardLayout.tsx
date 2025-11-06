@@ -104,6 +104,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [userName, setUserName] = useState<string>("사용자");
+  const [hideHrdFeatures, setHideHrdFeatures] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -242,10 +243,43 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   };
 
   useEffect(() => {
+    // HRD 기능 숨김 설정 불러오기
+    const fetchHrdSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('system_settings')
+          .select('setting_value')
+          .eq('setting_key', 'hide_hrd_features')
+          .maybeSingle();
+        
+        if (error) throw error;
+        
+        if (data && data.setting_value) {
+          const value = typeof data.setting_value === 'string' 
+            ? JSON.parse(data.setting_value) 
+            : data.setting_value;
+          setHideHrdFeatures(value?.enabled === true);
+        }
+      } catch (error) {
+        console.error('Error fetching HRD settings:', error);
+      }
+    };
+    
+    fetchHrdSettings();
+  }, []);
+
+  useEffect(() => {
     // CRITICAL: Always use default menu items to ensure HRD menus are visible
     // Database menu_order is outdated and doesn't include new HRD menus
-    setMenuItems(getDefaultMenuItems());
-  }, [effectiveUserRole, isDemoMode]);
+    let items = getDefaultMenuItems();
+    
+    // HRD 기능이 숨김 상태면 필터링
+    if (hideHrdFeatures) {
+      items = items.filter(item => !(item as any).isHRD);
+    }
+    
+    setMenuItems(items);
+  }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
