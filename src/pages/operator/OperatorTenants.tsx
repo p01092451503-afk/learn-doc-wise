@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle, SlidersHorizontal } from "lucide-react";
+import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle, SlidersHorizontal, Users } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,17 @@ interface Tenant {
   trial_end_date?: string;
   suspended_reason?: string;
   created_at: string;
+  member_count?: number;
+}
+
+interface TenantMember {
+  id: string;
+  user_id: string;
+  role: 'student' | 'instructor' | 'admin' | 'operator';
+  is_active: boolean;
+  joined_at: string;
+  user_email?: string;
+  user_name?: string;
 }
 
 interface UsageMetrics {
@@ -59,6 +70,9 @@ const OperatorTenants = () => {
   const [featuresDialogOpen, setFeaturesDialogOpen] = useState(false);
   const [newPlan, setNewPlan] = useState<string>("");
   const [editingFeatures, setEditingFeatures] = useState<any>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [membersDialogOpen, setMembersDialogOpen] = useState(false);
+  const [tenantMembers, setTenantMembers] = useState<TenantMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [planFilter, setPlanFilter] = useState<"all" | "starter" | "standard" | "professional">("all");
@@ -148,26 +162,34 @@ const OperatorTenants = () => {
 
   const fetchTenants = async () => {
     try {
+      // Fetch tenants with member count
       const { data, error } = await supabase
         .from("tenants")
-        .select("*")
+        .select(`
+          *,
+          memberships!memberships_tenant_id_fkey(count)
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       
-      // Type conversion for features_enabled
-      const typedData = (data || []).map(tenant => ({
-        ...tenant,
-        features_enabled: typeof tenant.features_enabled === 'object' && tenant.features_enabled !== null
-          ? tenant.features_enabled as any
-          : {
-              ai: true,
-              analytics: true,
-              community: true,
-              gamification: true,
-              certificates: true,
-            }
-      })) as Tenant[];
+      // Type conversion for features_enabled and add member_count
+      const typedData = (data || []).map(tenant => {
+        const memberCount = tenant.memberships?.[0]?.count || 0;
+        return {
+          ...tenant,
+          member_count: memberCount,
+          features_enabled: typeof tenant.features_enabled === 'object' && tenant.features_enabled !== null
+            ? tenant.features_enabled as any
+            : {
+                ai: true,
+                analytics: true,
+                community: true,
+                gamification: true,
+                certificates: true,
+              }
+        };
+      }) as Tenant[];
       
       setTenants(typedData);
     } catch (error: any) {
@@ -178,6 +200,83 @@ const OperatorTenants = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTenantMembers = async (tenantId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("memberships")
+        .select(`
+          id,
+          user_id,
+          role,
+          is_active,
+          joined_at,
+          profiles:user_id (
+            full_name
+          )
+        `)
+        .eq("tenant_id", tenantId)
+        .order("joined_at", { ascending: false });
+
+      if (error) throw error;
+
+      // Get user emails from auth.users (requires service role or appropriate RLS)
+      const members = (data || []).map(m => ({
+        id: m.id,
+        user_id: m.user_id,
+        role: m.role as 'student' | 'instructor' | 'admin' | 'operator',
+        is_active: m.is_active,
+        joined_at: m.joined_at,
+        user_name: (m.profiles as any)?.full_name || 'Unknown',
+        user_email: '', // Will need to fetch separately if needed
+      }));
+
+      setTenantMembers(members);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "멤버 목록을 불러오는데 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleViewDetails = (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    setDetailsDialogOpen(true);
+  };
+
+  const handleViewMembers = async (tenant: Tenant) => {
+    setSelectedTenant(tenant);
+    await fetchTenantMembers(tenant.id);
+    setMembersDialogOpen(true);
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    try {
+      const { error } = await supabase
+        .from("memberships")
+        .update({ is_active: false })
+        .eq("id", memberId);
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "멤버가 제거되었습니다.",
+      });
+
+      if (selectedTenant) {
+        await fetchTenantMembers(selectedTenant.id);
+      }
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "멤버 제거에 실패했습니다.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -952,6 +1051,10 @@ const OperatorTenants = () => {
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>멤버</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
                     )}>리소스</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
@@ -995,6 +1098,20 @@ const OperatorTenants = () => {
                         <Badge className={getPlanBadgeColor(tenant.plan)}>
                           {getPlanLabel(tenant.plan)}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleViewMembers(tenant)}
+                          className={cn(
+                            "gap-1 transition-colors",
+                            theme === "dark" ? "text-slate-300 hover:bg-slate-800" : "text-slate-600 hover:bg-slate-100"
+                          )}
+                        >
+                          <Users className="h-3 w-3" />
+                          <span className="text-xs">{tenant.member_count || 0}명</span>
+                        </Button>
                       </TableCell>
                       <TableCell>
                         <div className="space-y-1 text-xs">
@@ -1042,6 +1159,18 @@ const OperatorTenants = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2 flex-wrap">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewDetails(tenant)}
+                            className={cn(
+                              "gap-1 transition-colors",
+                              theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+                            )}
+                          >
+                            <Building2 className="h-3 w-3" />
+                            <span className="text-xs">상세</span>
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"
@@ -1678,6 +1807,368 @@ const OperatorTenants = () => {
               className="bg-violet-500 hover:bg-violet-600"
             >
               저장
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tenant Details Dialog */}
+      <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
+        <DialogContent className={cn(
+          "max-w-2xl transition-colors",
+          theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+        )}>
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
+              테넌트 상세 정보
+            </DialogTitle>
+          </DialogHeader>
+          {selectedTenant && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className={cn(
+                    "text-sm font-medium mb-1",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    테넌트명
+                  </div>
+                  <div className={cn(
+                    "text-base",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>
+                    {selectedTenant.name}
+                  </div>
+                </div>
+                <div>
+                  <div className={cn(
+                    "text-sm font-medium mb-1",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    서브도메인
+                  </div>
+                  <div className={cn(
+                    "text-base",
+                    theme === "dark" ? "text-white" : "text-slate-900"
+                  )}>
+                    {selectedTenant.subdomain}
+                  </div>
+                </div>
+                <div>
+                  <div className={cn(
+                    "text-sm font-medium mb-1",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    요금제
+                  </div>
+                  <Badge className={getPlanBadgeColor(selectedTenant.plan)}>
+                    {getPlanLabel(selectedTenant.plan)}
+                  </Badge>
+                </div>
+                <div>
+                  <div className={cn(
+                    "text-sm font-medium mb-1",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    상태
+                  </div>
+                  <Badge className={
+                    selectedTenant.status === 'active' ? "bg-green-500/10 text-green-400 border-green-500/50" :
+                    selectedTenant.status === 'trial' ? "bg-blue-500/10 text-blue-400 border-blue-500/50" :
+                    selectedTenant.status === 'suspended' ? "bg-orange-500/10 text-orange-400 border-orange-500/50" :
+                    "bg-red-500/10 text-red-400 border-red-500/50"
+                  }>
+                    {selectedTenant.status === 'active' ? '활성' :
+                     selectedTenant.status === 'trial' ? '트라이얼' :
+                     selectedTenant.status === 'suspended' ? '일시중단' : '종료'}
+                  </Badge>
+                </div>
+              </div>
+
+              <div>
+                <div className={cn(
+                  "text-sm font-medium mb-2",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  리소스 제한
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <Card className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"
+                  )}>
+                    <CardContent className="pt-4">
+                      <div className={cn(
+                        "text-xs mb-1",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
+                        최대 학생
+                      </div>
+                      <div className={cn(
+                        "text-2xl font-bold",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>
+                        {selectedTenant.max_students}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"
+                  )}>
+                    <CardContent className="pt-4">
+                      <div className={cn(
+                        "text-xs mb-1",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
+                        저장소
+                      </div>
+                      <div className={cn(
+                        "text-2xl font-bold",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>
+                        {selectedTenant.max_storage_gb}GB
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <Card className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "bg-slate-800 border-slate-700" : "bg-slate-50 border-slate-200"
+                  )}>
+                    <CardContent className="pt-4">
+                      <div className={cn(
+                        "text-xs mb-1",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
+                        전송량
+                      </div>
+                      <div className={cn(
+                        "text-2xl font-bold",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>
+                        {selectedTenant.max_bandwidth_gb}GB
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {(selectedTenant.contract_end_date || selectedTenant.trial_end_date) && (
+                <div>
+                  <div className={cn(
+                    "text-sm font-medium mb-2",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    계약 정보
+                  </div>
+                  <div className="space-y-2">
+                    {selectedTenant.contract_end_date && (
+                      <div className="flex justify-between">
+                        <span className={cn(
+                          "text-sm",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
+                          계약 종료일
+                        </span>
+                        <span className={cn(
+                          "text-sm font-medium",
+                          theme === "dark" ? "text-white" : "text-slate-900"
+                        )}>
+                          {new Date(selectedTenant.contract_end_date).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    )}
+                    {selectedTenant.trial_end_date && (
+                      <div className="flex justify-between">
+                        <span className={cn(
+                          "text-sm",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
+                          트라이얼 종료일
+                        </span>
+                        <span className={cn(
+                          "text-sm font-medium",
+                          theme === "dark" ? "text-blue-400" : "text-blue-600"
+                        )}>
+                          {new Date(selectedTenant.trial_end_date).toLocaleDateString('ko-KR')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <div className={cn(
+                  "text-sm font-medium mb-2",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  활성화된 기능
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(selectedTenant.features_enabled || {})
+                    .filter(([_, enabled]) => enabled)
+                    .map(([feature]) => (
+                      <Badge key={feature} variant="secondary" className={cn(
+                        "transition-colors",
+                        theme === "dark" ? "bg-violet-500/10 text-violet-300" : "bg-violet-50 text-violet-600"
+                      )}>
+                        {feature}
+                      </Badge>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDetailsDialogOpen(false)}
+              className={cn(
+                "transition-colors",
+                theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+              )}
+            >
+              닫기
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Tenant Members Dialog */}
+      <Dialog open={membersDialogOpen} onOpenChange={setMembersDialogOpen}>
+        <DialogContent className={cn(
+          "max-w-4xl transition-colors",
+          theme === "dark" ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+        )}>
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
+              테넌트 멤버 관리 - {selectedTenant?.name}
+            </DialogTitle>
+            <CardDescription className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>
+              총 {tenantMembers.length}명의 멤버
+            </CardDescription>
+          </DialogHeader>
+          <div className="max-h-[500px] overflow-y-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "border-slate-800" : "border-slate-200"
+                )}>
+                  <TableHead className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>이름</TableHead>
+                  <TableHead className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>역할</TableHead>
+                  <TableHead className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>가입일</TableHead>
+                  <TableHead className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>상태</TableHead>
+                  <TableHead className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>작업</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tenantMembers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-8">
+                      <div className={cn(
+                        "text-sm",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
+                        등록된 멤버가 없습니다.
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  tenantMembers.map((member) => (
+                    <TableRow key={member.id} className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "border-slate-800" : "border-slate-200"
+                    )}>
+                      <TableCell className={cn(
+                        "font-medium transition-colors",
+                        theme === "dark" ? "text-white" : "text-slate-900"
+                      )}>
+                        {member.user_name}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "bg-violet-500/10 text-violet-300" : "bg-violet-50 text-violet-600"
+                        )}>
+                          {member.role === 'admin' ? '관리자' :
+                           member.role === 'instructor' ? '강사' :
+                           member.role === 'student' ? '학생' : '운영자'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className={cn(
+                        "text-sm transition-colors",
+                        theme === "dark" ? "text-slate-400" : "text-slate-600"
+                      )}>
+                        {new Date(member.joined_at).toLocaleDateString('ko-KR')}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={
+                          member.is_active
+                            ? "bg-green-500/10 text-green-400 border-green-500/50"
+                            : "bg-red-500/10 text-red-400 border-red-500/50"
+                        }>
+                          {member.is_active ? '활성' : '비활성'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {member.is_active && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRemoveMember(member.id)}
+                            className={cn(
+                              "transition-colors",
+                              theme === "dark" 
+                                ? "border-red-700 text-red-400 hover:bg-red-900/20" 
+                                : "border-red-300 text-red-600 hover:bg-red-50"
+                            )}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setMembersDialogOpen(false)}
+              className={cn(
+                "transition-colors",
+                theme === "dark" ? "border-slate-700 text-slate-300 hover:bg-slate-800" : "border-slate-300 text-slate-600 hover:bg-slate-100"
+              )}
+            >
+              닫기
             </Button>
           </DialogFooter>
         </DialogContent>
