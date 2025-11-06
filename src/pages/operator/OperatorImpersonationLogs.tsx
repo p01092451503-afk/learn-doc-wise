@@ -16,8 +16,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Clock, User, AlertCircle, Filter, X } from "lucide-react";
+import { Shield, Clock, User, AlertCircle, Filter, X, TrendingUp, BarChart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Line, Bar } from "recharts";
+import {
+  LineChart,
+  BarChart as RechartsBarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 export default function OperatorImpersonationLogs() {
   const { toast } = useToast();
@@ -25,6 +36,7 @@ export default function OperatorImpersonationLogs() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "expired">("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [statsView, setStatsView] = useState<"daily" | "weekly" | "monthly">("daily");
 
   // Fetch impersonation sessions
   const { data: sessions, refetch: refetchSessions } = useQuery({
@@ -92,6 +104,66 @@ export default function OperatorImpersonationLogs() {
       const { data, error } = await query;
       if (error) throw error;
       return data;
+    },
+  });
+
+  // Fetch statistics data
+  const { data: statsData } = useQuery({
+    queryKey: ["impersonation-stats", statsView],
+    queryFn: async () => {
+      const now = new Date();
+      let startDate = new Date();
+      
+      if (statsView === "daily") {
+        startDate.setDate(now.getDate() - 30); // Last 30 days
+      } else if (statsView === "weekly") {
+        startDate.setDate(now.getDate() - 84); // Last 12 weeks
+      } else {
+        startDate.setMonth(now.getMonth() - 12); // Last 12 months
+      }
+
+      const { data, error } = await supabase
+        .from("impersonation_sessions")
+        .select("started_at, ended_at, is_active")
+        .gte("started_at", startDate.toISOString())
+        .order("started_at", { ascending: true });
+
+      if (error) throw error;
+
+      // Group data by period
+      const grouped: { [key: string]: { count: number; duration: number } } = {};
+
+      data?.forEach((session: any) => {
+        const date = new Date(session.started_at);
+        let key: string;
+
+        if (statsView === "daily") {
+          key = date.toLocaleDateString("ko-KR", { month: "short", day: "numeric" });
+        } else if (statsView === "weekly") {
+          const weekStart = new Date(date);
+          weekStart.setDate(date.getDate() - date.getDay());
+          key = weekStart.toLocaleDateString("ko-KR", { month: "short", day: "numeric" });
+        } else {
+          key = date.toLocaleDateString("ko-KR", { year: "numeric", month: "short" });
+        }
+
+        if (!grouped[key]) {
+          grouped[key] = { count: 0, duration: 0 };
+        }
+
+        grouped[key].count++;
+
+        if (session.ended_at) {
+          const duration = new Date(session.ended_at).getTime() - new Date(session.started_at).getTime();
+          grouped[key].duration += duration / (1000 * 60); // Convert to minutes
+        }
+      });
+
+      return Object.entries(grouped).map(([period, data]) => ({
+        period,
+        sessions: data.count,
+        avgDuration: data.count > 0 ? Math.round(data.duration / data.count) : 0,
+      }));
     },
   });
 
@@ -174,6 +246,105 @@ export default function OperatorImpersonationLogs() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Statistics Charts */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              사용 통계
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant={statsView === "daily" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setStatsView("daily")}
+              >
+                일별
+              </Button>
+              <Button
+                variant={statsView === "weekly" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setStatsView("weekly")}
+              >
+                주별
+              </Button>
+              <Button
+                variant={statsView === "monthly" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setStatsView("monthly")}
+              >
+                월별
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <h4 className="text-sm font-medium mb-4">세션 수</h4>
+              <ResponsiveContainer width="100%" height={250}>
+                <RechartsBarChart data={statsData || []}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="period" 
+                    className="text-xs"
+                    tick={{ fill: 'currentColor' }}
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    tick={{ fill: 'currentColor' }}
+                  />
+                  <RechartsTooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="sessions" 
+                    fill="hsl(var(--primary))" 
+                    radius={[8, 8, 0, 0]}
+                  />
+                </RechartsBarChart>
+              </ResponsiveContainer>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium mb-4">평균 세션 시간 (분)</h4>
+              <ResponsiveContainer width="100%" height={250}>
+                <LineChart data={statsData || []}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="period" 
+                    className="text-xs"
+                    tick={{ fill: 'currentColor' }}
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    tick={{ fill: 'currentColor' }}
+                  />
+                  <RechartsTooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="avgDuration" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: 'hsl(var(--primary))' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <Card>

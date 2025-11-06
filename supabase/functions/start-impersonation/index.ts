@@ -68,6 +68,40 @@ serve(async (req) => {
       throw sessionError;
     }
 
+    // Get tenant name for notification
+    const { data: tenant } = await supabaseClient
+      .from("tenants")
+      .select("name")
+      .eq("id", tenant_id)
+      .single();
+
+    // Get all admins in the tenant for notification
+    const { data: adminMemberships } = await supabaseClient
+      .from("memberships")
+      .select("user_id")
+      .eq("tenant_id", tenant_id)
+      .eq("role", "admin")
+      .eq("is_active", true);
+
+    // Create notifications for all tenant admins
+    if (adminMemberships && adminMemberships.length > 0) {
+      const notifications = adminMemberships.map((membership) => ({
+        user_id: membership.user_id,
+        tenant_id: tenant_id,
+        title: "대리 로그인 세션 시작",
+        message: `운영자가 ${tenant?.name || "귀하의 테넌트"}에 대리 로그인하였습니다. 사유: ${reason}`,
+        type: "system",
+        priority: "high",
+        metadata: {
+          impersonation_session_id: session.id,
+          operator_id: user.id,
+          reason: reason,
+        },
+      }));
+
+      await supabaseClient.from("notifications").insert(notifications);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
