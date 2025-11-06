@@ -117,19 +117,30 @@ const AdminCoursesIntegrated = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const [coursesResult, categoriesResult, teachersResult] = await Promise.all([
         supabase.from("courses").select("*").order("created_at", { ascending: false }),
-        supabase.from("categories").select("*").eq("is_active", true),
+        supabase.from("categories").select("*").order("created_at", { ascending: false }),
         supabase
           .from("user_roles")
           .select("user_id, profiles(id, full_name, email)")
           .eq("role", "teacher"),
       ]);
 
-      if (coursesResult.error) throw coursesResult.error;
-      if (categoriesResult.error) throw categoriesResult.error;
-      if (teachersResult.error) throw teachersResult.error;
+      if (coursesResult.error) {
+        console.error("Courses fetch error:", coursesResult.error);
+        throw coursesResult.error;
+      }
+      if (categoriesResult.error) {
+        console.error("Categories fetch error:", categoriesResult.error);
+        throw categoriesResult.error;
+      }
+      if (teachersResult.error) {
+        console.error("Teachers fetch error:", teachersResult.error);
+        throw teachersResult.error;
+      }
 
+      console.log("Fetched categories:", categoriesResult.data);
       setCourses(coursesResult.data || []);
       setCategories(categoriesResult.data || []);
       
@@ -144,6 +155,7 @@ const AdminCoursesIntegrated = () => {
       
       setTeachers(teachersList);
     } catch (error: any) {
+      console.error("Fetch data error:", error);
       toast({
         title: "오류",
         description: error.message || "데이터를 불러오는데 실패했습니다.",
@@ -709,41 +721,49 @@ const AdminCoursesIntegrated = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categories.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell className="font-medium">{category.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{category.slug}</Badge>
-                        </TableCell>
-                        <TableCell className="max-w-md truncate">{category.description}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                setEditingCategory(category);
-                                setCategoryForm({
-                                  name: category.name,
-                                  slug: category.slug,
-                                  description: category.description || "",
-                                });
-                                setIsCategoryDialogOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleDeleteCategory(category.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                    {categories.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          등록된 분류가 없습니다. 분류를 추가해주세요.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      categories.map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell className="font-medium">{category.name}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{category.slug}</Badge>
+                          </TableCell>
+                          <TableCell className="max-w-md truncate">{category.description}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  setEditingCategory(category);
+                                  setCategoryForm({
+                                    name: category.name,
+                                    slug: category.slug,
+                                    description: category.description || "",
+                                  });
+                                  setIsCategoryDialogOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDeleteCategory(category.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>

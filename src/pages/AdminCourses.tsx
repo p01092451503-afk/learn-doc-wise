@@ -96,9 +96,10 @@ const AdminCourses = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const [coursesResult, categoriesResult, tagsResult, teachersResult] = await Promise.all([
         supabase.from("courses").select("*").order("created_at", { ascending: false }),
-        supabase.from("categories").select("*").eq("is_active", true),
+        supabase.from("categories").select("*").order("created_at", { ascending: false }),
         supabase.from("tags").select("*"),
         supabase
           .from("user_roles")
@@ -106,11 +107,24 @@ const AdminCourses = () => {
           .eq("role", "teacher"),
       ]);
 
-      if (coursesResult.error) throw coursesResult.error;
-      if (categoriesResult.error) throw categoriesResult.error;
-      if (tagsResult.error) throw tagsResult.error;
-      if (teachersResult.error) throw teachersResult.error;
+      if (coursesResult.error) {
+        console.error("Courses fetch error:", coursesResult.error);
+        throw coursesResult.error;
+      }
+      if (categoriesResult.error) {
+        console.error("Categories fetch error:", categoriesResult.error);
+        throw categoriesResult.error;
+      }
+      if (tagsResult.error) {
+        console.error("Tags fetch error:", tagsResult.error);
+        throw tagsResult.error;
+      }
+      if (teachersResult.error) {
+        console.error("Teachers fetch error:", teachersResult.error);
+        throw teachersResult.error;
+      }
 
+      console.log("Fetched categories:", categoriesResult.data);
       setCourses(coursesResult.data || []);
       setCategories(categoriesResult.data || []);
       setTags(tagsResult.data || []);
@@ -126,6 +140,7 @@ const AdminCourses = () => {
       
       setTeachers(teachersList);
     } catch (error: any) {
+      console.error("Fetch data error:", error);
       toast({
         title: "오류",
         description: error.message || "데이터를 불러오는데 실패했습니다.",
@@ -769,17 +784,25 @@ const AdminCourses = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categories.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell className="font-medium">{category.name}</TableCell>
-                        <TableCell className="font-mono text-sm">{category.slug}</TableCell>
-                        <TableCell>
-                          <Badge variant={category.is_active ? "default" : "secondary"}>
-                            {category.is_active ? "활성" : "비활성"}
-                          </Badge>
+                    {categories.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                          등록된 카테고리가 없습니다. 카테고리를 추가해주세요.
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      categories.map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell className="font-medium">{category.name}</TableCell>
+                          <TableCell className="font-mono text-sm">{category.slug}</TableCell>
+                          <TableCell>
+                            <Badge variant={category.is_active ? "default" : "secondary"}>
+                              {category.is_active ? "활성" : "비활성"}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
