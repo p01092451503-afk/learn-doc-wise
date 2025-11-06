@@ -936,6 +936,101 @@ export type Database = {
           },
         ]
       }
+      contracts: {
+        Row: {
+          ai_tokens_monthly: number | null
+          billing_cycle: string
+          business_registration_number: string | null
+          contract_amount: number
+          contract_document_url: string | null
+          contract_end_date: string
+          contract_number: string
+          contract_start_date: string
+          created_at: string
+          created_by: string | null
+          customer_name: string
+          customer_requirements: Json | null
+          id: string
+          max_storage_gb: number | null
+          max_students: number | null
+          notes: string | null
+          payment_method: string | null
+          plan: string
+          representative_contact: string
+          representative_email: string
+          representative_name: string
+          sales_representative: string | null
+          status: string
+          technical_representative: string | null
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_tokens_monthly?: number | null
+          billing_cycle?: string
+          business_registration_number?: string | null
+          contract_amount?: number
+          contract_document_url?: string | null
+          contract_end_date: string
+          contract_number: string
+          contract_start_date: string
+          created_at?: string
+          created_by?: string | null
+          customer_name: string
+          customer_requirements?: Json | null
+          id?: string
+          max_storage_gb?: number | null
+          max_students?: number | null
+          notes?: string | null
+          payment_method?: string | null
+          plan: string
+          representative_contact: string
+          representative_email: string
+          representative_name: string
+          sales_representative?: string | null
+          status?: string
+          technical_representative?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_tokens_monthly?: number | null
+          billing_cycle?: string
+          business_registration_number?: string | null
+          contract_amount?: number
+          contract_document_url?: string | null
+          contract_end_date?: string
+          contract_number?: string
+          contract_start_date?: string
+          created_at?: string
+          created_by?: string | null
+          customer_name?: string
+          customer_requirements?: Json | null
+          id?: string
+          max_storage_gb?: number | null
+          max_students?: number | null
+          notes?: string | null
+          payment_method?: string | null
+          plan?: string
+          representative_contact?: string
+          representative_email?: string
+          representative_name?: string
+          sales_representative?: string | null
+          status?: string
+          technical_representative?: string | null
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contracts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       counseling_logs: {
         Row: {
           counseling_date: string
@@ -4725,6 +4820,7 @@ export type Database = {
         }
         Returns: string
       }
+      generate_contract_number: { Args: never; Returns: string }
       get_user_accessible_tenants: {
         Args: { _user_id: string }
         Returns: string[]

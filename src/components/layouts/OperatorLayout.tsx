@@ -25,6 +25,7 @@ import {
   Key,
   Server,
   HardDrive,
+  FileText,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
@@ -63,6 +64,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { icon: BarChart3, label: "대시보드", path: "/operator" },
   { icon: Building2, label: "테넌트 관리", path: "/operator/tenants" },
+  { icon: FileText, label: "계약 관리", path: "/operator/contracts" },
   { icon: Users, label: "대리 로그인 세션", path: "/operator/impersonation-logs" },
   { icon: BarChart3, label: "사용량 관리", path: "/operator/usage" },
   { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
