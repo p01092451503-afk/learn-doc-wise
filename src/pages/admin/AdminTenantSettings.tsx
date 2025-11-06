@@ -17,12 +17,18 @@ import {
   HardDrive,
   Users,
   Zap,
-  Plus
+  Plus,
+  Palette,
+  FileText,
+  UserPlus
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PlanChangeDialog from "@/components/admin/PlanChangeDialog";
 import BillingHistory from "@/components/admin/BillingHistory";
 import TenantUsageStats from "@/components/admin/TenantUsageStats";
+import { BrandingSettings } from "@/components/admin/BrandingSettings";
+import { PolicySettings } from "@/components/admin/PolicySettings";
+import { UserInvitationDialog } from "@/components/admin/UserInvitationDialog";
 import { AtomLoader } from "@/components/AtomLoader";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -46,6 +52,7 @@ const AdminTenantSettings = () => {
   const [tenantInfo, setTenantInfo] = useState<TenantInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPlanDialog, setShowPlanDialog] = useState(false);
+  const [showUserInvitationDialog, setShowUserInvitationDialog] = useState(false);
   const [creatingTestData, setCreatingTestData] = useState(false);
   const { toast } = useToast();
   const { tenantId, user } = useUser();
@@ -356,10 +363,16 @@ const AdminTenantSettings = () => {
               플랜 관리, 사용량 모니터링, 청구 내역을 확인하세요
             </p>
           </div>
-          <Button onClick={() => setShowPlanDialog(true)}>
-            <Package className="h-4 w-4 mr-2" />
-            플랜 변경
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setShowPlanDialog(true)}>
+              <Package className="h-4 w-4 mr-2" />
+              플랜 변경
+            </Button>
+            <Button onClick={() => setShowUserInvitationDialog(true)} variant="outline">
+              <UserPlus className="h-4 w-4 mr-2" />
+              사용자 초대
+            </Button>
+          </div>
         </div>
 
         {/* Tenant Overview */}
@@ -439,6 +452,14 @@ const AdminTenantSettings = () => {
               <CreditCard className="h-4 w-4" />
               청구 내역
             </TabsTrigger>
+            <TabsTrigger value="branding" className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              브랜딩
+            </TabsTrigger>
+            <TabsTrigger value="policies" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              운영 정책
+            </TabsTrigger>
             <TabsTrigger value="info" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               상세 정보
@@ -451,6 +472,14 @@ const AdminTenantSettings = () => {
 
           <TabsContent value="billing" className="space-y-4">
             <BillingHistory tenantId={tenantInfo.id} />
+          </TabsContent>
+
+          <TabsContent value="branding" className="space-y-4">
+            <BrandingSettings tenantId={tenantInfo.id} />
+          </TabsContent>
+
+          <TabsContent value="policies" className="space-y-4">
+            <PolicySettings tenantId={tenantInfo.id} />
           </TabsContent>
 
           <TabsContent value="info" className="space-y-4">
@@ -510,6 +539,14 @@ const AdminTenantSettings = () => {
           currentPlan={tenantInfo.plan}
           tenantId={tenantInfo.id}
           onPlanChanged={fetchTenantInfo}
+        />
+
+        {/* User Invitation Dialog */}
+        <UserInvitationDialog
+          open={showUserInvitationDialog}
+          onOpenChange={setShowUserInvitationDialog}
+          tenantId={tenantInfo.id}
+          tenantName={tenantInfo.name}
         />
       </div>
     </DashboardLayout>
