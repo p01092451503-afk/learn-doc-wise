@@ -9,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Search, FileText, Edit, Trash2, CheckCircle, XCircle, Clock, Building2 } from "lucide-react";
+import { Plus, Search, FileText, Edit, Trash2, CheckCircle, XCircle, Clock, Building2, UserPlus, UserCheck } from "lucide-react";
 import { ContractDialog } from "@/components/operator/ContractDialog";
 import { CreateTenantFromContractDialog } from "@/components/operator/CreateTenantFromContractDialog";
+import { AdminAccountCreationDialog } from "@/components/operator/AdminAccountCreationDialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function OperatorContracts() {
@@ -26,6 +27,8 @@ export default function OperatorContracts() {
   const [contractToDelete, setContractToDelete] = useState<any>(null);
   const [createTenantDialogOpen, setCreateTenantDialogOpen] = useState(false);
   const [contractForTenant, setContractForTenant] = useState<any>(null);
+  const [adminCreationDialogOpen, setAdminCreationDialogOpen] = useState(false);
+  const [contractForAdmin, setContractForAdmin] = useState<any>(null);
 
   useEffect(() => {
     checkOperatorAccess();
@@ -269,26 +272,49 @@ export default function OperatorContracts() {
                         <TableCell className="font-mono text-sm">{contract.contract_number}</TableCell>
                         <TableCell className="font-medium">{contract.customer_name}</TableCell>
                         <TableCell>
-                          {contract.tenant_id ? (
-                            <Badge variant="outline" className="bg-green-50 text-green-700">
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              생성완료
-                            </Badge>
-                          ) : (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-7 text-xs"
-                              onClick={() => {
-                                setContractForTenant(contract);
-                                setCreateTenantDialogOpen(true);
-                              }}
-                              disabled={contract.status !== "active"}
-                            >
-                              <Building2 className="h-3 w-3 mr-1" />
-                              테넌트 생성
-                            </Button>
-                          )}
+                          <div className="flex flex-col gap-2">
+                            {contract.tenant_id ? (
+                              <>
+                                <Badge variant="outline" className="bg-green-50 text-green-700">
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                  테넌트 생성완료
+                                </Badge>
+                                {contract.technical_representative ? (
+                                  <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                                    <UserCheck className="h-3 w-3 mr-1" />
+                                    관리자 설정완료
+                                  </Badge>
+                                ) : (
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 text-xs"
+                                    onClick={() => {
+                                      setContractForAdmin(contract);
+                                      setAdminCreationDialogOpen(true);
+                                    }}
+                                  >
+                                    <UserPlus className="h-3 w-3 mr-1" />
+                                    관리자 생성
+                                  </Button>
+                                )}
+                              </>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 text-xs"
+                                onClick={() => {
+                                  setContractForTenant(contract);
+                                  setCreateTenantDialogOpen(true);
+                                }}
+                                disabled={contract.status !== "active"}
+                              >
+                                <Building2 className="h-3 w-3 mr-1" />
+                                테넌트 생성
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>{getPlanBadge(contract.plan)}</TableCell>
                         <TableCell>{contract.contract_amount.toLocaleString()}원</TableCell>
@@ -361,6 +387,20 @@ export default function OperatorContracts() {
           toast.success("테넌트가 성공적으로 생성되었습니다");
         }}
       />
+
+      {contractForAdmin && (
+        <AdminAccountCreationDialog
+          open={adminCreationDialogOpen}
+          onOpenChange={setAdminCreationDialogOpen}
+          contractId={contractForAdmin.id}
+          contractNumber={contractForAdmin.contract_number}
+          tenantId={contractForAdmin.tenant_id}
+          tenantName={contractForAdmin.customer_name}
+          tenantSubdomain=""
+          representativeEmail={contractForAdmin.representative_email}
+          representativeName={contractForAdmin.representative_name}
+        />
+      )}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
