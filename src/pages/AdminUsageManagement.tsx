@@ -6,8 +6,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, AlertTriangle, TrendingUp, Users, HardDrive, Zap } from "lucide-react";
+import { RefreshCw, AlertTriangle, TrendingUp, Users, HardDrive, Zap, Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { RealtimeUsageMonitor } from "@/components/admin/RealtimeUsageMonitor";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface UsageMetric {
   id: string;
@@ -45,11 +47,24 @@ const AdminUsageManagement = () => {
   const [tenants, setTenants] = useState<TenantWithUsage[]>([]);
   const [loading, setLoading] = useState(true);
   const [collecting, setCollecting] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!autoRefresh) return;
+    
+    const interval = setInterval(() => {
+      fetchData();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [autoRefresh]);
 
   const fetchData = async () => {
     try {
@@ -184,6 +199,14 @@ const AdminUsageManagement = () => {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button 
+              onClick={() => setAutoRefresh(!autoRefresh)} 
+              variant={autoRefresh ? "default" : "outline"}
+              size="sm"
+            >
+              <Activity className="h-4 w-4 mr-2" />
+              {autoRefresh ? "자동 새로고침 ON" : "자동 새로고침 OFF"}
+            </Button>
             <Button onClick={handleCheckLimits} variant="outline">
               <AlertTriangle className="h-4 w-4 mr-2" />
               제한 확인
@@ -244,13 +267,21 @@ const AdminUsageManagement = () => {
           </Card>
         </div>
 
-        {/* Usage Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>테넌트별 사용량</CardTitle>
-            <CardDescription>각 테넌트의 리소스 사용 현황을 확인하세요</CardDescription>
-          </CardHeader>
-          <CardContent>
+        {/* Main Content */}
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="overview">전체 현황</TabsTrigger>
+            <TabsTrigger value="realtime">실시간 모니터링</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-4">
+            {/* Usage Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>테넌트별 사용량</CardTitle>
+                <CardDescription>각 테넌트의 리소스 사용 현황을 확인하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -278,7 +309,15 @@ const AdminUsageManagement = () => {
                   </TableRow>
                 ) : (
                   tenants.map((tenant) => (
-                    <TableRow key={tenant.id}>
+                    <TableRow 
+                      key={tenant.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => {
+                        setSelectedTenant(tenant.id);
+                        const element = document.querySelector('[value="realtime"]');
+                        if (element) (element as HTMLElement).click();
+                      }}
+                    >
                       <TableCell>
                         <div>
                           <p className="font-medium">{tenant.name}</p>
@@ -322,6 +361,22 @@ const AdminUsageManagement = () => {
             </Table>
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="realtime" className="space-y-4">
+            {selectedTenant ? (
+              <RealtimeUsageMonitor tenantId={selectedTenant} />
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <p className="text-muted-foreground">
+                    왼쪽 목록에서 테넌트를 선택하여 실시간 모니터링을 시작하세요.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardLayout>
   );
