@@ -335,7 +335,7 @@ const StudentCourses = () => {
           <>
             {/* 학습 진행 현황 */}
             <div className="grid gap-6 md:grid-cols-4">
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow animate-fade-in" style={{ animationDelay: '0ms' }}>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -351,7 +351,7 @@ const StudentCourses = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow animate-fade-in" style={{ animationDelay: '100ms' }}>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -372,7 +372,7 @@ const StudentCourses = () => {
               </Card>
 
               {isDemo && (
-                <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5">
+                <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5 animate-fade-in" style={{ animationDelay: '200ms' }}>
                   <CardContent className="pt-6">
                     <div className="flex items-center justify-between">
                     <div>
@@ -390,7 +390,7 @@ const StudentCourses = () => {
                 </Card>
               )}
 
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow animate-fade-in" style={{ animationDelay: isDemo ? '300ms' : '200ms' }}>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
