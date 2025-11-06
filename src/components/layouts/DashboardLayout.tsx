@@ -284,17 +284,19 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   useEffect(() => {
     // CRITICAL: Always use default menu items to ensure HRD menus are visible
     // Database menu_order is outdated and doesn't include new HRD menus
-    let items = getDefaultMenuItems();
+    const items = getDefaultMenuItems();
     
     console.log('[DashboardLayout] Menu items before filter:', items.length, 'hideHrdFeatures:', hideHrdFeatures);
+    console.log('[DashboardLayout] HRD items:', items.filter((item: any) => item.isHRD).map((item: any) => item.label));
     
     // HRD 기능이 숨김 상태면 필터링
-    if (hideHrdFeatures) {
-      items = items.filter(item => !(item as any).isHRD);
-      console.log('[DashboardLayout] Menu items after HRD filter:', items.length);
-    }
+    const filteredItems = hideHrdFeatures 
+      ? items.filter(item => !(item as any).isHRD)
+      : items;
     
-    setMenuItems(items);
+    console.log('[DashboardLayout] Menu items after HRD filter:', filteredItems.length);
+    
+    setMenuItems(filteredItems);
   }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
 
   useEffect(() => {
