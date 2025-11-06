@@ -245,37 +245,53 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   useEffect(() => {
     // HRD 기능 숨김 설정 불러오기
     const fetchHrdSettings = async () => {
+      if (isDemoMode) {
+        console.log('[DashboardLayout] Demo mode - skipping HRD settings fetch');
+        return;
+      }
+      
       try {
+        console.log('[DashboardLayout] Fetching HRD settings...');
         const { data, error } = await supabase
           .from('system_settings')
           .select('setting_value')
           .eq('setting_key', 'hide_hrd_features')
           .maybeSingle();
         
-        if (error) throw error;
+        if (error) {
+          console.error('[DashboardLayout] Error fetching HRD settings:', error);
+          return;
+        }
         
         if (data && data.setting_value) {
           const value = typeof data.setting_value === 'string' 
             ? JSON.parse(data.setting_value) 
             : data.setting_value;
-          setHideHrdFeatures(value?.enabled === true);
+          const shouldHide = value?.enabled === true;
+          console.log('[DashboardLayout] HRD hide setting:', shouldHide, 'from value:', value);
+          setHideHrdFeatures(shouldHide);
+        } else {
+          console.log('[DashboardLayout] No HRD setting found, defaulting to false');
         }
       } catch (error) {
-        console.error('Error fetching HRD settings:', error);
+        console.error('[DashboardLayout] Error:', error);
       }
     };
     
     fetchHrdSettings();
-  }, []);
+  }, [isDemoMode]);
 
   useEffect(() => {
     // CRITICAL: Always use default menu items to ensure HRD menus are visible
     // Database menu_order is outdated and doesn't include new HRD menus
     let items = getDefaultMenuItems();
     
+    console.log('[DashboardLayout] Menu items before filter:', items.length, 'hideHrdFeatures:', hideHrdFeatures);
+    
     // HRD 기능이 숨김 상태면 필터링
     if (hideHrdFeatures) {
       items = items.filter(item => !(item as any).isHRD);
+      console.log('[DashboardLayout] Menu items after HRD filter:', items.length);
     }
     
     setMenuItems(items);

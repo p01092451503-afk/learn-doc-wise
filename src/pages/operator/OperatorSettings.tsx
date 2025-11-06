@@ -77,23 +77,28 @@ const OperatorSettings = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      // HRD 기능 숨김 설정 저장
-      const settingValue = JSON.stringify({ enabled: hideHrdFeatures });
+      console.log('[OperatorSettings] Saving HRD setting:', hideHrdFeatures);
       
+      // HRD 기능 숨김 설정 저장 - JSONB 객체로 직접 저장
       const { error: hrdError } = await supabase
         .from('system_settings')
         .upsert({
           setting_key: 'hide_hrd_features',
-          setting_value: settingValue
-        } as any, {
+          setting_value: { enabled: hideHrdFeatures } as any
+        }, {
           onConflict: 'setting_key'
         });
       
-      if (hrdError) throw hrdError;
+      if (hrdError) {
+        console.error('[OperatorSettings] Save error:', hrdError);
+        throw hrdError;
+      }
+      
+      console.log('[OperatorSettings] Save successful');
       
       toast({
         title: "설정 저장 완료",
-        description: "플랫폼 설정이 저장되었습니다.",
+        description: `HRD 기능이 ${hideHrdFeatures ? '숨겨집니다' : '표시됩니다'}. 페이지를 새로고침합니다.`,
       });
       
       // 페이지 새로고침하여 메뉴 변경사항 적용
@@ -101,9 +106,10 @@ const OperatorSettings = () => {
         window.location.reload();
       }, 1000);
     } catch (error: any) {
+      console.error('[OperatorSettings] Error:', error);
       toast({
-        title: "오류",
-        description: error.message || "설정 저장에 실패했습니다.",
+        title: "저장 실패",
+        description: error.message || "설정 저장에 실패했습니다. operator 권한이 필요합니다.",
         variant: "destructive",
       });
     } finally {
