@@ -49,6 +49,8 @@ const AdminTenantSettings = () => {
   useEffect(() => {
     if (tenantId) {
       fetchTenantInfo();
+    } else {
+      setLoading(false);
     }
   }, [tenantId]);
 
@@ -70,9 +72,9 @@ const AdminTenantSettings = () => {
         .from("usage_metrics")
         .select("*")
         .eq("tenant_id", tenantId)
-        .order("collected_at", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       setTenantInfo({
         id: tenant.id,
@@ -142,15 +144,23 @@ const AdminTenantSettings = () => {
     );
   }
 
-  if (!tenantInfo) {
+  if (!tenantId || !tenantInfo) {
     return (
       <DashboardLayout userRole="admin">
         <div className="container mx-auto p-6">
           <Card>
-            <CardContent className="p-6">
-              <p className="text-center text-muted-foreground">
-                테넌트 정보를 찾을 수 없습니다.
-              </p>
+            <CardContent className="p-6 text-center space-y-4">
+              <Building2 className="h-12 w-12 mx-auto text-muted-foreground opacity-50" />
+              <div>
+                <p className="text-lg font-semibold text-muted-foreground">
+                  테넌트 정보를 찾을 수 없습니다
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {!tenantId 
+                    ? "이 계정은 테넌트에 소속되어 있지 않습니다." 
+                    : "테넌트 정보를 불러올 수 없습니다."}
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
