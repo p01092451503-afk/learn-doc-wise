@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { HardDrive, Database, Cpu, Users, Search, RefreshCw, X, Download, Filter, TrendingUp, Activity } from "lucide-react";
+import { HardDrive, Database, Cpu, Users, Search, RefreshCw, X, Download, Filter, TrendingUp, Activity, AlertTriangle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +15,8 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RealtimeUsageMonitor } from "@/components/admin/RealtimeUsageMonitor";
 
 interface TenantUsage {
   tenant_id: string;
@@ -46,6 +48,8 @@ const OperatorUsage = () => {
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [totalActiveUsers, setTotalActiveUsers] = useState(0);
+  const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
+  const [collecting, setCollecting] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
     return (saved as "dark" | "light") || "dark";
@@ -122,6 +126,55 @@ const OperatorUsage = () => {
       title: "새로고침 완료",
       description: "사용량 데이터가 업데이트되었습니다.",
     });
+  };
+
+  const handleCollectMetrics = async () => {
+    try {
+      setCollecting(true);
+      
+      const { data, error } = await supabase.functions.invoke("collect-usage-metrics");
+
+      if (error) throw error;
+
+      toast({
+        title: "성공",
+        description: "사용량 데이터가 수집되었습니다.",
+      });
+
+      await handleRefresh();
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "사용량 수집에 실패했습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setCollecting(false);
+    }
+  };
+
+  const handleCheckLimits = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("check-usage-limits");
+
+      if (error) throw error;
+
+      const violations = data?.violations || [];
+
+      toast({
+        title: violations.length > 0 ? "제한 초과 발견" : "정상",
+        description: violations.length > 0
+          ? `${violations.length}개의 제한 초과가 발견되었습니다.`
+          : "모든 고객사가 제한 내에서 운영 중입니다.",
+        variant: violations.length > 0 ? "destructive" : "default",
+      });
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "제한 확인에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleExportCSV = () => {
@@ -304,6 +357,35 @@ const OperatorUsage = () => {
             )}>전체 고객사의 실시간 리소스 사용량 및 활성 사용자를 모니터링합니다</p>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCheckLimits}
+              className={cn(
+                "gap-2 transition-colors",
+                theme === "dark"
+                  ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-100"
+              )}
+            >
+              <AlertTriangle className="h-4 w-4" />
+              제한 확인
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleCollectMetrics}
+              disabled={collecting}
+              className={cn(
+                "gap-2 transition-colors",
+                theme === "dark"
+                  ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-100"
+              )}
+            >
+              <Database className={`h-4 w-4 ${collecting ? "animate-spin" : ""}`} />
+              사용량 수집
+            </Button>
             <div className="flex items-center gap-2">
               <Switch
                 id="auto-refresh"
@@ -609,26 +691,33 @@ const OperatorUsage = () => {
           </Card>
         )}
 
-        {/* Usage Table */}
-        <Card className={cn(
-          "transition-colors",
-          theme === "dark" 
-            ? "bg-slate-900/50 border-slate-800" 
-            : "bg-white border-slate-200"
-        )}>
-          <CardHeader>
-            <CardTitle className={cn(
+        {/* Usage Table with Tabs */}
+        <Tabs defaultValue="overview" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="overview">전체 현황</TabsTrigger>
+            <TabsTrigger value="realtime">실시간 모니터링</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview">
+            <Card className={cn(
               "transition-colors",
-              theme === "dark" ? "text-white" : "text-slate-900"
-            )}>고객사별 사용량</CardTitle>
-            <CardDescription className={cn(
-              "transition-colors",
-              theme === "dark" ? "text-slate-400" : "text-slate-600"
+              theme === "dark" 
+                ? "bg-slate-900/50 border-slate-800" 
+                : "bg-white border-slate-200"
             )}>
-              {filteredData.length}개 고객사 {searchQuery && `(전체 ${usageData.length}개 중)`}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+              <CardHeader>
+                <CardTitle className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>고객사별 사용량</CardTitle>
+                <CardDescription className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  {filteredData.length}개 고객사 {searchQuery && `(전체 ${usageData.length}개 중)`}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
             {loading ? (
               <div className={cn(
                 "text-center py-8 transition-colors",
@@ -650,7 +739,7 @@ const OperatorUsage = () => {
               <Table>
                 <TableHeader>
                   <TableRow className={cn(
-                    "transition-colors",
+                    "transition-colors cursor-pointer hover:bg-muted/50",
                     theme === "dark" ? "border-slate-800" : "border-slate-200"
                   )}>
                     <TableHead className={cn(
@@ -692,9 +781,14 @@ const OperatorUsage = () => {
                       <TableRow 
                         key={usage.tenant_id} 
                         className={cn(
-                          "transition-colors",
+                          "transition-colors cursor-pointer hover:bg-muted/50",
                           theme === "dark" ? "border-slate-800" : "border-slate-200"
                         )}
+                        onClick={() => {
+                          setSelectedTenant(usage.tenant_id);
+                          const element = document.querySelector('[value="realtime"]');
+                          if (element) (element as HTMLElement).click();
+                        }}
                       >
                         <TableCell className={cn(
                           "font-medium transition-colors",
@@ -757,6 +851,30 @@ const OperatorUsage = () => {
             )}
           </CardContent>
         </Card>
+          </TabsContent>
+
+          <TabsContent value="realtime">
+            {selectedTenant ? (
+              <RealtimeUsageMonitor tenantId={selectedTenant} />
+            ) : (
+              <Card className={cn(
+                "transition-colors",
+                theme === "dark" 
+                  ? "bg-slate-900/50 border-slate-800" 
+                  : "bg-white border-slate-200"
+              )}>
+                <CardContent className="py-12 text-center">
+                  <p className={cn(
+                    "transition-colors",
+                    theme === "dark" ? "text-slate-400" : "text-slate-600"
+                  )}>
+                    전체 현황 탭에서 고객사를 선택하여 실시간 모니터링을 시작하세요.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </OperatorLayout>
   );
