@@ -97,39 +97,61 @@ const AdminTenantSettings = () => {
         if (tenantError) throw tenantError;
       }
 
-      // 2. 현재 사용자를 admin으로 추가
-      const { error: membershipError } = await supabase
+      // 2. 현재 사용자를 admin으로 추가 (이미 존재하는지 확인)
+      const { data: existingMembership } = await supabase
         .from("memberships")
-        .upsert({
-          user_id: user.id,
-          tenant_id: "11111111-1111-1111-1111-111111111111",
-          role: "admin",
-          is_active: true,
-        }, {
-          onConflict: "user_id,tenant_id"
-        });
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("tenant_id", "11111111-1111-1111-1111-111111111111")
+        .maybeSingle();
 
-      if (membershipError) throw membershipError;
+      if (!existingMembership) {
+        const { error: membershipError } = await supabase
+          .from("memberships")
+          .insert({
+            user_id: user.id,
+            tenant_id: "11111111-1111-1111-1111-111111111111",
+            role: "admin",
+            is_active: true,
+          });
 
-      // 3. 사용량 데이터 추가 (간단한 버전)
+        if (membershipError) throw membershipError;
+      }
+
+      // 3. 사용량 데이터 추가 (중복 방지)
       const today = new Date();
+      const usageData = [];
+      
       for (let i = 0; i < 7; i++) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
         
-        await supabase
+        // 이미 존재하는지 확인
+        const { data: existing } = await supabase
           .from("usage_metrics")
-          .insert({
+          .select("id")
+          .eq("tenant_id", "11111111-1111-1111-1111-111111111111")
+          .eq("metric_date", dateStr)
+          .maybeSingle();
+        
+        if (!existing) {
+          usageData.push({
             tenant_id: "11111111-1111-1111-1111-111111111111",
             student_count: Math.floor(Math.random() * 300 + 50),
             storage_used_gb: Math.floor(Math.random() * 50 + 10),
             ai_tokens_used: Math.floor(Math.random() * 50000 + 10000),
             bandwidth_gb: Math.floor(Math.random() * 100 + 20),
-            metric_date: date.toISOString().split('T')[0],
+            metric_date: dateStr,
           });
+        }
+      }
+      
+      if (usageData.length > 0) {
+        await supabase.from("usage_metrics").insert(usageData);
       }
 
-      // 4. 청구 내역 추가
+      // 4. 청구 내역 추가 (중복 방지)
       const invoices = [
         {
           tenant_id: "11111111-1111-1111-1111-111111111111",
@@ -156,7 +178,16 @@ const AdminTenantSettings = () => {
       ];
 
       for (const invoice of invoices) {
-        await supabase.from("billing_history").insert(invoice);
+        // 중복 확인
+        const { data: existing } = await supabase
+          .from("billing_history")
+          .select("id")
+          .eq("invoice_number", invoice.invoice_number)
+          .maybeSingle();
+        
+        if (!existing) {
+          await supabase.from("billing_history").insert(invoice);
+        }
       }
 
       toast({
