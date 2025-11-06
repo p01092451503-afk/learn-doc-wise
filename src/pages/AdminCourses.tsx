@@ -273,13 +273,36 @@ const AdminCourses = () => {
 
   const handleCreateCategory = async () => {
     try {
-      const { error } = await supabase.from("categories").insert([{
-        name: categoryForm.name,
-        slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, "-"),
-        description: categoryForm.description,
-      }]);
+      // 폼 검증
+      if (!categoryForm.name.trim()) {
+        toast({
+          title: "오류",
+          description: "카테고리명을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      if (error) throw error;
+      const categoryData = {
+        name: categoryForm.name.trim(),
+        slug: categoryForm.slug?.trim() || categoryForm.name.trim().toLowerCase().replace(/\s+/g, "-"),
+        description: categoryForm.description?.trim() || null,
+      };
+
+      const { data, error } = await supabase.from("categories").insert([categoryData]).select();
+
+      if (error) {
+        // 중복 name 또는 slug 에러 처리
+        if (error.code === '23505') {
+          toast({
+            title: "오류",
+            description: "이미 존재하는 카테고리명입니다. 다른 이름을 사용해주세요.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
 
       toast({
         title: "성공",
