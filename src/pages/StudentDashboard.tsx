@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,7 @@ import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkl
 import { Chatbot } from "@/components/Chatbot";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
+import { useQuery } from "@tanstack/react-query";
 import { AILearningPathDialog } from "@/components/ai/AILearningPathDialog";
 import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
@@ -42,15 +43,11 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [progressOpen, setProgressOpen] = useState(false);
   const [studyMatchOpen, setStudyMatchOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
-  const [liveSessions, setLiveSessions] = useState<LiveSession[]>([]);
-  const [loadingSessions, setLoadingSessions] = useState(true);
 
-  useEffect(() => {
-    loadLiveSessions();
-  }, []);
-
-  const loadLiveSessions = async () => {
-    try {
+  // 🚀 PERFORMANCE: React Query로 라이브 세션 캐싱
+  const { data: liveSessions = [], isLoading: loadingSessions } = useQuery({
+    queryKey: ['live-sessions-upcoming'],
+    queryFn: async () => {
       const { data: sessions, error } = await supabase
         .from('live_sessions')
         .select('*')
@@ -61,36 +58,25 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
 
       if (error) throw error;
 
-      if (sessions) {
-        // Get instructor names
-        const sessionsWithInstructors = await Promise.all(
-          sessions.map(async (session) => {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('full_name')
-              .eq('id', session.instructor_id)
-              .single();
+      if (!sessions || sessions.length === 0) return [];
 
-            return {
-              ...session,
-              instructor_name: profile?.full_name || '강사',
-            };
-          })
-        );
+      // 🚀 PERFORMANCE: 병렬로 강사 정보 조회
+      const instructorIds = [...new Set(sessions.map(s => s.instructor_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name')
+        .in('id', instructorIds);
 
-        setLiveSessions(sessionsWithInstructors);
-      }
-    } catch (error) {
-      console.error('Error loading live sessions:', error);
-      toast({
-        title: "오류",
-        description: "라이브 세션을 불러오는데 실패했습니다.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoadingSessions(false);
-    }
-  };
+      const profileMap = new Map(profiles?.map(p => [p.id, p.full_name]) || []);
+
+      return sessions.map(session => ({
+        ...session,
+        instructor_name: profileMap.get(session.instructor_id) || '강사',
+      }));
+    },
+    staleTime: 2 * 60 * 1000,  // 2분 캐싱
+    enabled: !isDemo,           // 데모 모드에서는 비활성화
+  });
 
   const handleJoinSession = (sessionId: string, status: string) => {
     if (status === 'live') {

@@ -219,10 +219,12 @@ const App = () => {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-        retry: 1,
-        refetchOnWindowFocus: false,
+        staleTime: 5 * 60 * 1000,        // 5분 - 데이터 신선도 유지
+        gcTime: 10 * 60 * 1000,          // 10분 - 가비지 컬렉션
+        retry: 1,                         // 재시도 1회로 제한
+        refetchOnWindowFocus: false,      // 포커스 시 재요청 방지
+        refetchOnMount: false,            // 마운트 시 재요청 방지
+        refetchOnReconnect: false,        // 재연결 시 재요청 방지
       },
     },
   }));
