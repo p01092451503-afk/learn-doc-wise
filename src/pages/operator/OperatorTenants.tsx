@@ -188,6 +188,7 @@ const OperatorTenants = () => {
         {
           name: formData.name,
           subdomain: formData.subdomain,
+          slug: formData.subdomain, // Add slug from subdomain
           custom_domain: formData.custom_domain || null,
           plan: formData.plan as "starter" | "standard" | "professional",
           status: formData.status,

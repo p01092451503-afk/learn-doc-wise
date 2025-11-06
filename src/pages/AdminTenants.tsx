@@ -78,6 +78,7 @@ const AdminTenants = () => {
       const { error } = await supabase.from("tenants").insert([{
         name: formData.name,
         subdomain: formData.subdomain,
+        slug: formData.subdomain, // Add slug from subdomain
         plan: formData.plan as "starter" | "standard" | "professional",
         max_students: formData.max_students,
         max_storage_gb: formData.max_storage_gb,
