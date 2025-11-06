@@ -296,8 +296,8 @@ const OperatorTenants = () => {
       if (error) throw error;
 
       toast({
-        title: "가장 세션 시작",
-        description: `${tenant.name}에 대한 가장 세션이 시작되었습니다. 2시간 후 자동 종료됩니다.`,
+        title: "대리 로그인 세션 시작",
+        description: `${tenant.name}에 대한 대리 로그인 세션이 시작되었습니다. 2시간 후 자동 종료됩니다.`,
       });
 
       // Store impersonation session in localStorage for UI indication
@@ -315,7 +315,7 @@ const OperatorTenants = () => {
     } catch (error: any) {
       toast({
         title: "오류",
-        description: error.message || "가장 세션 시작에 실패했습니다.",
+        description: error.message || "대리 로그인 세션 시작에 실패했습니다.",
         variant: "destructive",
       });
     }
@@ -1293,7 +1293,7 @@ const OperatorTenants = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                              const reason = prompt("가장 세션 사유를 입력하세요:");
+                              const reason = prompt("대리 로그인 사유를 입력하세요:");
                               if (reason) handleStartImpersonation(tenant, reason);
                             }}
                             className={cn(
@@ -1302,7 +1302,7 @@ const OperatorTenants = () => {
                             )}
                           >
                             <Users className="h-3 w-3" />
-                            <span className="text-xs">가장</span>
+                            <span className="text-xs">대리 로그인</span>
                           </Button>
                           <Button
                             variant="outline"

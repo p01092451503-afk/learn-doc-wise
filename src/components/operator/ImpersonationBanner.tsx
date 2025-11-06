@@ -40,7 +40,7 @@ export const ImpersonationBanner = () => {
       setSession(null);
 
       toast({
-        title: "가장 세션 종료",
+        title: "대리 로그인 세션 종료",
         description: "운영자 콘솔로 돌아갑니다.",
       });
 
@@ -50,7 +50,7 @@ export const ImpersonationBanner = () => {
     } catch (error: any) {
       toast({
         title: "오류",
-        description: error.message || "가장 세션 종료에 실패했습니다.",
+        description: error.message || "대리 로그인 세션 종료에 실패했습니다.",
         variant: "destructive",
       });
     }
@@ -66,7 +66,7 @@ export const ImpersonationBanner = () => {
             <AlertCircle className="h-5 w-5" />
             <div>
               <div className="font-semibold text-sm">
-                가장 모드 활성화 - {session.tenant_name}
+                대리 로그인 모드 활성화 - {session.tenant_name}
               </div>
               <div className="text-xs opacity-90">
                 시작 시간: {new Date(session.started_at).toLocaleString("ko-KR")}
