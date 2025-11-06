@@ -118,42 +118,57 @@ const AdminCoursesIntegrated = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [coursesResult, categoriesResult, teachersResult] = await Promise.all([
-        supabase.from("courses").select("*").order("created_at", { ascending: false }),
-        supabase.from("categories").select("*").order("created_at", { ascending: false }),
-        supabase
-          .from("user_roles")
-          .select("user_id, profiles(id, full_name, email)")
-          .eq("role", "teacher"),
-      ]);
+      
+      // 각 쿼리를 독립적으로 처리하여 하나가 실패해도 다른 데이터는 로드되도록 함
+      const coursesResult = await supabase
+        .from("courses")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      const categoriesResult = await supabase
+        .from("categories")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (coursesResult.error) {
         console.error("Courses fetch error:", coursesResult.error);
-        throw coursesResult.error;
-      }
-      if (categoriesResult.error) {
-        console.error("Categories fetch error:", categoriesResult.error);
-        throw categoriesResult.error;
-      }
-      if (teachersResult.error) {
-        console.error("Teachers fetch error:", teachersResult.error);
-        throw teachersResult.error;
+      } else {
+        setCourses(coursesResult.data || []);
       }
 
-      console.log("Fetched categories:", categoriesResult.data);
-      setCourses(coursesResult.data || []);
-      setCategories(categoriesResult.data || []);
-      
-      // Transform teachers data
-      const teachersList = teachersResult.data
-        ?.map((item: any) => ({
-          id: item.user_id,
-          full_name: item.profiles?.full_name || "이름 없음",
-          email: item.profiles?.email || "",
-        }))
-        .filter((t: Teacher) => t.id) || [];
-      
-      setTeachers(teachersList);
+      if (categoriesResult.error) {
+        console.error("Categories fetch error:", categoriesResult.error);
+      } else {
+        console.log("Fetched categories:", categoriesResult.data);
+        setCategories(categoriesResult.data || []);
+      }
+
+      // teachers는 선택적으로 로드 (오류가 나도 다른 데이터는 표시)
+      try {
+        const teachersResult = await supabase
+          .from("user_roles")
+          .select("user_id, profiles(id, full_name, email)")
+          .eq("role", "teacher");
+        
+        if (teachersResult.error) {
+          console.error("Teachers fetch error:", teachersResult.error);
+          setTeachers([]);
+        } else {
+          const teachersList = teachersResult.data
+            ?.map((item: any) => ({
+              id: item.user_id,
+              full_name: item.profiles?.full_name || "이름 없음",
+              email: item.profiles?.email || "",
+            }))
+            .filter((t: Teacher) => t.id) || [];
+          
+          setTeachers(teachersList);
+        }
+      } catch (teacherError) {
+        console.error("Teachers query failed:", teacherError);
+        setTeachers([]);
+      }
+
     } catch (error: any) {
       console.error("Fetch data error:", error);
       toast({
