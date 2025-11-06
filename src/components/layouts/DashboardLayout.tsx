@@ -104,8 +104,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [userName, setUserName] = useState<string>("사용자");
-  const [hideHrdFeatures, setHideHrdFeatures] = useState(false);
-  const [isLoadingHrdSetting, setIsLoadingHrdSetting] = useState(true);
+  const [hideHrdFeatures, setHideHrdFeatures] = useState(true); // 기본값: HRD 메뉴 숨김
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -150,7 +149,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     }
   };
 
-  const getDefaultMenuItems = () => {
+  const getDefaultMenuItems = (): MenuItem[] => {
     const baseItems = [
       { 
         icon: LayoutDashboard, 
@@ -252,7 +251,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       }
       
       try {
-        setIsLoadingHrdSetting(true);
         console.log('[DashboardLayout] Fetching HRD settings...');
         const { data, error } = await supabase
           .from('system_settings')
@@ -262,7 +260,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         
         if (error) {
           console.error('[DashboardLayout] Error fetching HRD settings:', error);
-          setIsLoadingHrdSetting(false);
           return;
         }
         
@@ -274,12 +271,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           console.log('[DashboardLayout] HRD hide setting:', shouldHide, 'from value:', value);
           setHideHrdFeatures(shouldHide);
         } else {
-          console.log('[DashboardLayout] No HRD setting found, defaulting to false');
+          console.log('[DashboardLayout] No HRD setting found, keeping default (true)');
         }
-        setIsLoadingHrdSetting(false);
       } catch (error) {
         console.error('[DashboardLayout] Error:', error);
-        setIsLoadingHrdSetting(false);
       }
     };
     
@@ -287,28 +282,22 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   }, [isDemoMode]);
 
   useEffect(() => {
-    // HRD 설정 로딩 중이면 메뉴 업데이트 대기
-    if (isLoadingHrdSetting) {
-      console.log('[DashboardLayout] Waiting for HRD settings to load...');
-      return;
-    }
-    
     // CRITICAL: Always use default menu items to ensure HRD menus are visible
     // Database menu_order is outdated and doesn't include new HRD menus
     const items = getDefaultMenuItems();
+    console.log('[DashboardLayout] Total menu items:', items.length);
+    console.log('[DashboardLayout] hideHrdFeatures:', hideHrdFeatures);
     
-    console.log('[DashboardLayout] Menu items before filter:', items.length, 'hideHrdFeatures:', hideHrdFeatures);
-    console.log('[DashboardLayout] HRD items:', items.filter((item: any) => item.isHRD).map((item: any) => item.label));
-    
-    // HRD 기능이 숨김 상태면 필터링
-    const filteredItems = hideHrdFeatures 
-      ? items.filter(item => !(item as any).isHRD)
-      : items;
+    const filteredItems = items.filter(item => {
+      const isHrdItem = item.isHRD === true;
+      console.log(`[DashboardLayout] Item "${item.label}" - isHRD: ${isHrdItem}, hideHrdFeatures: ${hideHrdFeatures}`);
+      return !hideHrdFeatures || !isHrdItem;
+    });
     
     console.log('[DashboardLayout] Menu items after HRD filter:', filteredItems.length);
     
     setMenuItems(filteredItems);
-  }, [effectiveUserRole, isDemoMode, hideHrdFeatures, isLoadingHrdSetting]);
+  }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
