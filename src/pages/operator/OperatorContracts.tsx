@@ -9,8 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus, Search, FileText, Edit, Trash2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Plus, Search, FileText, Edit, Trash2, CheckCircle, XCircle, Clock, Building2 } from "lucide-react";
 import { ContractDialog } from "@/components/operator/ContractDialog";
+import { CreateTenantFromContractDialog } from "@/components/operator/CreateTenantFromContractDialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function OperatorContracts() {
@@ -23,6 +24,8 @@ export default function OperatorContracts() {
   const [selectedContract, setSelectedContract] = useState<any>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [contractToDelete, setContractToDelete] = useState<any>(null);
+  const [createTenantDialogOpen, setCreateTenantDialogOpen] = useState(false);
+  const [contractForTenant, setContractForTenant] = useState<any>(null);
 
   useEffect(() => {
     checkOperatorAccess();
@@ -252,6 +255,7 @@ export default function OperatorContracts() {
                     <TableRow>
                       <TableHead>계약번호</TableHead>
                       <TableHead>고객사명</TableHead>
+                      <TableHead>테넌트</TableHead>
                       <TableHead>플랜</TableHead>
                       <TableHead>계약금액</TableHead>
                       <TableHead>계약기간</TableHead>
@@ -264,6 +268,28 @@ export default function OperatorContracts() {
                       <TableRow key={contract.id}>
                         <TableCell className="font-mono text-sm">{contract.contract_number}</TableCell>
                         <TableCell className="font-medium">{contract.customer_name}</TableCell>
+                        <TableCell>
+                          {contract.tenant_id ? (
+                            <Badge variant="outline" className="bg-green-50 text-green-700">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              생성완료
+                            </Badge>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 text-xs"
+                              onClick={() => {
+                                setContractForTenant(contract);
+                                setCreateTenantDialogOpen(true);
+                              }}
+                              disabled={contract.status !== "active"}
+                            >
+                              <Building2 className="h-3 w-3 mr-1" />
+                              테넌트 생성
+                            </Button>
+                          )}
+                        </TableCell>
                         <TableCell>{getPlanBadge(contract.plan)}</TableCell>
                         <TableCell>{contract.contract_amount.toLocaleString()}원</TableCell>
                         <TableCell className="text-sm">
@@ -324,6 +350,16 @@ export default function OperatorContracts() {
         onOpenChange={setDialogOpen}
         contract={selectedContract}
         onSuccess={fetchContracts}
+      />
+
+      <CreateTenantFromContractDialog
+        open={createTenantDialogOpen}
+        onOpenChange={setCreateTenantDialogOpen}
+        contract={contractForTenant}
+        onSuccess={() => {
+          fetchContracts();
+          toast.success("테넌트가 성공적으로 생성되었습니다");
+        }}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
