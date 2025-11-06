@@ -230,11 +230,25 @@ const AdminCoursesIntegrated = () => {
 
   const handleCreateCategory = async () => {
     try {
+      // 폼 검증
+      if (!categoryForm.name.trim()) {
+        toast({
+          title: "오류",
+          description: "분류명을 입력해주세요.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Creating category with data:", categoryForm);
+
       const categoryData: any = {
-        name: categoryForm.name,
-        slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/\s+/g, "-"),
-        description: categoryForm.description,
+        name: categoryForm.name.trim(),
+        slug: categoryForm.slug?.trim() || categoryForm.name.trim().toLowerCase().replace(/\s+/g, "-"),
+        description: categoryForm.description?.trim() || null,
       };
+
+      console.log("Category data to be saved:", categoryData);
 
       if (editingCategory) {
         const { error } = await supabase
@@ -242,16 +256,33 @@ const AdminCoursesIntegrated = () => {
           .update(categoryData)
           .eq("id", editingCategory.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error("Update error:", error);
+          throw error;
+        }
 
         toast({
           title: "성공",
           description: "분류가 수정되었습니다.",
         });
       } else {
-        const { error } = await supabase.from("categories").insert([categoryData]);
+        const { data, error } = await supabase.from("categories").insert([categoryData]).select();
 
-        if (error) throw error;
+        if (error) {
+          console.error("Insert error:", error);
+          // 중복 slug 에러 처리
+          if (error.code === '23505') {
+            toast({
+              title: "오류",
+              description: "이미 존재하는 분류명 또는 슬러그입니다. 다른 이름을 사용해주세요.",
+              variant: "destructive",
+            });
+            return;
+          }
+          throw error;
+        }
+
+        console.log("Category created:", data);
 
         toast({
           title: "성공",
@@ -264,6 +295,7 @@ const AdminCoursesIntegrated = () => {
       fetchData();
       resetCategoryForm();
     } catch (error: any) {
+      console.error("handleCreateCategory error:", error);
       toast({
         title: "오류",
         description: error.message || "분류 저장에 실패했습니다.",
