@@ -4803,6 +4803,10 @@ export type Database = {
         Returns: boolean
       }
       check_tenant_access: { Args: { p_tenant_id: string }; Returns: Json }
+      check_usage_limit_block: {
+        Args: { p_limit_type: string; p_tenant_id: string }
+        Returns: boolean
+      }
       cleanup_expired_impersonation_sessions: {
         Args: never
         Returns: undefined
