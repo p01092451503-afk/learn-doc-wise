@@ -584,7 +584,10 @@ const AdminCoursesIntegrated = () => {
                 }
               }}>
                 <DialogTrigger asChild>
-                  <Button>
+                  <Button onClick={() => {
+                    setEditingCategory(null);
+                    resetCategoryForm();
+                  }}>
                     <Plus className="h-4 w-4 mr-2" />
                     분류 추가
                   </Button>
