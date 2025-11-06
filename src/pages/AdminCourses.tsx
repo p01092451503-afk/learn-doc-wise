@@ -44,10 +44,17 @@ interface Tag {
   slug: string;
 }
 
+interface Teacher {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
 const AdminCourses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
@@ -64,6 +71,7 @@ const AdminCourses = () => {
     price: 0,
     duration_hours: 0,
     category_id: "",
+    instructor_id: "",
     publish_date: "",
   });
 
@@ -84,19 +92,35 @@ const AdminCourses = () => {
 
   const fetchData = async () => {
     try {
-      const [coursesResult, categoriesResult, tagsResult] = await Promise.all([
+      const [coursesResult, categoriesResult, tagsResult, teachersResult] = await Promise.all([
         supabase.from("courses").select("*").order("created_at", { ascending: false }),
         supabase.from("categories").select("*").eq("is_active", true),
         supabase.from("tags").select("*"),
+        supabase
+          .from("user_roles")
+          .select("user_id, profiles(id, full_name, email)")
+          .eq("role", "teacher"),
       ]);
 
       if (coursesResult.error) throw coursesResult.error;
       if (categoriesResult.error) throw categoriesResult.error;
       if (tagsResult.error) throw tagsResult.error;
+      if (teachersResult.error) throw teachersResult.error;
 
       setCourses(coursesResult.data || []);
       setCategories(categoriesResult.data || []);
       setTags(tagsResult.data || []);
+      
+      // Transform teachers data
+      const teachersList = teachersResult.data
+        ?.map((item: any) => ({
+          id: item.user_id,
+          full_name: item.profiles?.full_name || "이름 없음",
+          email: item.profiles?.email || "",
+        }))
+        .filter((t: Teacher) => t.id) || [];
+      
+      setTeachers(teachersList);
     } catch (error: any) {
       toast({
         title: "오류",
@@ -140,8 +164,6 @@ const AdminCourses = () => {
 
   const handleCreateCourse = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
       // slug 생성
       let baseSlug = formData.slug || formData.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
       
@@ -158,7 +180,7 @@ const AdminCourses = () => {
         duration_hours: formData.duration_hours,
         category_id: formData.category_id || null,
         publish_date: formData.publish_date || null,
-        instructor_id: user?.id,
+        instructor_id: formData.instructor_id || null,
       };
 
       if (editingCourse) {
@@ -208,6 +230,7 @@ const AdminCourses = () => {
       price: parseFloat(course.price.toString()),
       duration_hours: course.duration_hours,
       category_id: course.category_id || "",
+      instructor_id: course.instructor_id || "",
       publish_date: course.publish_date ? new Date(course.publish_date).toISOString().slice(0, 16) : "",
     });
     setIsDialogOpen(true);
@@ -299,6 +322,7 @@ const AdminCourses = () => {
       price: 0,
       duration_hours: 0,
       category_id: "",
+      instructor_id: "",
       publish_date: "",
     });
   };
@@ -410,6 +434,22 @@ const AdminCourses = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
+                        <Label>담당 강사 *</Label>
+                        <Select value={formData.instructor_id} onValueChange={(value) => setFormData({ ...formData, instructor_id: value })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="강사를 선택하세요" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {teachers.map((teacher) => (
+                              <SelectItem key={teacher.id} value={teacher.id}>
+                                {teacher.full_name} ({teacher.email})
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
                         <Label>카테고리</Label>
                         <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
                           <SelectTrigger>
@@ -422,7 +462,9 @@ const AdminCourses = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
 
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>난이도</Label>
                         <Select value={formData.level} onValueChange={(value) => setFormData({ ...formData, level: value })}>
@@ -437,9 +479,7 @@ const AdminCourses = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>가격 (원)</Label>
                         <Input
@@ -449,7 +489,9 @@ const AdminCourses = () => {
                           placeholder="0"
                         />
                       </div>
+                    </div>
 
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>총 시간 (시간)</Label>
                         <Input
@@ -459,9 +501,7 @@ const AdminCourses = () => {
                           placeholder="0"
                         />
                       </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>상태</Label>
                         <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
@@ -476,15 +516,15 @@ const AdminCourses = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
 
-                      <div className="space-y-2">
-                        <Label>공개 예약 일시</Label>
-                        <Input
-                          type="datetime-local"
-                          value={formData.publish_date}
-                          onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <Label>공개 예약 일시</Label>
+                      <Input
+                        type="datetime-local"
+                        value={formData.publish_date}
+                        onChange={(e) => setFormData({ ...formData, publish_date: e.target.value })}
+                      />
                     </div>
                   </div>
                   <DialogFooter>

@@ -50,10 +50,17 @@ interface Content {
   course_id: string;
 }
 
+interface Teacher {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
 const AdminCoursesIntegrated = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [contents, setContents] = useState<Content[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [isCourseDialogOpen, setIsCourseDialogOpen] = useState(false);
@@ -75,6 +82,7 @@ const AdminCoursesIntegrated = () => {
     price: 0,
     duration_hours: 0,
     category_id: "",
+    instructor_id: "",
   });
 
   const [categoryForm, setCategoryForm] = useState({
@@ -104,16 +112,32 @@ const AdminCoursesIntegrated = () => {
 
   const fetchData = async () => {
     try {
-      const [coursesResult, categoriesResult] = await Promise.all([
+      const [coursesResult, categoriesResult, teachersResult] = await Promise.all([
         supabase.from("courses").select("*").order("created_at", { ascending: false }),
         supabase.from("categories").select("*").eq("is_active", true),
+        supabase
+          .from("user_roles")
+          .select("user_id, profiles(id, full_name, email)")
+          .eq("role", "teacher"),
       ]);
 
       if (coursesResult.error) throw coursesResult.error;
       if (categoriesResult.error) throw categoriesResult.error;
+      if (teachersResult.error) throw teachersResult.error;
 
       setCourses(coursesResult.data || []);
       setCategories(categoriesResult.data || []);
+      
+      // Transform teachers data
+      const teachersList = teachersResult.data
+        ?.map((item: any) => ({
+          id: item.user_id,
+          full_name: item.profiles?.full_name || "이름 없음",
+          email: item.profiles?.email || "",
+        }))
+        .filter((t: Teacher) => t.id) || [];
+      
+      setTeachers(teachersList);
     } catch (error: any) {
       toast({
         title: "오류",
@@ -146,8 +170,6 @@ const AdminCoursesIntegrated = () => {
 
   const handleCreateCourse = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
       const baseSlug = courseForm.slug || courseForm.title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
       
       const courseData: any = {
@@ -159,7 +181,7 @@ const AdminCoursesIntegrated = () => {
         price: courseForm.price,
         duration_hours: courseForm.duration_hours,
         category_id: courseForm.category_id || null,
-        instructor_id: user?.id,
+        instructor_id: courseForm.instructor_id || null,
       };
 
       if (editingCourse) {
@@ -378,6 +400,7 @@ const AdminCoursesIntegrated = () => {
       price: 0,
       duration_hours: 0,
       category_id: "",
+      instructor_id: "",
     });
   };
 
@@ -686,7 +709,7 @@ const AdminCoursesIntegrated = () => {
                         <DialogTitle>{editingCourse ? "강의 수정" : "새 강의 개설"}</DialogTitle>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
-                        <div className="space-y-2">
+                         <div className="space-y-2">
                           <Label>강의명 *</Label>
                           <Input
                             value={courseForm.title}
@@ -695,18 +718,36 @@ const AdminCoursesIntegrated = () => {
                           />
                         </div>
 
-                        <div className="space-y-2">
-                          <Label>분류 *</Label>
-                          <Select value={courseForm.category_id} onValueChange={(value) => setCourseForm({ ...courseForm, category_id: value })}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="분류 선택" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {categories.map((cat) => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>담당 강사 *</Label>
+                            <Select value={courseForm.instructor_id} onValueChange={(value) => setCourseForm({ ...courseForm, instructor_id: value })}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="강사를 선택하세요" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {teachers.map((teacher) => (
+                                  <SelectItem key={teacher.id} value={teacher.id}>
+                                    {teacher.full_name} ({teacher.email})
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>분류 *</Label>
+                            <Select value={courseForm.category_id} onValueChange={(value) => setCourseForm({ ...courseForm, category_id: value })}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="분류 선택" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {categories.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
 
                         <div className="space-y-2">
@@ -808,6 +849,7 @@ const AdminCoursesIntegrated = () => {
                                   price: parseFloat(course.price.toString()),
                                   duration_hours: course.duration_hours,
                                   category_id: course.category_id || "",
+                                  instructor_id: "",
                                 });
                                 setIsCourseDialogOpen(true);
                               }}
