@@ -11,9 +11,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle, SlidersHorizontal, Users } from "lucide-react";
+import { Building2, Plus, Search, Filter, CreditCard, X, Settings, CheckCircle2, AlertCircle, SlidersHorizontal, Users, ShieldCheck } from "lucide-react";
 import TossPaymentDialog from "@/components/admin/TossPaymentDialog";
 import { EmptyState } from "@/components/operator/EmptyState";
+import { OperatorAccessManagementDialog } from "@/components/operator/OperatorAccessManagementDialog";
 import { cn } from "@/lib/utils";
 
 interface Tenant {
@@ -65,6 +66,7 @@ const OperatorTenants = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
+  const [accessDialogOpen, setAccessDialogOpen] = useState(false);
   const [specDialogOpen, setSpecDialogOpen] = useState(false);
   const [planChangeDialogOpen, setPlanChangeDialogOpen] = useState(false);
   const [featuresDialogOpen, setFeaturesDialogOpen] = useState(false);
@@ -1309,6 +1311,21 @@ const OperatorTenants = () => {
                             size="sm"
                             onClick={() => {
                               setSelectedTenant(tenant);
+                              setAccessDialogOpen(true);
+                            }}
+                            className={cn(
+                              "gap-1.5 h-7 px-2 transition-all hover:scale-105",
+                              "bg-purple-500/10 hover:bg-purple-500/20 border-purple-500/30 text-purple-600"
+                            )}
+                          >
+                            <ShieldCheck className="h-3 w-3" />
+                            <span className="text-xs">권한 관리</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedTenant(tenant);
                               setPaymentDialogOpen(true);
                             }}
                             className={cn(
@@ -2229,6 +2246,16 @@ const OperatorTenants = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Access Management Dialog */}
+      {selectedTenant && (
+        <OperatorAccessManagementDialog
+          open={accessDialogOpen}
+          onOpenChange={setAccessDialogOpen}
+          tenantId={selectedTenant.id}
+          tenantName={selectedTenant.name}
+        />
+      )}
     </OperatorLayout>
   );
 };

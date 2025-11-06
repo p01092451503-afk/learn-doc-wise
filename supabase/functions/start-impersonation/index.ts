@@ -43,6 +43,28 @@ serve(async (req) => {
       throw new Error("Missing required fields: tenant_id, reason");
     }
 
+    // Check if operator has access to this tenant
+    const { data: hasAccess, error: accessError } = await supabaseClient.rpc(
+      "operator_has_tenant_access",
+      {
+        _operator_id: user.id,
+        _tenant_id: tenant_id,
+      }
+    );
+
+    if (accessError) {
+      console.error("Error checking tenant access:", accessError);
+      throw new Error("Failed to verify tenant access");
+    }
+
+    if (!hasAccess) {
+      throw new Error("Unauthorized: You do not have access to this tenant");
+    }
+
+    if (!tenant_id || !reason) {
+      throw new Error("Missing required fields: tenant_id, reason");
+    }
+
     // Generate session token
     const sessionToken = crypto.randomUUID();
     const expiresAt = new Date();
