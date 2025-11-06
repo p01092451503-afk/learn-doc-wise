@@ -83,6 +83,10 @@ const AdminCoursesIntegrated = () => {
     duration_hours: 0,
     category_id: "",
     instructor_id: "",
+    course_type: "vod",
+    live_meeting_url: "",
+    live_meeting_provider: "zoom",
+    live_scheduled_at: "",
   });
 
   const [categoryForm, setCategoryForm] = useState({
@@ -182,6 +186,10 @@ const AdminCoursesIntegrated = () => {
         duration_hours: courseForm.duration_hours,
         category_id: courseForm.category_id || null,
         instructor_id: courseForm.instructor_id || null,
+        course_type: courseForm.course_type,
+        live_meeting_url: courseForm.course_type === 'live' ? courseForm.live_meeting_url : null,
+        live_meeting_provider: courseForm.course_type === 'live' ? courseForm.live_meeting_provider : null,
+        live_scheduled_at: courseForm.course_type === 'live' && courseForm.live_scheduled_at ? courseForm.live_scheduled_at : null,
       };
 
       if (editingCourse) {
@@ -401,6 +409,10 @@ const AdminCoursesIntegrated = () => {
       duration_hours: 0,
       category_id: "",
       instructor_id: "",
+      course_type: "vod",
+      live_meeting_url: "",
+      live_meeting_provider: "zoom",
+      live_scheduled_at: "",
     });
   };
 
@@ -711,7 +723,7 @@ const AdminCoursesIntegrated = () => {
                       <DialogHeader>
                         <DialogTitle>{editingCourse ? "강의 수정" : "새 강의 개설"}</DialogTitle>
                       </DialogHeader>
-                      <div className="space-y-4 py-4">
+                       <div className="space-y-4 py-4">
                          <div className="space-y-2">
                           <Label>강의명 *</Label>
                           <Input
@@ -722,6 +734,19 @@ const AdminCoursesIntegrated = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label>강의 유형 *</Label>
+                            <Select value={courseForm.course_type} onValueChange={(value) => setCourseForm({ ...courseForm, course_type: value })}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="vod">VOD (녹화강의)</SelectItem>
+                                <SelectItem value="live">LIVE (실시간)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+
                           <div className="space-y-2">
                             <Label>담당 강사 *</Label>
                             <Select value={courseForm.instructor_id} onValueChange={(value) => setCourseForm({ ...courseForm, instructor_id: value })}>
@@ -737,21 +762,58 @@ const AdminCoursesIntegrated = () => {
                               </SelectContent>
                             </Select>
                           </div>
-
-                          <div className="space-y-2">
-                            <Label>분류 *</Label>
-                            <Select value={courseForm.category_id} onValueChange={(value) => setCourseForm({ ...courseForm, category_id: value })}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="분류 선택" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {categories.map((cat) => (
-                                  <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
                         </div>
+
+                        <div className="space-y-2">
+                          <Label>분류 *</Label>
+                          <Select value={courseForm.category_id} onValueChange={(value) => setCourseForm({ ...courseForm, category_id: value })}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="분류 선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((cat) => (
+                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {courseForm.course_type === 'live' && (
+                          <>
+                            <div className="space-y-2">
+                              <Label>라이브 미팅 플랫폼 *</Label>
+                              <Select value={courseForm.live_meeting_provider} onValueChange={(value) => setCourseForm({ ...courseForm, live_meeting_provider: value })}>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="zoom">Zoom</SelectItem>
+                                  <SelectItem value="google_meet">Google Meet</SelectItem>
+                                  <SelectItem value="teams">Microsoft Teams</SelectItem>
+                                  <SelectItem value="other">기타</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>라이브 미팅 URL *</Label>
+                              <Input
+                                value={courseForm.live_meeting_url}
+                                onChange={(e) => setCourseForm({ ...courseForm, live_meeting_url: e.target.value })}
+                                placeholder="예: https://zoom.us/j/123456789"
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label>라이브 시작 시간 *</Label>
+                              <Input
+                                type="datetime-local"
+                                value={courseForm.live_scheduled_at}
+                                onChange={(e) => setCourseForm({ ...courseForm, live_scheduled_at: e.target.value })}
+                              />
+                            </div>
+                          </>
+                        )}
 
                         <div className="space-y-2">
                           <Label>설명</Label>
@@ -852,7 +914,11 @@ const AdminCoursesIntegrated = () => {
                                   price: parseFloat(course.price.toString()),
                                   duration_hours: course.duration_hours,
                                   category_id: course.category_id || "",
-                                  instructor_id: "",
+                                  instructor_id: (course as any).instructor_id || "",
+                                  course_type: (course as any).course_type || "vod",
+                                  live_meeting_url: (course as any).live_meeting_url || "",
+                                  live_meeting_provider: (course as any).live_meeting_provider || "zoom",
+                                  live_scheduled_at: (course as any).live_scheduled_at ? new Date((course as any).live_scheduled_at).toISOString().slice(0, 16) : "",
                                 });
                                 setIsCourseDialogOpen(true);
                               }}

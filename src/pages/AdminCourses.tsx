@@ -73,6 +73,10 @@ const AdminCourses = () => {
     category_id: "",
     instructor_id: "",
     publish_date: "",
+    course_type: "vod",
+    live_meeting_url: "",
+    live_meeting_provider: "zoom",
+    live_scheduled_at: "",
   });
 
   const [categoryForm, setCategoryForm] = useState({
@@ -181,6 +185,10 @@ const AdminCourses = () => {
         category_id: formData.category_id || null,
         publish_date: formData.publish_date || null,
         instructor_id: formData.instructor_id || null,
+        course_type: formData.course_type,
+        live_meeting_url: formData.course_type === 'live' ? formData.live_meeting_url : null,
+        live_meeting_provider: formData.course_type === 'live' ? formData.live_meeting_provider : null,
+        live_scheduled_at: formData.course_type === 'live' && formData.live_scheduled_at ? formData.live_scheduled_at : null,
       };
 
       if (editingCourse) {
@@ -232,6 +240,10 @@ const AdminCourses = () => {
       category_id: course.category_id || "",
       instructor_id: course.instructor_id || "",
       publish_date: course.publish_date ? new Date(course.publish_date).toISOString().slice(0, 16) : "",
+      course_type: (course as any).course_type || "vod",
+      live_meeting_url: (course as any).live_meeting_url || "",
+      live_meeting_provider: (course as any).live_meeting_provider || "zoom",
+      live_scheduled_at: (course as any).live_scheduled_at ? new Date((course as any).live_scheduled_at).toISOString().slice(0, 16) : "",
     });
     setIsDialogOpen(true);
   };
@@ -324,6 +336,10 @@ const AdminCourses = () => {
       category_id: "",
       instructor_id: "",
       publish_date: "",
+      course_type: "vod",
+      live_meeting_url: "",
+      live_meeting_provider: "zoom",
+      live_scheduled_at: "",
     });
   };
 
@@ -434,6 +450,19 @@ const AdminCourses = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
+                        <Label>강의 유형 *</Label>
+                        <Select value={formData.course_type} onValueChange={(value) => setFormData({ ...formData, course_type: value })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="vod">VOD (녹화강의)</SelectItem>
+                            <SelectItem value="live">LIVE (실시간)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
                         <Label>담당 강사 *</Label>
                         <Select value={formData.instructor_id} onValueChange={(value) => setFormData({ ...formData, instructor_id: value })}>
                           <SelectTrigger>
@@ -448,7 +477,46 @@ const AdminCourses = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
 
+                    {formData.course_type === 'live' && (
+                      <>
+                        <div className="space-y-2">
+                          <Label>라이브 미팅 플랫폼 *</Label>
+                          <Select value={formData.live_meeting_provider} onValueChange={(value) => setFormData({ ...formData, live_meeting_provider: value })}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="zoom">Zoom</SelectItem>
+                              <SelectItem value="google_meet">Google Meet</SelectItem>
+                              <SelectItem value="teams">Microsoft Teams</SelectItem>
+                              <SelectItem value="other">기타</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>라이브 미팅 URL *</Label>
+                          <Input
+                            value={formData.live_meeting_url}
+                            onChange={(e) => setFormData({ ...formData, live_meeting_url: e.target.value })}
+                            placeholder="예: https://zoom.us/j/123456789"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>라이브 시작 시간 *</Label>
+                          <Input
+                            type="datetime-local"
+                            value={formData.live_scheduled_at}
+                            onChange={(e) => setFormData({ ...formData, live_scheduled_at: e.target.value })}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>카테고리</Label>
                         <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>

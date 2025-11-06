@@ -1048,6 +1048,7 @@ export type Database = {
       courses: {
         Row: {
           category_id: string | null
+          course_type: string
           created_at: string
           description: string | null
           duration_hours: number | null
@@ -1055,6 +1056,9 @@ export type Database = {
           instructor_id: string | null
           is_featured: boolean
           level: Database["public"]["Enums"]["course_level"]
+          live_meeting_provider: string | null
+          live_meeting_url: string | null
+          live_scheduled_at: string | null
           max_students: number | null
           price: number | null
           publish_date: string | null
@@ -1067,6 +1071,7 @@ export type Database = {
         }
         Insert: {
           category_id?: string | null
+          course_type?: string
           created_at?: string
           description?: string | null
           duration_hours?: number | null
@@ -1074,6 +1079,9 @@ export type Database = {
           instructor_id?: string | null
           is_featured?: boolean
           level?: Database["public"]["Enums"]["course_level"]
+          live_meeting_provider?: string | null
+          live_meeting_url?: string | null
+          live_scheduled_at?: string | null
           max_students?: number | null
           price?: number | null
           publish_date?: string | null
@@ -1086,6 +1094,7 @@ export type Database = {
         }
         Update: {
           category_id?: string | null
+          course_type?: string
           created_at?: string
           description?: string | null
           duration_hours?: number | null
@@ -1093,6 +1102,9 @@ export type Database = {
           instructor_id?: string | null
           is_featured?: boolean
           level?: Database["public"]["Enums"]["course_level"]
+          live_meeting_provider?: string | null
+          live_meeting_url?: string | null
+          live_scheduled_at?: string | null
           max_students?: number | null
           price?: number | null
           publish_date?: string | null
