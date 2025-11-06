@@ -333,6 +333,82 @@ const StudentCourses = () => {
           </Card>
         ) : (
           <>
+            {/* 학습 진행 현황 */}
+            <div className="grid gap-6 md:grid-cols-4">
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        {userRole === "admin" ? t("allCoursesAdmin") : t("enrolledCourses")}
+                      </p>
+                      <p className="text-3xl font-bold mt-2">{enrollments.length}</p>
+                    </div>
+                    <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        {t("avgProgress")}
+                      </p>
+                      <p className="text-3xl font-bold mt-2">
+                        {enrollments.length > 0 
+                          ? Math.round(enrollments.reduce((acc, e) => acc + (e.calculated_progress || e.progress || 0), 0) / enrollments.length)
+                          : 0}%
+                      </p>
+                    </div>
+                    <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                      <CheckCircle2 className="h-6 w-6 text-accent" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {isDemo && (
+                <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                        {t("aiLearningAnalysisActive")}
+                        <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
+                      </p>
+                      <p className="text-3xl font-bold mt-2">{t("active")}</p>
+                    </div>
+                      <div className="h-12 w-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <BookOpen className="h-6 w-6 text-primary" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="pt-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">
+                        {t("totalLearningTime")}
+                      </p>
+                      <p className="text-3xl font-bold mt-2">
+                        {enrollments.reduce((acc, e) => acc + (e.courses?.duration_hours || 0), 0)}{t("hours")}
+                      </p>
+                    </div>
+                    <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center">
+                      <Clock className="h-6 w-6 text-secondary" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* 최근 수강 신청 강의 */}
             {!isDemo && recentEnrollments.length > 0 && (
               <div>
@@ -447,82 +523,6 @@ const StudentCourses = () => {
                 </div>
               </div>
             )}
-
-            {/* 학습 진행 현황 */}
-            <div className="grid gap-6 md:grid-cols-4">
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {userRole === "admin" ? t("allCoursesAdmin") : t("enrolledCourses")}
-                      </p>
-                      <p className="text-3xl font-bold mt-2">{enrollments.length}</p>
-                    </div>
-                    <div className="h-12 w-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <BookOpen className="h-6 w-6 text-primary" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                        {t("avgProgress")}
-                      </p>
-                      <p className="text-3xl font-bold mt-2">
-                        {enrollments.length > 0 
-                          ? Math.round(enrollments.reduce((acc, e) => acc + (e.calculated_progress || e.progress || 0), 0) / enrollments.length)
-                          : 0}%
-                      </p>
-                    </div>
-                    <div className="h-12 w-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                      <CheckCircle2 className="h-6 w-6 text-accent" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {isDemo && (
-                <Card className="border-primary/20 shadow-sm hover:shadow-md transition-shadow bg-primary/5">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-                        {t("aiLearningAnalysisActive")}
-                        <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                      </p>
-                      <p className="text-3xl font-bold mt-2">{t("active")}</p>
-                    </div>
-                      <div className="h-12 w-12 bg-primary/20 rounded-xl flex items-center justify-center">
-                        <BookOpen className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
-              <Card className="border-border/50 shadow-sm hover:shadow-md transition-shadow">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {t("totalLearningTime")}
-                      </p>
-                      <p className="text-3xl font-bold mt-2">
-                        {enrollments.reduce((acc, e) => acc + (e.courses?.duration_hours || 0), 0)}{t("hours")}
-                      </p>
-                    </div>
-                    <div className="h-12 w-12 bg-secondary/10 rounded-xl flex items-center justify-center">
-                      <Clock className="h-6 w-6 text-secondary" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
 
             {/* 수강 중인 강의 목록 */}
             <div>
