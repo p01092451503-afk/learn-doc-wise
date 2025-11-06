@@ -93,6 +93,9 @@ const AdminDemo = lazy(() => import("./pages/AdminDemo"));
 const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
+const StudentLiveSession = lazy(() => import("./pages/StudentLiveSession"));
+const TeacherLiveSession = lazy(() => import("./pages/TeacherLiveSession"));
+const AdminLiveSession = lazy(() => import("./pages/AdminLiveSession"));
 
 // Loading component with atom logo animation
 const LoadingFallback = () => <AtomLoader />;
@@ -140,6 +143,7 @@ const AppRoutes = () => {
         <Route path="/student/cart" element={<StudentCart />} />
         <Route path="/student/payment-history" element={<StudentPaymentHistory />} />
         <Route path="/student/points" element={<StudentPoints />} />
+        <Route path="/student/live/:sessionId" element={<StudentLiveSession />} />
         <Route path="/teacher" element={<TeacherDashboard />} />
         <Route path="/teacher/courses" element={<TeacherCourses />} />
         <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
@@ -156,6 +160,7 @@ const AppRoutes = () => {
         <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
         <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
         <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
+        <Route path="/teacher/live/:sessionId" element={<TeacherLiveSession />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/operator" element={<OperatorDashboard />} />
         <Route path="/operator/tenants" element={<OperatorTenants />} />
@@ -191,6 +196,7 @@ const AppRoutes = () => {
         <Route path="/admin/ai-logs" element={<AdminAILogs />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/live/:sessionId" element={<AdminLiveSession />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFail />} />
         <Route path="/tenant/:subdomain" element={<TenantHome />} />

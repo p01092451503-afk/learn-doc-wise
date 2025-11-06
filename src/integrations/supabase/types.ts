@@ -2125,6 +2125,129 @@ export type Database = {
           },
         ]
       }
+      live_chat_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_participants: {
+        Row: {
+          id: string
+          is_online: boolean | null
+          joined_at: string | null
+          left_at: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_online?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_online?: boolean | null
+          joined_at?: string | null
+          left_at?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "live_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_sessions: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          instructor_id: string
+          max_participants: number | null
+          meeting_url: string | null
+          scheduled_at: string
+          started_at: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          instructor_id: string
+          max_participants?: number | null
+          meeting_url?: string | null
+          scheduled_at: string
+          started_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          instructor_id?: string
+          max_participants?: number | null
+          meeting_url?: string | null
+          scheduled_at?: string
+          started_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentoring_relationships: {
         Row: {
           course_id: string | null
