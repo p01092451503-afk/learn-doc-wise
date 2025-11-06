@@ -4,11 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { BookOpen, Clock, CheckCircle2, Lock, Target, Route } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
+import { AtomLoader } from "@/components/AtomLoader";
 
 const mockEnrolledPaths = [
   {
@@ -176,15 +176,7 @@ export default function StudentLearningPath() {
   };
 
   if (loading) {
-    return (
-      <DashboardLayout userRole="student">
-        <div className="space-y-6">
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-64 w-full" />
-          <Skeleton className="h-64 w-full" />
-        </div>
-      </DashboardLayout>
-    );
+    return <AtomLoader />;
   }
 
   return (
