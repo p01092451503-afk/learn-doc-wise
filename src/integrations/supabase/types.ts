@@ -2424,7 +2424,7 @@ export type Database = {
           joined_at: string | null
           metadata: Json | null
           role: Database["public"]["Enums"]["membership_role"]
-          tenant_id: string
+          tenant_id: string | null
           updated_at: string
           user_id: string
         }
@@ -2437,7 +2437,7 @@ export type Database = {
           joined_at?: string | null
           metadata?: Json | null
           role?: Database["public"]["Enums"]["membership_role"]
-          tenant_id: string
+          tenant_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -2450,7 +2450,7 @@ export type Database = {
           joined_at?: string | null
           metadata?: Json | null
           role?: Database["public"]["Enums"]["membership_role"]
-          tenant_id?: string
+          tenant_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -4562,6 +4562,10 @@ export type Database = {
         }
         Returns: string
       }
+      get_user_accessible_tenants: {
+        Args: { _user_id: string }
+        Returns: string[]
+      }
       get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       get_user_tenant_ids: { Args: { _user_id: string }; Returns: string[] }
       has_membership_role: {
@@ -4592,6 +4596,7 @@ export type Database = {
         Returns: boolean
       }
       is_operator: { Args: { _user_id: string }; Returns: boolean }
+      is_platform_operator: { Args: { _user_id: string }; Returns: boolean }
       log_user_activity: {
         Args: {
           p_activity_type: string
