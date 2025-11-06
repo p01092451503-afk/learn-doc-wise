@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,9 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, Clock, User, AlertCircle, Filter, X, TrendingUp, BarChart } from "lucide-react";
+import { Shield, Clock, AlertCircle, Filter, X, TrendingUp, Activity, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Line, Bar } from "recharts";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   LineChart,
   BarChart as RechartsBarChart,
@@ -38,6 +40,30 @@ export default function OperatorImpersonationLogs() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [statsView, setStatsView] = useState<"daily" | "weekly" | "monthly">("daily");
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("operator-theme");
+    return (saved as "dark" | "light") || "dark";
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("operator-theme");
+      setTheme((saved as "dark" | "light") || "dark");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    const interval = setInterval(() => {
+      const saved = localStorage.getItem("operator-theme");
+      if (saved !== theme) {
+        setTheme((saved as "dark" | "light") || "dark");
+      }
+    }, 100);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [theme]);
 
   // Setup real-time subscription for session updates
   useEffect(() => {
@@ -266,93 +292,178 @@ export default function OperatorImpersonationLogs() {
   const expiredSessions = sessions?.filter((s: any) => !s.is_active) || [];
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">대리 로그인 세션 관리</h1>
-          <p className="text-muted-foreground mt-1">
-            운영자의 대리 로그인 세션 및 감사 로그를 관리합니다
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
-          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm font-medium text-green-600">실시간 모니터링 중</span>
-        </div>
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">활성 세션</CardTitle>
-            <Shield className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{activeSessions.length}</div>
-            <p className="text-xs text-muted-foreground">현재 진행 중인 세션</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">만료된 세션</CardTitle>
-            <Clock className="h-4 w-4 text-gray-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{expiredSessions.length}</div>
-            <p className="text-xs text-muted-foreground">종료된 세션 (필터링 범위 내)</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">감사 로그</CardTitle>
-            <AlertCircle className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{auditLogs?.length || 0}</div>
-            <p className="text-xs text-muted-foreground">기록된 이벤트</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Statistics Charts */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              사용 통계
-            </CardTitle>
-            <div className="flex gap-2">
-              <Button
-                variant={statsView === "daily" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatsView("daily")}
-              >
-                일별
-              </Button>
-              <Button
-                variant={statsView === "weekly" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatsView("weekly")}
-              >
-                주별
-              </Button>
-              <Button
-                variant={statsView === "monthly" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatsView("monthly")}
-              >
-                월별
-              </Button>
-            </div>
+    <OperatorLayout>
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className={cn(
+              "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
+              theme === "dark" ? "text-white" : "text-slate-900"
+            )}>
+              <Activity className="h-8 w-8 text-violet-500" />
+              대리 로그인 세션 관리
+            </h1>
+            <p className={cn(
+              "transition-colors",
+              theme === "dark" ? "text-slate-400" : "text-slate-600"
+            )}>운영자의 대리 로그인 세션 및 감사 로그를 관리합니다</p>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <h4 className="text-sm font-medium mb-4">세션 수</h4>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-500/10 border border-green-500/20">
+            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-sm font-medium text-green-600">실시간 모니터링 중</span>
+          </div>
+        </div>
+
+        {/* Statistics Cards */}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>활성 세션</CardTitle>
+              <Shield className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{activeSessions.length}</div>
+              <p className={cn(
+                "text-xs mt-1 transition-colors",
+                theme === "dark" ? "text-slate-500" : "text-slate-600"
+              )}>현재 진행 중인 세션</p>
+            </CardContent>
+          </Card>
+
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>만료된 세션</CardTitle>
+              <Clock className="h-4 w-4 text-gray-600" />
+            </CardHeader>
+            <CardContent>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{expiredSessions.length}</div>
+              <p className={cn(
+                "text-xs mt-1 transition-colors",
+                theme === "dark" ? "text-slate-500" : "text-slate-600"
+              )}>종료된 세션 (필터링 범위 내)</p>
+            </CardContent>
+          </Card>
+
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className={cn(
+                "text-sm font-medium transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>감사 로그</CardTitle>
+              <AlertCircle className="h-4 w-4 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className={cn(
+                "text-2xl font-bold transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>{auditLogs?.length || 0}</div>
+              <p className={cn(
+                "text-xs mt-1 transition-colors",
+                theme === "dark" ? "text-slate-500" : "text-slate-600"
+              )}>기록된 이벤트</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Statistics Charts */}
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" 
+            ? "bg-slate-900/50 border-slate-800" 
+            : "bg-white border-slate-200"
+        )}>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className={cn(
+                "flex items-center gap-2 transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>
+                <TrendingUp className="h-5 w-5 text-violet-500" />
+                사용 통계
+              </CardTitle>
+              <div className="flex gap-2">
+                <Button
+                  variant={statsView === "daily" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStatsView("daily")}
+                  className={cn(
+                    "transition-colors",
+                    statsView === "daily" 
+                      ? "" 
+                      : theme === "dark"
+                      ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                      : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                  )}
+                >
+                  일별
+                </Button>
+                <Button
+                  variant={statsView === "weekly" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStatsView("weekly")}
+                  className={cn(
+                    "transition-colors",
+                    statsView === "weekly" 
+                      ? "" 
+                      : theme === "dark"
+                      ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                      : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                  )}
+                >
+                  주별
+                </Button>
+                <Button
+                  variant={statsView === "monthly" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setStatsView("monthly")}
+                  className={cn(
+                    "transition-colors",
+                    statsView === "monthly" 
+                      ? "" 
+                      : theme === "dark"
+                      ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                      : "border-slate-300 text-slate-700 hover:bg-slate-100"
+                  )}
+                >
+                  월별
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h4 className={cn(
+                  "text-sm font-medium mb-4 transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>세션 수</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <RechartsBarChart data={statsData || []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -378,10 +489,13 @@ export default function OperatorImpersonationLogs() {
                     radius={[8, 8, 0, 0]}
                   />
                 </RechartsBarChart>
-              </ResponsiveContainer>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium mb-4">평균 세션 시간 (분)</h4>
+                </ResponsiveContainer>
+              </div>
+              <div>
+                <h4 className={cn(
+                  "text-sm font-medium mb-4 transition-colors",
+                  theme === "dark" ? "text-slate-300" : "text-slate-700"
+                )}>평균 세션 시간 (분)</h4>
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={statsData || []}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -409,92 +523,130 @@ export default function OperatorImpersonationLogs() {
                     dot={{ fill: 'hsl(var(--primary))' }}
                   />
                 </LineChart>
-              </ResponsiveContainer>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Filters */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              필터
-            </CardTitle>
-            {(searchTerm || statusFilter !== "all" || dateFrom || dateTo) && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="gap-2"
-              >
-                <X className="h-4 w-4" />
-                필터 초기화
-              </Button>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-4">
-            <div className="space-y-2">
-              <Label htmlFor="search">검색</Label>
-              <Input
-                id="search"
-                placeholder="이메일, 테넌트, 사유..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="status">상태</Label>
-              <select
-                id="status"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as any)}
-              >
-                <option value="all">전체</option>
-                <option value="active">활성</option>
-                <option value="expired">만료</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dateFrom">시작 날짜</Label>
-              <Input
-                id="dateFrom"
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dateTo">종료 날짜</Label>
-              <Input
-                id="dateTo"
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Filters */}
+        <Card className={cn(
+          "transition-colors",
+          theme === "dark" 
+            ? "bg-slate-900/50 border-slate-800" 
+            : "bg-white border-slate-200"
+        )}>
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row gap-3 mb-4">
+              <div className="flex-1 relative">
+                <Search className={cn(
+                  "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-500"
+                )} />
+                <Input
+                  placeholder="이메일, 테넌트, 사유 검색..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={cn(
+                    "pl-10 transition-colors",
+                    theme === "dark"
+                      ? "bg-slate-800 border-slate-700 text-white"
+                      : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value: any) => setStatusFilter(value)}
+                >
+                  <SelectTrigger className={cn(
+                    "w-[140px] transition-colors",
+                    theme === "dark"
+                      ? "bg-slate-800 border-slate-700 text-white"
+                      : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}>
+                    <SelectValue placeholder="상태" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">전체</SelectItem>
+                    <SelectItem value="active">활성</SelectItem>
+                    <SelectItem value="expired">만료</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Input
+                  type="date"
+                  placeholder="시작 날짜"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className={cn(
+                    "w-[160px] transition-colors",
+                    theme === "dark"
+                      ? "bg-slate-800 border-slate-700 text-white"
+                      : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
+                />
+                
+                <Input
+                  type="date"
+                  placeholder="종료 날짜"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className={cn(
+                    "w-[160px] transition-colors",
+                    theme === "dark"
+                      ? "bg-slate-800 border-slate-700 text-white"
+                      : "bg-slate-50 border-slate-300 text-slate-900"
+                  )}
+                />
 
-      {/* Tabs for Sessions and Audit Logs */}
-      <Tabs defaultValue="sessions" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="sessions">세션 목록</TabsTrigger>
-          <TabsTrigger value="audit">감사 로그</TabsTrigger>
-        </TabsList>
+                {(searchTerm || statusFilter !== "all" || dateFrom || dateTo) && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFilters}
+                    className={cn(
+                      "gap-2 transition-colors",
+                      theme === "dark"
+                        ? "text-slate-300 hover:bg-slate-800"
+                        : "text-slate-700 hover:bg-slate-100"
+                    )}
+                  >
+                    <X className="h-4 w-4" />
+                    초기화
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <TabsContent value="sessions" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>대리 로그인 세션</CardTitle>
-            </CardHeader>
-            <CardContent>
+        {/* Tabs for Sessions and Audit Logs */}
+        <Tabs defaultValue="sessions" className="space-y-4">
+          <TabsList className={cn(
+            theme === "dark" 
+              ? "bg-slate-800 border-slate-700" 
+              : "bg-slate-100 border-slate-200"
+          )}>
+            <TabsTrigger value="sessions">세션 목록</TabsTrigger>
+            <TabsTrigger value="audit">감사 로그</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="sessions" className="space-y-4">
+            <Card className={cn(
+              "transition-colors",
+              theme === "dark" 
+                ? "bg-slate-900/50 border-slate-800" 
+                : "bg-white border-slate-200"
+            )}>
+              <CardHeader>
+                <CardTitle className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>대리 로그인 세션</CardTitle>
+              </CardHeader>
+              <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -567,9 +719,17 @@ export default function OperatorImpersonationLogs() {
         </TabsContent>
 
         <TabsContent value="audit" className="space-y-4">
-          <Card>
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
             <CardHeader>
-              <CardTitle>감사 로그</CardTitle>
+              <CardTitle className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>감사 로그</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
@@ -620,14 +780,15 @@ export default function OperatorImpersonationLogs() {
                           {log.ip_address || "N/A"}
                         </TableCell>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </TabsContent>
+    </Tabs>
+      </div>
+    </OperatorLayout>
   );
 }
