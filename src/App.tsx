@@ -52,6 +52,7 @@ const AdminTrainingCompletion = lazy(() => import("./pages/admin/AdminTrainingCo
 const AdminGrades = lazy(() => import("./pages/admin/AdminGrades"));
 const AdminManual = lazy(() => import("./pages/admin/AdminManual"));
 const AdminTrainingAllowance = lazy(() => import("./pages/admin/AdminTrainingAllowance"));
+const AdminTenantSettings = lazy(() => import("./pages/admin/AdminTenantSettings"));
 const TeacherTrainingLog = lazy(() => import("./pages/teacher/TeacherTrainingLog"));
 const TeacherSatisfactionSurvey = lazy(() => import("./pages/teacher/TeacherSatisfactionSurvey"));
 const TeacherCounselingLog = lazy(() => import("./pages/teacher/TeacherCounselingLog"));
@@ -201,6 +202,7 @@ const AppRoutes = () => {
         <Route path="/admin/ai-logs" element={<AdminAILogs />} />
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/tenant-settings" element={<AdminTenantSettings />} />
         <Route path="/admin/live/:sessionId" element={<AdminLiveSession />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFail />} />
