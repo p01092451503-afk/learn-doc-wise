@@ -105,6 +105,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [userName, setUserName] = useState<string>("사용자");
   const [hideHrdFeatures, setHideHrdFeatures] = useState(false);
+  const [isLoadingHrdSetting, setIsLoadingHrdSetting] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -251,6 +252,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       }
       
       try {
+        setIsLoadingHrdSetting(true);
         console.log('[DashboardLayout] Fetching HRD settings...');
         const { data, error } = await supabase
           .from('system_settings')
@@ -260,6 +262,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         
         if (error) {
           console.error('[DashboardLayout] Error fetching HRD settings:', error);
+          setIsLoadingHrdSetting(false);
           return;
         }
         
@@ -273,8 +276,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         } else {
           console.log('[DashboardLayout] No HRD setting found, defaulting to false');
         }
+        setIsLoadingHrdSetting(false);
       } catch (error) {
         console.error('[DashboardLayout] Error:', error);
+        setIsLoadingHrdSetting(false);
       }
     };
     
@@ -282,6 +287,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   }, [isDemoMode]);
 
   useEffect(() => {
+    // HRD 설정 로딩 중이면 메뉴 업데이트 대기
+    if (isLoadingHrdSetting) {
+      console.log('[DashboardLayout] Waiting for HRD settings to load...');
+      return;
+    }
+    
     // CRITICAL: Always use default menu items to ensure HRD menus are visible
     // Database menu_order is outdated and doesn't include new HRD menus
     const items = getDefaultMenuItems();
@@ -297,7 +308,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     console.log('[DashboardLayout] Menu items after HRD filter:', filteredItems.length);
     
     setMenuItems(filteredItems);
-  }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
+  }, [effectiveUserRole, isDemoMode, hideHrdFeatures, isLoadingHrdSetting]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
