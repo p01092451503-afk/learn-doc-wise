@@ -299,50 +299,6 @@ const OperatorSettings = () => {
           </CardContent>
         </Card>
 
-        {/* HRD Features Visibility */}
-        <Card className={cn(
-          "transition-colors",
-          theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
-        )}>
-          <CardHeader>
-            <CardTitle className={cn(
-              "flex items-center gap-2 transition-colors",
-              theme === "dark" ? "text-white" : "text-slate-900"
-            )}>
-              <EyeOff className="h-5 w-5" />
-              HRD 기능 표시 설정
-            </CardTitle>
-            <CardDescription className={cn(
-              "transition-colors",
-              theme === "dark" ? "text-slate-400" : "text-slate-600"
-            )}>모든 사용자의 메뉴에서 HRD 관련 기능을 숨길 수 있습니다</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className={cn(
-              "flex items-center justify-between p-4 rounded-lg border transition-colors",
-              theme === "dark" ? "bg-slate-800/50 border-slate-700" : "bg-slate-50 border-slate-300"
-            )}>
-              <div className="space-y-1">
-                <h4 className={cn(
-                  "text-sm font-medium transition-colors",
-                  theme === "dark" ? "text-white" : "text-slate-900"
-                )}>HRD 기능 숨김</h4>
-                <p className={cn(
-                  "text-xs transition-colors",
-                  theme === "dark" ? "text-slate-400" : "text-slate-600"
-                )}>
-                  활성화 시 출석 관리, 훈련일지, 만족도 조사, 상담일지 등<br />
-                  HRD 배지가 붙은 모든 메뉴가 숨겨집니다
-                </p>
-              </div>
-              <Switch
-                checked={hideHrdFeatures}
-                onCheckedChange={setHideHrdFeatures}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
         {/* API Configuration */}
         <Card className={cn(
           "transition-colors",
