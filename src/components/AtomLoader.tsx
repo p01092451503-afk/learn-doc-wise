@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import atomLogo from "@/assets/atom-logo.png";
 
 const loadingMessages = [
   "잠시만 기다려주세요...",
@@ -23,30 +22,21 @@ export const AtomLoader = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-background z-50">
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative">
-          {/* Pulsing outer glow */}
-          <div className="absolute inset-0 animate-ping opacity-30">
-            <img 
-              src={atomLogo} 
-              alt="Loading" 
-              className="w-24 h-24 object-contain"
-            />
+      <div className="flex flex-col items-center gap-8">
+        {/* Loading dots with enhanced animations */}
+        <div className="flex gap-4 items-center">
+          <div className="relative">
+            <div className="w-6 h-6 rounded-full bg-primary animate-[bounce_1s_ease-in-out_infinite]" style={{ animationDelay: '0ms' }} />
+            <div className="absolute inset-0 w-6 h-6 rounded-full bg-primary/30 animate-ping" style={{ animationDelay: '0ms' }} />
           </div>
-          
-          {/* Main logo with pulse */}
-          <img 
-            src={atomLogo} 
-            alt="Loading" 
-            className="w-24 h-24 object-contain relative animate-pulse"
-          />
-        </div>
-        
-        {/* Loading dots */}
-        <div className="flex gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="relative">
+            <div className="w-6 h-6 rounded-full bg-primary animate-[bounce_1s_ease-in-out_infinite]" style={{ animationDelay: '200ms' }} />
+            <div className="absolute inset-0 w-6 h-6 rounded-full bg-primary/30 animate-ping" style={{ animationDelay: '200ms' }} />
+          </div>
+          <div className="relative">
+            <div className="w-6 h-6 rounded-full bg-primary animate-[bounce_1s_ease-in-out_infinite]" style={{ animationDelay: '400ms' }} />
+            <div className="absolute inset-0 w-6 h-6 rounded-full bg-primary/30 animate-ping" style={{ animationDelay: '400ms' }} />
+          </div>
         </div>
 
         {/* Loading message */}
