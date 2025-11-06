@@ -230,18 +230,18 @@ const AdminCoursesIntegrated = () => {
   };
 
   const handleCreateCategory = async () => {
-    if (isSubmitting) return; // 중복 클릭 방지
+    if (isSubmitting) return;
     
     try {
       setIsSubmitting(true);
       
-      // 폼 검증
       if (!categoryForm.name.trim()) {
         toast({
           title: "오류",
           description: "분류명을 입력해주세요.",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
 
@@ -249,6 +249,7 @@ const AdminCoursesIntegrated = () => {
         name: categoryForm.name.trim(),
         slug: categoryForm.slug?.trim() || categoryForm.name.trim().toLowerCase().replace(/\s+/g, "-"),
         description: categoryForm.description?.trim() || null,
+        is_active: true,
       };
 
       if (editingCategory) {
@@ -261,9 +262,10 @@ const AdminCoursesIntegrated = () => {
           if (error.code === '23505') {
             toast({
               title: "중복 오류",
-              description: "이미 존재하는 분류명 또는 슬러그입니다. 다른 이름을 사용해주세요.",
+              description: `'${categoryForm.name.trim()}' 분류명이 이미 존재합니다. 다른 이름을 사용해주세요.`,
               variant: "destructive",
             });
+            setIsSubmitting(false);
             return;
           }
           throw error;
@@ -274,7 +276,10 @@ const AdminCoursesIntegrated = () => {
           description: "분류가 수정되었습니다.",
         });
       } else {
-        const { data, error } = await supabase.from("categories").insert([categoryData]).select();
+        const { data, error } = await supabase
+          .from("categories")
+          .insert([categoryData])
+          .select();
 
         if (error) {
           if (error.code === '23505') {
@@ -283,6 +288,7 @@ const AdminCoursesIntegrated = () => {
               description: `'${categoryForm.name.trim()}' 분류명이 이미 존재합니다. 다른 이름을 사용해주세요.`,
               variant: "destructive",
             });
+            setIsSubmitting(false);
             return;
           }
           throw error;
@@ -296,8 +302,8 @@ const AdminCoursesIntegrated = () => {
 
       setIsCategoryDialogOpen(false);
       setEditingCategory(null);
-      fetchData();
       resetCategoryForm();
+      await fetchData();
     } catch (error: any) {
       toast({
         title: "오류",

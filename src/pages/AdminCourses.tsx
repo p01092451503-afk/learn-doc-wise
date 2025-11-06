@@ -274,18 +274,18 @@ const AdminCourses = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCreateCategory = async () => {
-    if (isSubmitting) return; // 중복 클릭 방지
+    if (isSubmitting) return;
     
     try {
       setIsSubmitting(true);
       
-      // 폼 검증
       if (!categoryForm.name.trim()) {
         toast({
           title: "오류",
           description: "카테고리명을 입력해주세요.",
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
 
@@ -293,6 +293,7 @@ const AdminCourses = () => {
         name: categoryForm.name.trim(),
         slug: categoryForm.slug?.trim() || categoryForm.name.trim().toLowerCase().replace(/\s+/g, "-"),
         description: categoryForm.description?.trim() || null,
+        is_active: true,
       };
 
       const { data, error } = await supabase.from("categories").insert([categoryData]).select();
@@ -304,6 +305,7 @@ const AdminCourses = () => {
             description: `'${categoryForm.name.trim()}' 카테고리명이 이미 존재합니다. 다른 이름을 사용해주세요.`,
             variant: "destructive",
           });
+          setIsSubmitting(false);
           return;
         }
         throw error;
@@ -315,8 +317,8 @@ const AdminCourses = () => {
       });
 
       setIsCategoryDialogOpen(false);
-      fetchData();
       setCategoryForm({ name: "", slug: "", description: "" });
+      await fetchData();
     } catch (error: any) {
       toast({
         title: "오류",
