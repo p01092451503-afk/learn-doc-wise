@@ -66,8 +66,11 @@ export async function resolveTenant(): Promise<Tenant | null> {
         }
       }
 
-      // Priority 2: Custom domain lookup
-      if (!tenant && !hostname.includes('localhost') && !hostname.includes('127.0.0.1')) {
+      // Priority 2: Custom domain lookup (skip for main domain atomlms.kr)
+      if (!tenant && 
+          !hostname.includes('localhost') && 
+          !hostname.includes('127.0.0.1') &&
+          hostname !== 'atomlms.kr') {
         const { data: domainData } = await supabase
           .from('tenant_domains')
           .select('tenant_id, tenants(*)')
