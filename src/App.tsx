@@ -7,6 +7,7 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { UserProvider } from "./contexts/UserContext";
 import { AtomLoader } from "./components/AtomLoader";
+import { ImpersonationBanner } from "./components/operator/ImpersonationBanner";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
@@ -228,6 +229,7 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ImpersonationBanner />
               <ScrollToTop />
               <AppRoutes />
             </BrowserRouter>

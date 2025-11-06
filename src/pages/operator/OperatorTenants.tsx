@@ -280,6 +280,47 @@ const OperatorTenants = () => {
     }
   };
 
+  const handleStartImpersonation = async (tenant: Tenant, reason: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("인증되지 않았습니다.");
+
+      const { data, error } = await supabase.functions.invoke("start-impersonation", {
+        body: {
+          tenant_id: tenant.id,
+          reason: reason,
+          duration_hours: 2,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "가장 세션 시작",
+        description: `${tenant.name}에 대한 가장 세션이 시작되었습니다. 2시간 후 자동 종료됩니다.`,
+      });
+
+      // Store impersonation session in localStorage for UI indication
+      localStorage.setItem("impersonation_session", JSON.stringify({
+        session_id: data.session.id,
+        tenant_id: tenant.id,
+        tenant_name: tenant.name,
+        started_at: new Date().toISOString(),
+      }));
+
+      // Reload to apply impersonation context
+      setTimeout(() => {
+        window.location.href = `/tenant/${tenant.subdomain}`;
+      }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "오류",
+        description: error.message || "가장 세션 시작에 실패했습니다.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -1248,6 +1289,21 @@ const OperatorTenants = () => {
                               차단
                             </Button>
                           )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const reason = prompt("가장 세션 사유를 입력하세요:");
+                              if (reason) handleStartImpersonation(tenant, reason);
+                            }}
+                            className={cn(
+                              "gap-1 transition-colors",
+                              theme === "dark" ? "border-violet-700 text-violet-400 hover:bg-violet-900/20" : "border-violet-300 text-violet-600 hover:bg-violet-50"
+                            )}
+                          >
+                            <Users className="h-3 w-3" />
+                            <span className="text-xs">가장</span>
+                          </Button>
                           <Button
                             variant="outline"
                             size="sm"

@@ -1741,6 +1741,62 @@ export type Database = {
         }
         Relationships: []
       }
+      impersonation_sessions: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          expires_at: string
+          id: string
+          ip_address: unknown
+          is_active: boolean
+          operator_id: string
+          reason: string
+          session_token: string
+          started_at: string
+          target_tenant_id: string
+          target_user_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown
+          is_active?: boolean
+          operator_id: string
+          reason: string
+          session_token: string
+          started_at?: string
+          target_tenant_id: string
+          target_user_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown
+          is_active?: boolean
+          operator_id?: string
+          reason?: string
+          session_token?: string
+          started_at?: string
+          target_tenant_id?: string
+          target_user_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "impersonation_sessions_target_tenant_id_fkey"
+            columns: ["target_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learner_risk_analysis: {
         Row: {
           course_id: string | null
@@ -4549,6 +4605,10 @@ export type Database = {
         Returns: boolean
       }
       check_tenant_access: { Args: { p_tenant_id: string }; Returns: Json }
+      cleanup_expired_impersonation_sessions: {
+        Args: never
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           p_action_url?: string
