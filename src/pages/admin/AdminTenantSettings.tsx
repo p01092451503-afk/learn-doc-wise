@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/UserContext";
+import { useQueryClient } from "@tanstack/react-query";
 import { 
   Building2, 
   CreditCard, 
@@ -47,7 +48,8 @@ const AdminTenantSettings = () => {
   const [showPlanDialog, setShowPlanDialog] = useState(false);
   const [creatingTestData, setCreatingTestData] = useState(false);
   const { toast } = useToast();
-  const { tenantId, user, refetch: refetchUser } = useUser();
+  const { tenantId, user } = useUser();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (tenantId) {
@@ -162,11 +164,12 @@ const AdminTenantSettings = () => {
         description: "페이지를 새로고침합니다...",
       });
 
-      // UserContext 새로고침
+      // QueryClient 캐시 무효화 후 리로드
+      await queryClient.invalidateQueries({ queryKey: ['userWithRole'] });
+      
       setTimeout(() => {
-        refetchUser();
         window.location.reload();
-      }, 1000);
+      }, 500);
 
     } catch (error: any) {
       console.error("Error creating test data:", error);

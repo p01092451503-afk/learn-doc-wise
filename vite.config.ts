@@ -29,14 +29,7 @@ export default defineConfig(({ mode }) => ({
     },
     chunkSizeWarningLimit: 1000,
     sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'],
-      },
-    },
+    minify: 'esbuild',
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
