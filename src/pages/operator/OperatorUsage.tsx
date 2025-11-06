@@ -7,12 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { HardDrive, Database, Cpu, Users, Search, RefreshCw, X } from "lucide-react";
+import { HardDrive, Database, Cpu, Users, Search, RefreshCw, X, Download, Filter, TrendingUp, Activity } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { EmptyState } from "@/components/operator/EmptyState";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface TenantUsage {
   tenant_id: string;
@@ -23,15 +25,27 @@ interface TenantUsage {
   ai_tokens_used: number;
   bandwidth_gb: number;
   metric_date: string;
+  active_users?: number;
+}
+
+interface UsageTrend {
+  date: string;
+  storage: number;
+  tokens: number;
+  bandwidth: number;
 }
 
 const OperatorUsage = () => {
   const [usageData, setUsageData] = useState<TenantUsage[]>([]);
   const [filteredData, setFilteredData] = useState<TenantUsage[]>([]);
+  const [usageTrends, setUsageTrends] = useState<UsageTrend[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<string>("7");
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [totalActiveUsers, setTotalActiveUsers] = useState(0);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
     return (saved as "dark" | "light") || "dark";
@@ -60,11 +74,13 @@ const OperatorUsage = () => {
 
   useEffect(() => {
     fetchUsageData();
-  }, []);
+    fetchUsageTrends();
+    fetchActiveUsers();
+  }, [dateRange]);
 
   useEffect(() => {
     filterData();
-  }, [usageData, searchQuery]);
+  }, [usageData, searchQuery, statusFilter]);
 
   useEffect(() => {
     if (autoRefresh) {
@@ -77,24 +93,73 @@ const OperatorUsage = () => {
   }, [autoRefresh]);
 
   const filterData = () => {
-    if (!searchQuery) {
-      setFilteredData(usageData);
-      return;
+    let filtered = usageData;
+
+    // Search filter
+    if (searchQuery) {
+      filtered = filtered.filter((usage) =>
+        usage.tenant_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
 
-    const filtered = usageData.filter((usage) =>
-      usage.tenant_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((usage) => {
+        const percentage = getStoragePercentage(usage.storage_used_gb, usage.max_storage_gb);
+        const status = getStorageStatus(percentage);
+        return status === statusFilter;
+      });
+    }
+
     setFilteredData(filtered);
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchUsageData();
+    await Promise.all([fetchUsageData(), fetchUsageTrends(), fetchActiveUsers()]);
     setRefreshing(false);
     toast({
       title: "새로고침 완료",
       description: "사용량 데이터가 업데이트되었습니다.",
+    });
+  };
+
+  const handleExportCSV = () => {
+    const headers = ["고객사", "학생 수", "활성 사용자", "스토리지(GB)", "최대 스토리지(GB)", "AI 토큰", "대역폭(GB)", "상태", "날짜"];
+    const rows = filteredData.map((usage) => {
+      const percentage = getStoragePercentage(usage.storage_used_gb, usage.max_storage_gb);
+      const status = getStorageStatus(percentage);
+      return [
+        usage.tenant_name,
+        usage.student_count,
+        usage.active_users || 0,
+        usage.storage_used_gb.toFixed(2),
+        usage.max_storage_gb,
+        usage.ai_tokens_used,
+        usage.bandwidth_gb.toFixed(2),
+        status === "critical" ? "주의" : status === "warning" ? "경고" : "정상",
+        usage.metric_date,
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `usage-report-${new Date().toISOString().split("T")[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "내보내기 완료",
+      description: "사용량 리포트가 CSV 파일로 다운로드되었습니다.",
     });
   };
 
@@ -122,11 +187,18 @@ const OperatorUsage = () => {
       });
 
       const usage: TenantUsage[] = [];
-      latestMetrics.forEach((metric) => {
-        const tenant = tenants?.find((t) => t.id === metric.tenant_id);
+      for (const [tenantId, metric] of latestMetrics) {
+        const tenant = tenants?.find((t) => t.id === tenantId);
         if (tenant) {
+          // Fetch active users count (users who logged in within last 7 days)
+          const { count: activeCount } = await supabase
+            .from("memberships")
+            .select("user_id", { count: "exact", head: true })
+            .eq("tenant_id", tenantId)
+            .eq("is_active", true);
+
           usage.push({
-            tenant_id: metric.tenant_id,
+            tenant_id: tenantId,
             tenant_name: tenant.name,
             student_count: metric.student_count,
             storage_used_gb: metric.storage_used_gb,
@@ -134,9 +206,10 @@ const OperatorUsage = () => {
             ai_tokens_used: metric.ai_tokens_used,
             bandwidth_gb: metric.bandwidth_gb,
             metric_date: metric.metric_date,
+            active_users: activeCount || 0,
           });
         }
-      });
+      }
 
       setUsageData(usage);
     } catch (error: any) {
@@ -147,6 +220,59 @@ const OperatorUsage = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUsageTrends = async () => {
+    try {
+      const daysAgo = parseInt(dateRange);
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - daysAgo);
+
+      const { data: metrics, error } = await supabase
+        .from("usage_metrics")
+        .select("metric_date, storage_used_gb, ai_tokens_used, bandwidth_gb")
+        .gte("metric_date", startDate.toISOString().split("T")[0])
+        .order("metric_date", { ascending: true });
+
+      if (error) throw error;
+
+      // Aggregate by date
+      const trendMap = new Map<string, { storage: number; tokens: number; bandwidth: number }>();
+      metrics?.forEach((metric) => {
+        const existing = trendMap.get(metric.metric_date) || { storage: 0, tokens: 0, bandwidth: 0 };
+        trendMap.set(metric.metric_date, {
+          storage: existing.storage + metric.storage_used_gb,
+          tokens: existing.tokens + metric.ai_tokens_used,
+          bandwidth: existing.bandwidth + metric.bandwidth_gb,
+        });
+      });
+
+      const trends: UsageTrend[] = Array.from(trendMap.entries()).map(([date, values]) => ({
+        date,
+        storage: parseFloat(values.storage.toFixed(2)),
+        tokens: Math.round(values.tokens / 1000), // Convert to K
+        bandwidth: parseFloat(values.bandwidth.toFixed(2)),
+      }));
+
+      setUsageTrends(trends);
+    } catch (error: any) {
+      console.error("Failed to fetch usage trends:", error);
+    }
+  };
+
+  const fetchActiveUsers = async () => {
+    try {
+      const { count, error } = await supabase
+        .from("memberships")
+        .select("user_id", { count: "exact", head: true })
+        .eq("is_active", true)
+        .not("tenant_id", "is", null);
+
+      if (error) throw error;
+      setTotalActiveUsers(count || 0);
+    } catch (error: any) {
+      console.error("Failed to fetch active users:", error);
     }
   };
 
@@ -169,15 +295,15 @@ const OperatorUsage = () => {
               "text-3xl font-bold mb-2 transition-colors flex items-center gap-3",
               theme === "dark" ? "text-white" : "text-slate-900"
             )}>
-              <HardDrive className="h-8 w-8 text-violet-500" />
-              사용량 관리
+              <Activity className="h-8 w-8 text-violet-500" />
+              사용량 모니터링
             </h1>
             <p className={cn(
               "transition-colors",
               theme === "dark" ? "text-slate-400" : "text-slate-600"
-            )}>전체 고객사의 리소스 사용량을 모니터링합니다</p>
+            )}>전체 고객사의 실시간 리소스 사용량 및 활성 사용자를 모니터링합니다</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <Switch
                 id="auto-refresh"
@@ -191,9 +317,23 @@ const OperatorUsage = () => {
                   theme === "dark" ? "text-slate-300" : "text-slate-700"
                 )}
               >
-                자동 새로고침 (30초)
+                자동 새로고침
               </Label>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportCSV}
+              className={cn(
+                "gap-2 transition-colors",
+                theme === "dark"
+                  ? "border-slate-700 text-slate-300 hover:bg-slate-800"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-100"
+              )}
+            >
+              <Download className="h-4 w-4" />
+              내보내기
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -234,6 +374,12 @@ const OperatorUsage = () => {
               )}>
                 {usageData.reduce((sum, t) => sum + t.student_count, 0).toLocaleString()}
               </div>
+              <p className={cn(
+                "text-xs mt-1 transition-colors",
+                theme === "dark" ? "text-slate-500" : "text-slate-600"
+              )}>
+                활성: {totalActiveUsers.toLocaleString()}
+              </p>
             </CardContent>
           </Card>
 
@@ -307,7 +453,7 @@ const OperatorUsage = () => {
           </Card>
         </div>
 
-        {/* Search Section */}
+        {/* Filters and Search */}
         <Card className={cn(
           "transition-colors",
           theme === "dark" 
@@ -315,7 +461,7 @@ const OperatorUsage = () => {
             : "bg-white border-slate-200"
         )}>
           <CardContent className="pt-6">
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1 relative">
                 <Search className={cn(
                   "absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors",
@@ -333,11 +479,48 @@ const OperatorUsage = () => {
                   )}
                 />
               </div>
-              {searchQuery && (
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className={cn(
+                  "w-full sm:w-[180px] transition-colors",
+                  theme === "dark"
+                    ? "bg-slate-800 border-slate-700 text-white"
+                    : "bg-slate-50 border-slate-300 text-slate-900"
+                )}>
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="상태 필터" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">전체 상태</SelectItem>
+                  <SelectItem value="healthy">정상</SelectItem>
+                  <SelectItem value="warning">경고</SelectItem>
+                  <SelectItem value="critical">주의</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={dateRange} onValueChange={setDateRange}>
+                <SelectTrigger className={cn(
+                  "w-full sm:w-[180px] transition-colors",
+                  theme === "dark"
+                    ? "bg-slate-800 border-slate-700 text-white"
+                    : "bg-slate-50 border-slate-300 text-slate-900"
+                )}>
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="기간" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">최근 7일</SelectItem>
+                  <SelectItem value="14">최근 14일</SelectItem>
+                  <SelectItem value="30">최근 30일</SelectItem>
+                  <SelectItem value="90">최근 90일</SelectItem>
+                </SelectContent>
+              </Select>
+              {(searchQuery || statusFilter !== "all") && (
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setStatusFilter("all");
+                  }}
                   className={cn(
                     "transition-colors",
                     theme === "dark"
@@ -351,6 +534,80 @@ const OperatorUsage = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Usage Trends Chart */}
+        {usageTrends.length > 0 && (
+          <Card className={cn(
+            "transition-colors",
+            theme === "dark" 
+              ? "bg-slate-900/50 border-slate-800" 
+              : "bg-white border-slate-200"
+          )}>
+            <CardHeader>
+              <CardTitle className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-white" : "text-slate-900"
+              )}>사용량 추이</CardTitle>
+              <CardDescription className={cn(
+                "transition-colors",
+                theme === "dark" ? "text-slate-400" : "text-slate-600"
+              )}>최근 {dateRange}일간의 전체 사용량 변화</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={usageTrends}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme === "dark" ? "#334155" : "#e2e8f0"} />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke={theme === "dark" ? "#94a3b8" : "#64748b"}
+                    tick={{ fill: theme === "dark" ? "#94a3b8" : "#64748b" }}
+                  />
+                  <YAxis 
+                    stroke={theme === "dark" ? "#94a3b8" : "#64748b"}
+                    tick={{ fill: theme === "dark" ? "#94a3b8" : "#64748b" }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: theme === "dark" ? "#1e293b" : "#ffffff",
+                      border: `1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}`,
+                      borderRadius: "8px",
+                      color: theme === "dark" ? "#ffffff" : "#000000"
+                    }}
+                  />
+                  <Legend 
+                    wrapperStyle={{
+                      color: theme === "dark" ? "#94a3b8" : "#64748b"
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="storage" 
+                    stroke="#8b5cf6" 
+                    strokeWidth={2}
+                    name="스토리지 (GB)"
+                    dot={{ fill: "#8b5cf6" }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="tokens" 
+                    stroke="#06b6d4" 
+                    strokeWidth={2}
+                    name="AI 토큰 (K)"
+                    dot={{ fill: "#06b6d4" }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="bandwidth" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    name="대역폭 (GB)"
+                    dot={{ fill: "#10b981" }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Usage Table */}
         <Card className={cn(
@@ -407,6 +664,10 @@ const OperatorUsage = () => {
                     <TableHead className={cn(
                       "transition-colors",
                       theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>활성 사용자</TableHead>
+                    <TableHead className={cn(
+                      "transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
                     )}>스토리지</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
@@ -443,6 +704,15 @@ const OperatorUsage = () => {
                           "transition-colors",
                           theme === "dark" ? "text-slate-400" : "text-slate-600"
                         )}>{usage.student_count}</TableCell>
+                        <TableCell className={cn(
+                          "transition-colors",
+                          theme === "dark" ? "text-slate-400" : "text-slate-600"
+                        )}>
+                          <div className="flex items-center gap-2">
+                            <Activity className="h-4 w-4 text-green-500" />
+                            {usage.active_users || 0}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div className="space-y-1">
                             <div className={cn(
