@@ -248,7 +248,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: signupEmail,
         password: signupPassword,
         options: {
@@ -276,13 +276,31 @@ const Auth = () => {
       } else {
         toast({
           title: "회원가입 성공",
-          description: "가입이 완료되었습니다. 로그인해주세요.",
+          description: "가입이 완료되었습니다.",
         });
-        // Clear signup form
-        setSignupName("");
-        setSignupEmail("");
-        setSignupPassword("");
-        setSignupConfirm("");
+        
+        // Check if there's a redirect parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect');
+        
+        if (redirectUrl) {
+          // If session exists (auto-confirm enabled), redirect immediately
+          if (data.session) {
+            navigate(redirectUrl);
+          } else {
+            // Email confirmation required
+            toast({
+              title: "이메일 확인 필요",
+              description: "이메일 확인 후 링크를 클릭해주세요.",
+            });
+          }
+        } else {
+          // Clear signup form
+          setSignupName("");
+          setSignupEmail("");
+          setSignupPassword("");
+          setSignupConfirm("");
+        }
       }
     } catch (error) {
       toast({

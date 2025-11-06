@@ -694,6 +694,8 @@ const PricingCard = ({
   buttonVariant = "outline",
   isPopular = false 
 }: PricingCardProps) => {
+  const planSlug = title.toLowerCase().replace(/\s+/g, '');
+  
   return (
     <div className={`relative rounded-2xl bg-card p-8 shadow-premium transition-all duration-500 hover:shadow-elegant ${
       isPopular 
@@ -723,7 +725,7 @@ const PricingCard = ({
             <p className="text-xs text-muted-foreground mt-2">{aiTokens}</p>
           </div>
 
-          <Link to="/auth">
+          <Link to={`/onboarding?plan=${planSlug}`}>
             <Button 
               variant={buttonVariant} 
               className="w-full"

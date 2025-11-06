@@ -90,6 +90,7 @@ const OperatorUpdates = lazy(() => import("./pages/operator/OperatorUpdates"));
 const OperatorLicense = lazy(() => import("./pages/operator/OperatorLicense"));
 const OperatorResources = lazy(() => import("./pages/operator/OperatorResources"));
 const OperatorImpersonationLogs = lazy(() => import("./pages/operator/OperatorImpersonationLogs"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
 const FeaturesShowcase = lazy(() => import("./pages/FeaturesShowcase"));
 const AdminDemo = lazy(() => import("./pages/AdminDemo"));
 const TenantHome = lazy(() => import("./pages/TenantHome"));
@@ -123,6 +124,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/features-detail" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<FeaturesShowcase />} />
         <Route path="/main" element={<PublicMain />} />
         <Route path="/courses" element={<PublicCourses />} />
