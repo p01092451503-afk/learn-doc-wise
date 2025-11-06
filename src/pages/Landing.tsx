@@ -101,8 +101,8 @@ const Landing = () => {
         </div>
       </header>
 
-      {/* Feature Showcase Animation */}
-      <section className="py-16 bg-background" aria-labelledby="feature-showcase-heading">
+      {/* Feature Showcase Animation - 숨김 처리 (복구 가능) */}
+      {/* <section className="py-16 bg-background" aria-labelledby="feature-showcase-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 id="feature-showcase-heading" className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
@@ -114,7 +114,7 @@ const Landing = () => {
           </div>
           <FeatureShowcaseAnimation />
         </div>
-      </section>
+      </section> */}
 
       {/* Features Section */}
       <section className="py-10 bg-muted/30" aria-labelledby="features-heading">
