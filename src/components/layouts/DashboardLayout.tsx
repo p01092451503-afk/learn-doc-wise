@@ -395,20 +395,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link 
-                to={effectiveUserRole === "operator" ? "/operator" : effectiveUserRole === "admin" ? "/admin" : effectiveUserRole === "teacher" ? "/teacher" : "/student"} 
-                className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0"
-              >
-                <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
-                <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="bg-primary text-primary-foreground border-primary">
-              <p>아톰 안녕?</p>
-            </TooltipContent>
-          </Tooltip>
+          <Link 
+            to={effectiveUserRole === "operator" ? "/operator" : effectiveUserRole === "admin" ? "/admin" : effectiveUserRole === "teacher" ? "/teacher" : "/student"} 
+            className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0 hover:opacity-80 transition-opacity"
+          >
+            <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
+            <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
+          </Link>
 
 
           <div className="flex items-center gap-1.5 md:gap-3 ml-auto">
