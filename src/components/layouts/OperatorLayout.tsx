@@ -28,6 +28,7 @@ import {
   FileText,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
+import atomLogo from "@/assets/atom-logo.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -167,13 +168,18 @@ const OperatorLayout = ({ children }: OperatorLayoutProps) => {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to="/operator" className="flex items-center gap-2 group">
-                  <div>
+                <Link to="/operator" className="flex items-center gap-3 group">
+                  <img 
+                    src={atomLogo} 
+                    alt="Atom Logo" 
+                    className="h-8 w-8 object-contain pointer-events-none"
+                  />
+                  <div className="flex items-center gap-2">
                     <span className={cn(
                       "text-lg font-bold transition-colors",
                       theme === "dark" ? "text-white" : "text-slate-900"
                     )}>atomLMS</span>
-                    <span className="ml-2 text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
+                    <span className="text-xs font-medium text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded">Operator</span>
                   </div>
                 </Link>
               </TooltipTrigger>
