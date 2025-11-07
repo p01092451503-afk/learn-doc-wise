@@ -410,6 +410,12 @@ const StatsCard = ({ title, value, icon, description }: { title: string; value: 
 const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: string; instructor: string; progress: number; nextLesson: string }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
+  
+  const handleContinue = () => {
+    // 강의 페이지로 이동
+    navigate("/student/courses");
+  };
   
   return (
     <div className="space-y-3 p-4 md:p-5 rounded-2xl border border-border/50 hover:border-primary/50 hover:shadow-premium transition-all duration-300 card-premium">
@@ -418,7 +424,13 @@ const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: st
           <h4 className="font-display font-semibold text-base md:text-lg truncate">{title}</h4>
           <p className="text-xs md:text-sm text-muted-foreground mt-1">{instructor}</p>
         </div>
-        <Button size="sm" variant="outline" className="rounded-xl w-full sm:w-auto flex-shrink-0">
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="rounded-xl w-full sm:w-auto flex-shrink-0 relative z-10 pointer-events-auto"
+          onClick={handleContinue}
+          type="button"
+        >
           <PlayCircle className="h-4 w-4 mr-1" />
           {t('continue')}
         </Button>
@@ -438,9 +450,20 @@ const CourseProgress = ({ title, instructor, progress, nextLesson }: { title: st
 const RecommendedCourse = ({ title, instructor, rating, students }: { title: string; instructor: string; rating: number; students: number }) => {
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleViewDetails = () => {
+    // 강의 목록 페이지로 이동
+    navigate("/student/courses");
+    toast({
+      title: "강의 상세 페이지",
+      description: `${title} 강의를 확인하세요.`,
+    });
+  };
   
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors cursor-pointer">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-3 rounded-lg border hover:border-primary/50 transition-colors">
       <div className="flex-1 min-w-0">
         <h4 className="font-medium text-sm truncate">{title}</h4>
         <p className="text-xs text-muted-foreground truncate">{instructor}</p>
@@ -449,7 +472,14 @@ const RecommendedCourse = ({ title, instructor, rating, students }: { title: str
           <span className="text-xs text-muted-foreground">· {students.toLocaleString()} 수강생</span>
         </div>
       </div>
-      <Button size="sm" className="w-full sm:w-auto flex-shrink-0">{t('viewDetails')}</Button>
+      <Button 
+        size="sm" 
+        className="w-full sm:w-auto flex-shrink-0 relative z-10 pointer-events-auto"
+        onClick={handleViewDetails}
+        type="button"
+      >
+        {t('viewDetails')}
+      </Button>
     </div>
   );
 };
