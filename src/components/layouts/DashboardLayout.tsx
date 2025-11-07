@@ -270,9 +270,11 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     },
     staleTime: 10 * 60 * 1000,  // 10분 캐싱 - HRD 설정은 자주 변경되지 않음
     gcTime: 30 * 60 * 1000,
+    enabled: !isDemoMode,  // 데모 모드에서는 쿼리 비활성화
   });
 
-  const hideHrdFeatures = hrdSettings?.enabled ?? true;
+  // 데모 모드에서는 항상 HRD 기능 숨김, 아니면 설정값 사용
+  const hideHrdFeatures = isDemoMode ? true : (hrdSettings?.enabled ?? true);
 
   useEffect(() => {
     const items = getDefaultMenuItems();
