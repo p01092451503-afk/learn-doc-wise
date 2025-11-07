@@ -248,10 +248,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const { data: hrdSettings } = useQuery({
     queryKey: ['hrd-settings'],
     queryFn: async () => {
-      if (isDemoMode) {
-        return { enabled: true };
-      }
-      
       const { data, error } = await supabase
         .from('system_settings')
         .select('setting_value')
@@ -274,7 +270,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     },
     staleTime: 10 * 60 * 1000,  // 10분 캐싱 - HRD 설정은 자주 변경되지 않음
     gcTime: 30 * 60 * 1000,
-    enabled: !isDemoMode,        // 데모 모드에서는 쿼리 비활성화
   });
 
   const hideHrdFeatures = hrdSettings?.enabled ?? true;
