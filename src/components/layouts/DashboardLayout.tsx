@@ -216,7 +216,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     // admin (교육사업자/기관) - hide certain menus in demo mode
     const adminItems = [
       ...baseItems,
-      { icon: Users, label: "사용자 관리", path: "/admin/users", enabled: true },
+      { icon: Users, label: "회원 관리", path: "/admin/users", enabled: true },
       { icon: BookOpen, label: "강좌 & 차시 관리", path: "/admin/courses", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
       { icon: CalendarCheck, label: "출석 관리", path: "/admin/attendance", enabled: true, isHRD: true },
