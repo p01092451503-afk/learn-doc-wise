@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, BookOpen, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, BookOpen, ChevronRight, GitBranch } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import OperatorLayout from "@/components/layouts/OperatorLayout";
 
@@ -1949,13 +1951,23 @@ const OperatorManual = () => {
         {/* Onboarding Section */}
         <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <BookOpen className="h-6 w-6" />
-              임대형 계약 온보딩 매뉴얼
-            </CardTitle>
-            <CardDescription>
-              고객사 온보딩 전체 프로세스 ({filteredOnboardingData.length}개)
-            </CardDescription>
+            <div className="flex items-start justify-between">
+              <div className="space-y-1.5">
+                <CardTitle className="flex items-center gap-2 text-primary">
+                  <BookOpen className="h-6 w-6" />
+                  임대형 계약 온보딩 매뉴얼
+                </CardTitle>
+                <CardDescription>
+                  고객사 온보딩 전체 프로세스 ({filteredOnboardingData.length}개)
+                </CardDescription>
+              </div>
+              <Link to="/operator/onboarding-flow">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <GitBranch className="h-4 w-4" />
+                  업무 프로세스 보기
+                </Button>
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
             {filteredOnboardingData.length === 0 ? (

@@ -85,6 +85,7 @@ const OperatorFeatures = lazy(() => import("./pages/operator/OperatorFeatures"))
 const OperatorTechStack = lazy(() => import("./pages/operator/OperatorTechStack"));
 const OperatorGovernmentTraining = lazy(() => import("./pages/operator/OperatorGovernmentTraining"));
 const OperatorManual = lazy(() => import("./pages/operator/OperatorManual"));
+const OperatorOnboardingFlow = lazy(() => import("./pages/operator/OperatorOnboardingFlow"));
 const OperatorSystemDiagram = lazy(() => import("./pages/operator/OperatorSystemDiagram"));
 const OperatorBackup = lazy(() => import("./pages/operator/OperatorBackup"));
 const OperatorUpdates = lazy(() => import("./pages/operator/OperatorUpdates"));
@@ -182,6 +183,7 @@ const AppRoutes = () => {
         <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
         <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
         <Route path="/operator/manual" element={<OperatorManual />} />
+        <Route path="/operator/onboarding-flow" element={<OperatorOnboardingFlow />} />
         <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
         <Route path="/operator/backup" element={<OperatorBackup />} />
         <Route path="/operator/updates" element={<OperatorUpdates />} />
