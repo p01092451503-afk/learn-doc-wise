@@ -15,8 +15,8 @@ interface ManualSection {
   steps?: string[];
 }
 
-const manualData: ManualSection[] = [
-  // 고객 온보딩
+// 온보딩 관련 매뉴얼 (독립 섹션)
+const onboardingData: ManualSection[] = [
   {
     id: "onboarding-overview",
     title: "임대형 고객 온보딩 개요",
@@ -315,7 +315,10 @@ const manualData: ManualSection[] = [
       "     - 문제 발생 이력 기록"
     ]
   },
-  
+];
+
+// 기타 매뉴얼 데이터
+const manualData: ManualSection[] = [
   // 대시보드 및 개요
   {
     id: "admin-dashboard",
@@ -1870,7 +1873,16 @@ const OperatorManual = () => {
 
   const categories = Array.from(new Set(manualData.map(item => item.category)));
 
-  const filteredData = manualData.filter(item => {
+  const filteredOnboardingData = onboardingData.filter(item => {
+    const matchesSearch = 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.steps?.some(step => step.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    return matchesSearch;
+  });
+
+  const filteredManualData = manualData.filter(item => {
     const matchesSearch = 
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1934,25 +1946,93 @@ const OperatorManual = () => {
           </CardContent>
         </Card>
 
-        {/* Manual Content */}
-        <Card>
+        {/* Onboarding Section */}
+        <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              매뉴얼 목록
+            <CardTitle className="flex items-center gap-2 text-primary">
+              <BookOpen className="h-6 w-6" />
+              임대형 계약 온보딩 매뉴얼
             </CardTitle>
             <CardDescription>
-              {filteredData.length}개의 매뉴얼을 찾았습니다
+              고객사 온보딩 전체 프로세스 ({filteredOnboardingData.length}개)
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {filteredData.length === 0 ? (
+            {filteredOnboardingData.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
                 검색 결과가 없습니다
               </div>
             ) : (
               <Accordion type="single" collapsible className="space-y-2">
-                {filteredData.map((item) => (
+                {filteredOnboardingData.map((item) => (
+                  <AccordionItem key={item.id} value={item.id} className="border rounded-lg px-4 bg-background">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center gap-3 text-left">
+                        <ChevronRight className="h-5 w-5 text-primary" />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold">{item.title}</span>
+                            {item.badge && (
+                              <Badge variant="default" className="text-xs">
+                                {item.badge}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-sm text-muted-foreground mt-1">
+                            {item.category}
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="pt-4 space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          {item.content}
+                        </p>
+                        
+                        {item.steps && (
+                          <div>
+                            <h4 className="text-sm font-semibold mb-2">사용 방법:</h4>
+                            <ol className="space-y-2">
+                              {item.steps.map((step, index) => (
+                                <li key={index} className="flex gap-3 text-sm">
+                                  <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                                    {index + 1}
+                                  </span>
+                                  <span className="text-muted-foreground">{step}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Other Manual Content */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              일반 운영 매뉴얼
+            </CardTitle>
+            <CardDescription>
+              {filteredManualData.length}개의 매뉴얼을 찾았습니다
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {filteredManualData.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                검색 결과가 없습니다
+              </div>
+            ) : (
+              <Accordion type="single" collapsible className="space-y-2">
+                {filteredManualData.map((item) => (
                   <AccordionItem key={item.id} value={item.id} className="border rounded-lg px-4">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center gap-3 text-left">
