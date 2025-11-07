@@ -276,12 +276,44 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   // 데모 모드에서는 항상 HRD 기능 숨김, 아니면 설정값 사용
   const hideHrdFeatures = isDemoMode ? true : (hrdSettings?.enabled ?? true);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('[DashboardLayout] HRD Settings Debug:', {
+      isDemoMode,
+      hrdSettings,
+      hideHrdFeatures,
+      effectiveUserRole
+    });
+  }, [isDemoMode, hrdSettings, hideHrdFeatures, effectiveUserRole]);
+
   useEffect(() => {
     const items = getDefaultMenuItems();
     
+    console.log('[DashboardLayout] Filtering menu items:', {
+      isDemoMode,
+      hideHrdFeatures,
+      totalItems: items.length,
+      hrdItems: items.filter(i => i.isHRD).length
+    });
+    
     const filteredItems = items.filter(item => {
       const isHrdItem = item.isHRD === true;
-      return !hideHrdFeatures || !isHrdItem;
+      const shouldShow = !hideHrdFeatures || !isHrdItem;
+      
+      if (isHrdItem) {
+        console.log(`[DashboardLayout] HRD Item "${item.label}":`, {
+          hideHrdFeatures,
+          shouldShow
+        });
+      }
+      
+      return shouldShow;
+    });
+    
+    console.log('[DashboardLayout] Filtered items:', {
+      before: items.length,
+      after: filteredItems.length,
+      removed: items.length - filteredItems.length
     });
     
     setMenuItems(filteredItems);
