@@ -397,7 +397,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link to="/" className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0">
+              <Link 
+                to={effectiveUserRole === "operator" ? "/operator" : effectiveUserRole === "admin" ? "/admin" : effectiveUserRole === "teacher" ? "/teacher" : "/student"} 
+                className="flex items-center gap-1.5 md:gap-2 group flex-shrink-0"
+              >
                 <img src={logoIcon} alt="Logo" className="h-9 w-9 md:h-12 md:w-12" />
                 <span className="text-lg md:text-2xl font-logo font-bold text-foreground tracking-tight">atomLMS</span>
               </Link>
