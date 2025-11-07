@@ -34,10 +34,15 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   };
 
   const handleServerUsageConfirm = () => {
-    toast({
-      title: "확인 완료",
-      description: "서버 사용량 증가 알림을 확인했습니다.",
-    });
+    console.log("서버 사용량 확인 버튼 클릭됨");
+    try {
+      toast({
+        title: "확인 완료",
+        description: "서버 사용량 증가 알림을 확인했습니다.",
+      });
+    } catch (error) {
+      console.error("토스트 표시 중 오류:", error);
+    }
   };
 
   const handleRefundProcess = () => {
