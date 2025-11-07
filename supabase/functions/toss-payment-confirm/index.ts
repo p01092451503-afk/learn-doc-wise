@@ -60,23 +60,73 @@ serve(async (req) => {
     // Supabase에 결제 정보 저장
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { error: insertError } = await supabaseClient
-      .from('payment_transactions')
-      .insert({
-        order_id: orderId,
+    // Update billing_transactions table
+    const { error: updateError } = await supabaseClient
+      .from('billing_transactions')
+      .update({
         payment_key: paymentKey,
-        amount: amount,
-        status: result.status,
+        status: result.status === 'DONE' ? 'completed' : result.status.toLowerCase(),
         payment_method: result.method,
         approved_at: result.approvedAt,
         metadata: result,
-      });
+      })
+      .eq('order_id', orderId);
 
-    if (insertError) {
-      console.error('Error saving payment transaction:', insertError);
+    if (updateError) {
+      console.error('Error updating billing transaction:', updateError);
+    }
+
+    // If payment is completed, update tenant limits based on transaction type
+    if (result.status === 'DONE') {
+      const { data: transaction } = await supabaseClient
+        .from('billing_transactions')
+        .select('*, tenants(*)')
+        .eq('order_id', orderId)
+        .single();
+
+      if (transaction) {
+        const tenant = transaction.tenants;
+        let updateData = {};
+
+        switch (transaction.transaction_type) {
+          case 'addon_student':
+            updateData = {
+              max_students: tenant.max_students + transaction.quantity
+            };
+            break;
+          case 'addon_storage':
+            updateData = {
+              max_storage_gb: tenant.max_storage_gb + transaction.quantity
+            };
+            break;
+          case 'addon_ai_token':
+            // Update AI token limit - this would need a separate field in tenants table
+            console.log('AI token addon purchased:', transaction.quantity);
+            break;
+        }
+
+        if (Object.keys(updateData).length > 0) {
+          await supabaseClient
+            .from('tenants')
+            .update(updateData)
+            .eq('id', transaction.tenant_id);
+        }
+
+        // Log the addon purchase
+        await supabaseClient.from('system_logs').insert({
+          tenant_id: transaction.tenant_id,
+          level: 'info',
+          message: `Addon purchased: ${transaction.transaction_type}`,
+          metadata: {
+            order_id: orderId,
+            quantity: transaction.quantity,
+            amount: transaction.amount
+          }
+        });
+      }
     }
 
     return new Response(

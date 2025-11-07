@@ -409,6 +409,56 @@ export type Database = {
           },
         ]
       }
+      auto_billing_settings: {
+        Row: {
+          ai_token_addon_price: number
+          auto_charge_on_limit: boolean
+          billing_email: string | null
+          billing_name: string | null
+          created_at: string
+          enabled: boolean
+          id: string
+          storage_addon_price: number
+          student_addon_price: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          ai_token_addon_price?: number
+          auto_charge_on_limit?: boolean
+          billing_email?: string | null
+          billing_name?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          storage_addon_price?: number
+          student_addon_price?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          ai_token_addon_price?: number
+          auto_charge_on_limit?: boolean
+          billing_email?: string | null
+          billing_name?: string | null
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          storage_addon_price?: number
+          student_addon_price?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auto_billing_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       auto_encouragement_rules: {
         Row: {
           created_at: string
@@ -544,6 +594,62 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "billing_history_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_transactions: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          created_at: string
+          id: string
+          metadata: Json | null
+          order_id: string
+          payment_key: string | null
+          payment_method: string | null
+          quantity: number
+          status: string
+          tenant_id: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          order_id: string
+          payment_key?: string | null
+          payment_method?: string | null
+          quantity?: number
+          status?: string
+          tenant_id: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          order_id?: string
+          payment_key?: string | null
+          payment_method?: string | null
+          quantity?: number
+          status?: string
+          tenant_id?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_transactions_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"

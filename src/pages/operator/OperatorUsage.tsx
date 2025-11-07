@@ -17,6 +17,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RealtimeUsageMonitor } from "@/components/admin/RealtimeUsageMonitor";
+import { AddonPurchaseDialog } from "@/components/admin/AddonPurchaseDialog";
+import { AutoBillingSettings } from "@/components/admin/AutoBillingSettings";
+import { CreditCard, Eye } from "lucide-react";
 
 interface TenantUsage {
   tenant_id: string;
@@ -50,6 +53,10 @@ const OperatorUsage = () => {
   const [totalActiveUsers, setTotalActiveUsers] = useState(0);
   const [selectedTenant, setSelectedTenant] = useState<string | null>(null);
   const [collecting, setCollecting] = useState(false);
+  const [addonDialogOpen, setAddonDialogOpen] = useState(false);
+  const [addonTenantId, setAddonTenantId] = useState<string>("");
+  const [addonTenantName, setAddonTenantName] = useState<string>("");
+  const [billingSettingsTenantId, setBillingSettingsTenantId] = useState<string | null>(null);
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
     return (saved as "dark" | "light") || "dark";
@@ -696,6 +703,7 @@ const OperatorUsage = () => {
           <TabsList>
             <TabsTrigger value="overview">전체 현황</TabsTrigger>
             <TabsTrigger value="realtime">실시간 모니터링</TabsTrigger>
+            <TabsTrigger value="billing">과금 설정</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -768,10 +776,14 @@ const OperatorUsage = () => {
                     )}>대역폭</TableHead>
                     <TableHead className={cn(
                       "transition-colors",
-                      theme === "dark" ? "text-slate-400" : "text-slate-600"
-                    )}>상태</TableHead>
-                  </TableRow>
-                </TableHeader>
+                     theme === "dark" ? "text-slate-400" : "text-slate-600"
+                   )}>상태</TableHead>
+                   <TableHead className={cn(
+                     "transition-colors",
+                     theme === "dark" ? "text-slate-400" : "text-slate-600"
+                   )}>작업</TableHead>
+                 </TableRow>
+               </TableHeader>
                 <TableBody>
                   {filteredData.map((usage) => {
                     const storagePercentage = getStoragePercentage(usage.storage_used_gb, usage.max_storage_gb);
@@ -837,11 +849,41 @@ const OperatorUsage = () => {
                                 ? "bg-red-500/10 text-red-400 border-red-500/50"
                                 : status === "warning"
                                 ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/50"
-                                : "bg-green-500/10 text-green-400 border-green-500/50"
+                                 : "bg-green-500/10 text-green-400 border-green-500/50"
                             }
                           >
                             {status === "critical" ? "주의" : status === "warning" ? "경고" : "정상"}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTenant(usage.tenant_id);
+                                const element = document.querySelector('[value="realtime"]');
+                                if (element) (element as HTMLElement).click();
+                              }}
+                            >
+                              <Eye className="h-4 w-4 mr-2" />
+                              상세보기
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAddonTenantId(usage.tenant_id);
+                                setAddonTenantName(usage.tenant_name);
+                                setAddonDialogOpen(true);
+                              }}
+                            >
+                              <CreditCard className="h-4 w-4 mr-2" />
+                              추가 구매
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -874,7 +916,72 @@ const OperatorUsage = () => {
               </Card>
             )}
           </TabsContent>
+
+          <TabsContent value="billing">
+            <Card className={cn(
+              "transition-colors",
+              theme === "dark" 
+                ? "bg-slate-900/50 border-slate-800" 
+                : "bg-white border-slate-200"
+            )}>
+              <CardHeader>
+                <CardTitle className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-white" : "text-slate-900"
+                )}>자동 과금 설정 관리</CardTitle>
+                <CardDescription className={cn(
+                  "transition-colors",
+                  theme === "dark" ? "text-slate-400" : "text-slate-600"
+                )}>
+                  테넌트별 자동 과금 설정을 관리합니다.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <select
+                      className={cn(
+                        "flex h-10 w-full rounded-md border px-3 py-2 text-sm ring-offset-background transition-colors",
+                        theme === "dark"
+                          ? "bg-slate-800 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-300 text-slate-900"
+                      )}
+                      value={billingSettingsTenantId || ''}
+                      onChange={(e) => setBillingSettingsTenantId(e.target.value || null)}
+                    >
+                      <option value="">테넌트 선택...</option>
+                      {filteredData.map((usage) => (
+                        <option key={usage.tenant_id} value={usage.tenant_id}>
+                          {usage.tenant_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {billingSettingsTenantId && (
+                    <AutoBillingSettings tenantId={billingSettingsTenantId} />
+                  )}
+
+                  {!billingSettingsTenantId && (
+                    <div className={cn(
+                      "text-center py-8 transition-colors",
+                      theme === "dark" ? "text-slate-400" : "text-slate-600"
+                    )}>
+                      테넌트를 선택하여 자동 과금 설정을 관리하세요
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        <AddonPurchaseDialog
+          open={addonDialogOpen}
+          onOpenChange={setAddonDialogOpen}
+          tenantId={addonTenantId}
+          tenantName={addonTenantName}
+        />
       </div>
     </OperatorLayout>
   );
