@@ -456,7 +456,7 @@ const AlertItem = ({
       <Button 
         size="sm" 
         variant={level === "warning" ? "destructive" : "outline"} 
-        className="w-full sm:w-auto flex-shrink-0"
+        className="w-full sm:w-auto flex-shrink-0 relative z-10 pointer-events-auto"
         onClick={handleClick}
         type="button"
       >
