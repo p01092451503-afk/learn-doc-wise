@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,8 +12,11 @@ import { SettlementDialog } from "@/components/admin/SettlementDialog";
 import { ReportDialog } from "@/components/admin/ReportDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [courseApprovalOpen, setCourseApprovalOpen] = useState(false);
   const [settlementOpen, setSettlementOpen] = useState(false);
@@ -20,6 +24,30 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [aiGradingOpen, setAiGradingOpen] = useState(false);
   const [aiAnalysisOpen, setAiAnalysisOpen] = useState(false);
+
+  const handleReviewCourses = () => {
+    navigate("/admin/courses");
+    toast({
+      title: "강의 검토 페이지로 이동",
+      description: "대기 중인 강의를 검토할 수 있습니다.",
+    });
+  };
+
+  const handleServerUsageConfirm = () => {
+    toast({
+      title: "확인 완료",
+      description: "서버 사용량 증가 알림을 확인했습니다.",
+    });
+  };
+
+  const handleRefundProcess = () => {
+    navigate("/admin/revenue");
+    toast({
+      title: "환불 처리 페이지로 이동",
+      description: "대기 중인 환불 요청을 처리할 수 있습니다.",
+    });
+  };
+
   return (
     <DashboardLayout userRole="admin" isDemo={isDemo}>
       <div className="space-y-6">
@@ -179,18 +207,21 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
                   title="검토 대기 중인 강의"
                   description="12개의 강의가 승인을 기다리고 있습니다"
                   action="검토하기"
+                  onAction={handleReviewCourses}
                 />
                 <AlertItem
                   level="info"
                   title="서버 사용량 증가"
                   description="지난 주 대비 35% 증가"
                   action="확인"
+                  onAction={handleServerUsageConfirm}
                 />
                 <AlertItem
                   level="warning"
                   title="환불 요청"
                   description="3건의 환불 요청이 처리 대기 중"
                   action="처리하기"
+                  onAction={handleRefundProcess}
                 />
               </div>
             </CardContent>
@@ -392,19 +423,26 @@ const AlertItem = ({
   level, 
   title, 
   description, 
-  action 
+  action,
+  onAction
 }: { 
   level: "info" | "warning"; 
   title: string; 
   description: string; 
   action: string;
+  onAction?: () => void;
 }) => (
   <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
     <div className="flex-1 min-w-0">
       <h4 className="text-sm font-medium mb-1">{title}</h4>
       <p className="text-xs text-muted-foreground">{description}</p>
     </div>
-    <Button size="sm" variant={level === "warning" ? "destructive" : "outline"} className="w-full sm:w-auto flex-shrink-0">
+    <Button 
+      size="sm" 
+      variant={level === "warning" ? "destructive" : "outline"} 
+      className="w-full sm:w-auto flex-shrink-0"
+      onClick={onAction}
+    >
       {action}
     </Button>
   </div>
