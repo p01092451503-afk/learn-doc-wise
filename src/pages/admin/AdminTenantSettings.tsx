@@ -57,6 +57,8 @@ const AdminTenantSettings = () => {
   const { toast } = useToast();
   const { tenantId, user } = useUser();
   const queryClient = useQueryClient();
+  
+  // Tenant settings and management
 
   useEffect(() => {
     if (tenantId) {
