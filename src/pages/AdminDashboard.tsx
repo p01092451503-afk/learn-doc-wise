@@ -436,21 +436,34 @@ const AlertItem = ({
   description: string; 
   action: string;
   onAction?: () => void;
-}) => (
-  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
-    <div className="flex-1 min-w-0">
-      <h4 className="text-sm font-medium mb-1">{title}</h4>
-      <p className="text-xs text-muted-foreground">{description}</p>
+}) => {
+  const handleClick = () => {
+    console.log(`AlertItem 버튼 클릭됨: ${title}, action: ${action}`);
+    if (onAction) {
+      console.log("onAction 함수 호출 중...");
+      onAction();
+    } else {
+      console.warn("onAction이 정의되지 않았습니다");
+    }
+  };
+
+  return (
+    <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
+      <div className="flex-1 min-w-0">
+        <h4 className="text-sm font-medium mb-1">{title}</h4>
+        <p className="text-xs text-muted-foreground">{description}</p>
+      </div>
+      <Button 
+        size="sm" 
+        variant={level === "warning" ? "destructive" : "outline"} 
+        className="w-full sm:w-auto flex-shrink-0"
+        onClick={handleClick}
+        type="button"
+      >
+        {action}
+      </Button>
     </div>
-    <Button 
-      size="sm" 
-      variant={level === "warning" ? "destructive" : "outline"} 
-      className="w-full sm:w-auto flex-shrink-0"
-      onClick={onAction}
-    >
-      {action}
-    </Button>
-  </div>
-);
+  );
+};
 
 export default AdminDashboard;
