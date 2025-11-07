@@ -123,7 +123,8 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingFallback />} key={location.pathname}>
       <Routes location={location}>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Auth />} />
+        <Route path="/landing" element={<Landing />} />
         <Route path="/features-detail" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/onboarding" element={<Onboarding />} />
