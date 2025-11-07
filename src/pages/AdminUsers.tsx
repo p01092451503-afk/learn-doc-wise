@@ -63,6 +63,8 @@ const AdminUsers = () => {
 
   const fetchData = async () => {
     try {
+      console.log("Fetching user data...");
+      
       const [profilesResult, rolesResult, orgsResult] = await Promise.all([
         supabase
           .from("profiles")
@@ -77,25 +79,40 @@ const AdminUsers = () => {
           .order("created_at", { ascending: false }),
       ]);
 
-      if (profilesResult.error) throw profilesResult.error;
-      if (rolesResult.error) throw rolesResult.error;
-      if (orgsResult.error) throw orgsResult.error;
+      if (profilesResult.error) {
+        console.error("Profiles error:", profilesResult.error);
+        throw profilesResult.error;
+      }
+      if (rolesResult.error) {
+        console.error("Roles error:", rolesResult.error);
+        throw rolesResult.error;
+      }
+      if (orgsResult.error) {
+        console.error("Orgs error:", orgsResult.error);
+        throw orgsResult.error;
+      }
+
+      console.log("Roles data:", rolesResult.data);
 
       // Get user emails
       const { data: { users: authUsers } } = await supabase.auth.admin.listUsers();
       
       const usersWithEmailsAndRoles = (profilesResult.data || []).map((profile: any) => {
         const userRole = rolesResult.data?.find((r: any) => r.user_id === profile.user_id);
+        const role = userRole?.role || "student";
+        console.log(`User ${profile.user_id} has role:`, role);
         return {
           ...profile,
           email: authUsers?.find((u: any) => u.id === profile.user_id)?.email,
-          role: userRole?.role || "student",
+          role,
         };
       });
 
+      console.log("Users with roles:", usersWithEmailsAndRoles);
       setUsers(usersWithEmailsAndRoles);
       setOrganizations(orgsResult.data || []);
     } catch (error: any) {
+      console.error("Fetch data error:", error);
       toast({
         title: "오류",
         description: error.message || "데이터를 불러오는데 실패했습니다.",

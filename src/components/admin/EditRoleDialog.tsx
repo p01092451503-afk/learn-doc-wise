@@ -63,36 +63,52 @@ export const EditRoleDialog = ({
 
     setIsLoading(true);
     try {
+      console.log("Updating role for user:", userId, "from", currentRole, "to", selectedRole);
+      
       // 먼저 기존 역할 삭제
       const { error: deleteError } = await supabase
         .from("user_roles")
         .delete()
         .eq("user_id", userId);
 
-      if (deleteError) throw deleteError;
+      if (deleteError) {
+        console.error("Delete error:", deleteError);
+        throw deleteError;
+      }
 
-      // 새 역할 추가 (배열이 아닌 단일 객체로)
-      const { error: insertError } = await supabase
+      console.log("Previous roles deleted successfully");
+
+      // 새 역할 추가
+      const { data: insertData, error: insertError } = await supabase
         .from("user_roles")
         .insert({
           user_id: userId,
           role: selectedRole as "student" | "teacher" | "admin" | "operator",
-        });
+        })
+        .select();
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        console.error("Insert error:", insertError);
+        throw insertError;
+      }
+
+      console.log("New role inserted successfully:", insertData);
 
       toast({
         title: "성공",
         description: `${userName}님의 권한이 ${ROLE_OPTIONS.find(r => r.value === selectedRole)?.label}(으)로 변경되었습니다.`,
       });
 
-      onRoleUpdated();
-      onOpenChange(false);
+      // UI 업데이트를 위해 약간의 딜레이 후 콜백 호출
+      setTimeout(() => {
+        onRoleUpdated();
+        onOpenChange(false);
+      }, 300);
     } catch (error: any) {
       console.error("Role update error:", error);
       toast({
         title: "오류",
-        description: error.message || "권한 변경에 실패했습니다.",
+        description: error.message || "권한 변경에 실패했습니다. 콘솔을 확인하세요.",
         variant: "destructive",
       });
     } finally {
