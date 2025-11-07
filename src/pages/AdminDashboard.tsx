@@ -437,7 +437,9 @@ const AlertItem = ({
   action: string;
   onAction?: () => void;
 }) => {
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log(`AlertItem 버튼 클릭됨: ${title}, action: ${action}`);
     if (onAction) {
       console.log("onAction 함수 호출 중...");
@@ -448,16 +450,20 @@ const AlertItem = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
-      <div className="flex-1 min-w-0">
+    <div className="relative flex flex-col sm:flex-row items-start justify-between gap-3 p-3 rounded-lg border">
+      <div className="flex-1 min-w-0 pointer-events-none">
         <h4 className="text-sm font-medium mb-1">{title}</h4>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Button 
         size="sm" 
         variant={level === "warning" ? "destructive" : "outline"} 
-        className="w-full sm:w-auto flex-shrink-0 relative z-10 pointer-events-auto"
+        className="w-full sm:w-auto flex-shrink-0 relative z-50 pointer-events-auto"
         onClick={handleClick}
+        onMouseDown={(e) => {
+          console.log("Button mouseDown 이벤트");
+          e.stopPropagation();
+        }}
         type="button"
       >
         {action}
