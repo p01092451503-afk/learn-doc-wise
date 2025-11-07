@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical } from "lucide-react";
+import { Users, BookOpen, TrendingUp, Award, Mail, MoreVertical, Eye, MessageSquare, BarChart3, UserX } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -12,8 +12,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const TeacherStudents = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   const students = [
     {
       id: 1,
@@ -178,9 +191,64 @@ const TeacherStudents = () => {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button size="sm" variant="ghost">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="ghost" className="relative z-10 pointer-events-auto">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuLabel>학생 관리</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              toast({
+                                title: "상세 정보",
+                                description: `${student.name}의 상세 정보를 확인합니다.`,
+                              });
+                            }}
+                          >
+                            <Eye className="mr-2 h-4 w-4" />
+                            상세보기
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              toast({
+                                title: "메시지 전송",
+                                description: `${student.name}에게 메시지를 보냅니다.`,
+                              });
+                            }}
+                          >
+                            <MessageSquare className="mr-2 h-4 w-4" />
+                            메시지 보내기
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              toast({
+                                title: "진행 상황",
+                                description: `${student.name}의 학습 진행 상황을 확인합니다.`,
+                              });
+                            }}
+                          >
+                            <BarChart3 className="mr-2 h-4 w-4" />
+                            진행 상황 보기
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              toast({
+                                title: "학생 비활성화",
+                                description: `${student.name}을(를) 비활성화했습니다.`,
+                                variant: "destructive",
+                              });
+                            }}
+                            className="text-destructive"
+                          >
+                            <UserX className="mr-2 h-4 w-4" />
+                            비활성화
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
