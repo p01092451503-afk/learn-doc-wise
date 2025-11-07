@@ -61,6 +61,7 @@ const TeacherAttendanceDetail = lazy(() => import("./pages/teacher/TeacherAttend
 const TeacherTrainingCompletion = lazy(() => import("./pages/teacher/TeacherTrainingCompletion"));
 const TeacherTrainingAllowance = lazy(() => import("./pages/teacher/TeacherTrainingAllowance"));
 const TeacherTrainingReport = lazy(() => import("./pages/teacher/TeacherTrainingReport"));
+const TeacherStudentDetail = lazy(() => import("./pages/teacher/TeacherStudentDetail"));
 const StudentSatisfactionSurvey = lazy(() => import("./pages/student/StudentSatisfactionSurvey"));
 const StudentCounselingLog = lazy(() => import("./pages/student/StudentCounselingLog"));
 const StudentCart = lazy(() => import("./pages/student/StudentCart"));
@@ -156,6 +157,7 @@ const AppRoutes = () => {
         <Route path="/teacher/courses" element={<TeacherCourses />} />
         <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
         <Route path="/teacher/students" element={<TeacherStudents />} />
+        <Route path="/teacher/students/:studentId" element={<TeacherStudentDetail />} />
         <Route path="/teacher/revenue" element={<TeacherRevenue />} />
         <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
         <Route path="/teacher/assignments" element={<TeacherAssignments />} />

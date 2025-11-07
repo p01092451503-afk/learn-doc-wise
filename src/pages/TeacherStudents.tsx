@@ -202,10 +202,7 @@ const TeacherStudents = () => {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
                             onClick={() => {
-                              toast({
-                                title: "상세 정보",
-                                description: `${student.name}의 상세 정보를 확인합니다.`,
-                              });
+                              navigate(`/teacher/students/${student.id}`);
                             }}
                           >
                             <Eye className="mr-2 h-4 w-4" />
