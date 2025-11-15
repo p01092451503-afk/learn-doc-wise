@@ -366,10 +366,12 @@ const Auth = () => {
   };
 
   const handleGoogleSignIn = async () => {
+    console.log("Google Sign In clicked!");
     toast({
       title: "준비 중",
       description: "Google 로그인 기능은 현재 준비 중입니다. 조금만 기다려 주세요!",
     });
+    console.log("Toast called");
   };
 
   return (
