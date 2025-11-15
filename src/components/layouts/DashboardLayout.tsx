@@ -478,11 +478,32 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
               <DropdownMenuContent align="end" className="w-56 rounded-xl border-border/50">
                 <DropdownMenuLabel>내 계정</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="rounded-lg">
+                <DropdownMenuItem 
+                  onClick={() => {
+                    const settingsPath = effectiveUserRole === 'operator' 
+                      ? '/operator/settings'
+                      : effectiveUserRole === 'admin'
+                      ? '/admin/settings'
+                      : effectiveUserRole === 'teacher'
+                      ? '/teacher/dashboard' // Teacher settings not yet implemented
+                      : '/student/dashboard'; // Student settings not yet implemented
+                    
+                    navigate(settingsPath);
+                    
+                    // Show toast for roles without settings page
+                    if (effectiveUserRole === 'teacher' || effectiveUserRole === 'student') {
+                      toast({
+                        title: "알림",
+                        description: "설정 페이지는 곧 추가될 예정입니다.",
+                      });
+                    }
+                  }}
+                  className="rounded-lg cursor-pointer"
+                >
                   <Settings className="mr-2 h-4 w-4" />
                   설정
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="rounded-lg">
+                <DropdownMenuItem onClick={handleLogout} className="rounded-lg cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   로그아웃
                 </DropdownMenuItem>
