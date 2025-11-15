@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { FileText, Clock, CheckCircle2, AlertCircle, Upload } from "lucide-react";
+import { FileText, Clock, CheckCircle2, AlertCircle, Upload, X, Paperclip } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -45,6 +46,8 @@ const StudentAssignments = () => {
   const [loading, setLoading] = useState(true);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [submissionText, setSubmissionText] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
 
   const demoRole = searchParams.get('role') as "student" | "teacher" | "admin" | null;
@@ -157,6 +160,28 @@ const StudentAssignments = () => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const validFiles = files.filter(file => {
+      if (file.size > maxSize) {
+        toast({
+          title: "파일 크기 초과",
+          description: `${file.name}은(는) 10MB를 초과합니다.`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      return true;
+    });
+    
+    setUploadedFiles(prev => [...prev, ...validFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
     if (!selectedAssignment || !submissionText.trim()) {
       toast({
@@ -168,13 +193,36 @@ const StudentAssignments = () => {
     }
 
     try {
+      setUploading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("로그인이 필요합니다.");
+
+      // Upload files to storage
+      const fileUrls: string[] = [];
+      if (uploadedFiles.length > 0) {
+        for (const file of uploadedFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}/${selectedAssignment.id}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('assignment-files')
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('assignment-files')
+            .getPublicUrl(fileName);
+          
+          fileUrls.push(publicUrl);
+        }
+      }
 
       const { error } = await supabase.from("assignment_submissions").insert([{
         assignment_id: selectedAssignment.id,
         student_id: user.id,
         submission_text: submissionText,
+        file_urls: fileUrls.length > 0 ? fileUrls : null,
       }]);
 
       if (error) throw error;
@@ -186,6 +234,7 @@ const StudentAssignments = () => {
 
       setSelectedAssignment(null);
       setSubmissionText("");
+      setUploadedFiles([]);
       fetchData();
     } catch (error: any) {
       toast({
@@ -193,6 +242,8 @@ const StudentAssignments = () => {
         description: error.message || "제출에 실패했습니다.",
         variant: "destructive",
       });
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -376,14 +427,63 @@ const StudentAssignments = () => {
                                   rows={8}
                                 />
                               </div>
+                              <div className="space-y-2">
+                                <Label>파일 첨부</Label>
+                                <div className="flex items-center gap-2">
+                                  <Input
+                                    type="file"
+                                    multiple
+                                    onChange={handleFileChange}
+                                    className="cursor-pointer"
+                                    accept=".pdf,.doc,.docx,.txt,.zip,.jpg,.jpeg,.png"
+                                  />
+                                  <Paperclip className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  PDF, DOC, TXT, ZIP, 이미지 파일 (최대 10MB)
+                                </p>
+                                {uploadedFiles.length > 0 && (
+                                  <div className="mt-2 space-y-2">
+                                    {uploadedFiles.map((file, index) => (
+                                      <div
+                                        key={index}
+                                        className="flex items-center justify-between p-2 bg-muted rounded-md"
+                                      >
+                                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                                          <Paperclip className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                          <span className="text-sm truncate">{file.name}</span>
+                                          <span className="text-xs text-muted-foreground flex-shrink-0">
+                                            ({(file.size / 1024).toFixed(1)} KB)
+                                          </span>
+                                        </div>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => removeFile(index)}
+                                          className="flex-shrink-0"
+                                        >
+                                          <X className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                             <DialogFooter>
-                              <Button variant="outline" onClick={() => setSelectedAssignment(null)}>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => {
+                                  setSelectedAssignment(null);
+                                  setUploadedFiles([]);
+                                  setSubmissionText("");
+                                }}
+                              >
                                 취소
                               </Button>
-                              <Button onClick={handleSubmit}>
+                              <Button onClick={handleSubmit} disabled={uploading}>
                                 <Upload className="h-4 w-4 mr-2" />
-                                제출
+                                {uploading ? "제출 중..." : "제출"}
                               </Button>
                             </DialogFooter>
                           </DialogContent>
