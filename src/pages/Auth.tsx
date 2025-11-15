@@ -366,28 +366,10 @@ const Auth = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/`,
-        },
-      });
-
-      if (error) {
-        toast({
-          title: "로그인 실패",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "오류 발생",
-        description: "Google 로그인 중 문제가 발생했습니다.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "준비 중",
+      description: "Google 로그인 기능은 현재 준비 중입니다. 조금만 기다려 주세요!",
+    });
   };
 
   return (
