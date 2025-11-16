@@ -130,7 +130,7 @@ const PlanChangeDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto !rounded-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />
