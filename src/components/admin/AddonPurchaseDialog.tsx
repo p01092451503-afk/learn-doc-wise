@@ -134,7 +134,7 @@ export const AddonPurchaseDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl rounded-lg">
         <DialogHeader>
           <DialogTitle>추가 용량 구매</DialogTitle>
           <DialogDescription>

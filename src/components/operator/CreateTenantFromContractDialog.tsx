@@ -152,7 +152,7 @@ export function CreateTenantFromContractDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl rounded-lg">
         <DialogHeader>
           <DialogTitle>계약으로부터 테넌트 생성 ({step}/2)</DialogTitle>
         </DialogHeader>

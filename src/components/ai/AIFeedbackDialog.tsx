@@ -76,7 +76,7 @@ export const AIFeedbackDialog = ({ open, onOpenChange }: AIFeedbackDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileCheck className="h-5 w-5" />

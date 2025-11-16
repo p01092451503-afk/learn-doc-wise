@@ -168,7 +168,7 @@ export function ContractDialog({ open, onOpenChange, contract, onSuccess }: Cont
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle>{contract ? "계약 수정" : "신규 계약 등록"}</DialogTitle>
         </DialogHeader>
