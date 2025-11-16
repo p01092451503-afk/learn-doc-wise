@@ -145,7 +145,7 @@ export const CourseApprovalDialog = ({ open, onOpenChange }: CourseApprovalDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle>강의 승인 관리</DialogTitle>
           <DialogDescription>

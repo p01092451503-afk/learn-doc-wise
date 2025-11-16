@@ -9,7 +9,7 @@ interface ReportDialogProps {
 export const ReportDialog = ({ open, onOpenChange }: ReportDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle>AI 리포트 생성</DialogTitle>
         </DialogHeader>

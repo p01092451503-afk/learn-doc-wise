@@ -128,7 +128,7 @@ export const AdminAccountCreationDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md rounded-lg">
         <DialogHeader>
           <DialogTitle>관리자 계정 생성</DialogTitle>
           <DialogDescription>

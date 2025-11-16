@@ -125,7 +125,7 @@ export const UserInvitationDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md rounded-lg">
         <DialogHeader>
           <DialogTitle>사용자 초대</DialogTitle>
           <DialogDescription>

@@ -60,7 +60,7 @@ export const AILearningPathDialog = ({ open, onOpenChange }: AILearningPathDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-gradient-to-r from-primary to-accent">

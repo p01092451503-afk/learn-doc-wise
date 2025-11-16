@@ -104,7 +104,7 @@ export const SettlementDialog = ({ open, onOpenChange }: SettlementDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto rounded-lg">
         <DialogHeader>
           <DialogTitle>정산 처리</DialogTitle>
           <DialogDescription>

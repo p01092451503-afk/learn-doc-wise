@@ -78,7 +78,7 @@ export const AddUserDialog = ({ open, onOpenChange }: AddUserDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] rounded-lg">
         <DialogHeader>
           <DialogTitle>새 사용자 추가</DialogTitle>
           <DialogDescription>

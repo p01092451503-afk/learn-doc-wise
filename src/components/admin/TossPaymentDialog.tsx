@@ -93,7 +93,7 @@ const TossPaymentDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] rounded-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
