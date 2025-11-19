@@ -7,12 +7,13 @@ import { Building2, Users, DollarSign, Activity, TrendingUp, AlertCircle, Server
 import { AtomSpinner } from "@/components/AtomSpinner";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useUserRole } from "@/hooks/useUserRole";
+import { useUserRoleOptimized } from "@/hooks/useUserRoleOptimized";
 import { cn } from "@/lib/utils";
 
 const OperatorDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
-  const { role, isOperator, loading } = useUserRole();
+  const { data: roleData, isLoading: loading } = useUserRoleOptimized();
+  const { role, isOperator } = roleData || { role: null, isOperator: false };
   const [theme, setTheme] = useState<"dark" | "light">(() => {
     const saved = localStorage.getItem("operator-theme");
     return (saved as "dark" | "light") || "dark";
