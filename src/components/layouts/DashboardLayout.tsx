@@ -486,12 +486,12 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                       ? '/admin/settings'
                       : effectiveUserRole === 'teacher'
                       ? '/teacher/dashboard' // Teacher settings not yet implemented
-                      : '/student/dashboard'; // Student settings not yet implemented
+                      : '/student/settings';
                     
                     navigate(settingsPath);
                     
                     // Show toast for roles without settings page
-                    if (effectiveUserRole === 'teacher' || effectiveUserRole === 'student') {
+                    if (effectiveUserRole === 'teacher') {
                       toast({
                         title: "알림",
                         description: "설정 페이지는 곧 추가될 예정입니다.",

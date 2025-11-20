@@ -67,6 +67,7 @@ const StudentCounselingLog = lazy(() => import("./pages/student/StudentCounselin
 const StudentCart = lazy(() => import("./pages/student/StudentCart"));
 const StudentPaymentHistory = lazy(() => import("./pages/student/StudentPaymentHistory"));
 const StudentPoints = lazy(() => import("./pages/student/StudentPoints"));
+const StudentSettings = lazy(() => import("./pages/student/StudentSettings"));
 const TeacherCourseDetail = lazy(() => import("./pages/TeacherCourseDetail"));
 const TemplatePreview = lazy(() => import("./pages/TemplatePreview"));
 const PublicMain = lazy(() => import("./pages/PublicMain"));
@@ -152,6 +153,7 @@ const AppRoutes = () => {
         <Route path="/student/cart" element={<StudentCart />} />
         <Route path="/student/payment-history" element={<StudentPaymentHistory />} />
         <Route path="/student/points" element={<StudentPoints />} />
+        <Route path="/student/settings" element={<StudentSettings />} />
         <Route path="/student/live/:sessionId" element={<StudentLiveSession />} />
         <Route path="/teacher" element={<TeacherDashboard />} />
         <Route path="/teacher/courses" element={<TeacherCourses />} />
