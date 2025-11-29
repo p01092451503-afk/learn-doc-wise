@@ -14,6 +14,9 @@ const fetchUserRole = async (): Promise<UserRoleData> => {
     return { role: null, tenantId: null, isOperator: false };
   }
 
+  // DEMO ACCOUNT: test@test.com should NEVER have operator role
+  const isDemoAccount = user.email === 'test@test.com';
+
   // Check memberships table first (new multi-tenant system)
   const { data: memberships, error: membershipsError } = await supabase
     .from('memberships')
@@ -24,9 +27,10 @@ const fetchUserRole = async (): Promise<UserRoleData> => {
   if (membershipsError) throw membershipsError;
 
   // Check if user is platform operator (tenant_id is NULL and role is 'operator')
-  const isPlatformOperator = memberships?.some(
+  // But exclude demo account
+  const isPlatformOperator = !isDemoAccount && (memberships?.some(
     m => m.role === 'operator' && m.tenant_id === null
-  ) || false;
+  ) || false);
 
   // Fallback to user_roles for backward compatibility
   let userRoles: any[] = [];
@@ -42,12 +46,13 @@ const fetchUserRole = async (): Promise<UserRoleData> => {
 
   const allRoles = [...(memberships || []), ...userRoles];
 
-  // Check if user has operator role (from either table)
-  const hasOperatorRole = allRoles.some(r => r.role === 'operator');
-  const hasAdminWithoutTenant = allRoles.some(r => r.role === 'admin' && !r.tenant_id);
+  // Check if user has operator role (from either table) - exclude demo account
+  const hasOperatorRole = !isDemoAccount && allRoles.some(r => r.role === 'operator');
+  const hasAdminWithoutTenant = !isDemoAccount && allRoles.some(r => r.role === 'admin' && !r.tenant_id);
   const isOperator = isPlatformOperator || hasOperatorRole || hasAdminWithoutTenant;
 
   // Get primary role (priority: operator > admin > instructor/teacher > student)
+  // Demo account is limited to: admin > teacher > student (NO operator)
   let primaryRole: UserRoleData['role'] = null;
   let tenantId: string | null = null;
 

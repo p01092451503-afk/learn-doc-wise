@@ -25,6 +25,9 @@ export const useUserRole = () => {
           return;
         }
 
+      // DEMO ACCOUNT: test@test.com should NEVER have operator role
+      const isDemoAccount = user.email === 'test@test.com';
+
       const { data: roleData, error } = await supabase
         .from('user_roles')
         .select('role, tenant_id')
@@ -32,12 +35,13 @@ export const useUserRole = () => {
 
       if (error) throw error;
 
-      // Check if user has operator role
-      const hasOperatorRole = roleData?.some(r => r.role === 'operator');
-      const hasAdminWithoutTenant = roleData?.some(r => r.role === 'admin' && !r.tenant_id);
+      // Check if user has operator role (but exclude demo account)
+      const hasOperatorRole = !isDemoAccount && roleData?.some(r => r.role === 'operator');
+      const hasAdminWithoutTenant = !isDemoAccount && roleData?.some(r => r.role === 'admin' && !r.tenant_id);
       const isOperator = hasOperatorRole || hasAdminWithoutTenant;
 
       // Get primary role (priority: operator > admin > teacher > student)
+      // Demo account is limited to: admin > teacher > student (NO operator)
       let primaryRole: UserRoleData['role'] = null;
       let tenantId: string | null = null;
 
