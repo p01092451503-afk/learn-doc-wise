@@ -52,6 +52,52 @@ export async function resolveTenant(): Promise<Tenant | null> {
 
       let tenant: Tenant | null = null;
 
+      // 🔧 DEBUG MODE: localhost에서 테스트용 테넌트 자동 로드
+      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+        console.log('🔧 [DEBUG] Localhost detected - Loading demo tenant');
+        
+        // URL에서 subdomain 파라미터를 먼저 확인
+        const urlPath = window.location.pathname;
+        const tenantMatch = urlPath.match(/^\/tenant\/([^/]+)/);
+        
+        if (tenantMatch) {
+          const subdomainFromUrl = tenantMatch[1];
+          console.log('🔧 [DEBUG] Found subdomain in URL:', subdomainFromUrl);
+          
+          const { data } = await supabase
+            .from('tenants')
+            .select('*')
+            .eq('slug', subdomainFromUrl)
+            .eq('is_active', true)
+            .single();
+          
+          if (data) {
+            tenant = data as Tenant;
+            console.log('🔧 [DEBUG] Loaded tenant from URL:', tenant.name);
+          }
+        }
+        
+        // URL에서 못 찾으면 첫 번째 active tenant 사용
+        if (!tenant) {
+          const { data } = await supabase
+            .from('tenants')
+            .select('*')
+            .eq('is_active', true)
+            .limit(1)
+            .single();
+          
+          if (data) {
+            tenant = data as Tenant;
+            console.log('🔧 [DEBUG] Loaded first available tenant:', tenant.name);
+          }
+        }
+        
+        if (tenant) {
+          cachedTenant = tenant;
+          return tenant;
+        }
+      }
+
       // Priority 1: Query parameter (for development)
       if (queryTenant) {
         const { data } = await supabase

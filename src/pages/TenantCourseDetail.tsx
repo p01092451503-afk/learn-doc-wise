@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, BarChart, BookOpen, Award, ChevronLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import VideoPreview from "@/components/video/VideoPreview";
+import { useTenant } from "@/contexts/TenantContext";
 import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface CourseDetail {
@@ -22,45 +23,22 @@ interface CourseDetail {
 }
 
 const TenantCourseDetail = () => {
-  const { subdomain, courseSlug } = useParams<{ subdomain: string; courseSlug: string }>();
+  const { courseSlug } = useParams<{ courseSlug: string }>();
+  const { tenant, loading: tenantLoading } = useTenant();
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [courseContents, setCourseContents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tenantName, setTenantName] = useState("");
 
   useEffect(() => {
-    fetchTenantInfo();
-    fetchCourseDetail();
-    fetchCourseContents();
-  }, [subdomain, courseSlug]);
-
-  const fetchTenantInfo = async () => {
-    try {
-      const { data } = await supabase
-        .from("tenants")
-        .select("name, id")
-        .eq("subdomain", subdomain)
-        .single();
-      
-      if (data) {
-        setTenantName(data.name);
-        const { data: settings } = await supabase
-          .from("tenant_settings")
-          .select("custom_styles")
-          .eq("tenant_id", data.id)
-          .single();
-        
-        const styles = settings?.custom_styles as any;
-        if (styles?.primaryColor) {
-          document.documentElement.style.setProperty('--primary', styles.primaryColor);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching tenant info:", error);
+    if (tenant && courseSlug) {
+      fetchCourseDetail();
+      fetchCourseContents();
     }
-  };
+  }, [tenant, courseSlug]);
 
   const fetchCourseDetail = async () => {
+    if (!tenant || !courseSlug) return;
+
     try {
       const { data, error } = await supabase
         .from("courses")
@@ -69,6 +47,7 @@ const TenantCourseDetail = () => {
           categories (name)
         `)
         .eq("slug", courseSlug)
+        .eq("tenant_id", tenant.id)
         .eq("status", "published")
         .single();
 
@@ -82,6 +61,8 @@ const TenantCourseDetail = () => {
   };
 
   const fetchCourseContents = async () => {
+    if (!courseSlug) return;
+
     try {
       const { data: courseData } = await supabase
         .from("courses")
@@ -114,7 +95,7 @@ const TenantCourseDetail = () => {
     }
   };
 
-  if (loading) {
+  if (tenantLoading || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -125,7 +106,7 @@ const TenantCourseDetail = () => {
     );
   }
 
-  if (!course) {
+  if (!tenant || !course) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Card className="max-w-md">
@@ -137,7 +118,7 @@ const TenantCourseDetail = () => {
           </CardHeader>
           <CardContent>
             <Button asChild>
-              <Link to={`/tenant/${subdomain}/courses`}>
+              <Link to={`/tenant/${tenant?.slug}/courses`}>
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 강좌 목록으로
               </Link>
@@ -156,14 +137,14 @@ const TenantCourseDetail = () => {
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to={`/tenant/${subdomain}`} className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">{tenantName}</h1>
+            <Link to={`/tenant/${tenant.slug}`} className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">{tenant.name}</h1>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link to={`/tenant/${subdomain}`} className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={`/tenant/${tenant.slug}`} className="text-sm font-medium hover:text-primary transition-colors">
                 홈
               </Link>
-              <Link to={`/tenant/${subdomain}/courses`} className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={`/tenant/${tenant.slug}/courses`} className="text-sm font-medium hover:text-primary transition-colors">
                 강좌
               </Link>
               <Link to="/auth" className="text-sm font-medium hover:text-primary transition-colors">
@@ -178,7 +159,7 @@ const TenantCourseDetail = () => {
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Back Button */}
         <Button variant="ghost" asChild className="mb-6">
-          <Link to={`/tenant/${subdomain}/courses`}>
+          <Link to={`/tenant/${tenant.slug}/courses`}>
             <ChevronLeft className="mr-2 h-4 w-4" />
             강좌 목록으로
           </Link>
@@ -348,7 +329,7 @@ const TenantCourseDetail = () => {
       {/* Footer */}
       <footer className="border-t py-8 px-4 bg-muted/30 mt-12">
         <div className="container mx-auto max-w-6xl text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 {tenantName}. All rights reserved.</p>
+          <p>&copy; 2024 {tenant.name}. All rights reserved.</p>
         </div>
       </footer>
     </div>

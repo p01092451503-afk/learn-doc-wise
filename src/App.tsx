@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect, lazy, Suspense } from "react";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { UserProvider } from "./contexts/UserContext";
+import { TenantProvider } from "./contexts/TenantContext";
 import { AtomLoader } from "./components/AtomLoader";
 import { ImpersonationBanner } from "./components/operator/ImpersonationBanner";
 
@@ -241,19 +242,21 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <LanguageProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <ImpersonationBanner />
-              <ScrollToTop />
-              <AppRoutes />
-            </BrowserRouter>
-          </TooltipProvider>
-        </LanguageProvider>
-      </UserProvider>
+      <TenantProvider>
+        <UserProvider>
+          <LanguageProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <ImpersonationBanner />
+                <ScrollToTop />
+                <AppRoutes />
+              </BrowserRouter>
+            </TooltipProvider>
+          </LanguageProvider>
+        </UserProvider>
+      </TenantProvider>
     </QueryClientProvider>
   );
 };
