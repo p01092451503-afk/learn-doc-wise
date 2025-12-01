@@ -45,6 +45,8 @@ export default function AdminHomepageSettings() {
     queryKey: ["tenant-sections", tenant?.id],
     queryFn: async () => {
       if (!tenant?.id) return [];
+      
+      // First, try to fetch existing sections
       const { data, error } = await supabase
         .from("tenant_sections")
         .select("*")
@@ -52,6 +54,31 @@ export default function AdminHomepageSettings() {
         .order("display_order");
 
       if (error) throw error;
+      
+      // If no sections exist, create default ones
+      if (!data || data.length === 0) {
+        // Call the function to create default sections
+        const { error: createError } = await supabase.rpc(
+          "create_default_tenant_sections",
+          { p_tenant_id: tenant.id }
+        );
+        
+        if (createError) {
+          console.error("Error creating default sections:", createError);
+          throw createError;
+        }
+        
+        // Fetch again after creating
+        const { data: newData, error: fetchError } = await supabase
+          .from("tenant_sections")
+          .select("*")
+          .eq("tenant_id", tenant.id)
+          .order("display_order");
+        
+        if (fetchError) throw fetchError;
+        return newData as TenantSection[];
+      }
+      
       return data as TenantSection[];
     },
     enabled: !!tenant?.id,
@@ -211,8 +238,18 @@ export default function AdminHomepageSettings() {
         </p>
       </div>
 
-      <div className="space-y-4">
-        {sections?.map((section, index) => (
+      {(!sections || sections.length === 0) && !isLoading ? (
+        <Card className="p-12 text-center">
+          <p className="text-muted-foreground mb-4">아직 섹션이 없습니다.</p>
+          <Button
+            onClick={() => queryClient.invalidateQueries({ queryKey: ["tenant-sections"] })}
+          >
+            새로고침
+          </Button>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {sections?.map((section, index) => (
           <Card key={section.id}>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -258,7 +295,8 @@ export default function AdminHomepageSettings() {
             </CardHeader>
           </Card>
         ))}
-      </div>
+        </div>
+      )}
 
       {/* Edit Dialog */}
       <Dialog open={!!editingSection} onOpenChange={(open) => !open && setEditingSection(null)}>
