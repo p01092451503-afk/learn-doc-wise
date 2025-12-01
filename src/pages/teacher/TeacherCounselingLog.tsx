@@ -56,43 +56,55 @@ const TeacherCounselingLog = () => {
     enabled: !!selectedCourse,
   });
 
-  // 상담일지 목록 조회
+  // 상담일지 목록 조회 (복호화 RPC 사용)
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ["counseling-logs", selectedCourse],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      let query = supabase
-        .from("counseling_logs")
-        .select(`
-          *,
-          courses (title),
-          profiles:student_id (full_name)
-        `)
-        .eq("counselor_id", user?.id)
-        .order("counseling_date", { ascending: false });
+      
+      const { data: logsData, error: logsError } = await supabase.rpc('get_counseling_logs', {
+        p_counselor_id: user?.id,
+        p_course_id: selectedCourse || null,
+      });
 
-      if (selectedCourse) {
-        query = query.eq("course_id", selectedCourse);
-      }
+      if (logsError) throw logsError;
 
-      const { data, error } = await query;
-      if (error) throw error;
-      return data || [];
+      // 관련 정보 조인 (courses, profiles)
+      const enrichedLogs = await Promise.all((logsData || []).map(async (log: any) => {
+        const [courseRes, profileRes] = await Promise.all([
+          supabase.from("courses").select("title").eq("id", log.course_id).single(),
+          supabase.from("profiles").select("full_name").eq("user_id", log.student_id).single(),
+        ]);
+        
+        return {
+          ...log,
+          courses: courseRes.data,
+          profiles: profileRes.data,
+        };
+      }));
+
+      return enrichedLogs;
     },
   });
 
-  // 상담일지 생성
+  // 상담일지 생성 (암호화 RPC 사용)
   const createLog = useMutation({
     mutationFn: async (formData: any) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase
-        .from("counseling_logs")
-        .insert({
-          ...formData,
-          counselor_id: user?.id,
-        });
+      const { data, error } = await supabase.rpc('insert_counseling_log', {
+        p_course_id: formData.course_id,
+        p_student_id: formData.student_id,
+        p_counseling_type: formData.counseling_type,
+        p_counseling_date: formData.counseling_date,
+        p_summary: formData.summary,
+        p_student_concerns: formData.student_concerns,
+        p_counselor_advice: formData.counselor_advice,
+        p_follow_up_needed: formData.follow_up_needed,
+        p_follow_up_date: formData.follow_up_date,
+        p_is_confidential: formData.is_confidential,
+      });
       
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["counseling-logs"] });

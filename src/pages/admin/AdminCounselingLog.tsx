@@ -29,23 +29,29 @@ const AdminCounselingLog = () => {
   const { data: counselingLogs = [], isLoading } = useQuery({
     queryKey: ["admin-counseling-logs", selectedCourse],
     queryFn: async () => {
-      let query = supabase
-        .from("counseling_logs")
-        .select(`
-          *,
-          courses(title),
-          student:student_id(full_name, email),
-          counselor:counselor_id(full_name)
-        `)
-        .order("counseling_date", { ascending: false });
+      const { data: logsData, error: logsError } = await supabase.rpc('get_counseling_logs', {
+        p_course_id: selectedCourse && selectedCourse !== "all" ? selectedCourse : null,
+      });
 
-      if (selectedCourse && selectedCourse !== "all") {
-        query = query.eq("course_id", selectedCourse);
-      }
+      if (logsError) throw logsError;
 
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
+      // 관련 정보 조인 (courses, student, counselor profiles)
+      const enrichedLogs = await Promise.all((logsData || []).map(async (log: any) => {
+        const [courseRes, studentRes, counselorRes] = await Promise.all([
+          supabase.from("courses").select("title").eq("id", log.course_id).single(),
+          supabase.from("profiles").select("full_name, email").eq("user_id", log.student_id).single(),
+          supabase.from("profiles").select("full_name").eq("user_id", log.counselor_id).single(),
+        ]);
+        
+        return {
+          ...log,
+          courses: courseRes.data,
+          student: studentRes.data,
+          counselor: counselorRes.data,
+        };
+      }));
+
+      return enrichedLogs;
     },
   });
 

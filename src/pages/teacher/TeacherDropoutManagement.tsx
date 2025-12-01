@@ -60,29 +60,35 @@ const TeacherDropoutManagement = () => {
     enabled: !!selectedCourse,
   });
 
-  // 중도탈락 기록 조회
+  // 중도탈락 기록 조회 (복호화 RPC 사용)
   const { data: dropouts = [], isLoading } = useQuery({
     queryKey: ["dropout-records", selectedCourse],
     queryFn: async () => {
-      let query = supabase
-        .from("dropout_records")
-        .select(`
-          *,
-          enrollments (
+      const { data: dropoutsData, error: dropoutsError } = await supabase.rpc('get_dropout_records', {
+        p_course_id: selectedCourse || null,
+      });
+
+      if (dropoutsError) throw dropoutsError;
+
+      // enrollment 정보 조인
+      const enrichedDropouts = await Promise.all((dropoutsData || []).map(async (dropout: any) => {
+        const { data: enrollment } = await supabase
+          .from("enrollments")
+          .select(`
             user_id,
             courses (title),
             profiles:user_id (full_name)
-          )
-        `)
-        .order("dropout_date", { ascending: false });
+          `)
+          .eq("id", dropout.enrollment_id)
+          .single();
+        
+        return {
+          ...dropout,
+          enrollments: enrollment,
+        };
+      }));
 
-      if (selectedCourse) {
-        query = query.eq("enrollments.course_id", selectedCourse);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data || [];
+      return enrichedDropouts;
     },
   });
 
@@ -107,19 +113,22 @@ const TeacherDropoutManagement = () => {
     setRefundAmount(coursePrice * refundRate);
   };
 
-  // 중도탈락 기록 생성
+  // 중도탈락 기록 생성 (암호화 RPC 사용)
   const createDropout = useMutation({
     mutationFn: async (formData: any) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase
-        .from("dropout_records")
-        .insert({
-          ...formData,
-          processed_by: user?.id,
-          processed_at: new Date().toISOString(),
-        });
+      const { data, error } = await supabase.rpc('insert_dropout_record', {
+        p_enrollment_id: formData.enrollment_id,
+        p_reason_category: formData.reason_category,
+        p_dropout_reason: formData.dropout_reason,
+        p_dropout_date: formData.dropout_date,
+        p_interview_notes: formData.interview_notes,
+        p_refund_amount: formData.refund_amount,
+        p_refund_status: formData.refund_status,
+        p_documents: formData.documents || [],
+      });
       
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dropout-records"] });
