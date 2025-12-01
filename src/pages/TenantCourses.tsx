@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Clock, BarChart } from "lucide-react";
+import { useTenant } from "@/contexts/TenantContext";
 import { AtomSpinner } from "@/components/AtomSpinner";
 
 interface Course {
@@ -22,45 +23,21 @@ interface Course {
 }
 
 const TenantCourses = () => {
-  const { subdomain } = useParams<{ subdomain: string }>();
+  const { tenant, loading: tenantLoading } = useTenant();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
-  const [tenantName, setTenantName] = useState("");
 
   useEffect(() => {
-    fetchTenantInfo();
-    fetchCourses();
-  }, [subdomain]);
-
-  const fetchTenantInfo = async () => {
-    try {
-      const { data } = await supabase
-        .from("tenants")
-        .select("name, id")
-        .eq("subdomain", subdomain)
-        .single();
-      
-      if (data) {
-        setTenantName(data.name);
-        const { data: settings } = await supabase
-          .from("tenant_settings")
-          .select("custom_styles")
-          .eq("tenant_id", data.id)
-          .single();
-        
-        const styles = settings?.custom_styles as any;
-        if (styles?.primaryColor) {
-          document.documentElement.style.setProperty('--primary', styles.primaryColor);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching tenant info:", error);
+    if (tenant) {
+      fetchCourses();
     }
-  };
+  }, [tenant]);
 
   const fetchCourses = async () => {
+    if (!tenant) return;
+
     try {
       const { data, error } = await supabase
         .from("courses")
@@ -68,6 +45,7 @@ const TenantCourses = () => {
           *,
           categories (name)
         `)
+        .eq("tenant_id", tenant.id)
         .eq("status", "published")
         .order("created_at", { ascending: false });
 
@@ -96,20 +74,33 @@ const TenantCourses = () => {
     }
   };
 
+  if (tenantLoading || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AtomSpinner size="lg" className="mx-auto mb-4" />
+          <p className="text-muted-foreground">강좌를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!tenant) return null;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to={`/tenant/${subdomain}`} className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">{tenantName}</h1>
+            <Link to={`/tenant/${tenant.slug}`} className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">{tenant.name}</h1>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
-              <Link to={`/tenant/${subdomain}`} className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={`/tenant/${tenant.slug}`} className="text-sm font-medium hover:text-primary transition-colors">
                 홈
               </Link>
-              <Link to={`/tenant/${subdomain}/courses`} className="text-sm font-medium text-primary">
+              <Link to={`/tenant/${tenant.slug}/courses`} className="text-sm font-medium text-primary">
                 강좌
               </Link>
               <Link to="/auth" className="text-sm font-medium hover:text-primary transition-colors">
@@ -155,12 +146,7 @@ const TenantCourses = () => {
         </div>
 
         {/* Courses Grid */}
-        {loading ? (
-          <div className="text-center py-12">
-            <AtomSpinner size="lg" className="mx-auto mb-4" />
-            <p className="text-muted-foreground">강좌를 불러오는 중...</p>
-          </div>
-        ) : filteredCourses.length === 0 ? (
+        {filteredCourses.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground">검색 결과가 없습니다.</p>
           </div>
@@ -206,7 +192,7 @@ const TenantCourses = () => {
                       {course.price?.toLocaleString()}원
                     </span>
                     <Button asChild>
-                      <Link to={`/tenant/${subdomain}/courses/${course.slug}`}>
+                      <Link to={`/tenant/${tenant.slug}/courses/${course.slug}`}>
                         자세히 보기
                       </Link>
                     </Button>
@@ -221,7 +207,7 @@ const TenantCourses = () => {
       {/* Footer */}
       <footer className="border-t py-8 px-4 bg-muted/30 mt-12">
         <div className="container mx-auto max-w-6xl text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 {tenantName}. All rights reserved.</p>
+          <p>&copy; 2024 {tenant.name}. All rights reserved.</p>
         </div>
       </footer>
     </div>

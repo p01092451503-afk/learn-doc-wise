@@ -1,78 +1,47 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, GraduationCap, TrendingUp, Users } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { AtomSpinner } from "@/components/AtomSpinner";
 
-interface TenantData {
-  id: string;
-  name: string;
-  subdomain: string;
-  custom_styles: {
-    primaryColor?: string;
-    secondaryColor?: string;
-    logoUrl?: string;
-    heroTitle?: string;
-    heroSubtitle?: string;
-    description?: string;
-    targetAudience?: string;
-    brandName?: string;
-  };
-}
-
 const TenantHome = () => {
-  const { subdomain } = useParams<{ subdomain: string }>();
-  const { language } = useLanguage();
-  const [tenant, setTenant] = useState<TenantData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { tenant, loading: tenantLoading } = useTenant();
   const [featuredCourses, setFeaturedCourses] = useState<any[]>([]);
+  const [customStyles, setCustomStyles] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTenantData();
-    fetchFeaturedCourses();
-  }, [subdomain]);
+    if (tenant) {
+      fetchCustomStyles();
+      fetchFeaturedCourses();
+    }
+  }, [tenant]);
 
-  const fetchTenantData = async () => {
+  const fetchCustomStyles = async () => {
+    if (!tenant) return;
+    
     try {
-      const { data: tenantData, error: tenantError } = await supabase
-        .from("tenants")
-        .select("id, name, subdomain")
-        .eq("subdomain", subdomain)
-        .single();
-
-      if (tenantError) throw tenantError;
-
-      const { data: settingsData, error: settingsError } = await supabase
+      const { data: settingsData } = await supabase
         .from("tenant_settings")
         .select("custom_styles")
-        .eq("tenant_id", tenantData.id)
+        .eq("tenant_id", tenant.id)
         .single();
 
-      if (settingsError) throw settingsError;
-
-      const styles = (settingsData?.custom_styles || {}) as TenantData['custom_styles'];
-      
-      setTenant({
-        ...tenantData,
-        custom_styles: styles,
-      });
-
-      // Apply custom colors
-      if (styles.primaryColor) {
-        document.documentElement.style.setProperty('--primary', styles.primaryColor);
-      }
+      setCustomStyles(settingsData?.custom_styles || {});
     } catch (error) {
-      console.error("Error fetching tenant data:", error);
+      console.error("Error fetching custom styles:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchFeaturedCourses = async () => {
+    if (!tenant) return;
+
     try {
       const { data, error } = await supabase
         .from("courses")
@@ -80,6 +49,7 @@ const TenantHome = () => {
           *,
           categories (name)
         `)
+        .eq("tenant_id", tenant.id)
         .eq("status", "published")
         .eq("is_featured", true)
         .limit(3);
@@ -91,7 +61,7 @@ const TenantHome = () => {
     }
   };
 
-  if (loading) {
+  if (tenantLoading || loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -117,7 +87,7 @@ const TenantHome = () => {
     );
   }
 
-  const styles = tenant.custom_styles;
+  const styles = customStyles;
 
   return (
     <div className="min-h-screen bg-background">
@@ -132,10 +102,10 @@ const TenantHome = () => {
               <h1 className="text-2xl font-bold">{styles.brandName || tenant.name}</h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
-              <Link to={`/tenant/${subdomain}`} className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={`/tenant/${tenant.slug}`} className="text-sm font-medium hover:text-primary transition-colors">
                 홈
               </Link>
-              <Link to={`/tenant/${subdomain}/courses`} className="text-sm font-medium hover:text-primary transition-colors">
+              <Link to={`/tenant/${tenant.slug}/courses`} className="text-sm font-medium hover:text-primary transition-colors">
                 강좌
               </Link>
               <Link to="/auth" className="text-sm font-medium hover:text-primary transition-colors">
@@ -160,7 +130,7 @@ const TenantHome = () => {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" asChild>
-              <Link to={`/tenant/${subdomain}/courses`}>강좌 둘러보기</Link>
+              <Link to={`/tenant/${tenant.slug}/courses`}>강좌 둘러보기</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
               <Link to="/auth">무료 체험하기</Link>
@@ -260,7 +230,7 @@ const TenantHome = () => {
                         {course.price?.toLocaleString()}원
                       </span>
                       <Button asChild>
-                        <Link to={`/tenant/${subdomain}/courses/${course.slug}`}>
+                        <Link to={`/tenant/${tenant.slug}/courses/${course.slug}`}>
                           자세히 보기
                         </Link>
                       </Button>
@@ -271,7 +241,7 @@ const TenantHome = () => {
             </div>
             <div className="text-center mt-8">
               <Button variant="outline" size="lg" asChild>
-                <Link to={`/tenant/${subdomain}/courses`}>
+                <Link to={`/tenant/${tenant.slug}/courses`}>
                   모든 강좌 보기
                 </Link>
               </Button>
@@ -295,7 +265,7 @@ const TenantHome = () => {
                 <Link to="/auth">무료로 시작하기</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to={`/tenant/${subdomain}/courses`}>강좌 둘러보기</Link>
+                <Link to={`/tenant/${tenant.slug}/courses`}>강좌 둘러보기</Link>
               </Button>
             </CardContent>
           </Card>
