@@ -107,6 +107,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [userName, setUserName] = useState<string>("사용자");
+  const [userEmail, setUserEmail] = useState<string>("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -324,6 +325,9 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
+          // Store user email for role filtering
+          setUserEmail(user.email || '');
+          
           const { data: profile } = await supabase
             .from('profiles')
             .select('full_name')
@@ -452,12 +456,15 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
                     관리자
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/operator" className="flex items-center cursor-pointer">
-                    <Building2 className="mr-2 h-4 w-4" />
-                    운영자
-                  </Link>
-                </DropdownMenuItem>
+                {/* DEMO ACCOUNT RESTRICTION: test@test.com cannot access operator role */}
+                {userEmail !== 'test@test.com' && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/operator" className="flex items-center cursor-pointer">
+                      <Building2 className="mr-2 h-4 w-4" />
+                      운영자
+                    </Link>
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
             
