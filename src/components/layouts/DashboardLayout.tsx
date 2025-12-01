@@ -41,7 +41,6 @@ import {
   HardDrive,
 } from "lucide-react";
 import logoIcon from "@/assets/logo-icon.png";
-import chatbotIcon from "@/assets/chatbot-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -659,17 +658,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
-
-      {/* AI Chatbot Button - Only for admin and operator */}
-      {!isDemoMode && (effectiveUserRole === "admin" || effectiveUserRole === "operator") && (
-        <Button
-          size="icon"
-          variant="premium"
-          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 h-14 w-14 md:h-16 md:w-16 rounded-full shadow-glow hover:shadow-elegant hover:scale-110 transition-all duration-300 z-50"
-        >
-          <img src={chatbotIcon} alt="AI Chatbot" className="h-7 w-7 md:h-8 md:w-8" />
-        </Button>
-      )}
     </div>
       )}
     </TooltipProvider>
