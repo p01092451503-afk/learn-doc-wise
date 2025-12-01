@@ -79,14 +79,11 @@ const StudentSettings = () => {
     
     setLoading(true);
     try {
-      // 프로필 업데이트
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          full_name: fullName,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("user_id", user.id);
+      // 프로필 업데이트 (암호화 RPC 사용)
+      const { error: profileError } = await supabase.rpc('update_profile', {
+        p_full_name: fullName,
+        p_phone_number: null, // phone_number 필드가 있다면 여기에 추가
+      });
       
       if (profileError) throw profileError;
       

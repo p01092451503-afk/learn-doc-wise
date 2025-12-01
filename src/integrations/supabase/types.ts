@@ -3537,6 +3537,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          phone_number: string | null
           rejection_reason: string | null
           suspended_until: string | null
           updated_at: string
@@ -3555,6 +3556,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone_number?: string | null
           rejection_reason?: string | null
           suspended_until?: string | null
           updated_at?: string
@@ -3573,6 +3575,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          phone_number?: string | null
           rejection_reason?: string | null
           suspended_until?: string | null
           updated_at?: string
@@ -4930,7 +4933,66 @@ export type Database = {
         }
         Returns: string
       }
+      decrypt_text: {
+        Args: { encrypted_text: string; encryption_key?: string }
+        Returns: string
+      }
+      encrypt_text: {
+        Args: { encryption_key?: string; plain_text: string }
+        Returns: string
+      }
       generate_contract_number: { Args: never; Returns: string }
+      get_counseling_logs: {
+        Args: {
+          p_counselor_id?: string
+          p_course_id?: string
+          p_student_id?: string
+        }
+        Returns: {
+          counseling_date: string
+          counseling_type: string
+          counselor_advice: string
+          counselor_id: string
+          course_id: string
+          created_at: string
+          follow_up_date: string
+          follow_up_needed: boolean
+          id: string
+          is_confidential: boolean
+          student_concerns: string
+          student_id: string
+          summary: string
+          updated_at: string
+        }[]
+      }
+      get_dropout_records: {
+        Args: { p_course_id?: string; p_refund_status?: string }
+        Returns: {
+          created_at: string
+          documents: Json
+          dropout_date: string
+          dropout_reason: string
+          enrollment_id: string
+          id: string
+          interview_notes: string
+          processed_at: string
+          processed_by: string
+          reason_category: string
+          refund_amount: number
+          refund_status: string
+        }[]
+      }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          created_at: string
+          full_name: string
+          phone_number: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       get_user_accessible_tenants: {
         Args: { _user_id: string }
         Returns: string[]
@@ -4959,6 +5021,34 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      insert_counseling_log: {
+        Args: {
+          p_counseling_date: string
+          p_counseling_type: string
+          p_counselor_advice: string
+          p_course_id: string
+          p_follow_up_date: string
+          p_follow_up_needed: boolean
+          p_is_confidential: boolean
+          p_student_concerns: string
+          p_student_id: string
+          p_summary: string
+        }
+        Returns: string
+      }
+      insert_dropout_record: {
+        Args: {
+          p_documents: Json
+          p_dropout_date: string
+          p_dropout_reason: string
+          p_enrollment_id: string
+          p_interview_notes: string
+          p_reason_category: string
+          p_refund_amount: number
+          p_refund_status: string
+        }
+        Returns: string
       }
       is_enrolled_or_admin: {
         Args: { p_course_id: string; p_user_id: string }
@@ -4993,6 +5083,10 @@ export type Database = {
       }
       update_daily_goal_progress: {
         Args: { p_lessons: number; p_minutes: number; p_user_id: string }
+        Returns: undefined
+      }
+      update_profile: {
+        Args: { p_full_name: string; p_phone_number?: string }
         Returns: undefined
       }
       update_streak: {

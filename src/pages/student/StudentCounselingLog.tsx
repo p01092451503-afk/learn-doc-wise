@@ -6,24 +6,33 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
 const StudentCounselingLog = () => {
-  // 내 상담 이력 조회 (비공개가 아닌 것만)
+  // 내 상담 이력 조회 (복호화 RPC 사용 - 비공개가 아닌 것만)
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ["my-counseling-logs"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      const { data, error } = await supabase
-        .from("counseling_logs")
-        .select(`
-          *,
-          courses (title),
-          profiles:counselor_id (full_name)
-        `)
-        .eq("student_id", user?.id)
-        .eq("is_confidential", false)
-        .order("counseling_date", { ascending: false });
+      
+      const { data: logsData, error: logsError } = await supabase.rpc('get_counseling_logs', {
+        p_student_id: user?.id,
+      });
 
-      if (error) throw error;
-      return data || [];
+      if (logsError) throw logsError;
+
+      // 관련 정보 조인 (courses, profiles)
+      const enrichedLogs = await Promise.all((logsData || []).map(async (log: any) => {
+        const [courseRes, profileRes] = await Promise.all([
+          supabase.from("courses").select("title").eq("id", log.course_id).single(),
+          supabase.from("profiles").select("full_name").eq("user_id", log.counselor_id).single(),
+        ]);
+        
+        return {
+          ...log,
+          courses: courseRes.data,
+          profiles: profileRes.data,
+        };
+      }));
+
+      return enrichedLogs;
     },
   });
 

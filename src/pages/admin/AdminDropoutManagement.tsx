@@ -17,25 +17,31 @@ const AdminDropoutManagement = () => {
   const { data: dropoutRecords = [], isLoading } = useQuery({
     queryKey: ["admin-dropout-records", selectedStatus],
     queryFn: async () => {
-      let query = supabase
-        .from("dropout_records")
-        .select(`
-          *,
-          enrollment:enrollment_id(
+      const { data: dropoutsData, error: dropoutsError } = await supabase.rpc('get_dropout_records', {
+        p_refund_status: selectedStatus && selectedStatus !== "all" ? selectedStatus : null,
+      });
+
+      if (dropoutsError) throw dropoutsError;
+
+      // enrollment 정보 조인
+      const enrichedDropouts = await Promise.all((dropoutsData || []).map(async (dropout: any) => {
+        const { data: enrollment } = await supabase
+          .from("enrollments")
+          .select(`
             user_id,
             course:course_id(title),
             student:user_id(full_name, email)
-          )
-        `)
-        .order("dropout_date", { ascending: false });
+          `)
+          .eq("id", dropout.enrollment_id)
+          .single();
+        
+        return {
+          ...dropout,
+          enrollment: enrollment,
+        };
+      }));
 
-      if (selectedStatus && selectedStatus !== "all") {
-        query = query.eq("refund_status", selectedStatus);
-      }
-
-      const { data, error } = await query;
-      if (error) throw error;
-      return data;
+      return enrichedDropouts;
     },
   });
 
