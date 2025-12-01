@@ -4258,6 +4258,53 @@ export type Database = {
           },
         ]
       }
+      tenant_sections: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_visible: boolean
+          section_type: string
+          settings: Json | null
+          tenant_id: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_type: string
+          settings?: Json | null
+          tenant_id: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_visible?: boolean
+          section_type?: string
+          settings?: Json | null
+          tenant_id?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_sections_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_settings: {
         Row: {
           created_at: string
@@ -4918,6 +4965,10 @@ export type Database = {
       }
       cleanup_expired_impersonation_sessions: {
         Args: never
+        Returns: undefined
+      }
+      create_default_tenant_sections: {
+        Args: { p_tenant_id: string }
         Returns: undefined
       }
       create_notification: {
