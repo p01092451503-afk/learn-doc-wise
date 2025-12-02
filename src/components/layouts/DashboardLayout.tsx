@@ -231,7 +231,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: DollarSign, label: "매출 관리", path: "/admin/revenue", enabled: true },
         { icon: Shield, label: "시스템 모니터링", path: "/admin/monitoring", enabled: true },
         { icon: Building2, label: "테넌트 설정", path: "/admin/tenant-settings", enabled: true },
-        { icon: Palette, label: "홈페이지 관리", path: "/admin/homepage-settings", enabled: true },
+        { icon: Palette, label: "홈페이지 관리", path: "/operator/homepage-settings", enabled: true },
         { icon: Settings, label: "시스템 설정", path: "/admin/settings", enabled: true },
       { icon: BookOpen, label: "매뉴얼", path: "/admin/manual", enabled: true },
     ];
