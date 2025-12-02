@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -198,10 +197,9 @@ const AdminMonitoring = () => {
   };
 
   return (
-    <DashboardLayout userRole="admin">
-      <div className="flex h-[calc(100vh-4rem)] gap-6">
-        {/* Left Sidebar - Cohort Selection */}
-        <div className="w-64 space-y-4">
+    <div className="flex h-screen bg-background">
+      {/* Left Sidebar - Cohort Selection */}
+      <div className="w-64 border-r bg-card p-6 space-y-4 overflow-y-auto">
           <div>
             <h2 className="text-lg font-semibold mb-4">진행 기수</h2>
             <div className="space-y-2">
@@ -224,10 +222,10 @@ const AdminMonitoring = () => {
               ))}
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* Main Area */}
-        <div className="flex-1 space-y-6 overflow-auto">
+      {/* Main Area */}
+      <div className="flex-1 p-8 space-y-6 overflow-auto">
           <div>
             <h1 className="text-3xl font-display font-bold flex items-center gap-2">
               <Monitor className="h-7 w-7 text-primary" />
@@ -359,7 +357,7 @@ const AdminMonitoring = () => {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 
