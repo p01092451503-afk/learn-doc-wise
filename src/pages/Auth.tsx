@@ -190,6 +190,18 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // First check if email exists in profiles
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('email', loginEmail)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Error checking email:', profileError);
+      }
+
+      // Attempt login
       const { error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
@@ -197,11 +209,20 @@ const Auth = () => {
 
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-          toast({
-            title: "로그인 실패",
-            description: "이메일 또는 비밀번호가 올바르지 않습니다.",
-            variant: "destructive",
-          });
+          // Check if email exists to provide specific error message
+          if (!profileData) {
+            toast({
+              title: "로그인 실패",
+              description: "가입되지 않은 이메일입니다.",
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "로그인 실패",
+              description: "비밀번호가 올바르지 않습니다.",
+              variant: "destructive",
+            });
+          }
         } else {
           toast({
             title: "로그인 실패",
