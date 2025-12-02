@@ -4409,7 +4409,7 @@ export type Database = {
           last_payment_date: string | null
           max_bandwidth_gb: number | null
           max_storage_gb: number
-          max_students: number
+          max_students: number | null
           metadata: Json | null
           name: string
           owner_id: string | null
@@ -4437,7 +4437,7 @@ export type Database = {
           last_payment_date?: string | null
           max_bandwidth_gb?: number | null
           max_storage_gb?: number
-          max_students?: number
+          max_students?: number | null
           metadata?: Json | null
           name: string
           owner_id?: string | null
@@ -4465,7 +4465,7 @@ export type Database = {
           last_payment_date?: string | null
           max_bandwidth_gb?: number | null
           max_storage_gb?: number
-          max_students?: number
+          max_students?: number | null
           metadata?: Json | null
           name?: string
           owner_id?: string | null
