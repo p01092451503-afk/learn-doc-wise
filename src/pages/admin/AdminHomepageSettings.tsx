@@ -40,11 +40,19 @@ export default function AdminHomepageSettings() {
     description: "",
   });
 
+  // Debug: Log tenant info
+  console.log('AdminHomepageSettings - Tenant:', tenant);
+
   // Fetch sections
   const { data: sections, isLoading } = useQuery({
     queryKey: ["tenant-sections", tenant?.id],
     queryFn: async () => {
-      if (!tenant?.id) return [];
+      if (!tenant?.id) {
+        console.log('No tenant ID available');
+        return [];
+      }
+      
+      console.log('Fetching sections for tenant:', tenant.id);
       
       // First, try to fetch existing sections
       const { data, error } = await supabase
@@ -53,10 +61,16 @@ export default function AdminHomepageSettings() {
         .eq("tenant_id", tenant.id)
         .order("display_order");
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching sections:', error);
+        throw error;
+      }
+      
+      console.log('Fetched sections:', data);
       
       // If no sections exist, create default ones
       if (!data || data.length === 0) {
+        console.log('No sections found, attempting to create default sections');
         // Call the function to create default sections
         const { error: createError } = await supabase.rpc(
           "create_default_tenant_sections",
