@@ -3768,6 +3768,86 @@ export type Database = {
         }
         Relationships: []
       }
+      student_activity_status: {
+        Row: {
+          cohort_id: string | null
+          created_at: string
+          current_content_id: string | null
+          current_course_id: string | null
+          id: string
+          is_focus: boolean | null
+          is_online: boolean | null
+          last_active_at: string | null
+          last_heartbeat_at: string | null
+          progress_percentage: number | null
+          status: string
+          tenant_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          created_at?: string
+          current_content_id?: string | null
+          current_course_id?: string | null
+          id?: string
+          is_focus?: boolean | null
+          is_online?: boolean | null
+          last_active_at?: string | null
+          last_heartbeat_at?: string | null
+          progress_percentage?: number | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cohort_id?: string | null
+          created_at?: string
+          current_content_id?: string | null
+          current_course_id?: string | null
+          id?: string
+          is_focus?: boolean | null
+          is_online?: boolean | null
+          last_active_at?: string | null
+          last_heartbeat_at?: string | null
+          progress_percentage?: number | null
+          status?: string
+          tenant_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_activity_status_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_status_current_content_id_fkey"
+            columns: ["current_content_id"]
+            isOneToOne: false
+            referencedRelation: "course_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_status_current_course_id_fkey"
+            columns: ["current_course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_status_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_activity_tracking: {
         Row: {
           cohort_id: string | null
