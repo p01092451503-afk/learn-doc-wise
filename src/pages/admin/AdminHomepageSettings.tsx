@@ -27,7 +27,7 @@ interface TenantSection {
   display_order: number;
   title: string | null;
   description: string | null;
-  settings: any;
+  settings: Record<string, any>;
 }
 
 export default function AdminHomepageSettings() {
@@ -40,19 +40,11 @@ export default function AdminHomepageSettings() {
     description: "",
   });
 
-  // Debug: Log tenant info
-  console.log('AdminHomepageSettings - Tenant:', tenant);
-
   // Fetch sections
   const { data: sections, isLoading } = useQuery({
     queryKey: ["tenant-sections", tenant?.id],
     queryFn: async () => {
-      if (!tenant?.id) {
-        console.log('No tenant ID available');
-        return [];
-      }
-      
-      console.log('Fetching sections for tenant:', tenant.id);
+      if (!tenant?.id) return [];
       
       // First, try to fetch existing sections
       const { data, error } = await supabase
@@ -61,26 +53,17 @@ export default function AdminHomepageSettings() {
         .eq("tenant_id", tenant.id)
         .order("display_order");
 
-      if (error) {
-        console.error('Error fetching sections:', error);
-        throw error;
-      }
-      
-      console.log('Fetched sections:', data);
+      if (error) throw error;
       
       // If no sections exist, create default ones
       if (!data || data.length === 0) {
-        console.log('No sections found, attempting to create default sections');
         // Call the function to create default sections
         const { error: createError } = await supabase.rpc(
           "create_default_tenant_sections",
           { p_tenant_id: tenant.id }
         );
         
-        if (createError) {
-          console.error("Error creating default sections:", createError);
-          throw createError;
-        }
+        if (createError) throw createError;
         
         // Fetch again after creating
         const { data: newData, error: fetchError } = await supabase
@@ -124,22 +107,21 @@ export default function AdminHomepageSettings() {
     },
   });
 
-  // Update order mutation
+  // Update order mutation - optimized with Promise.all
   const updateOrderMutation = useMutation({
     mutationFn: async (updatedSections: TenantSection[]) => {
-      const updates = updatedSections.map((section, index) => ({
-        id: section.id,
-        display_order: index + 1,
-      }));
-
-      for (const update of updates) {
-        const { error } = await supabase
+      const updates = updatedSections.map((section, index) => 
+        supabase
           .from("tenant_sections")
-          .update({ display_order: update.display_order })
-          .eq("id", update.id);
+          .update({ display_order: index + 1 })
+          .eq("id", section.id)
+      );
 
-        if (error) throw error;
-      }
+      const results = await Promise.all(updates);
+      
+      // Check if any update failed
+      const failedUpdate = results.find(result => result.error);
+      if (failedUpdate?.error) throw failedUpdate.error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tenant-sections"] });
@@ -232,6 +214,12 @@ export default function AdminHomepageSettings() {
     return names[type] || type;
   };
 
+  // Check if any mutation is pending
+  const isAnyPending = 
+    toggleVisibilityMutation.isPending || 
+    updateOrderMutation.isPending || 
+    updateContentMutation.isPending;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -273,6 +261,7 @@ export default function AdminHomepageSettings() {
                     <Switch
                       checked={section.is_visible}
                       onCheckedChange={() => handleToggleVisibility(section)}
+                      disabled={isAnyPending}
                     />
                   </CardTitle>
                   <CardDescription className="mt-2">
@@ -285,6 +274,7 @@ export default function AdminHomepageSettings() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleEditClick(section)}
+                    disabled={isAnyPending}
                   >
                     <Edit2 className="h-4 w-4" />
                   </Button>
@@ -292,7 +282,7 @@ export default function AdminHomepageSettings() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleMoveUp(index)}
-                    disabled={index === 0}
+                    disabled={index === 0 || isAnyPending}
                   >
                     <ArrowUp className="h-4 w-4" />
                   </Button>
@@ -300,7 +290,7 @@ export default function AdminHomepageSettings() {
                     size="sm"
                     variant="outline"
                     onClick={() => handleMoveDown(index)}
-                    disabled={index === sections.length - 1}
+                    disabled={index === sections.length - 1 || isAnyPending}
                   >
                     <ArrowDown className="h-4 w-4" />
                   </Button>
@@ -329,6 +319,7 @@ export default function AdminHomepageSettings() {
                 value={editForm.title}
                 onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                 placeholder="섹션 제목을 입력하세요"
+                disabled={updateContentMutation.isPending}
               />
             </div>
             <div className="space-y-2">
@@ -339,17 +330,25 @@ export default function AdminHomepageSettings() {
                 onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                 placeholder="섹션 설명을 입력하세요"
                 rows={4}
+                disabled={updateContentMutation.isPending}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditingSection(null)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setEditingSection(null)}
+              disabled={updateContentMutation.isPending}
+            >
               <X className="h-4 w-4 mr-2" />
               취소
             </Button>
-            <Button onClick={handleSaveEdit} disabled={updateContentMutation.isPending}>
+            <Button 
+              onClick={handleSaveEdit} 
+              disabled={updateContentMutation.isPending}
+            >
               <Save className="h-4 w-4 mr-2" />
-              저장
+              {updateContentMutation.isPending ? "저장 중..." : "저장"}
             </Button>
           </DialogFooter>
         </DialogContent>
