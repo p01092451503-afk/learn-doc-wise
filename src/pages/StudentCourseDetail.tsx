@@ -16,6 +16,7 @@ import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
 import { AITranslateDialog } from "@/components/ai/AITranslateDialog";
 import { CourseChatRoom } from "@/components/course/CourseChatRoom";
 import { AtomSpinner } from "@/components/AtomSpinner";
+import { useStudentActivityTracking } from "@/hooks/useStudentActivityTracking";
 
 interface Course {
   id: string;
@@ -63,6 +64,15 @@ const StudentCourseDetail = () => {
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [aiFeedbackOpen, setAiFeedbackOpen] = useState(false);
   const [aiTranslateOpen, setAiTranslateOpen] = useState(false);
+  const [cohortId, setCohortId] = useState<string | undefined>(undefined);
+
+  // 실시간 활동 추적 (데모 모드에서는 비활성화)
+  useStudentActivityTracking({
+    courseId: id || "",
+    cohortId,
+    contentId: currentContent?.id,
+    enabled: !isDemoMode && !!id,
+  });
 
   // 데모 모드 데이터 설정
   const setMockDemoData = () => {
@@ -189,25 +199,31 @@ const StudentCourseDetail = () => {
       // Check if already enrolled
       const { data: existingEnrollment } = await supabase
         .from("enrollments")
-        .select("id")
+        .select("id, cohort_id")
         .eq("user_id", user.id)
         .eq("course_id", id)
         .single();
 
       // If not enrolled, create enrollment
       if (!existingEnrollment) {
-        const { error } = await supabase
+        const { data: newEnrollment, error } = await supabase
           .from("enrollments")
           .insert({
             user_id: user.id,
             course_id: id,
             enrolled_at: new Date().toISOString(),
             progress: 0
-          });
+          })
+          .select("id, cohort_id")
+          .single();
 
         if (error) {
           console.error("Error creating enrollment:", error);
+        } else if (newEnrollment) {
+          setCohortId(newEnrollment.cohort_id || undefined);
         }
+      } else {
+        setCohortId(existingEnrollment.cohort_id || undefined);
       }
     } catch (error) {
       console.error("Error ensuring enrollment:", error);
