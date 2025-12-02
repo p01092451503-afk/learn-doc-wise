@@ -67,6 +67,7 @@ const menuItems: MenuItem[] = [
   { icon: Building2, label: "테넌트 관리", path: "/operator/tenants" },
   { icon: FileText, label: "계약 관리", path: "/operator/contracts" },
   { icon: Users, label: "대리 로그인 세션", path: "/operator/impersonation-logs" },
+  { icon: Layers, label: "홈페이지 관리", path: "/operator/homepage-settings" },
   { icon: BarChart3, label: "사용량 관리", path: "/operator/usage" },
   { icon: Brain, label: "AI 로그", path: "/operator/ai-logs", hasAI: true },
   { icon: DollarSign, label: "매출 관리", path: "/operator/revenue" },
