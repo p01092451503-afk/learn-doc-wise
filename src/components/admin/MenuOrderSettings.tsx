@@ -127,7 +127,7 @@ function SortableItem({ item, onToggle }: SortableItemProps) {
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+        className="cursor-grab active:cursor-grabbing text-foreground/60 hover:text-primary"
       >
         <GripVertical className="h-5 w-5" />
       </div>
