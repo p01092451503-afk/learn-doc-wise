@@ -117,6 +117,22 @@ const TenantHome = () => {
 
   const styles = customStyles;
 
+  // Render custom HTML/CSS if provided
+  const renderCustomContent = (section: any) => {
+    if (!section.settings?.customHtml && !section.settings?.customCss) return null;
+
+    return (
+      <div className="custom-section-content">
+        {section.settings?.customCss && (
+          <style dangerouslySetInnerHTML={{ __html: section.settings.customCss }} />
+        )}
+        {section.settings?.customHtml && (
+          <div dangerouslySetInnerHTML={{ __html: section.settings.customHtml }} />
+        )}
+      </div>
+    );
+  };
+
   // Render section based on type
   const renderSection = (section: any) => {
     switch (section.section_type) {
@@ -147,6 +163,7 @@ const TenantHome = () => {
                 </Button>
               </div>
             </div>
+            {renderCustomContent(section)}
           </section>
         );
 
@@ -196,6 +213,7 @@ const TenantHome = () => {
                 </Card>
               </div>
             </div>
+            {renderCustomContent(section)}
           </section>
         );
 
@@ -254,6 +272,7 @@ const TenantHome = () => {
                 </Button>
               </div>
             </div>
+            {renderCustomContent(section)}
           </section>
         ) : null;
 
@@ -281,6 +300,7 @@ const TenantHome = () => {
                 </CardContent>
               </Card>
             </div>
+            {renderCustomContent(section)}
           </section>
         );
 
