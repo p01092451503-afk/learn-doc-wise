@@ -11,9 +11,9 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground shadow-premium hover:shadow-elegant hover:scale-[1.02] active:scale-[0.98]",
         destructive: "bg-destructive text-destructive-foreground shadow-premium hover:shadow-elegant hover:scale-[1.02] active:scale-[0.98]",
-        outline: "border-2 border-primary/60 bg-background text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-premium transition-all",
+        outline: "border-2 border-primary/50 bg-primary/5 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-premium transition-all",
         secondary: "bg-secondary text-secondary-foreground shadow-premium hover:shadow-elegant hover:scale-[1.02] active:scale-[0.98]",
-        ghost: "bg-primary/8 text-foreground hover:bg-primary/20 hover:text-primary transition-all",
+        ghost: "bg-card border border-border text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all",
         link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
         premium: "bg-gradient-to-r from-primary via-primary-glow to-primary text-primary-foreground shadow-glow hover:shadow-elegant hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden before:absolute before:inset-0 before:bg-white/20 before:opacity-0 hover:before:opacity-100 before:transition-opacity",
         gold: "bg-gradient-to-r from-accent to-yellow-500 text-accent-foreground shadow-premium hover:shadow-elegant hover:scale-[1.02] active:scale-[0.98] font-bold",
