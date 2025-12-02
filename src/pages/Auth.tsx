@@ -533,7 +533,12 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full !bg-primary !text-primary-foreground" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    style={{ backgroundColor: 'hsl(262 83% 58%)', color: 'white' }}
+                    disabled={isLoading}
+                  >
                     {isLoading ? "로그인 중..." : "로그인"}
                   </Button>
                 </form>
@@ -622,7 +627,12 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full !bg-primary !text-primary-foreground" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    style={{ backgroundColor: 'hsl(262 83% 58%)', color: 'white' }}
+                    disabled={isLoading}
+                  >
                     {isLoading ? "가입 중..." : "회원가입"}
                   </Button>
                 </form>
