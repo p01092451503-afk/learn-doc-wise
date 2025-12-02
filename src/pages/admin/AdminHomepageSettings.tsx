@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useTenant } from "@/contexts/TenantContext";
-import { ArrowUp, ArrowDown, Edit2, Save, X } from "lucide-react";
+import { ArrowUp, ArrowDown, Edit2, Save, X, Building2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -18,6 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TenantSection {
   id: string;
@@ -30,37 +37,61 @@ interface TenantSection {
   settings: Record<string, any>;
 }
 
+interface TenantOption {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 export default function AdminHomepageSettings() {
   const { tenant } = useTenant();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [selectedTenantId, setSelectedTenantId] = useState<string>("");
   const [editingSection, setEditingSection] = useState<TenantSection | null>(null);
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
   });
 
+  // Fetch available tenants for operators
+  const { data: tenants } = useQuery({
+    queryKey: ["available-tenants"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tenants")
+        .select("id, name, slug")
+        .eq("is_active", true)
+        .order("name");
+      
+      if (error) throw error;
+      return data as TenantOption[];
+    },
+  });
+
+  // Determine effective tenant ID
+  const effectiveTenantId = tenant?.id || selectedTenantId;
+
   // Fetch sections
   const { data: sections, isLoading } = useQuery({
-    queryKey: ["tenant-sections", tenant?.id],
+    queryKey: ["tenant-sections", effectiveTenantId],
     queryFn: async () => {
-      if (!tenant?.id) return [];
+      if (!effectiveTenantId) return [];
       
       // First, try to fetch existing sections
       const { data, error } = await supabase
         .from("tenant_sections")
         .select("*")
-        .eq("tenant_id", tenant.id)
+        .eq("tenant_id", effectiveTenantId)
         .order("display_order");
 
       if (error) throw error;
       
       // If no sections exist, create default ones
       if (!data || data.length === 0) {
-        // Call the function to create default sections
         const { error: createError } = await supabase.rpc(
           "create_default_tenant_sections",
-          { p_tenant_id: tenant.id }
+          { p_tenant_id: effectiveTenantId }
         );
         
         if (createError) throw createError;
@@ -69,7 +100,7 @@ export default function AdminHomepageSettings() {
         const { data: newData, error: fetchError } = await supabase
           .from("tenant_sections")
           .select("*")
-          .eq("tenant_id", tenant.id)
+          .eq("tenant_id", effectiveTenantId)
           .order("display_order");
         
         if (fetchError) throw fetchError;
@@ -78,7 +109,7 @@ export default function AdminHomepageSettings() {
       
       return data as TenantSection[];
     },
-    enabled: !!tenant?.id,
+    enabled: !!effectiveTenantId,
   });
 
   // Toggle visibility mutation
@@ -231,6 +262,49 @@ export default function AdminHomepageSettings() {
     );
   }
 
+  // Show tenant selector if no tenant context (for operators)
+  if (!tenant && !selectedTenantId) {
+    return (
+      <div className="container mx-auto p-6 max-w-4xl">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">홈페이지 관리</h1>
+          <p className="text-muted-foreground">
+            메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
+          </p>
+        </div>
+
+        <Card className="p-8">
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="bg-muted rounded-full p-6">
+              <Building2 className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-semibold">테넌트를 선택하세요</h2>
+              <p className="text-muted-foreground">
+                홈페이지 설정을 관리할 테넌트를 선택해주세요.
+              </p>
+            </div>
+            <div className="w-full max-w-sm space-y-2">
+              <Label htmlFor="tenant-select">테넌트 선택</Label>
+              <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
+                <SelectTrigger id="tenant-select">
+                  <SelectValue placeholder="테넌트를 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tenants?.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>
+                      {t.name} ({t.slug})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="mb-6">
@@ -238,6 +312,27 @@ export default function AdminHomepageSettings() {
         <p className="text-muted-foreground">
           메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
         </p>
+        
+        {/* Tenant selector for operators */}
+        {!tenant && tenants && tenants.length > 0 && (
+          <div className="mt-4 flex items-center gap-3">
+            <Label htmlFor="tenant-select-header" className="whitespace-nowrap">
+              관리 중인 테넌트:
+            </Label>
+            <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
+              <SelectTrigger id="tenant-select-header" className="w-[300px]">
+                <SelectValue placeholder="테넌트 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {tenants.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
 
       {(!sections || sections.length === 0) && !isLoading ? (
