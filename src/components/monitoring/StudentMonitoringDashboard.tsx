@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, AlertTriangle } from "lucide-react";
+import { Users, Activity, AlertTriangle, Eye } from "lucide-react";
 import { CohortList } from "./CohortList";
 import { StudentCard } from "./StudentCard";
 import { AtomLoader } from "@/components/AtomLoader";
+import { EmptyState } from "@/components/operator/EmptyState";
 
 interface Cohort {
   id: string;
@@ -221,25 +222,28 @@ export function StudentMonitoringDashboard() {
 
   if (loading && cohorts.length === 0) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center min-h-[400px]">
         <AtomLoader />
       </div>
     );
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* 헤더 */}
-      <div className="border-b bg-card px-6 py-4">
-        <h1 className="text-2xl font-bold">실시간 훈련생 모니터링</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-2">
+          <Eye className="h-7 w-7 text-primary" />
+          실시간 훈련생 모니터링
+        </h1>
+        <p className="text-muted-foreground">
           K-Digital Training 심사 요건 대응 시스템
         </p>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* 왼쪽 사이드바: 기수 목록 */}
-        <div className="w-80 border-r bg-card p-4 overflow-y-auto">
+      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+        {/* 왼쪽: 기수 목록 */}
+        <div>
           <CohortList
             cohorts={cohorts}
             selectedCohortId={selectedCohortId}
@@ -247,58 +251,30 @@ export function StudentMonitoringDashboard() {
           />
         </div>
 
-        {/* 메인 영역 */}
-        <div className="flex-1 overflow-y-auto p-6">
+        {/* 오른쪽: 통계 및 학생 목록 */}
+        <div className="space-y-6">
           {/* 상단 요약 통계 */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  총 수강생
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{totalStudents}</div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  등록된 전체 학생
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Activity className="h-4 w-4 text-green-500" />
-                  현재 접속자
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-500">
-                  {onlineStudents}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  온라인 학습 중
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-destructive" />
-                  이탈 의심자
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-destructive">
-                  {alertStudents}
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  즉시 확인 필요
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid gap-4 md:grid-cols-3">
+            <StatsCard
+              title="총 수강생"
+              value={totalStudents.toString()}
+              icon={<Users className="h-4 w-4" />}
+              description="등록된 전체 학생"
+            />
+            <StatsCard
+              title="현재 접속자"
+              value={onlineStudents.toString()}
+              icon={<Activity className="h-4 w-4 text-green-500" />}
+              description="온라인 학습 중"
+              valueColor="text-green-500"
+            />
+            <StatsCard
+              title="이탈 의심자"
+              value={alertStudents.toString()}
+              icon={<AlertTriangle className="h-4 w-4 text-destructive" />}
+              description="즉시 확인 필요"
+              valueColor="text-destructive"
+            />
           </div>
 
           {/* 학생 카드 그리드 */}
@@ -307,16 +283,18 @@ export function StudentMonitoringDashboard() {
               <AtomLoader />
             </div>
           ) : students.length === 0 ? (
-            <Card className="py-12">
-              <CardContent>
-                <div className="text-center text-muted-foreground">
-                  <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>등록된 학생이 없습니다</p>
-                </div>
+            <Card>
+              <CardContent className="py-12">
+                <EmptyState
+                  icon={Users}
+                  title="등록된 학생이 없습니다"
+                  description="선택한 기수에 등록된 학생이 없습니다"
+                  theme="light"
+                />
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {students.map((student) => (
                 <StudentCard key={student.studentId} {...student} />
               ))}
@@ -327,3 +305,28 @@ export function StudentMonitoringDashboard() {
     </div>
   );
 }
+
+const StatsCard = ({
+  title,
+  value,
+  icon,
+  description,
+  valueColor = "text-foreground",
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  description: string;
+  valueColor?: string;
+}) => (
+  <Card className="overflow-hidden">
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle className="text-sm font-medium whitespace-nowrap">{title}</CardTitle>
+      <div className="text-muted-foreground flex-shrink-0">{icon}</div>
+    </CardHeader>
+    <CardContent className="space-y-1 min-w-0">
+      <div className={`text-2xl font-bold ${valueColor}`}>{value}</div>
+      <p className="text-xs text-muted-foreground whitespace-nowrap">{description}</p>
+    </CardContent>
+  </Card>
+);

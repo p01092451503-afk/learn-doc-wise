@@ -1,5 +1,10 @@
 import { StudentMonitoringDashboard } from "@/components/monitoring/StudentMonitoringDashboard";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 export default function AdminStudentMonitoring() {
-  return <StudentMonitoringDashboard />;
+  return (
+    <DashboardLayout userRole="admin">
+      <StudentMonitoringDashboard />
+    </DashboardLayout>
+  );
 }
