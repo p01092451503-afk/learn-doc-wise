@@ -843,6 +843,57 @@ export type Database = {
           },
         ]
       }
+      cohorts: {
+        Row: {
+          course_id: string | null
+          created_at: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          start_date: string
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          start_date: string
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          start_date?: string
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohorts_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cohorts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_comments: {
         Row: {
           author_id: string
@@ -1646,6 +1697,7 @@ export type Database = {
       }
       enrollments: {
         Row: {
+          cohort_id: string | null
           completed_at: string | null
           course_id: string
           enrolled_at: string
@@ -1655,6 +1707,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cohort_id?: string | null
           completed_at?: string | null
           course_id: string
           enrolled_at?: string
@@ -1664,6 +1717,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cohort_id?: string | null
           completed_at?: string | null
           course_id?: string
           enrolled_at?: string
@@ -1673,6 +1727,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "enrollments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "enrollments_course_id_fkey"
             columns: ["course_id"]
@@ -3706,6 +3767,83 @@ export type Database = {
           video_bytes?: number
         }
         Relationships: []
+      }
+      student_activity_tracking: {
+        Row: {
+          cohort_id: string | null
+          course_id: string | null
+          created_at: string | null
+          current_content_id: string | null
+          id: string
+          is_focused: boolean | null
+          is_online: boolean | null
+          last_activity_at: string | null
+          last_mouse_movement_at: string | null
+          session_start_at: string | null
+          tenant_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          current_content_id?: string | null
+          id?: string
+          is_focused?: boolean | null
+          is_online?: boolean | null
+          last_activity_at?: string | null
+          last_mouse_movement_at?: string | null
+          session_start_at?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cohort_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          current_content_id?: string | null
+          id?: string
+          is_focused?: boolean | null
+          is_online?: boolean | null
+          last_activity_at?: string | null
+          last_mouse_movement_at?: string | null
+          session_start_at?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_activity_tracking_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_tracking_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_tracking_current_content_id_fkey"
+            columns: ["current_content_id"]
+            isOneToOne: false
+            referencedRelation: "course_contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_activity_tracking_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       study_group_comments: {
         Row: {
