@@ -533,7 +533,7 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
+                  <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "로그인 중..." : "로그인"}
                   </Button>
                 </form>
@@ -622,7 +622,7 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
+                  <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "가입 중..." : "회원가입"}
                   </Button>
                 </form>
