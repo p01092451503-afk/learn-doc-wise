@@ -37,7 +37,12 @@ const Auth = () => {
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [isResetLoading, setIsResetLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast, toasts } = useToast();
+
+  // Debug: Log toasts state changes
+  useEffect(() => {
+    console.log('Toasts state changed:', toasts);
+  }, [toasts]);
 
   // Load remembered email and create demo users on mount
   useEffect(() => {
@@ -171,24 +176,37 @@ const Auth = () => {
     const passwordValidation = passwordSchema.safeParse(loginPassword);
 
     if (!emailValidation.success) {
+      console.log('Email validation failed');
+      console.log('Calling toast with:', {
+        title: "입력 오류",
+        description: emailValidation.error.errors[0].message,
+      });
       toast({
         title: "입력 오류",
         description: emailValidation.error.errors[0].message,
         variant: "destructive",
       });
+      console.log('Toast called');
       return;
     }
 
     if (!passwordValidation.success) {
+      console.log('Password validation failed');
+      console.log('Calling toast with:', {
+        title: "입력 오류",
+        description: passwordValidation.error.errors[0].message,
+      });
       toast({
         title: "입력 오류",
         description: passwordValidation.error.errors[0].message,
         variant: "destructive",
       });
+      console.log('Toast called');
       return;
     }
 
     setIsLoading(true);
+    console.log('Starting authentication process');
 
     try {
       // First check if email exists in profiles
@@ -197,6 +215,8 @@ const Auth = () => {
         .select('email')
         .eq('email', loginEmail)
         .maybeSingle();
+
+      console.log('Profile check result:', { profileData, profileError });
 
       if (profileError) {
         console.error('Error checking email:', profileError);
@@ -208,31 +228,41 @@ const Auth = () => {
         password: loginPassword,
       });
 
+      console.log('Login attempt result:', { error: error?.message });
+
       if (error) {
-        console.error('Login error:', error);
-        let errorMessage = "로그인에 실패했습니다.";
-        
+        console.log('Login error detected:', error.message);
         if (error.message.includes("Invalid login credentials")) {
           // Check if email exists to provide specific error message
           if (!profileData) {
-            errorMessage = "가입되지 않은 이메일입니다.";
+            console.log('Showing unregistered email message');
+            console.log('Calling toast for unregistered email');
+            toast({
+              title: "로그인 실패",
+              description: "가입되지 않은 이메일입니다.",
+              variant: "destructive",
+            });
+            console.log('Toast called for unregistered email');
           } else {
-            errorMessage = "비밀번호가 올바르지 않습니다.";
+            console.log('Showing wrong password message');
+            console.log('Calling toast for wrong password');
+            toast({
+              title: "로그인 실패",
+              description: "비밀번호가 올바르지 않습니다.",
+              variant: "destructive",
+            });
+            console.log('Toast called for wrong password');
           }
         } else {
-          errorMessage = error.message;
+          console.log('Showing generic error message');
+          toast({
+            title: "로그인 실패",
+            description: error.message,
+            variant: "destructive",
+          });
         }
-        
-        console.log('Showing error toast:', errorMessage);
-        toast({
-          title: "로그인 실패",
-          description: errorMessage,
-          variant: "destructive",
-        });
-        
-        // Also show alert as fallback
-        alert(`로그인 실패: ${errorMessage}`);
       } else {
+        console.log('Login successful');
         // Save email if remember me is checked
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", loginEmail);
@@ -534,12 +564,7 @@ const Auth = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    style={{ backgroundColor: 'hsl(262 83% 58%)', color: 'white' }}
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
                     {isLoading ? "로그인 중..." : "로그인"}
                   </Button>
                 </form>
@@ -628,12 +653,7 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    style={{ backgroundColor: 'hsl(262 83% 58%)', color: 'white' }}
-                    disabled={isLoading}
-                  >
+                  <Button type="submit" className="w-full" disabled={isLoading} variant="premium">
                     {isLoading ? "가입 중..." : "회원가입"}
                   </Button>
                 </form>

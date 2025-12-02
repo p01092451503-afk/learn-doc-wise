@@ -3,10 +3,14 @@ import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastVi
 
 export function Toaster() {
   const { toasts } = useToast();
+  
+  // Debug log
+  console.log('[TOASTER] Rendering with toasts:', toasts.length);
 
   return (
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
+        console.log('[TOASTER] Rendering toast:', { id, title, description });
         return (
           <Toast key={id} {...props}>
             <div className="grid gap-1">

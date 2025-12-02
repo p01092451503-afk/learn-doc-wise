@@ -97,7 +97,6 @@ const iconMap: { [key: string]: any } = {
   CreditCard,
   Coins,
   HardDrive,
-  Eye,
 };
 
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
@@ -185,7 +184,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         ...baseItems,
         { icon: BookOpen, label: "담당 강의", path: "/teacher/courses", enabled: true },
         { icon: Users, label: "학생 관리", path: "/teacher/students", enabled: true },
-        { icon: Eye, label: "실시간 모니터링", path: "/teacher/student-monitoring", enabled: true, isHRD: true },
         { icon: FileText, label: "과제 관리", path: "/teacher/assignments", enabled: true, hasAI: true },
         { icon: CalendarCheck, label: "출석 관리", path: "/teacher/attendance", enabled: true },
         { icon: CalendarCheck, label: "출결 상세", path: "/teacher/attendance-detail", enabled: true, isHRD: true },
@@ -221,7 +219,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       { icon: Users, label: "회원 관리", path: "/admin/users", enabled: true },
       { icon: BookOpen, label: "강좌 & 차시 관리", path: "/admin/courses", enabled: true },
       { icon: BarChart3, label: "학습 관리", path: "/admin/learning", enabled: true, hasAI: true },
-      { icon: Eye, label: "실시간 모니터링", path: "/admin/student-monitoring", enabled: true, isHRD: true },
       { icon: CalendarCheck, label: "출석 관리", path: "/admin/attendance", enabled: true, isHRD: true },
       { icon: ClipboardList, label: "훈련일지", path: "/admin/training-log", enabled: true, isHRD: true },
       { icon: MessageSquare, label: "만족도 조사", path: "/admin/satisfaction-survey", enabled: true, isHRD: true },

@@ -54,10 +54,8 @@ const AdminGrades = lazy(() => import("./pages/admin/AdminGrades"));
 const AdminManual = lazy(() => import("./pages/admin/AdminManual"));
 const AdminTrainingAllowance = lazy(() => import("./pages/admin/AdminTrainingAllowance"));
 const AdminTenantSettings = lazy(() => import("./pages/admin/AdminTenantSettings"));
-const AdminStudentMonitoring = lazy(() => import("./pages/admin/AdminStudentMonitoring"));
 const OperatorHomepageSettings = lazy(() => import("./pages/operator/OperatorHomepageSettings"));
 const TeacherTrainingLog = lazy(() => import("./pages/teacher/TeacherTrainingLog"));
-const TeacherStudentMonitoring = lazy(() => import("./pages/teacher/TeacherStudentMonitoring"));
 const TeacherSatisfactionSurvey = lazy(() => import("./pages/teacher/TeacherSatisfactionSurvey"));
 const TeacherCounselingLog = lazy(() => import("./pages/teacher/TeacherCounselingLog"));
 const TeacherDropoutManagement = lazy(() => import("./pages/teacher/TeacherDropoutManagement"));
@@ -176,7 +174,6 @@ const AppRoutes = () => {
         <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
         <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
         <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
-        <Route path="/teacher/student-monitoring" element={<TeacherStudentMonitoring />} />
         <Route path="/teacher/live/:sessionId" element={<TeacherLiveSession />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/operator" element={<OperatorDashboard />} />
@@ -217,7 +214,6 @@ const AppRoutes = () => {
         <Route path="/admin/analytics" element={<AdminAnalytics />} />
         <Route path="/admin/settings" element={<AdminSettings />} />
         <Route path="/admin/tenant-settings" element={<AdminTenantSettings />} />
-        <Route path="/admin/student-monitoring" element={<AdminStudentMonitoring />} />
         <Route path="/operator/homepage-settings" element={<OperatorHomepageSettings />} />
         <Route path="/admin/live/:sessionId" element={<AdminLiveSession />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
