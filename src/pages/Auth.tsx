@@ -209,28 +209,29 @@ const Auth = () => {
       });
 
       if (error) {
+        console.error('Login error:', error);
+        let errorMessage = "로그인에 실패했습니다.";
+        
         if (error.message.includes("Invalid login credentials")) {
           // Check if email exists to provide specific error message
           if (!profileData) {
-            toast({
-              title: "로그인 실패",
-              description: "가입되지 않은 이메일입니다.",
-              variant: "destructive",
-            });
+            errorMessage = "가입되지 않은 이메일입니다.";
           } else {
-            toast({
-              title: "로그인 실패",
-              description: "비밀번호가 올바르지 않습니다.",
-              variant: "destructive",
-            });
+            errorMessage = "비밀번호가 올바르지 않습니다.";
           }
         } else {
-          toast({
-            title: "로그인 실패",
-            description: error.message,
-            variant: "destructive",
-          });
+          errorMessage = error.message;
         }
+        
+        console.log('Showing error toast:', errorMessage);
+        toast({
+          title: "로그인 실패",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        
+        // Also show alert as fallback
+        alert(`로그인 실패: ${errorMessage}`);
       } else {
         // Save email if remember me is checked
         if (rememberMe) {
