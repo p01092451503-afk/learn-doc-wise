@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import OperatorLayout from "@/components/layouts/OperatorLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useTenant } from "@/contexts/TenantContext";
-import { ArrowUp, ArrowDown, Edit2, Save, X, Building2, Eye, Code } from "lucide-react";
+import { ArrowUp, ArrowDown, Edit2, Save, X, Building2, Eye, Code, Palette } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -26,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 interface TenantSection {
   id: string;
@@ -280,248 +282,282 @@ export default function OperatorHomepageSettings() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">로딩 중...</p>
+      <OperatorLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">로딩 중...</p>
+          </div>
         </div>
-      </div>
+      </OperatorLayout>
     );
   }
 
   // Show tenant selector if no tenant is selected
   if (!selectedTenantId) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">홈페이지 관리</h1>
-          <p className="text-muted-foreground">
-            메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
-          </p>
-        </div>
-
-        <Card className="p-8">
-          <div className="flex flex-col items-center justify-center space-y-6">
-            <div className="bg-muted rounded-full p-6">
-              <Building2 className="h-12 w-12 text-muted-foreground" />
-            </div>
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-semibold">테넌트를 선택하세요</h2>
-              <p className="text-muted-foreground">
-                홈페이지 설정을 관리할 테넌트를 선택해주세요.
-              </p>
-            </div>
-            <div className="w-full max-w-sm space-y-2">
-              <Label htmlFor="tenant-select">테넌트 선택</Label>
-              <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
-                <SelectTrigger id="tenant-select">
-                  <SelectValue placeholder="테넌트를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {tenants?.map((t) => (
-                    <SelectItem key={t.id} value={t.id}>
-                      {t.name} ({t.slug})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+      <OperatorLayout>
+        <div className="space-y-6">
+          {/* Page Header */}
+          <div className="flex items-start justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary/10 p-2.5 rounded-lg">
+                  <Palette className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold tracking-tight">홈페이지 관리</h1>
+                  <p className="text-muted-foreground mt-1">
+                    메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </Card>
-      </div>
+
+          {/* Tenant Selection Card */}
+          <Card>
+            <CardContent className="p-12">
+              <div className="flex flex-col items-center justify-center space-y-6">
+                <div className="bg-primary/10 rounded-full p-6">
+                  <Building2 className="h-12 w-12 text-primary" />
+                </div>
+                <div className="text-center space-y-2">
+                  <h2 className="text-2xl font-semibold">테넌트를 선택하세요</h2>
+                  <p className="text-muted-foreground">
+                    홈페이지 설정을 관리할 테넌트를 선택해주세요.
+                  </p>
+                </div>
+                <div className="w-full max-w-sm space-y-2">
+                  <Label htmlFor="tenant-select">테넌트 선택</Label>
+                  <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
+                    <SelectTrigger id="tenant-select">
+                      <SelectValue placeholder="테넌트를 선택하세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tenants?.map((t) => (
+                        <SelectItem key={t.id} value={t.id}>
+                          {t.name} ({t.slug})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </OperatorLayout>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold">홈페이지 관리</h1>
+    <OperatorLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-2.5 rounded-lg">
+                <Palette className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">홈페이지 관리</h1>
+                <p className="text-muted-foreground mt-1">
+                  메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
+                </p>
+              </div>
+            </div>
+          </div>
           <Button onClick={handlePreview} disabled={!effectiveTenantId}>
             <Eye className="h-4 w-4 mr-2" />
             미리보기
           </Button>
         </div>
-        <p className="text-muted-foreground">
-          메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
-        </p>
-        
-        {/* Tenant selector for operators */}
+
+        {/* Tenant Selector */}
         {tenants && tenants.length > 0 && (
-          <div className="mt-4 flex items-center gap-3">
-            <Label htmlFor="tenant-select-header" className="whitespace-nowrap">
-              관리 중인 테넌트:
-            </Label>
-            <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
-              <SelectTrigger id="tenant-select-header" className="w-[300px]">
-                <SelectValue placeholder="테넌트 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {tenants.map((t) => (
-                  <SelectItem key={t.id} value={t.id}>
-                    {t.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Label htmlFor="tenant-select-header" className="whitespace-nowrap font-medium">
+                  관리 중인 테넌트:
+                </Label>
+                <Select value={selectedTenantId} onValueChange={setSelectedTenantId}>
+                  <SelectTrigger id="tenant-select-header" className="w-[300px]">
+                    <SelectValue placeholder="테넌트 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tenants.map((t) => (
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Sections List */}
+        {(!sections || sections.length === 0) && !isLoading ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <p className="text-muted-foreground mb-4">아직 섹션이 없습니다.</p>
+              <Button
+                onClick={() => queryClient.invalidateQueries({ queryKey: ["tenant-sections"] })}
+              >
+                새로고침
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {sections?.map((section, index) => (
+              <Card key={section.id}>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="flex items-center gap-3">
+                        {getSectionTypeName(section.section_type)}
+                        <Switch
+                          checked={section.is_visible}
+                          onCheckedChange={() => handleToggleVisibility(section)}
+                          disabled={isAnyPending}
+                        />
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        {section.title && <div className="font-medium">{section.title}</div>}
+                        {section.description && <div className="text-sm">{section.description}</div>}
+                      </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEditClick(section)}
+                        disabled={isAnyPending}
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleMoveUp(index)}
+                        disabled={index === 0 || isAnyPending}
+                      >
+                        <ArrowUp className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleMoveDown(index)}
+                        disabled={index === sections.length - 1 || isAnyPending}
+                      >
+                        <ArrowDown className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
           </div>
         )}
+
+        {/* Edit Dialog */}
+        <Dialog open={!!editingSection} onOpenChange={(open) => !open && setEditingSection(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>섹션 수정</DialogTitle>
+              <DialogDescription>
+                {editingSection && getSectionTypeName(editingSection.section_type)} 섹션의 내용을 수정합니다.
+              </DialogDescription>
+            </DialogHeader>
+            <Tabs defaultValue="basic" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="basic">기본 설정</TabsTrigger>
+                <TabsTrigger value="custom">
+                  <Code className="h-4 w-4 mr-2" />
+                  커스텀 코드
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="basic" className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">제목</Label>
+                  <Input
+                    id="title"
+                    value={editForm.title}
+                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    placeholder="섹션 제목을 입력하세요"
+                    disabled={updateContentMutation.isPending}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">설명</Label>
+                  <Textarea
+                    id="description"
+                    value={editForm.description}
+                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                    placeholder="섹션 설명을 입력하세요"
+                    rows={4}
+                    disabled={updateContentMutation.isPending}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="custom" className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="customHtml">커스텀 HTML</Label>
+                  <Textarea
+                    id="customHtml"
+                    value={editForm.customHtml}
+                    onChange={(e) => setEditForm({ ...editForm, customHtml: e.target.value })}
+                    placeholder="<div>커스텀 HTML 코드를 입력하세요</div>"
+                    rows={8}
+                    className="font-mono text-sm"
+                    disabled={updateContentMutation.isPending}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    이 HTML은 기본 섹션 내용 아래에 추가됩니다.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="customCss">커스텀 CSS</Label>
+                  <Textarea
+                    id="customCss"
+                    value={editForm.customCss}
+                    onChange={(e) => setEditForm({ ...editForm, customCss: e.target.value })}
+                    placeholder=".custom-class { color: #8B5CF6; }"
+                    rows={8}
+                    className="font-mono text-sm"
+                    disabled={updateContentMutation.isPending}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    섹션에 적용할 CSS 스타일을 입력하세요.
+                  </p>
+                </div>
+              </TabsContent>
+            </Tabs>
+            <DialogFooter>
+              <Button 
+                variant="outline" 
+                onClick={() => setEditingSection(null)}
+                disabled={updateContentMutation.isPending}
+              >
+                <X className="h-4 w-4 mr-2" />
+                취소
+              </Button>
+              <Button 
+                onClick={handleSaveEdit} 
+                disabled={updateContentMutation.isPending}
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {updateContentMutation.isPending ? "저장 중..." : "저장"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-
-      {(!sections || sections.length === 0) && !isLoading ? (
-        <Card className="p-12 text-center">
-          <p className="text-muted-foreground mb-4">아직 섹션이 없습니다.</p>
-          <Button
-            onClick={() => queryClient.invalidateQueries({ queryKey: ["tenant-sections"] })}
-          >
-            새로고침
-          </Button>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {sections?.map((section, index) => (
-          <Card key={section.id}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <CardTitle className="flex items-center gap-3">
-                    {getSectionTypeName(section.section_type)}
-                    <Switch
-                      checked={section.is_visible}
-                      onCheckedChange={() => handleToggleVisibility(section)}
-                      disabled={isAnyPending}
-                    />
-                  </CardTitle>
-                  <CardDescription className="mt-2">
-                    {section.title && <div className="font-medium">{section.title}</div>}
-                    {section.description && <div className="text-sm">{section.description}</div>}
-                  </CardDescription>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleEditClick(section)}
-                    disabled={isAnyPending}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleMoveUp(index)}
-                    disabled={index === 0 || isAnyPending}
-                  >
-                    <ArrowUp className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleMoveDown(index)}
-                    disabled={index === sections.length - 1 || isAnyPending}
-                  >
-                    <ArrowDown className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-        ))}
-        </div>
-      )}
-
-      {/* Edit Dialog */}
-      <Dialog open={!!editingSection} onOpenChange={(open) => !open && setEditingSection(null)}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>섹션 수정</DialogTitle>
-            <DialogDescription>
-              {editingSection && getSectionTypeName(editingSection.section_type)} 섹션의 내용을 수정합니다.
-            </DialogDescription>
-          </DialogHeader>
-          <Tabs defaultValue="basic" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="basic">기본 설정</TabsTrigger>
-              <TabsTrigger value="custom">
-                <Code className="h-4 w-4 mr-2" />
-                커스텀 코드
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="basic" className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">제목</Label>
-                <Input
-                  id="title"
-                  value={editForm.title}
-                  onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                  placeholder="섹션 제목을 입력하세요"
-                  disabled={updateContentMutation.isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">설명</Label>
-                <Textarea
-                  id="description"
-                  value={editForm.description}
-                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  placeholder="섹션 설명을 입력하세요"
-                  rows={4}
-                  disabled={updateContentMutation.isPending}
-                />
-              </div>
-            </TabsContent>
-            <TabsContent value="custom" className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="customHtml">커스텀 HTML</Label>
-                <Textarea
-                  id="customHtml"
-                  value={editForm.customHtml}
-                  onChange={(e) => setEditForm({ ...editForm, customHtml: e.target.value })}
-                  placeholder="<div>커스텀 HTML 코드를 입력하세요</div>"
-                  rows={8}
-                  className="font-mono text-sm"
-                  disabled={updateContentMutation.isPending}
-                />
-                <p className="text-xs text-muted-foreground">
-                  이 HTML은 기본 섹션 내용 아래에 추가됩니다.
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="customCss">커스텀 CSS</Label>
-                <Textarea
-                  id="customCss"
-                  value={editForm.customCss}
-                  onChange={(e) => setEditForm({ ...editForm, customCss: e.target.value })}
-                  placeholder=".custom-class { color: #8B5CF6; }"
-                  rows={8}
-                  className="font-mono text-sm"
-                  disabled={updateContentMutation.isPending}
-                />
-                <p className="text-xs text-muted-foreground">
-                  섹션에 적용할 CSS 스타일을 입력하세요.
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
-          <DialogFooter>
-            <Button 
-              variant="outline" 
-              onClick={() => setEditingSection(null)}
-              disabled={updateContentMutation.isPending}
-            >
-              <X className="h-4 w-4 mr-2" />
-              취소
-            </Button>
-            <Button 
-              onClick={handleSaveEdit} 
-              disabled={updateContentMutation.isPending}
-            >
-              <Save className="h-4 w-4 mr-2" />
-              {updateContentMutation.isPending ? "저장 중..." : "저장"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+    </OperatorLayout>
   );
 }
