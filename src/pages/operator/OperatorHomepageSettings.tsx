@@ -44,7 +44,7 @@ interface TenantOption {
   slug: string;
 }
 
-export default function AdminHomepageSettings() {
+export default function OperatorHomepageSettings() {
   const { tenant } = useTenant();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -73,7 +73,7 @@ export default function AdminHomepageSettings() {
   });
 
   // Determine effective tenant ID
-  const effectiveTenantId = tenant?.id || selectedTenantId;
+  const effectiveTenantId = selectedTenantId;
 
   // Fetch sections
   const { data: sections, isLoading } = useQuery({
@@ -256,7 +256,7 @@ export default function AdminHomepageSettings() {
   };
 
   const handlePreview = () => {
-    const tenantSlug = tenants?.find(t => t.id === effectiveTenantId)?.slug || tenant?.slug;
+    const tenantSlug = tenants?.find(t => t.id === effectiveTenantId)?.slug;
     if (tenantSlug) {
       window.open(`/tenant/${tenantSlug}`, '_blank');
     }
@@ -289,8 +289,8 @@ export default function AdminHomepageSettings() {
     );
   }
 
-  // Show tenant selector if no tenant context (for operators)
-  if (!tenant && !selectedTenantId) {
+  // Show tenant selector if no tenant is selected
+  if (!selectedTenantId) {
     return (
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="mb-6">
@@ -347,7 +347,7 @@ export default function AdminHomepageSettings() {
         </p>
         
         {/* Tenant selector for operators */}
-        {!tenant && tenants && tenants.length > 0 && (
+        {tenants && tenants.length > 0 && (
           <div className="mt-4 flex items-center gap-3">
             <Label htmlFor="tenant-select-header" className="whitespace-nowrap">
               관리 중인 테넌트:
