@@ -52,9 +52,12 @@ export async function resolveTenant(): Promise<Tenant | null> {
 
       let tenant: Tenant | null = null;
 
-      // 🔧 DEBUG MODE: localhost에서 테스트용 테넌트 자동 로드
-      if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-        console.log('🔧 [DEBUG] Localhost detected - Loading demo tenant');
+      // 🔧 DEBUG MODE: localhost 및 Lovable 프리뷰 도메인에서 테스트용 테넌트 자동 로드
+      if (hostname.includes('localhost') || 
+          hostname.includes('127.0.0.1') ||
+          hostname.includes('lovable.app') ||
+          hostname.includes('lovableproject.com')) {
+        console.log('🔧 [DEBUG] Development environment detected - Loading demo tenant');
         
         // URL에서 subdomain 파라미터를 먼저 확인
         const urlPath = window.location.pathname;
@@ -69,7 +72,7 @@ export async function resolveTenant(): Promise<Tenant | null> {
             .select('*')
             .eq('slug', subdomainFromUrl)
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
           
           if (data) {
             tenant = data as Tenant;
@@ -84,7 +87,7 @@ export async function resolveTenant(): Promise<Tenant | null> {
             .select('*')
             .eq('is_active', true)
             .limit(1)
-            .single();
+            .maybeSingle();
           
           if (data) {
             tenant = data as Tenant;
@@ -112,17 +115,19 @@ export async function resolveTenant(): Promise<Tenant | null> {
         }
       }
 
-      // Priority 2: Custom domain lookup (skip for main domain atomlms.kr)
+      // Priority 2: Custom domain lookup (skip for main domain and dev environments)
       if (!tenant && 
           !hostname.includes('localhost') && 
           !hostname.includes('127.0.0.1') &&
+          !hostname.includes('lovable.app') &&
+          !hostname.includes('lovableproject.com') &&
           hostname !== 'atomlms.kr') {
         const { data: domainData } = await supabase
           .from('tenant_domains')
           .select('tenant_id, tenants(*)')
           .eq('domain', hostname)
           .eq('is_verified', true)
-          .single();
+          .maybeSingle();
 
         if (domainData && domainData.tenants) {
           tenant = domainData.tenants as unknown as Tenant;
@@ -138,7 +143,7 @@ export async function resolveTenant(): Promise<Tenant | null> {
             .select('*')
             .eq('slug', subdomain)
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
 
           if (data) {
             tenant = data as Tenant;
