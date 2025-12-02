@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useTenant } from "@/contexts/TenantContext";
-import { ArrowUp, ArrowDown, Edit2, Save, X, Building2 } from "lucide-react";
+import { ArrowUp, ArrowDown, Edit2, Save, X, Building2, Eye, Code } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -52,6 +53,8 @@ export default function AdminHomepageSettings() {
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
+    customHtml: "",
+    customCss: "",
   });
 
   // Fetch available tenants for operators
@@ -172,10 +175,20 @@ export default function AdminHomepageSettings() {
 
   // Update content mutation
   const updateContentMutation = useMutation({
-    mutationFn: async ({ id, title, description }: { id: string; title: string; description: string }) => {
+    mutationFn: async ({ 
+      id, 
+      title, 
+      description, 
+      settings 
+    }: { 
+      id: string; 
+      title: string; 
+      description: string;
+      settings: Record<string, any>;
+    }) => {
       const { error } = await supabase
         .from("tenant_sections")
-        .update({ title, description })
+        .update({ title, description, settings })
         .eq("id", id);
 
       if (error) throw error;
@@ -223,6 +236,8 @@ export default function AdminHomepageSettings() {
     setEditForm({
       title: section.title || "",
       description: section.description || "",
+      customHtml: section.settings?.customHtml || "",
+      customCss: section.settings?.customCss || "",
     });
   };
 
@@ -232,7 +247,19 @@ export default function AdminHomepageSettings() {
       id: editingSection.id,
       title: editForm.title,
       description: editForm.description,
+      settings: {
+        ...editingSection.settings,
+        customHtml: editForm.customHtml,
+        customCss: editForm.customCss,
+      },
     });
+  };
+
+  const handlePreview = () => {
+    const tenantSlug = tenants?.find(t => t.id === effectiveTenantId)?.slug || tenant?.slug;
+    if (tenantSlug) {
+      window.open(`/tenant/${tenantSlug}`, '_blank');
+    }
   };
 
   const getSectionTypeName = (type: string) => {
@@ -308,7 +335,13 @@ export default function AdminHomepageSettings() {
   return (
     <div className="container mx-auto p-6 max-w-4xl">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">홈페이지 관리</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold">홈페이지 관리</h1>
+          <Button onClick={handlePreview} disabled={!effectiveTenantId}>
+            <Eye className="h-4 w-4 mr-2" />
+            미리보기
+          </Button>
+        </div>
         <p className="text-muted-foreground">
           메인 홈페이지의 섹션을 관리하고 순서를 변경할 수 있습니다.
         </p>
@@ -399,36 +432,77 @@ export default function AdminHomepageSettings() {
 
       {/* Edit Dialog */}
       <Dialog open={!!editingSection} onOpenChange={(open) => !open && setEditingSection(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>섹션 수정</DialogTitle>
             <DialogDescription>
               {editingSection && getSectionTypeName(editingSection.section_type)} 섹션의 내용을 수정합니다.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">제목</Label>
-              <Input
-                id="title"
-                value={editForm.title}
-                onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                placeholder="섹션 제목을 입력하세요"
-                disabled={updateContentMutation.isPending}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">설명</Label>
-              <Textarea
-                id="description"
-                value={editForm.description}
-                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                placeholder="섹션 설명을 입력하세요"
-                rows={4}
-                disabled={updateContentMutation.isPending}
-              />
-            </div>
-          </div>
+          <Tabs defaultValue="basic" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="basic">기본 설정</TabsTrigger>
+              <TabsTrigger value="custom">
+                <Code className="h-4 w-4 mr-2" />
+                커스텀 코드
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="basic" className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">제목</Label>
+                <Input
+                  id="title"
+                  value={editForm.title}
+                  onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                  placeholder="섹션 제목을 입력하세요"
+                  disabled={updateContentMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">설명</Label>
+                <Textarea
+                  id="description"
+                  value={editForm.description}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  placeholder="섹션 설명을 입력하세요"
+                  rows={4}
+                  disabled={updateContentMutation.isPending}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="custom" className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="customHtml">커스텀 HTML</Label>
+                <Textarea
+                  id="customHtml"
+                  value={editForm.customHtml}
+                  onChange={(e) => setEditForm({ ...editForm, customHtml: e.target.value })}
+                  placeholder="<div>커스텀 HTML 코드를 입력하세요</div>"
+                  rows={8}
+                  className="font-mono text-sm"
+                  disabled={updateContentMutation.isPending}
+                />
+                <p className="text-xs text-muted-foreground">
+                  이 HTML은 기본 섹션 내용 아래에 추가됩니다.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="customCss">커스텀 CSS</Label>
+                <Textarea
+                  id="customCss"
+                  value={editForm.customCss}
+                  onChange={(e) => setEditForm({ ...editForm, customCss: e.target.value })}
+                  placeholder=".custom-class { color: #8B5CF6; }"
+                  rows={8}
+                  className="font-mono text-sm"
+                  disabled={updateContentMutation.isPending}
+                />
+                <p className="text-xs text-muted-foreground">
+                  섹션에 적용할 CSS 스타일을 입력하세요.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
           <DialogFooter>
             <Button 
               variant="outline" 
