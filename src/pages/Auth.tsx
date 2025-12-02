@@ -164,6 +164,7 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    alert('로그인 버튼이 클릭되었습니다');
     console.log('Login attempt started');
     
     // Validate inputs
