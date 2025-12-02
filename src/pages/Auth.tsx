@@ -164,12 +164,14 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login attempt started');
     
     // Validate inputs
     const emailValidation = emailSchema.safeParse(loginEmail);
     const passwordValidation = passwordSchema.safeParse(loginPassword);
 
     if (!emailValidation.success) {
+      console.log('Email validation failed');
       toast({
         title: "입력 오류",
         description: emailValidation.error.errors[0].message,
@@ -179,6 +181,7 @@ const Auth = () => {
     }
 
     if (!passwordValidation.success) {
+      console.log('Password validation failed');
       toast({
         title: "입력 오류",
         description: passwordValidation.error.errors[0].message,
@@ -188,6 +191,7 @@ const Auth = () => {
     }
 
     setIsLoading(true);
+    console.log('Starting authentication process');
 
     try {
       // First check if email exists in profiles
@@ -196,6 +200,8 @@ const Auth = () => {
         .select('email')
         .eq('email', loginEmail)
         .maybeSingle();
+
+      console.log('Profile check result:', { profileData, profileError });
 
       if (profileError) {
         console.error('Error checking email:', profileError);
@@ -207,16 +213,21 @@ const Auth = () => {
         password: loginPassword,
       });
 
+      console.log('Login attempt result:', { error: error?.message });
+
       if (error) {
+        console.log('Login error detected:', error.message);
         if (error.message.includes("Invalid login credentials")) {
           // Check if email exists to provide specific error message
           if (!profileData) {
+            console.log('Showing unregistered email message');
             toast({
               title: "로그인 실패",
               description: "가입되지 않은 이메일입니다.",
               variant: "destructive",
             });
           } else {
+            console.log('Showing wrong password message');
             toast({
               title: "로그인 실패",
               description: "비밀번호가 올바르지 않습니다.",
@@ -224,6 +235,7 @@ const Auth = () => {
             });
           }
         } else {
+          console.log('Showing generic error message');
           toast({
             title: "로그인 실패",
             description: error.message,
@@ -231,6 +243,7 @@ const Auth = () => {
           });
         }
       } else {
+        console.log('Login successful');
         // Save email if remember me is checked
         if (rememberMe) {
           localStorage.setItem("rememberedEmail", loginEmail);
@@ -246,6 +259,7 @@ const Auth = () => {
         // Role-based redirect will be handled by useEffect
       }
     } catch (error) {
+      console.error('Login exception:', error);
       toast({
         title: "오류 발생",
         description: "로그인 중 문제가 발생했습니다.",
@@ -253,6 +267,7 @@ const Auth = () => {
       });
     } finally {
       setIsLoading(false);
+      console.log('Login process completed');
     }
   };
 
