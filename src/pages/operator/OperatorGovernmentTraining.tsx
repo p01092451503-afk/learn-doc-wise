@@ -295,6 +295,80 @@ const OperatorGovernmentTraining = () => {
       ]
     },
 
+    // KDT 학습 무결성 기능들 (신규 구현)
+    {
+      id: "progress-enforcement",
+      name: "학습 진도 강제",
+      description: "이전 차시 완료 후 다음 차시 열람 가능",
+      difficulty: "medium",
+      status: "done",
+      priority: "high",
+      category: "필수",
+      estimatedDays: 0,
+      icon: ClipboardCheck,
+      details: [
+        "✅ 이전 차시 80% 시청 완료 체크",
+        "✅ 순차적 학습 강제",
+        "✅ 스킵 시도 시 잠금 UI 표시",
+        "✅ 스킵 시도 로그 기록",
+        "✅ 진도율 실시간 추적"
+      ]
+    },
+    {
+      id: "playback-speed-limit",
+      name: "영상 배속 제한",
+      description: "1배속 고정으로 학습 시간 단축 방지",
+      difficulty: "medium",
+      status: "done",
+      priority: "high",
+      category: "필수",
+      estimatedDays: 0,
+      icon: ClipboardCheck,
+      details: [
+        "✅ YouTube/Vimeo 1배속 강제",
+        "✅ 배속 변경 시도 시 자동 복원",
+        "✅ 배속 위반 시도 로그 기록",
+        "✅ 최소 시청 시간(80%) 추적",
+        "✅ 실제 시청 시간 표시"
+      ]
+    },
+    {
+      id: "concurrent-login-block",
+      name: "동시 접속 차단",
+      description: "단일 기기 로그인으로 대리 수강 방지",
+      difficulty: "medium",
+      status: "done",
+      priority: "high",
+      category: "필수",
+      estimatedDays: 0,
+      icon: Users,
+      details: [
+        "✅ 세션 토큰 기반 단일 접속",
+        "✅ 10초 간격 하트비트 체크",
+        "✅ 다른 기기 로그인 시 기존 세션 종료",
+        "✅ 동시 접속 시도 로그 기록",
+        "✅ 강제 로그아웃 알림"
+      ]
+    },
+    {
+      id: "dual-monitor-detection",
+      name: "듀얼 모니터 감지",
+      description: "멀티 스크린 환경 감지 및 경고",
+      difficulty: "easy",
+      status: "done",
+      priority: "medium",
+      category: "권장",
+      estimatedDays: 0,
+      icon: AlertTriangle,
+      details: [
+        "✅ 화면 위치 기반 듀얼 모니터 감지",
+        "✅ 30초 간격 자동 체크",
+        "✅ 듀얼 모니터 감지 시 경고 알림",
+        "✅ 감지 로그 기록",
+        "✅ 단일 모니터 권장 안내"
+      ]
+    },
+
     // 어려운 기능들
     {
       id: "hrd-net-api",

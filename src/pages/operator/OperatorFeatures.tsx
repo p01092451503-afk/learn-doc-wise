@@ -694,6 +694,36 @@ const OperatorFeatures = () => {
         { name: "AI 만족도 분석", description: "설문 응답 자동 분석 및 리포트" },
       ],
     },
+    {
+      menuName: "KDT 학습 무결성 시스템",
+      menuPath: "/admin/kdt-compliance",
+      icon: Shield,
+      description: "KDT 온라인 과정 부정행위 방지",
+      features: [
+        { name: "학습 진도 강제", description: "이전 차시 80% 완료 후 다음 차시 열람 (순차 학습 강제)" },
+        { name: "영상 배속 제한", description: "1배속 고정 - 빠른 재생으로 학습 시간 단축 방지" },
+        { name: "동시 접속 차단", description: "단일 기기 로그인 강제 - 대리 수강 방지" },
+        { name: "듀얼 모니터 감지", description: "멀티 스크린 환경 감지 및 경고" },
+        { name: "창 이탈 감지", description: "학습 창 벗어남 시 자동 영상 정지" },
+        { name: "실제 시청 시간 추적", description: "최소 시청 시간(80%) 충족 여부 확인" },
+        { name: "부정행위 로그", description: "모든 위반 시도 자동 기록 및 관리자 알림" },
+        { name: "세션 하트비트", description: "10초 간격 세션 유효성 체크" },
+      ],
+    },
+    {
+      menuName: "KDT 학습자 모니터링",
+      menuPath: "/admin/monitoring",
+      icon: Activity,
+      description: "실시간 학습자 상태 모니터링",
+      features: [
+        { name: "실시간 상태 대시보드", description: "코호트별 학습자 현황 실시간 확인" },
+        { name: "온라인/오프라인 상태", description: "학습자 접속 상태 즉시 파악" },
+        { name: "학습 집중도 추적", description: "창 포커스 상태 모니터링" },
+        { name: "위험 학습자 알림", description: "장시간 이탈/비활동 학습자 경고" },
+        { name: "진도율 실시간 확인", description: "학습자별 현재 진도 현황" },
+        { name: "컴플라이언스 위반 알림", description: "부정행위 시도 즉시 알림" },
+      ],
+    },
   ];
 
   const renderMenuSection = (menu: MenuSection) => (
