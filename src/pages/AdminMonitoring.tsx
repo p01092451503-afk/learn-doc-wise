@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Monitor, Users, UserCheck, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 interface Cohort {
   id: string;
@@ -193,7 +194,8 @@ const AdminMonitoring = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <DashboardLayout userRole="admin">
+      <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -352,7 +354,8 @@ const AdminMonitoring = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 
