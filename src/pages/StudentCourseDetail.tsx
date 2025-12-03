@@ -8,9 +8,11 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock, MessageCircle, FileCheck, Languages, Video, ExternalLink } from "lucide-react";
+import { ArrowLeft, BookOpen, CheckCircle, PlayCircle, Clock, MessageCircle, FileCheck, Languages, Video, ExternalLink, Lock, AlertTriangle } from "lucide-react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import VideoPlayer from "@/components/video/VideoPlayer";
+import KDTVideoPlayer from "@/components/kdt/KDTVideoPlayer";
+import KDTProgressEnforcer from "@/components/kdt/KDTProgressEnforcer";
+import { useKDTCompliance } from "@/hooks/useKDTCompliance";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
 import { AITranslateDialog } from "@/components/ai/AITranslateDialog";
@@ -63,6 +65,12 @@ const StudentCourseDetail = () => {
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [aiFeedbackOpen, setAiFeedbackOpen] = useState(false);
   const [aiTranslateOpen, setAiTranslateOpen] = useState(false);
+
+  // KDT 컴플라이언스 훅
+  const { logProgressSkipAttempt, logSpeedViolation } = useKDTCompliance({
+    courseId: id,
+    contentId: currentContent?.id,
+  });
 
   // 데모 모드 데이터 설정
   const setMockDemoData = () => {
@@ -498,11 +506,13 @@ const StudentCourseDetail = () => {
                   </CardHeader>
                   <CardContent>
                     {currentContent.video_url ? (
-                      <VideoPlayer
+                      <KDTVideoPlayer
                         contentId={currentContent.id}
                         videoUrl={currentContent.video_url}
                         videoProvider={currentContent.video_provider as "youtube" | "vimeo" | "direct"}
                         onProgressUpdate={handleProgressUpdate}
+                        onSpeedViolation={logSpeedViolation}
+                        minimumWatchPercent={80}
                       />
                     ) : (
                       <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
@@ -555,8 +565,11 @@ const StudentCourseDetail = () => {
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
-                <CardTitle>커리큘럼</CardTitle>
-                <CardDescription>{contents.length}개 차시</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  커리큘럼
+                  <Badge variant="outline" className="text-xs">KDT</Badge>
+                </CardTitle>
+                <CardDescription>{contents.length}개 차시 • 순차 학습 필수</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -565,44 +578,100 @@ const StudentCourseDetail = () => {
                       등록된 차시가 없습니다
                     </p>
                   ) : (
-                    contents.map((content, index) => (
-                      <div key={content.id}>
-                        <div
-                          className={`w-full py-3 px-3 rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                            currentContent?.id === content.id ? "bg-primary/10" : ""
-                          }`}
-                          onClick={() => setCurrentContent(content)}
-                        >
-                          <div className="flex items-start gap-3 w-full">
-                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary font-semibold text-sm flex-shrink-0">
-                              {isContentCompleted(content.id) ? (
-                                <CheckCircle className="h-4 w-4 text-accent" />
-                              ) : (
-                                index + 1
-                              )}
-                            </div>
-                            <div className="flex-1 text-left">
-                              <p className={`text-sm font-medium line-clamp-2 ${
-                                currentContent?.id === content.id ? "text-primary" : ""
-                              }`}>
-                                {content.title}
-                              </p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <span className="text-xs text-muted-foreground">
-                                  {content.duration_minutes}분
-                                </span>
-                                {getContentProgress(content.id) > 0 && (
-                                  <span className="text-xs text-primary font-medium">
-                                    {Math.round(getContentProgress(content.id))}%
-                                  </span>
-                                )}
+                    <KDTProgressEnforcer
+                      contents={contents.map(c => ({ id: c.id, title: c.title, order_index: c.order_index }))}
+                      progress={progress}
+                      currentContentId={currentContent?.id || ""}
+                      onSelectContent={(content) => {
+                        const fullContent = contents.find(c => c.id === content.id);
+                        if (fullContent) setCurrentContent(fullContent);
+                      }}
+                      onSkipAttempt={logProgressSkipAttempt}
+                      requiredProgressPercent={80}
+                    >
+                      {({ canAccess, getLockedReason }) => (
+                        <>
+                          {contents.map((content, index) => {
+                            const isAccessible = canAccess(content.id);
+                            const lockedReason = getLockedReason(content.id);
+                            
+                            return (
+                              <div key={content.id}>
+                                <div
+                                  className={`w-full py-3 px-3 rounded-lg transition-colors ${
+                                    !isAccessible 
+                                      ? "cursor-not-allowed opacity-60" 
+                                      : "cursor-pointer hover:bg-accent/50"
+                                  } ${currentContent?.id === content.id ? "bg-primary/10 ring-2 ring-primary" : ""}`}
+                                  onClick={() => {
+                                    if (isAccessible) {
+                                      setCurrentContent(content);
+                                    } else {
+                                      logProgressSkipAttempt(
+                                        contents.findIndex(c => c.id === currentContent?.id) + 1,
+                                        index + 1
+                                      );
+                                      toast({
+                                        title: "차시 잠김",
+                                        description: lockedReason || "이전 차시를 먼저 완료해주세요.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <div className="flex items-start gap-3 w-full">
+                                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg font-semibold text-sm flex-shrink-0 ${
+                                      !isAccessible 
+                                        ? "bg-muted text-muted-foreground" 
+                                        : isContentCompleted(content.id) 
+                                          ? "bg-green-500/20 text-green-600" 
+                                          : "bg-primary/10 text-primary"
+                                    }`}>
+                                      {!isAccessible ? (
+                                        <Lock className="h-4 w-4" />
+                                      ) : isContentCompleted(content.id) ? (
+                                        <CheckCircle className="h-4 w-4" />
+                                      ) : (
+                                        index + 1
+                                      )}
+                                    </div>
+                                    <div className="flex-1 text-left">
+                                      <p className={`text-sm font-medium line-clamp-2 ${
+                                        currentContent?.id === content.id ? "text-primary" : ""
+                                      } ${!isAccessible ? "text-muted-foreground" : ""}`}>
+                                        {content.title}
+                                      </p>
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <span className="text-xs text-muted-foreground">
+                                          {content.duration_minutes}분
+                                        </span>
+                                        {getContentProgress(content.id) > 0 && (
+                                          <span className={`text-xs font-medium ${
+                                            getContentProgress(content.id) >= 80 ? "text-green-600" : "text-primary"
+                                          }`}>
+                                            {Math.round(getContentProgress(content.id))}%
+                                          </span>
+                                        )}
+                                        {!isAccessible && (
+                                          <Badge variant="secondary" className="text-[10px] h-5">잠김</Badge>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {!isAccessible && lockedReason && (
+                                    <div className="mt-2 flex items-start gap-1.5 p-2 bg-orange-500/10 rounded text-[11px] text-orange-600 dark:text-orange-400">
+                                      <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                                      <span>{lockedReason}</span>
+                                    </div>
+                                  )}
+                                </div>
+                                {index < contents.length - 1 && <Separator className="my-2" />}
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                        {index < contents.length - 1 && <Separator className="my-2" />}
-                      </div>
-                    ))
+                            );
+                          })}
+                        </>
+                      )}
+                    </KDTProgressEnforcer>
                   )}
                 </div>
               </CardContent>

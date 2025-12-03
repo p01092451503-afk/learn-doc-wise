@@ -2115,6 +2115,36 @@ export type Database = {
           },
         ]
       }
+      kdt_compliance_logs: {
+        Row: {
+          content_id: string | null
+          course_id: string | null
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string | null
+          course_id?: string | null
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       learner_risk_analysis: {
         Row: {
           course_id: string | null
@@ -5130,6 +5160,42 @@ export type Database = {
           },
         ]
       }
+      user_sessions: {
+        Row: {
+          created_at: string | null
+          device_info: Json | null
+          expires_at: string | null
+          id: string
+          ip_address: unknown
+          is_active: boolean | null
+          last_heartbeat_at: string | null
+          session_token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_active?: boolean | null
+          last_heartbeat_at?: string | null
+          session_token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          device_info?: Json | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_active?: boolean | null
+          last_heartbeat_at?: string | null
+          session_token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       leaderboard: {
@@ -5185,6 +5251,7 @@ export type Database = {
         Args: never
         Returns: undefined
       }
+      cleanup_expired_sessions: { Args: never; Returns: undefined }
       create_default_tenant_sections: {
         Args: { p_tenant_id: string }
         Returns: undefined
