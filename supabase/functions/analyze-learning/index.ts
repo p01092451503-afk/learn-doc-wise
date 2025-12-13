@@ -106,7 +106,29 @@ serve(async (req) => {
       jsonText = jsonMatch[1];
     }
 
-    const analysis = JSON.parse(jsonText);
+    // JSON 문자열 정제 (AI가 가끔 잘못된 JSON을 반환함)
+    jsonText = jsonText
+      .replace(/""(\w)/g, '"$1')  // "" 중복 따옴표 수정
+      .replace(/(\w)""/g, '$1"')  // 끝에 중복 따옴표 수정
+      .trim();
+
+    let analysis;
+    try {
+      analysis = JSON.parse(jsonText);
+    } catch (parseError) {
+      console.error('JSON 파싱 실패, 기본값 사용:', parseError);
+      // 파싱 실패시 기본값 반환
+      analysis = {
+        at_risk_score: 50,
+        engagement_score: 50,
+        learning_pattern: {
+          consistency: "분석 불가",
+          pace: "분석 불가",
+          completion_rate: "분석 불가"
+        },
+        recommendations: ["학습 데이터를 더 수집한 후 다시 분석해주세요."]
+      };
+    }
 
     // AI 사용 로그 저장
     try {
