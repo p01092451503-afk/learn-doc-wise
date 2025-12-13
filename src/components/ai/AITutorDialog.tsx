@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, MessageCircle, FileText, HelpCircle } from "lucide-react";
 import { formatAIResponse } from "@/lib/utils";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AITutorDialogProps {
   open: boolean;
@@ -81,6 +82,8 @@ export const AITutorDialog = ({ open, onOpenChange, courseContext }: AITutorDial
             <Badge variant="default" className="text-xs">AI</Badge>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <Tabs defaultValue="question" className="w-full">
           <TabsList className="grid w-full grid-cols-3">

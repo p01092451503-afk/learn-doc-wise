@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Users } from "lucide-react";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AIStudyMatchDialogProps {
   open: boolean;
@@ -74,6 +75,8 @@ export const AIStudyMatchDialog = ({ open, onOpenChange }: AIStudyMatchDialogPro
             </div>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
