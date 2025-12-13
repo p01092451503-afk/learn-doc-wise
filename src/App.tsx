@@ -100,6 +100,7 @@ const OperatorContracts = lazy(() => import("./pages/operator/OperatorContracts"
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const FeaturesShowcase = lazy(() => import("./pages/FeaturesShowcase"));
 const AdminDemo = lazy(() => import("./pages/AdminDemo"));
+const AIShowcase = lazy(() => import("./pages/AIShowcase"));
 const TenantHome = lazy(() => import("./pages/TenantHome"));
 const TenantCourses = lazy(() => import("./pages/TenantCourses"));
 const TenantCourseDetail = lazy(() => import("./pages/TenantCourseDetail"));
@@ -140,6 +141,7 @@ const AppRoutes = () => {
         <Route path="/auth" element={<Auth />} />
         <Route path="/demo" element={<DemoPreview />} />
         <Route path="/admin-demo" element={<AdminDemo />} />
+        <Route path="/ai-showcase" element={<AIShowcase />} />
         <Route path="/student" element={<StudentDashboard />} />
         <Route path="/students" element={<StudentDashboard />} />
         <Route path="/student/courses" element={<StudentCourses />} />

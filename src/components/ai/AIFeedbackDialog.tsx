@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, FileCheck, SpellCheck } from "lucide-react";
 import { formatAIResponse } from "@/lib/utils";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AIFeedbackDialogProps {
   open: boolean;
@@ -84,6 +85,8 @@ export const AIFeedbackDialog = ({ open, onOpenChange }: AIFeedbackDialogProps) 
             <Badge variant="default" className="text-xs">AI</Badge>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <Tabs defaultValue="assignment" className="w-full">
           <TabsList className="grid w-full grid-cols-2">

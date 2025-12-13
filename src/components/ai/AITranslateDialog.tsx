@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Languages } from "lucide-react";
 import { formatAIResponse } from "@/lib/utils";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AITranslateDialogProps {
   open: boolean;
@@ -103,6 +104,8 @@ export const AITranslateDialog = ({ open, onOpenChange }: AITranslateDialogProps
             <Badge variant="default" className="text-xs">AI</Badge>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">

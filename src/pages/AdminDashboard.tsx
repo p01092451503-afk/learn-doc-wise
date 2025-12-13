@@ -12,6 +12,7 @@ import { SettlementDialog } from "@/components/admin/SettlementDialog";
 import { ReportDialog } from "@/components/admin/ReportDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
+import { AIUsageCard } from "@/components/admin/AIUsageCard";
 import { useToast } from "@/hooks/use-toast";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
@@ -68,7 +69,7 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         </div>
 
         {/* Stats Grid */}
-        <div className={`grid gap-4 md:grid-cols-2 ${isDemo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatsCard
             title="전체 사용자"
             value="2,847"
@@ -83,21 +84,6 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             description="+12 this month"
             trend="up"
           />
-          {isDemo && (
-            <Card className="overflow-hidden border-primary/20 bg-primary/5">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium whitespace-nowrap flex items-center gap-1">
-                  AI 사용량
-                  <Badge variant="default" className="text-[8px] px-1 py-0">AI</Badge>
-                </CardTitle>
-                <Brain className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent className="min-h-[60px] flex flex-col justify-between">
-                <div className="text-2xl font-bold text-primary">12.4K</div>
-                <p className="text-xs text-muted-foreground">AI 요청 (이번 달)</p>
-              </CardContent>
-            </Card>
-          )}
           <StatsCard
             title="총 매출"
             value="₩45,230,000"
@@ -111,6 +97,9 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             icon={<Activity className="h-4 w-4" />}
             description="현재 접속 중"
           />
+          
+          {/* AI Usage Card - 실시간 토큰 사용량 */}
+          <AIUsageCard />
         </div>
 
         {/* Platform Overview */}

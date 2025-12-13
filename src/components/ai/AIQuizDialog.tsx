@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, FileQuestion } from "lucide-react";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AIQuizDialogProps {
   open: boolean;
@@ -71,6 +72,8 @@ export const AIQuizDialog = ({ open, onOpenChange }: AIQuizDialogProps) => {
             </div>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

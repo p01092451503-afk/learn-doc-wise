@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Route } from "lucide-react";
+import { AITokenNotice } from "./AITokenNotice";
 
 interface AILearningPathDialogProps {
   open: boolean;
@@ -72,6 +73,8 @@ export const AILearningPathDialog = ({ open, onOpenChange }: AILearningPathDialo
             </div>
           </DialogTitle>
         </DialogHeader>
+
+        <AITokenNotice />
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
