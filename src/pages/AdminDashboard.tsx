@@ -447,7 +447,7 @@ const AlertItem = ({
       <Button 
         size="sm" 
         variant={level === "warning" ? "destructive" : "outline"} 
-        className="w-full sm:w-auto flex-shrink-0 relative z-50 pointer-events-auto"
+        className="w-full sm:w-auto flex-shrink-0"
         onClick={handleClick}
         onMouseDown={(e) => {
           console.log("Button mouseDown 이벤트");
