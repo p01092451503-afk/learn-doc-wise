@@ -241,14 +241,7 @@ export default function StudentLearningPath() {
                     <Button 
                       className="w-full"
                       onClick={() => {
-                        if (isDemoMode) {
-                          toast({
-                            title: "데모 모드",
-                            description: "실제 서비스에 가입하시면 학습 경로 상세 페이지를 이용하실 수 있습니다.",
-                          });
-                        } else {
-                          navigate(`/student/learning-path/${enrollment.learning_path_id}`);
-                        }
+                        navigate(`/student/learning-path/${enrollment.learning_path_id}`);
                       }}
                     >
                       학습 계속하기
