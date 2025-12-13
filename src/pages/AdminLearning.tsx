@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Download, TrendingUp, TrendingDown, AlertTriangle, BookOpen, Award, BarChart3, Brain, Search, FileDown } from "lucide-react";
+import { Download, TrendingUp, TrendingDown, AlertTriangle, BookOpen, Award, BarChart3, Brain, Search, FileDown, Loader2 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { GraduationCap } from "lucide-react";
 
@@ -474,7 +474,7 @@ const AdminLearning = () => {
                     </Badge>
                     {analyzingAI ? (
                       <>
-                        <AtomSpinner size="sm" className="mr-2" />
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
                         분석 중...
                       </>
                     ) : (
