@@ -571,8 +571,8 @@ const StudentCourseDetail = () => {
                 </CardTitle>
                 <CardDescription>{contents.length}개 차시 • 순차 학습 필수</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-[600px] overflow-y-auto">
+              <CardContent className="px-3 pb-3">
+                <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
                   {contents.length === 0 ? (
                     <p className="text-sm text-center py-8 text-muted-foreground">
                       등록된 차시가 없습니다
@@ -594,78 +594,93 @@ const StudentCourseDetail = () => {
                           {contents.map((content, index) => {
                             const isAccessible = canAccess(content.id);
                             const lockedReason = getLockedReason(content.id);
+                            const isSelected = currentContent?.id === content.id;
+                            const isCompleted = isContentCompleted(content.id);
+                            const progressValue = getContentProgress(content.id);
                             
                             return (
-                              <div key={content.id}>
-                                <div
-                                  className={`w-full py-3 px-3 rounded-lg transition-colors ${
-                                    !isAccessible 
-                                      ? "cursor-not-allowed opacity-60" 
-                                      : "cursor-pointer hover:bg-accent/50"
-                                  } ${currentContent?.id === content.id ? "bg-primary/10 ring-2 ring-primary" : ""}`}
-                                  onClick={() => {
-                                    if (isAccessible) {
-                                      setCurrentContent(content);
-                                    } else {
-                                      logProgressSkipAttempt(
-                                        contents.findIndex(c => c.id === currentContent?.id) + 1,
-                                        index + 1
-                                      );
-                                      toast({
-                                        title: "차시 잠김",
-                                        description: lockedReason || "이전 차시를 먼저 완료해주세요.",
-                                        variant: "destructive",
-                                      });
+                              <div
+                                key={content.id}
+                                className={`
+                                  relative rounded-xl transition-all duration-200 
+                                  ${isSelected 
+                                    ? "bg-primary/5 ring-2 ring-primary shadow-sm" 
+                                    : "hover:bg-accent/40"
+                                  }
+                                  ${!isAccessible ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+                                `}
+                                onClick={() => {
+                                  if (isAccessible) {
+                                    setCurrentContent(content);
+                                  } else {
+                                    logProgressSkipAttempt(
+                                      contents.findIndex(c => c.id === currentContent?.id) + 1,
+                                      index + 1
+                                    );
+                                    toast({
+                                      title: "차시 잠김",
+                                      description: lockedReason || "이전 차시를 먼저 완료해주세요.",
+                                      variant: "destructive",
+                                    });
+                                  }
+                                }}
+                              >
+                                <div className="p-3 flex items-center gap-3">
+                                  {/* Status Icon */}
+                                  <div className={`
+                                    flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 transition-colors
+                                    ${!isAccessible 
+                                      ? "bg-muted border border-border" 
+                                      : isCompleted 
+                                        ? "bg-green-500/15 border-2 border-green-500" 
+                                        : isSelected
+                                          ? "bg-primary/15 border-2 border-primary"
+                                          : "bg-muted border border-border"
                                     }
-                                  }}
-                                >
-                                  <div className="flex items-start gap-3 w-full">
-                                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg font-semibold text-sm flex-shrink-0 ${
-                                      !isAccessible 
-                                        ? "bg-muted text-muted-foreground" 
-                                        : isContentCompleted(content.id) 
-                                          ? "bg-green-500/20 text-green-600" 
-                                          : "bg-primary/10 text-primary"
-                                    }`}>
-                                      {!isAccessible ? (
-                                        <Lock className="h-4 w-4" />
-                                      ) : isContentCompleted(content.id) ? (
-                                        <CheckCircle className="h-4 w-4" />
-                                      ) : (
-                                        index + 1
+                                  `}>
+                                    {!isAccessible ? (
+                                      <Lock className="h-4 w-4 text-muted-foreground" />
+                                    ) : isCompleted ? (
+                                      <CheckCircle className="h-5 w-5 text-green-500" />
+                                    ) : (
+                                      <span className={`text-sm font-bold ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
+                                        {index + 1}
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Content Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`
+                                      text-sm font-medium line-clamp-1 transition-colors
+                                      ${isSelected ? "text-primary" : ""}
+                                      ${!isAccessible ? "text-muted-foreground" : ""}
+                                    `}>
+                                      {content.title}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <span className="text-xs text-muted-foreground">
+                                        {content.duration_minutes}분
+                                      </span>
+                                      {progressValue > 0 && (
+                                        <span className={`
+                                          text-xs font-semibold
+                                          ${progressValue >= 80 ? "text-green-500" : "text-primary"}
+                                        `}>
+                                          {Math.round(progressValue)}%
+                                        </span>
                                       )}
                                     </div>
-                                    <div className="flex-1 text-left">
-                                      <p className={`text-sm font-medium line-clamp-2 ${
-                                        currentContent?.id === content.id ? "text-primary" : ""
-                                      } ${!isAccessible ? "text-muted-foreground" : ""}`}>
-                                        {content.title}
-                                      </p>
-                                      <div className="flex items-center gap-2 mt-1">
-                                        <span className="text-xs text-muted-foreground">
-                                          {content.duration_minutes}분
-                                        </span>
-                                        {getContentProgress(content.id) > 0 && (
-                                          <span className={`text-xs font-medium ${
-                                            getContentProgress(content.id) >= 80 ? "text-green-600" : "text-primary"
-                                          }`}>
-                                            {Math.round(getContentProgress(content.id))}%
-                                          </span>
-                                        )}
-                                        {!isAccessible && (
-                                          <Badge variant="secondary" className="text-[10px] h-5">잠김</Badge>
-                                        )}
-                                      </div>
-                                    </div>
                                   </div>
-                                  {!isAccessible && lockedReason && (
-                                    <div className="mt-2 flex items-start gap-1.5 p-2 bg-orange-500/10 rounded text-[11px] text-orange-600 dark:text-orange-400">
-                                      <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                                      <span>{lockedReason}</span>
-                                    </div>
-                                  )}
                                 </div>
-                                {index < contents.length - 1 && <Separator className="my-2" />}
+
+                                {/* Locked Warning */}
+                                {!isAccessible && lockedReason && (
+                                  <div className="mx-3 mb-3 flex items-start gap-1.5 p-2 bg-orange-500/10 rounded-lg text-[11px] text-orange-600 dark:text-orange-400">
+                                    <AlertTriangle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+                                    <span>{lockedReason}</span>
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
