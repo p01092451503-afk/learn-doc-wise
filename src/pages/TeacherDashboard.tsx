@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText, Bot, LayoutDashboard } from "lucide-react";
+import { Users, BookOpen, DollarSign, TrendingUp, Plus, Eye, Edit, Brain, Sparkles, FileQuestion, FileText, Bot, LayoutDashboard, Loader2 } from "lucide-react";
 import { AIQuizDialog } from "@/components/ai/AIQuizDialog";
 import { AISummaryDialog } from "@/components/ai/AISummaryDialog";
 import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { CourseFormDialog } from "@/components/teacher/CourseFormDialog";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useTeacherDashboardStats } from "@/hooks/useDashboardStats";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
+  const [userId, setUserId] = useState<string | undefined>();
+  const { data: stats, isLoading } = useTeacherDashboardStats(userId);
+  
   const [quizOpen, setQuizOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id);
+    };
+    getUser();
+  }, []);
 
   const handleView = (courseTitle: string) => {
     // Mock data이므로 강의 관리 페이지로 이동
@@ -53,16 +66,16 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className={`grid gap-4 md:grid-cols-2 ${isDemo ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
           <StatsCard
             title="전체 학생"
-            value="342"
-            icon={<Users className="h-4 w-4" />}
-            description="+12% from last month"
+            value={isLoading ? "-" : stats?.totalStudents.toLocaleString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
+            description={`내 강좌 수강생`}
             trend="up"
           />
           <StatsCard
             title="활성 강의"
-            value="8"
-            icon={<BookOpen className="h-4 w-4" />}
-            description="2 pending review"
+            value={isLoading ? "-" : stats?.activeCourses.toString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
+            description={`대기 중 ${stats?.pendingCourses || 0}개`}
           />
           {isDemo && (
             <Card className="overflow-hidden border-primary/20 bg-primary/5">
@@ -80,17 +93,17 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </Card>
           )}
           <StatsCard
-            title="이번 달 수익"
-            value="₩4,250,000"
-            icon={<DollarSign className="h-4 w-4" />}
-            description="+18% from last month"
+            title="전체 강좌"
+            value={isLoading ? "-" : stats?.totalCourses.toString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <DollarSign className="h-4 w-4" />}
+            description="등록한 강좌"
             trend="up"
           />
           <StatsCard
-            title="평균 평점"
-            value="4.8"
-            icon={<TrendingUp className="h-4 w-4" />}
-            description="Based on 156 reviews"
+            title="최근 제출"
+            value={isLoading ? "-" : stats?.recentSubmissions?.length?.toString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <TrendingUp className="h-4 w-4" />}
+            description="최근 과제 제출"
           />
         </div>
 
@@ -102,60 +115,37 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <CourseItem
-                title="React 완벽 가이드"
-                students={145}
-                rating={4.9}
-                revenue="₩1,450,000"
-                status="active"
-                onView={() => handleView("React 완벽 가이드")}
-                onEdit={() => handleEdit({
-                  id: "1",
-                  title: "React 완벽 가이드",
-                  description: "React를 완벽하게 마스터하는 강의",
-                  level: "beginner" as const,
-                  duration_hours: 24,
-                  price: 145000,
-                  status: "published" as const,
-                  slug: "react-complete-guide"
-                })}
-              />
-              <CourseItem
-                title="TypeScript 마스터클래스"
-                students={98}
-                rating={4.7}
-                revenue="₩980,000"
-                status="active"
-                onView={() => handleView("TypeScript 마스터클래스")}
-                onEdit={() => handleEdit({
-                  id: "2",
-                  title: "TypeScript 마스터클래스",
-                  description: "TypeScript를 완벽하게 마스터하는 강의",
-                  level: "intermediate" as const,
-                  duration_hours: 20,
-                  price: 98000,
-                  status: "published" as const,
-                  slug: "typescript-masterclass"
-                })}
-              />
-              <CourseItem
-                title="Next.js 풀스택 개발"
-                students={76}
-                rating={4.8}
-                revenue="₩760,000"
-                status="active"
-                onView={() => handleView("Next.js 풀스택 개발")}
-                onEdit={() => handleEdit({
-                  id: "3",
-                  title: "Next.js 풀스택 개발",
-                  description: "Next.js로 풀스택 애플리케이션 개발",
-                  level: "advanced" as const,
-                  duration_hours: 30,
-                  price: 76000,
-                  status: "published" as const,
-                  slug: "nextjs-fullstack"
-                })}
-              />
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : stats?.coursesWithStats && stats.coursesWithStats.length > 0 ? (
+                stats.coursesWithStats.map((course) => (
+                  <CourseItem
+                    key={course.id}
+                    title={course.title}
+                    students={course.studentCount}
+                    rating={0}
+                    revenue=""
+                    status={course.status}
+                    onView={() => navigate('/teacher/courses')}
+                    onEdit={() => handleEdit({
+                      id: course.id,
+                      title: course.title,
+                      description: "",
+                      level: "beginner" as const,
+                      duration_hours: 0,
+                      price: 0,
+                      status: course.status as any,
+                      slug: course.id
+                    })}
+                  />
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  등록된 강좌가 없습니다. 새 강의를 만들어보세요!
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -164,60 +154,53 @@ const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>최근 활동</CardTitle>
+              <CardTitle>최근 과제 제출</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <ActivityItem
-                  student="김철수"
-                  action="과제 제출"
-                  course="React 완벽 가이드"
-                  time="10분 전"
-                />
-                <ActivityItem
-                  student="이영희"
-                  action="새 질문 등록"
-                  course="TypeScript 마스터클래스"
-                  time="25분 전"
-                />
-                <ActivityItem
-                  student="박지민"
-                  action="강의 완료"
-                  course="Next.js 풀스택 개발"
-                  time="1시간 전"
-                />
-                <ActivityItem
-                  student="정민수"
-                  action="과제 제출"
-                  course="React 완벽 가이드"
-                  time="2시간 전"
-                />
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : stats?.recentSubmissions && stats.recentSubmissions.length > 0 ? (
+                  stats.recentSubmissions.map((submission: any, index: number) => (
+                    <ActivityItem
+                      key={submission.id || index}
+                      student={submission.studentName || '학생'}
+                      action="과제 제출"
+                      course={submission.assignment?.course?.title || '강좌'}
+                      time={submission.submitted_at ? new Date(submission.submitted_at).toLocaleDateString('ko-KR') : ''}
+                    />
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">최근 제출된 과제가 없습니다</p>
+                )}
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>수익 통계</CardTitle>
-              <CardDescription>최근 6개월</CardDescription>
+              <CardTitle>강좌 통계</CardTitle>
+              <CardDescription>내 강좌 현황</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">10월</span>
-                  <span className="font-medium">₩4,250,000</span>
+                  <span className="text-sm text-muted-foreground">전체 강좌</span>
+                  <span className="font-medium">{stats?.totalCourses || 0}개</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">9월</span>
-                  <span className="font-medium">₩3,600,000</span>
+                  <span className="text-sm text-muted-foreground">활성 강좌</span>
+                  <span className="font-medium">{stats?.activeCourses || 0}개</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">8월</span>
-                  <span className="font-medium">₩3,200,000</span>
+                  <span className="text-sm text-muted-foreground">전체 수강생</span>
+                  <span className="font-medium">{stats?.totalStudents || 0}명</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">7월</span>
-                  <span className="font-medium">₩2,950,000</span>
+                  <span className="text-sm text-muted-foreground">대기 중 강좌</span>
+                  <span className="font-medium">{stats?.pendingCourses || 0}개</span>
                 </div>
               </div>
             </CardContent>

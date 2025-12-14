@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles, LayoutDashboard } from "lucide-react";
+import { Users, BookOpen, DollarSign, Activity, TrendingUp, AlertCircle, Brain, MessageCircle, FileText, BarChart3, Sparkles, LayoutDashboard, Loader2 } from "lucide-react";
 import { Chatbot } from "@/components/Chatbot";
 import { AddUserDialog } from "@/components/admin/AddUserDialog";
 import { CourseApprovalDialog } from "@/components/admin/CourseApprovalDialog";
@@ -14,10 +14,15 @@ import { AITutorDialog } from "@/components/ai/AITutorDialog";
 import { AIFeedbackDialog } from "@/components/ai/AIFeedbackDialog";
 import { AIUsageCard } from "@/components/admin/AIUsageCard";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminDashboardStats } from "@/hooks/useDashboardStats";
+import { useTenant } from "@/contexts/TenantContext";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { tenant } = useTenant();
+  const { data: stats, isLoading } = useAdminDashboardStats(tenant?.id);
+  
   const [addUserOpen, setAddUserOpen] = useState(false);
   const [courseApprovalOpen, setCourseApprovalOpen] = useState(false);
   const [settlementOpen, setSettlementOpen] = useState(false);
@@ -72,30 +77,30 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           <StatsCard
             title="전체 사용자"
-            value="2,847"
-            icon={<Users className="h-4 w-4" />}
-            description="+180 from last month"
+            value={isLoading ? "-" : stats?.totalUsers.toLocaleString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Users className="h-4 w-4" />}
+            description={`학생 ${stats?.studentCount || 0}명`}
             trend="up"
           />
           <StatsCard
             title="전체 강의"
-            value="156"
-            icon={<BookOpen className="h-4 w-4" />}
-            description="+12 this month"
+            value={isLoading ? "-" : stats?.totalCourses.toLocaleString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <BookOpen className="h-4 w-4" />}
+            description={`활성 ${stats?.activeCourses || 0}개`}
             trend="up"
           />
           <StatsCard
-            title="총 매출"
-            value="₩45,230,000"
-            icon={<DollarSign className="h-4 w-4" />}
-            description="+24% from last month"
+            title="전체 수강신청"
+            value={isLoading ? "-" : stats?.totalEnrollments.toLocaleString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <DollarSign className="h-4 w-4" />}
+            description="등록된 수강"
             trend="up"
           />
           <StatsCard
-            title="활성 세션"
-            value="1,234"
-            icon={<Activity className="h-4 w-4" />}
-            description="현재 접속 중"
+            title="대기 중 강의"
+            value={isLoading ? "-" : stats?.pendingCourses.toLocaleString() || "0"}
+            icon={isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Activity className="h-4 w-4" />}
+            description="검토 대기"
           />
           
           {/* AI Usage Card - 실시간 토큰 사용량 */}
@@ -110,9 +115,9 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <StatRow label="학생" value="2,456" percentage={86} />
-                <StatRow label="강사" value="342" percentage={12} />
-                <StatRow label="관리자" value="49" percentage={2} />
+                <StatRow label="학생" value={stats?.studentCount.toLocaleString() || "0"} percentage={stats ? Math.round((stats.studentCount / Math.max(stats.totalUsers, 1)) * 100) : 0} />
+                <StatRow label="강사" value={stats?.teacherCount.toLocaleString() || "0"} percentage={stats ? Math.round((stats.teacherCount / Math.max(stats.totalUsers, 1)) * 100) : 0} />
+                <StatRow label="관리자" value={stats?.adminCount.toLocaleString() || "0"} percentage={stats ? Math.round((stats.adminCount / Math.max(stats.totalUsers, 1)) * 100) : 0} />
               </div>
             </CardContent>
           </Card>
@@ -123,30 +128,30 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <StatRow label="활성 강의" value="138" percentage={88} />
-                <StatRow label="검토 대기" value="12" percentage={8} />
-                <StatRow label="보관됨" value="6" percentage={4} />
+                <StatRow label="활성 강의" value={stats?.activeCourses.toLocaleString() || "0"} percentage={stats ? Math.round((stats.activeCourses / Math.max(stats.totalCourses, 1)) * 100) : 0} />
+                <StatRow label="검토 대기" value={stats?.pendingCourses.toLocaleString() || "0"} percentage={stats ? Math.round((stats.pendingCourses / Math.max(stats.totalCourses, 1)) * 100) : 0} />
+                <StatRow label="보관됨" value={stats?.archivedCourses.toLocaleString() || "0"} percentage={stats ? Math.round((stats.archivedCourses / Math.max(stats.totalCourses, 1)) * 100) : 0} />
               </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">수익 분석</CardTitle>
+              <CardTitle className="text-base">AI 사용량</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">평균 구매액</span>
-                  <span className="font-medium">₩158,900</span>
+                  <span className="text-sm text-muted-foreground">이번 달 토큰</span>
+                  <span className="font-medium">{stats?.monthlyTokens.toLocaleString() || "0"}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">전환율</span>
-                  <span className="font-medium">3.2%</span>
+                  <span className="text-sm text-muted-foreground">전체 사용자</span>
+                  <span className="font-medium">{stats?.totalUsers || 0}명</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">환불율</span>
-                  <span className="font-medium">1.8%</span>
+                  <span className="text-sm text-muted-foreground">전체 수강</span>
+                  <span className="font-medium">{stats?.totalEnrollments || 0}건</span>
                 </div>
               </div>
             </CardContent>
@@ -157,31 +162,23 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>최근 활동</CardTitle>
-              <CardDescription>플랫폼의 최근 주요 활동</CardDescription>
+              <CardTitle>최근 가입 사용자</CardTitle>
+              <CardDescription>플랫폼에 새로 가입한 사용자</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <ActivityLog
-                  type="user"
-                  message="새 강사 등록: 김교수"
-                  time="5분 전"
-                />
-                <ActivityLog
-                  type="course"
-                  message="강의 승인: Advanced Machine Learning"
-                  time="15분 전"
-                />
-                <ActivityLog
-                  type="payment"
-                  message="결제 완료: ₩450,000"
-                  time="30분 전"
-                />
-                <ActivityLog
-                  type="user"
-                  message="대량 회원가입: 25명 (ABC 대학교)"
-                  time="1시간 전"
-                />
+                {stats?.recentUsers && stats.recentUsers.length > 0 ? (
+                  stats.recentUsers.map((user, index) => (
+                    <ActivityLog
+                      key={user.user_id || index}
+                      type="user"
+                      message={`새 사용자 가입: ${user.full_name || '이름 없음'}`}
+                      time={user.created_at ? new Date(user.created_at).toLocaleDateString('ko-KR') : ''}
+                    />
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">최근 가입한 사용자가 없습니다</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -196,27 +193,29 @@ const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <AlertItem
-                  level="warning"
-                  title="검토 대기 중인 강의"
-                  description="12개의 강의가 승인을 기다리고 있습니다"
-                  action="검토하기"
-                  onAction={handleReviewCourses}
-                />
-                <AlertItem
-                  level="info"
-                  title="서버 사용량 증가"
-                  description="지난 주 대비 35% 증가"
-                  action="확인"
-                  onAction={handleServerUsageConfirm}
-                />
-                <AlertItem
-                  level="warning"
-                  title="환불 요청"
-                  description="3건의 환불 요청이 처리 대기 중"
-                  action="처리하기"
-                  onAction={handleRefundProcess}
-                />
+              <AlertItem
+                level="info"
+                title="최근 등록된 강의"
+                description={stats?.recentCourses && stats.recentCourses.length > 0 
+                  ? `${stats.recentCourses[0]?.title || '없음'}`
+                  : '등록된 강의가 없습니다'}
+                action="강의 관리"
+                onAction={handleReviewCourses}
+              />
+              <AlertItem
+                level="warning"
+                title="대기 중인 강의"
+                description={`${stats?.pendingCourses || 0}개의 강의가 승인을 기다리고 있습니다`}
+                action="검토하기"
+                onAction={handleReviewCourses}
+              />
+              <AlertItem
+                level="info"
+                title="AI 토큰 사용량"
+                description={`이번 달 ${stats?.monthlyTokens?.toLocaleString() || 0} 토큰 사용`}
+                action="확인"
+                onAction={handleServerUsageConfirm}
+              />
               </div>
             </CardContent>
           </Card>

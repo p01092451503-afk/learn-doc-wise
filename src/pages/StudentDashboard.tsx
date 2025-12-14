@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users, LayoutDashboard, Video, Calendar } from "lucide-react";
+import { BookOpen, Clock, Award, TrendingUp, PlayCircle, FileText, Brain, Sparkles, Route, FileQuestion, Users, LayoutDashboard, Video, Calendar, Loader2 } from "lucide-react";
 import { Chatbot } from "@/components/Chatbot";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getTranslation } from "@/i18n/translations";
@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { useStudentDashboardStats } from "@/hooks/useDashboardStats";
 
 interface LiveSession {
   id: string;
@@ -37,12 +38,23 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
+  const [userId, setUserId] = useState<string | undefined>();
+  const { data: stats, isLoading: loadingStats } = useStudentDashboardStats(userId);
+  
   const [learningPathOpen, setLearningPathOpen] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [progressOpen, setProgressOpen] = useState(false);
   const [studyMatchOpen, setStudyMatchOpen] = useState(false);
   const [aiTutorOpen, setAiTutorOpen] = useState(false);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id);
+    };
+    getUser();
+  }, []);
 
   // 🚀 PERFORMANCE: React Query로 라이브 세션 캐싱
   const { data: liveSessions = [], isLoading: loadingSessions } = useQuery({
@@ -110,27 +122,27 @@ const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title={t('enrolledCourses')}
-            value="5"
-            icon={<BookOpen className="h-5 w-5" />}
-            description="+2 this month"
+            value={loadingStats ? "-" : stats?.enrolledCourses.toString() || "0"}
+            icon={loadingStats ? <Loader2 className="h-5 w-5 animate-spin" /> : <BookOpen className="h-5 w-5" />}
+            description={`수강 중인 강좌`}
           />
           <StatsCard
             title={t('learningTime')}
-            value="24.5h"
-            icon={<Clock className="h-5 w-5" />}
+            value={loadingStats ? "-" : `${stats?.learningHours || "0"}h`}
+            icon={loadingStats ? <Loader2 className="h-5 w-5 animate-spin" /> : <Clock className="h-5 w-5" />}
             description={t('thisWeek')}
           />
           <StatsCard
             title={t('completedAssignments')}
-            value="12"
-            icon={<FileText className="h-5 w-5" />}
-            description={`${t('outOf')} 15${t('of')}`}
+            value={loadingStats ? "-" : stats?.completedAssignments.toString() || "0"}
+            icon={loadingStats ? <Loader2 className="h-5 w-5 animate-spin" /> : <FileText className="h-5 w-5" />}
+            description={`총 ${stats?.totalAssignments || 0}개 중`}
           />
           <StatsCard
             title={t('earnedBadges')}
-            value="8"
-            icon={<Award className="h-5 w-5" />}
-            description="+3 new"
+            value={loadingStats ? "-" : stats?.earnedBadges.toString() || "0"}
+            icon={loadingStats ? <Loader2 className="h-5 w-5 animate-spin" /> : <Award className="h-5 w-5" />}
+            description="획득한 배지"
           />
         </div>
 
