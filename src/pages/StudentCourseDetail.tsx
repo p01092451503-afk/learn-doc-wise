@@ -626,18 +626,22 @@ const StudentCourseDetail = () => {
                                 }}
                               >
                                 <div className="p-3 flex items-center gap-3">
-                                  {/* Status Icon */}
-                                  <div className={`
-                                    flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0 transition-colors
-                                    ${!isAccessible 
-                                      ? "bg-muted border border-border" 
-                                      : isCompleted 
-                                        ? "bg-green-500/15 border-2 border-green-500" 
-                                        : isSelected
-                                          ? "bg-primary/15 border-2 border-primary"
-                                          : "bg-muted border border-border"
-                                    }
-                                  `}>
+                                  {/* Status Icon - Always circular */}
+                                  <div 
+                                    className={`
+                                      flex items-center justify-center flex-shrink-0 transition-all duration-200
+                                      w-11 h-11 rounded-full
+                                      ${!isAccessible 
+                                        ? "bg-muted/60 border-2 border-border/50" 
+                                        : isCompleted 
+                                          ? "bg-green-500/10 border-2 border-green-500 shadow-sm shadow-green-500/20" 
+                                          : isSelected
+                                            ? "bg-primary/10 border-2 border-primary shadow-sm shadow-primary/20"
+                                            : "bg-muted/80 border-2 border-border/60 hover:border-primary/30"
+                                      }
+                                    `}
+                                    style={{ borderRadius: '50%' }}
+                                  >
                                     {!isAccessible ? (
                                       <Lock className="h-4 w-4 text-muted-foreground" />
                                     ) : isCompleted ? (
