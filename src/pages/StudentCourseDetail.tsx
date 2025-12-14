@@ -571,8 +571,8 @@ const StudentCourseDetail = () => {
                 </CardTitle>
                 <CardDescription>{contents.length}개 차시 • 순차 학습 필수</CardDescription>
               </CardHeader>
-              <CardContent className="px-3 pb-3">
-                <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
+              <CardContent className="px-4 pb-4">
+                <div className="space-y-2 max-h-[600px] overflow-y-auto overflow-x-visible">
                   {contents.length === 0 ? (
                     <p className="text-sm text-center py-8 text-muted-foreground">
                       등록된 차시가 없습니다
@@ -602,7 +602,7 @@ const StudentCourseDetail = () => {
                               <div
                                 key={content.id}
                                 className={`
-                                  relative rounded-xl transition-all duration-200 
+                                  relative rounded-xl transition-all duration-200 ml-1
                                   ${isSelected 
                                     ? "bg-primary/5 ring-2 ring-primary shadow-sm" 
                                     : "hover:bg-accent/40"
