@@ -87,7 +87,8 @@ const menuItems: MenuItem[] = [
 const OperatorLayout = ({ children }: OperatorLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     const saved = localStorage.getItem("operator-sidebar-collapsed");
-    return saved === "true";
+    // 기본값: 펼친 상태 (false)
+    return saved === "true" ? true : false;
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "light">(() => {

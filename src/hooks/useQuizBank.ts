@@ -322,15 +322,16 @@ export const useQuizBank = (courseId?: string) => {
         .single();
 
       if (data) {
-        const warnings = (data.browser_warnings as unknown[]) || [];
+        const warnings = (data.browser_warnings as Record<string, unknown>[]) || [];
+        const updatedWarnings = [...warnings, {
+          type: "tab_switch",
+          timestamp: new Date().toISOString(),
+        }];
         await supabase
           .from("quiz_attempts")
           .update({
             tab_switch_count: (data.tab_switch_count || 0) + 1,
-            browser_warnings: [...warnings, {
-              type: "tab_switch",
-              timestamp: new Date().toISOString(),
-            }],
+            browser_warnings: updatedWarnings as import("@/integrations/supabase/types").Json,
           })
           .eq("id", attemptId);
       }
