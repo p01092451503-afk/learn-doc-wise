@@ -85,6 +85,14 @@ import AdminDropoutManagement from "./admin/AdminDropoutManagement";
 import AdminTrainingCompletion from "./admin/AdminTrainingCompletion";
 import AdminGrades from "./admin/AdminGrades";
 import AdminTrainingAllowance from "./admin/AdminTrainingAllowance";
+import OperatorTenants from "./operator/OperatorTenants";
+import OperatorContracts from "./operator/OperatorContracts";
+import OperatorRevenue from "./operator/OperatorRevenue";
+import OperatorUsage from "./operator/OperatorUsage";
+import OperatorMonitoring from "./operator/OperatorMonitoring";
+import OperatorAILogs from "./operator/OperatorAILogs";
+import OperatorGovernmentTraining from "./operator/OperatorGovernmentTraining";
+import OperatorSettings from "./operator/OperatorSettings";
 import {
   Select,
   SelectContent,
@@ -93,7 +101,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type DemoRole = "student" | "teacher" | "admin";
+type DemoRole = "student" | "teacher" | "admin" | "operator";
 
 interface MenuItem {
   icon: any;
@@ -147,26 +155,40 @@ const DemoPreview = () => {
         { icon: DollarSign, label: "수익", path: "revenue" },
       ];
     }
+
+    if (activeRole === "admin") {
+      return [
+        { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
+        { icon: Users, label: "사용자 관리", path: "users" },
+        { icon: BookOpen, label: "강좌 관리", path: "courses" },
+        { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
+        { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
+        { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
+        { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
+        { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
+        { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
+        { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
+        { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
+        { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
+        { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
+        { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+        { icon: DollarSign, label: "매출 관리", path: "revenue" },
+        { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
+        { icon: BarChart3, label: "분석 도구", path: "analytics" },
+        { icon: Settings, label: "시스템 설정", path: "settings" },
+      ];
+    }
     
-    // admin
+    // operator
     return [
       { icon: LayoutDashboard, label: "대시보드", path: "dashboard" },
-      { icon: Users, label: "사용자 관리", path: "users" },
-      { icon: BookOpen, label: "강좌 관리", path: "courses" },
-      { icon: FolderOpen, label: "콘텐츠 관리", path: "content" },
-      { icon: GraduationCap, label: "학습 관리", path: "learning", hasAI: true },
-      { icon: CalendarCheck, label: "출석 관리", path: "attendance", isHRD: true },
-      { icon: ClipboardList, label: "훈련일지", path: "training-log", isHRD: true },
-      { icon: MessageSquare, label: "만족도 조사", path: "satisfaction-survey", isHRD: true },
-      { icon: ClipboardList, label: "상담일지", path: "counseling-log", isHRD: true },
-      { icon: Users, label: "중도탈락 관리", path: "dropout-management", isHRD: true },
-      { icon: Trophy, label: "수료 관리", path: "training-completion", isHRD: true },
-      { icon: FileText, label: "성적 관리", path: "grades", isHRD: true },
-      { icon: DollarSign, label: "훈련수당", path: "training-allowance", isHRD: true },
-      { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+      { icon: Users, label: "테넌트 관리", path: "tenants" },
+      { icon: FileText, label: "계약 관리", path: "contracts" },
       { icon: DollarSign, label: "매출 관리", path: "revenue" },
+      { icon: Package, label: "사용량 관리", path: "usage" },
       { icon: Activity, label: "시스템 모니터링", path: "monitoring" },
-      { icon: BarChart3, label: "분석 도구", path: "analytics" },
+      { icon: Brain, label: "AI 로그", path: "ai-logs", hasAI: true },
+      { icon: Shield, label: "국비훈련 관리", path: "government-training", isHRD: true },
       { icon: Settings, label: "시스템 설정", path: "settings" },
     ];
   };
@@ -275,6 +297,30 @@ const DemoPreview = () => {
           return <AdminDashboard isDemo={true} />;
       }
     }
+
+    // Operator pages
+    if (activeRole === "operator") {
+      switch (activePage) {
+        case "tenants":
+          return <OperatorTenants />;
+        case "contracts":
+          return <OperatorContracts />;
+        case "revenue":
+          return <OperatorRevenue />;
+        case "usage":
+          return <OperatorUsage />;
+        case "monitoring":
+          return <OperatorMonitoring />;
+        case "ai-logs":
+          return <OperatorAILogs />;
+        case "government-training":
+          return <OperatorGovernmentTraining />;
+        case "settings":
+          return <OperatorSettings />;
+        default:
+          return <OperatorDashboard isDemo={true} />;
+      }
+    }
     
     return <StudentDashboard isDemo={true} />;
   };
@@ -305,6 +351,7 @@ const DemoPreview = () => {
               to={
                 activeRole === "student" ? "/student" : 
                 activeRole === "teacher" ? "/teacher" : 
+                activeRole === "operator" ? "/operator" :
                 "/admin"
               }
             >
@@ -326,6 +373,7 @@ const DemoPreview = () => {
                   <SelectItem value="student">학생</SelectItem>
                   <SelectItem value="teacher">강사</SelectItem>
                   <SelectItem value="admin">관리자</SelectItem>
+                  <SelectItem value="operator">운영자</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -345,6 +393,7 @@ const DemoPreview = () => {
             💡 <strong>
               {activeRole === "student" ? "학생" : 
                activeRole === "teacher" ? "강사" : 
+               activeRole === "operator" ? "운영자" :
                "관리자"}
             </strong>
             {" "}대시보드를 <span className="hidden sm:inline">자유롭게 </span>체험해보세요<span className="hidden md:inline">. 실제 작동하는 UI로 구성되어 있습니다</span>
