@@ -43,6 +43,7 @@ import {
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
