@@ -89,7 +89,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
       if (error) throw error;
     } catch (error: any) {
       console.error('Error joining session:', error);
-      toast.error('세션 참여 중 오류가 발생했습니다.');
+      toast({ title: '오류', description: '세션 참여 중 오류가 발생했습니다.', variant: 'destructive' });
     }
   };
 
