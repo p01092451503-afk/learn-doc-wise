@@ -131,17 +131,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     return () => { document.title = "AtomLMS - AI 기반 학습관리시스템"; };
   }, [location.pathname, menuItems]);
 
-  // Debug logging for demo mode
-  useEffect(() => {
-    if (isDemoMode) {
-      console.log('[DashboardLayout] Demo Mode Active:', {
-        propRole: userRole,
-        urlRole: searchParams.get('role'),
-        effectiveRole: effectiveUserRole,
-        fullURL: window.location.href
-      });
-    }
-  }, [isDemoMode, userRole, effectiveUserRole, searchParams]);
+  // Debug logging removed for performance
 
   const handleLogout = async () => {
     try {
