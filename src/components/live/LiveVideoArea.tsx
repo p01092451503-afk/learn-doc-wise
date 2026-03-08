@@ -133,6 +133,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
       setParticipants(participantsWithNames);
     } catch (error: any) {
       console.error('Error loading participants:', error);
+      toast.error('참가자 목록을 불러오는 데 실패했습니다.');
     } finally {
       setLoading(false);
     }
