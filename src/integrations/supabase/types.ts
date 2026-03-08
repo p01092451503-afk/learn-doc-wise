@@ -4247,6 +4247,33 @@ export type Database = {
           },
         ]
       }
+      rate_limit_logs: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          identifier: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          identifier: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          identifier?: string
+          request_count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       satisfaction_responses: {
         Row: {
           id: string
@@ -5811,6 +5838,15 @@ export type Database = {
         Args: { p_tenant_id: string; p_user_id: string }
         Returns: undefined
       }
+      check_rate_limit: {
+        Args: {
+          p_function_name: string
+          p_identifier: string
+          p_max_requests?: number
+          p_window_seconds?: number
+        }
+        Returns: boolean
+      }
       check_storage_limit: {
         Args: { p_file_size: number; p_tenant_id: string }
         Returns: boolean
@@ -5825,6 +5861,7 @@ export type Database = {
         Returns: undefined
       }
       cleanup_expired_sessions: { Args: never; Returns: undefined }
+      cleanup_rate_limit_logs: { Args: never; Returns: undefined }
       create_default_tenant_sections: {
         Args: { p_tenant_id: string }
         Returns: undefined
