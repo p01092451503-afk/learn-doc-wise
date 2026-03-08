@@ -1,18 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { topic, difficulty, questionCount } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-quiz-generator', identifier, 20, 60);
+
+    const { topic, difficulty, questionCount } = await parseBodyWithLimit(req) as any;
     console.log('AI Quiz Generator Request:', { topic, difficulty, questionCount });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -35,19 +35,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `다음 조건으로 퀴즈를 생성해주세요:
-- 주제: ${topic}
-- 난이도: ${difficulty}
-- 문제 수: ${questionCount}개
-
-각 문제는 다음 형식으로 작성해주세요:
-문제 1: [질문]
-1) [선택지 1]
-2) [선택지 2]
-3) [선택지 3]
-4) [선택지 4]
-정답: [번호]
-해설: [간단한 설명]`
+            content: `다음 조건으로 퀴즈를 생성해주세요:\n- 주제: ${topic}\n- 난이도: ${difficulty}\n- 문제 수: ${questionCount}개\n\n각 문제는 다음 형식으로 작성해주세요:\n문제 1: [질문]\n1) [선택지 1]\n2) [선택지 2]\n3) [선택지 3]\n4) [선택지 4]\n정답: [번호]\n해설: [간단한 설명]`
           }
         ],
       }),
@@ -67,9 +55,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in ai-quiz-generator function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });

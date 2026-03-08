@@ -1,18 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { text, targetLanguage, sourceLanguage } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-translate', identifier, 30, 60);
+
+    const { text, targetLanguage, sourceLanguage } = await parseBodyWithLimit(req) as any;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!LOVABLE_API_KEY) {
@@ -20,13 +20,8 @@ serve(async (req) => {
     }
 
     const languageNames: Record<string, string> = {
-      ko: "한국어",
-      en: "영어",
-      ja: "일본어",
-      zh: "중국어",
-      es: "스페인어",
-      fr: "프랑스어",
-      de: "독일어",
+      ko: "한국어", en: "영어", ja: "일본어", zh: "중국어",
+      es: "스페인어", fr: "프랑스어", de: "독일어",
     };
 
     const systemPrompt = `당신은 전문 번역가입니다. ${sourceLanguage ? languageNames[sourceLanguage] : "원문"}에서 ${languageNames[targetLanguage] || targetLanguage}로 정확하고 자연스럽게 번역하세요.
@@ -51,14 +46,12 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "사용량 한도 초과" }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "크레딧 부족" }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       throw new Error("번역 실패");
@@ -67,7 +60,6 @@ serve(async (req) => {
     const data = await response.json();
     const translatedText = data.choices?.[0]?.message?.content;
 
-    // AI 사용 로그 저장
     try {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -98,9 +90,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Translation error:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });

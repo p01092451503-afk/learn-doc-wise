@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 interface LearningData {
   user_id: string;
@@ -17,12 +13,16 @@ interface LearningData {
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { learningData } = await req.json() as { learningData: LearningData };
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('analyze-learning', identifier, 20, 60);
+
+    const { learningData } = await parseBodyWithLimit(req) as { learningData: LearningData };
     
     console.log('📊 Analyzing learning data:', learningData);
 
@@ -31,7 +31,6 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // AI 분석 요청
     const analysisPrompt = `당신은 교육 데이터 분석 전문가입니다. 다음 학습 데이터를 분석하여 JSON 형식으로 결과를 제공하세요.
 
 학습 데이터:
@@ -43,8 +42,8 @@ serve(async (req) => {
 
 다음 형식의 JSON으로 응답하세요:
 {
-  "at_risk_score": 0-100 사이의 숫자 (높을수록 이탈 위험 높음),
-  "engagement_score": 0-100 사이의 숫자 (높을수록 참여도 높음),
+  "at_risk_score": 0-100 사이의 숫자,
+  "engagement_score": 0-100 사이의 숫자,
   "learning_pattern": {
     "consistency": "높음/중간/낮음",
     "pace": "빠름/적정/느림",
@@ -62,10 +61,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { 
-            role: "system", 
-            content: "당신은 교육 데이터 분석 전문가입니다. 항상 정확한 JSON 형식으로만 응답하세요." 
-          },
+          { role: "system", content: "당신은 교육 데이터 분석 전문가입니다. 항상 정확한 JSON 형식으로만 응답하세요." },
           { role: "user", content: analysisPrompt }
         ],
       }),
@@ -94,22 +90,19 @@ serve(async (req) => {
     
     console.log('🤖 AI Response:', analysisText);
 
-    // Supabase 클라이언트는 이미 위에서 초기화됨
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // JSON 추출 (마크다운 코드 블록 제거)
     let jsonText = analysisText;
     const jsonMatch = analysisText.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
     if (jsonMatch) {
       jsonText = jsonMatch[1];
     }
 
-    // JSON 문자열 정제 (AI가 가끔 잘못된 JSON을 반환함)
     jsonText = jsonText
-      .replace(/""(\w)/g, '"$1')  // "" 중복 따옴표 수정
-      .replace(/(\w)""/g, '$1"')  // 끝에 중복 따옴표 수정
+      .replace(/""(\w)/g, '"$1')
+      .replace(/(\w)""/g, '$1"')
       .trim();
 
     let analysis;
@@ -117,20 +110,14 @@ serve(async (req) => {
       analysis = JSON.parse(jsonText);
     } catch (parseError) {
       console.error('JSON 파싱 실패, 기본값 사용:', parseError);
-      // 파싱 실패시 기본값 반환
       analysis = {
         at_risk_score: 50,
         engagement_score: 50,
-        learning_pattern: {
-          consistency: "분석 불가",
-          pace: "분석 불가",
-          completion_rate: "분석 불가"
-        },
+        learning_pattern: { consistency: "분석 불가", pace: "분석 불가", completion_rate: "분석 불가" },
         recommendations: ["학습 데이터를 더 수집한 후 다시 분석해주세요."]
       };
     }
 
-    // AI 사용 로그 저장
     try {
       await supabase.from("ai_usage_logs").insert({
         tenant_id: "00000000-0000-0000-0000-000000000000",
@@ -144,7 +131,6 @@ serve(async (req) => {
       console.error("Failed to log AI usage:", logError);
     }
 
-    // Supabase에 분석 결과 저장
     const { error: updateError } = await supabase
       .from('learning_analytics')
       .upsert({
@@ -157,9 +143,7 @@ serve(async (req) => {
         learning_pattern: analysis.learning_pattern,
         last_activity_at: new Date(Date.now() - learningData.last_activity_days_ago * 24 * 60 * 60 * 1000).toISOString(),
         updated_at: new Date().toISOString(),
-      }, {
-        onConflict: 'user_id,course_id'
-      });
+      }, { onConflict: 'user_id,course_id' });
 
     if (updateError) {
       console.error('Error saving analytics:', updateError);
@@ -168,27 +152,11 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        analysis 
-      }),
-      { 
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200 
-      }
+      JSON.stringify({ success: true, analysis }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
-
   } catch (error) {
     console.error("❌ Analysis error:", error);
-    return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Unknown error",
-        details: error 
-      }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      }
-    );
+    return errorResponse(error, corsHeaders);
   }
 });

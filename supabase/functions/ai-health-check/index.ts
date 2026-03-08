@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 interface FeatureCheck {
   feature: string;
@@ -15,8 +11,16 @@ interface FeatureCheck {
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
+
+  try {
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-health-check', identifier, 5, 60);
+  } catch (e) {
+    return errorResponse(e, corsHeaders);
   }
 
   const startTime = Date.now();

@@ -1,18 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.77.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { submissionId, submissionText, maxScore, rubric } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-grading', identifier, 20, 60);
+
+    const { submissionId, submissionText, maxScore, rubric } = await parseBodyWithLimit(req) as any;
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -24,7 +24,6 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // AI 채점 프롬프트
     const systemPrompt = `당신은 공정하고 전문적인 과제 채점자입니다. 
 다음 기준으로 학생의 과제를 평가하고 점수와 상세한 피드백을 제공하세요:
 
@@ -48,7 +47,6 @@ ${rubric || `
 
     const userPrompt = `다음 학생의 제출물을 평가해주세요:\n\n${submissionText}`;
 
-    // Lovable AI를 사용한 채점
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -80,7 +78,6 @@ ${rubric || `
 
     const gradingResult = JSON.parse(resultText);
 
-    // 제출물 업데이트
     const { error: updateError } = await supabase
       .from("assignment_submissions")
       .update({
@@ -95,7 +92,6 @@ ${rubric || `
       throw updateError;
     }
 
-    // AI 사용 로그 기록
     const authHeader = req.headers.get("Authorization");
     if (authHeader) {
       const token = authHeader.replace("Bearer ", "");
@@ -114,24 +110,11 @@ ${rubric || `
     }
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        result: gradingResult,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      JSON.stringify({ success: true, result: gradingResult }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("AI grading error:", error);
-    return new Response(
-      JSON.stringify({
-        error: error instanceof Error ? error.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    return errorResponse(error, corsHeaders);
   }
 });

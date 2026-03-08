@@ -1,18 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { currentProgress, studyPattern, targetCompletion } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-progress-prediction', identifier, 20, 60);
+
+    const { currentProgress, studyPattern, targetCompletion } = await parseBodyWithLimit(req) as any;
     console.log('AI Progress Prediction Request:', { currentProgress, studyPattern, targetCompletion });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -35,18 +35,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `학습자의 진도를 분석하고 예측해주세요:
-
-현재 상황:
-- 현재 진도: ${currentProgress}%
-- 학습 패턴: ${studyPattern}
-- 목표 완료일: ${targetCompletion}
-
-다음 내용을 포함하여 분석해주세요:
-1. 현재 학습 속도 분석
-2. 예상 완료일 예측
-3. 목표 달성을 위한 권장 학습 계획
-4. 주의사항 및 개선 포인트`
+            content: `학습자의 진도를 분석하고 예측해주세요:\n\n현재 상황:\n- 현재 진도: ${currentProgress}%\n- 학습 패턴: ${studyPattern}\n- 목표 완료일: ${targetCompletion}\n\n다음 내용을 포함하여 분석해주세요:\n1. 현재 학습 속도 분석\n2. 예상 완료일 예측\n3. 목표 달성을 위한 권장 학습 계획\n4. 주의사항 및 개선 포인트`
           }
         ],
       }),
@@ -66,9 +55,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in ai-progress-prediction function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });

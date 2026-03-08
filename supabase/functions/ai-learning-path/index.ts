@@ -1,18 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { userLevel, interests, learningGoal } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-learning-path', identifier, 20, 60);
+
+    const { userLevel, interests, learningGoal } = await parseBodyWithLimit(req) as any;
     console.log('AI Learning Path Request:', { userLevel, interests, learningGoal });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -35,17 +35,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `학습자 정보:
-- 현재 수준: ${userLevel}
-- 관심 분야: ${interests}
-- 학습 목표: ${learningGoal}
-
-위 정보를 바탕으로 3-5단계의 맞춤형 학습 경로를 추천해주세요. 각 단계마다:
-1. 단계명
-2. 학습 내용
-3. 예상 소요 시간
-4. 추천 학습 자료 유형
-을 포함해주세요.`
+            content: `학습자 정보:\n- 현재 수준: ${userLevel}\n- 관심 분야: ${interests}\n- 학습 목표: ${learningGoal}\n\n위 정보를 바탕으로 3-5단계의 맞춤형 학습 경로를 추천해주세요. 각 단계마다:\n1. 단계명\n2. 학습 내용\n3. 예상 소요 시간\n4. 추천 학습 자료 유형\n을 포함해주세요.`
           }
         ],
       }),
@@ -65,9 +55,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in ai-learning-path function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });
