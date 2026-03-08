@@ -281,34 +281,10 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
 
   useEffect(() => {
     const items = getDefaultMenuItems();
-    
-    console.log('[DashboardLayout] Filtering menu items:', {
-      isDemoMode,
-      hideHrdFeatures,
-      totalItems: items.length,
-      hrdItems: items.filter(i => i.isHRD).length
-    });
-    
     const filteredItems = items.filter(item => {
-      const isHrdItem = item.isHRD === true;
-      const shouldShow = !hideHrdFeatures || !isHrdItem;
-      
-      if (isHrdItem) {
-        console.log(`[DashboardLayout] HRD Item "${item.label}":`, {
-          hideHrdFeatures,
-          shouldShow
-        });
-      }
-      
-      return shouldShow;
+      if (item.isHRD && hideHrdFeatures) return false;
+      return true;
     });
-    
-    console.log('[DashboardLayout] Filtered items:', {
-      before: items.length,
-      after: filteredItems.length,
-      removed: items.length - filteredItems.length
-    });
-    
     setMenuItems(filteredItems);
   }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
 
