@@ -1,0 +1,22 @@
+{
+  "name": "AtomLMS - AI 기반 학습관리시스템",
+  "short_name": "AtomLMS",
+  "description": "AI 튜터, 자동 채점, 학습경로 추천을 갖춘 차세대 B2B LMS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/atom-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/atom-favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

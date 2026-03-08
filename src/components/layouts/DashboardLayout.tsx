@@ -119,6 +119,14 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     ? (searchParams.get('role') as "student" | "teacher" | "admin" | "operator")
     : userRole;
 
+  // Dynamic document title based on current page
+  useEffect(() => {
+    const currentItem = menuItems.find(item => item.path === location.pathname);
+    const pageTitle = currentItem?.label || "대시보드";
+    document.title = `${pageTitle} | AtomLMS`;
+    return () => { document.title = "AtomLMS - AI 기반 학습관리시스템"; };
+  }, [location.pathname, menuItems]);
+
   // Debug logging for demo mode
   useEffect(() => {
     if (isDemoMode) {
