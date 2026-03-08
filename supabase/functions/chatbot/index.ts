@@ -1,18 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.7";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { messages, userRole } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('chatbot', identifier, 30, 60);
+
+    const { messages, userRole } = await parseBodyWithLimit(req) as any;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -31,7 +31,6 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // 역할에 따라 다른 시스템 프롬프트 설정
     const systemPrompt = userRole === "admin" 
       ? `당신은 LMS 플랫폼 관리자용 AI 어시스턴트입니다. 사용자의 질문에만 간결하고 명확하게 답변하세요. 불필요한 소개나 설명은 하지 마세요. 질문받은 내용에 대해서만 직접적으로 답변하세요. 한국어로 답변합니다.`
       : `당신은 온라인 학습 플랫폼(LMS) AI 어시스턴트입니다. 사용자의 질문에만 간결하고 명확하게 답변하세요. 불필요한 소개나 설명은 하지 마세요. 질문받은 내용에 대해서만 직접적으로 답변하세요. 한국어로 답변합니다.`;
@@ -56,33 +55,23 @@ serve(async (req) => {
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }), 
-          {
-            status: 429,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "AI 사용 크레딧이 부족합니다." }), 
-          {
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
       return new Response(
         JSON.stringify({ error: "AI 서비스 오류가 발생했습니다." }), 
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // 스트리밍 응답이므로 로깅은 간단히 처리
     const lastUserMessage = messages[messages.length - 1]?.content || "";
     try {
       await supabase.from("ai_usage_logs").insert({
@@ -102,14 +91,6 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("chatbot error:", error);
-    return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다." 
-      }), 
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+    return errorResponse(error, getCorsHeaders(req));
   }
 });

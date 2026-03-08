@@ -1,18 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { userProfile, preferences } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-study-match', identifier, 20, 60);
+
+    const { userProfile, preferences } = await parseBodyWithLimit(req) as any;
     console.log('AI Study Match Request:', { userProfile, preferences });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -35,19 +35,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `다음 학습자에게 적합한 스터디 메이트 프로필을 추천해주세요:
-
-학습자 정보:
-${JSON.stringify(userProfile, null, 2)}
-
-선호 사항:
-${JSON.stringify(preferences, null, 2)}
-
-다음을 포함하여 추천해주세요:
-1. 이상적인 스터디 메이트 특성 (3-5가지)
-2. 효과적인 스터디 방법 제안
-3. 주의해야 할 점
-4. 스터디 그룹 구성 방안`
+            content: `다음 학습자에게 적합한 스터디 메이트 프로필을 추천해주세요:\n\n학습자 정보:\n${JSON.stringify(userProfile, null, 2)}\n\n선호 사항:\n${JSON.stringify(preferences, null, 2)}\n\n다음을 포함하여 추천해주세요:\n1. 이상적인 스터디 메이트 특성 (3-5가지)\n2. 효과적인 스터디 방법 제안\n3. 주의해야 할 점\n4. 스터디 그룹 구성 방안`
           }
         ],
       }),
@@ -67,9 +55,6 @@ ${JSON.stringify(preferences, null, 2)}
     });
   } catch (error) {
     console.error('Error in ai-study-match function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });

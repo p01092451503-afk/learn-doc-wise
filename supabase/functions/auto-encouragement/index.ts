@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { getCorsHeaders, handleCorsOptions, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 interface EncouragementRule {
   id: string
@@ -17,18 +13,21 @@ interface EncouragementRule {
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('auto-encouragement', identifier, 10, 60);
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseKey)
 
     console.log('Starting auto-encouragement process...')
 
-    // 활성화된 독려 규칙 가져오기
     const { data: rules, error: rulesError } = await supabase
       .from('auto_encouragement_rules')
       .select('*')
@@ -48,13 +47,7 @@ serve(async (req) => {
     )
   } catch (error) {
     console.error('Error in auto-encouragement:', error)
-    return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
-      }
-    )
+    return errorResponse(error, corsHeaders);
   }
 })
 
@@ -81,7 +74,6 @@ async function processRule(supabase: any, rule: EncouragementRule) {
 
     console.log(`Found ${targetUsers.length} users for rule: ${rule.rule_name}`)
 
-    // 각 사용자에게 알림 전송
     for (const user of targetUsers) {
       await sendEncouragementNotification(supabase, user, rule)
     }
@@ -100,12 +92,7 @@ async function findInactiveUsers(supabase: any, daysThreshold: number) {
     .lt('last_accessed_at', thresholdDate.toISOString())
     .order('last_accessed_at', { ascending: true })
 
-  if (error) {
-    console.error('Error finding inactive users:', error)
-    return []
-  }
-
-  // 중복 제거
+  if (error) { console.error('Error finding inactive users:', error); return [] }
   const uniqueUsers = Array.from(new Set(data?.map((d: any) => d.user_id) || []))
   return uniqueUsers.map(user_id => ({ user_id }))
 }
@@ -120,32 +107,17 @@ async function findLowProgressUsers(supabase: any, progressThreshold: number, da
     .lt('progress', progressThreshold)
     .lt('enrolled_at', thresholdDate.toISOString())
 
-  if (error) {
-    console.error('Error finding low progress users:', error)
-    return []
-  }
-
+  if (error) { console.error('Error finding low progress users:', error); return [] }
   return data || []
 }
 
 async function findMissedDeadlineUsers(supabase: any, daysThreshold: number) {
-  const thresholdDate = new Date()
-  thresholdDate.setDate(thresholdDate.getDate() - daysThreshold)
-
   const { data, error } = await supabase
     .from('assignment_submissions')
-    .select(`
-      student_id,
-      assignments!inner(due_date)
-    `)
+    .select(`student_id, assignments!inner(due_date)`)
     .eq('status', 'submitted')
-    .gt('submitted_at', supabase.rpc('assignments.due_date'))
 
-  if (error) {
-    console.error('Error finding missed deadline users:', error)
-    return []
-  }
-
+  if (error) { console.error('Error finding missed deadline users:', error); return [] }
   return (data || []).map((d: any) => ({ user_id: d.student_id }))
 }
 
@@ -156,17 +128,12 @@ async function findBrokenStreakUsers(supabase: any, daysThreshold: number) {
     .gt('streak_days', 0)
     .lt('last_activity_date', new Date().toISOString())
 
-  if (error) {
-    console.error('Error finding broken streak users:', error)
-    return []
-  }
-
+  if (error) { console.error('Error finding broken streak users:', error); return [] }
   return data || []
 }
 
 async function sendEncouragementNotification(supabase: any, user: any, rule: EncouragementRule) {
   try {
-    // 최근 24시간 내 같은 규칙으로 발송한 이력 확인
     const oneDayAgo = new Date()
     oneDayAgo.setDate(oneDayAgo.getDate() - 1)
 
@@ -183,7 +150,6 @@ async function sendEncouragementNotification(supabase: any, user: any, rule: Enc
       return
     }
 
-    // 사용자의 tenant_id 가져오기
     const { data: userData } = await supabase
       .from('user_roles')
       .select('tenant_id')
@@ -191,7 +157,6 @@ async function sendEncouragementNotification(supabase: any, user: any, rule: Enc
       .limit(1)
       .single()
 
-    // 알림 생성
     const { data: notification, error: notificationError } = await supabase
       .from('notifications')
       .insert({
@@ -207,7 +172,6 @@ async function sendEncouragementNotification(supabase: any, user: any, rule: Enc
 
     if (notificationError) throw notificationError
 
-    // 발송 이력 기록
     await supabase
       .from('encouragement_logs')
       .insert({

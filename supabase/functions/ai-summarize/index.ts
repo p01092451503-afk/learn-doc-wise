@@ -1,18 +1,18 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { getCorsHeaders, handleCorsOptions, parseBodyWithLimit, checkRateLimit, getClientIdentifier, errorResponse } from "../_shared/cors.ts";
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
+  const optionsResponse = handleCorsOptions(req);
+  if (optionsResponse) return optionsResponse;
+
+  const corsHeaders = getCorsHeaders(req);
 
   try {
-    const { content, summaryLength } = await req.json();
+    const identifier = getClientIdentifier(req);
+    await checkRateLimit('ai-summarize', identifier, 30, 60);
+
+    const { content, summaryLength } = await parseBodyWithLimit(req) as any;
     console.log('AI Summarize Request:', { contentLength: content?.length, summaryLength });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -35,14 +35,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `다음 내용을 ${summaryLength === 'short' ? '3-5문장' : summaryLength === 'medium' ? '한 단락' : '여러 단락'}으로 요약해주세요:
-
-${content}
-
-핵심 포인트:
-1. 주요 개념과 아이디어
-2. 중요한 세부 사항
-3. 결론 또는 시사점`
+            content: `다음 내용을 ${summaryLength === 'short' ? '3-5문장' : summaryLength === 'medium' ? '한 단락' : '여러 단락'}으로 요약해주세요:\n\n${content}\n\n핵심 포인트:\n1. 주요 개념과 아이디어\n2. 중요한 세부 사항\n3. 결론 또는 시사점`
           }
         ],
       }),
@@ -62,9 +55,6 @@ ${content}
     });
   } catch (error) {
     console.error('Error in ai-summarize function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return errorResponse(error, corsHeaders);
   }
 });
