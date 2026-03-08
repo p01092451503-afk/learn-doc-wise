@@ -9,6 +9,7 @@ import { UserProvider } from "./contexts/UserContext";
 import { TenantProvider } from "./contexts/TenantContext";
 import { AtomLoader } from "./components/AtomLoader";
 import { ImpersonationBanner } from "./components/operator/ImpersonationBanner";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
