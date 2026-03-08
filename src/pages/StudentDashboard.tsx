@@ -34,6 +34,7 @@ interface LiveSession {
 }
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("StudentDashboard");
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
   const navigate = useNavigate();

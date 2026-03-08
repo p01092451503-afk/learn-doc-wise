@@ -14,6 +14,7 @@ import { useTeacherDashboardStats } from "@/hooks/useDashboardStats";
 import { usePageTiming } from "@/hooks/usePageTiming";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("TeacherDashboard");
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | undefined>();
   const { data: stats, isLoading } = useTeacherDashboardStats(userId);

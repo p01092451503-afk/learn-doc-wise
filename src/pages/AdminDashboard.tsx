@@ -19,6 +19,7 @@ import { useTenant } from "@/contexts/TenantContext";
 import { usePageTiming } from "@/hooks/usePageTiming";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("AdminDashboard");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tenant } = useTenant();
