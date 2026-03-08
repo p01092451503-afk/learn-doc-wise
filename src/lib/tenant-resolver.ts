@@ -49,46 +49,37 @@ export async function resolveTenant(): Promise<Tenant | null> {
       const hostname = window.location.hostname;
       const searchParams = new URLSearchParams(window.location.search);
       const queryTenant = searchParams.get('tenant');
+      const pathname = window.location.pathname;
 
       let tenant: Tenant | null = null;
 
+      // Skip DB calls entirely for non-tenant public/dashboard routes on localhost/preview
+      const isLocalOrPreview = hostname.includes('localhost') || hostname.includes('127.0.0.1') || hostname.includes('lovableproject.com') || hostname.includes('lovable.app');
+      const isTenantRoute = pathname.startsWith('/tenant/');
+      
+      if (isLocalOrPreview && !isTenantRoute && !queryTenant) {
+        // For localhost/preview on non-tenant routes, skip tenant resolution entirely
+        tenantResolvePromise = null;
+        return null;
+      }
+
       // 🔧 DEBUG MODE: localhost에서 테스트용 테넌트 자동 로드
       if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
-        console.log('🔧 [DEBUG] Localhost detected - Loading demo tenant');
-        
         // URL에서 subdomain 파라미터를 먼저 확인
-        const urlPath = window.location.pathname;
-        const tenantMatch = urlPath.match(/^\/tenant\/([^/]+)/);
+        const tenantMatch = pathname.match(/^\/tenant\/([^/]+)/);
         
         if (tenantMatch) {
           const subdomainFromUrl = tenantMatch[1];
-          console.log('🔧 [DEBUG] Found subdomain in URL:', subdomainFromUrl);
           
           const { data } = await supabase
             .from('tenants')
             .select('*')
             .eq('slug', subdomainFromUrl)
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
           
           if (data) {
             tenant = data as Tenant;
-            console.log('🔧 [DEBUG] Loaded tenant from URL:', tenant.name);
-          }
-        }
-        
-        // URL에서 못 찾으면 첫 번째 active tenant 사용
-        if (!tenant) {
-          const { data } = await supabase
-            .from('tenants')
-            .select('*')
-            .eq('is_active', true)
-            .limit(1)
-            .single();
-          
-          if (data) {
-            tenant = data as Tenant;
-            console.log('🔧 [DEBUG] Loaded first available tenant:', tenant.name);
           }
         }
         
@@ -96,6 +87,9 @@ export async function resolveTenant(): Promise<Tenant | null> {
           cachedTenant = tenant;
           return tenant;
         }
+        
+        tenantResolvePromise = null;
+        return null;
       }
 
       // Priority 1: Query parameter (for development)

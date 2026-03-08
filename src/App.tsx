@@ -124,13 +124,11 @@ const ScrollToTop = () => {
   return null;
 };
 
-// Routes wrapper with location-based key for complete remount
+// Routes wrapper - NO key prop to avoid full tree remount on navigation
 const AppRoutes = () => {
-  const location = useLocation();
-  
   return (
-    <Suspense fallback={<LoadingFallback />} key={location.pathname}>
-      <Routes location={location}>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
         {/* Public routes */}
         <Route path="/" element={<Auth />} />
         <Route path="/landing" element={<Landing />} />

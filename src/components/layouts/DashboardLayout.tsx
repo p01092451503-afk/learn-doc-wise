@@ -131,17 +131,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
     return () => { document.title = "AtomLMS - AI 기반 학습관리시스템"; };
   }, [location.pathname, menuItems]);
 
-  // Debug logging for demo mode
-  useEffect(() => {
-    if (isDemoMode) {
-      console.log('[DashboardLayout] Demo Mode Active:', {
-        propRole: userRole,
-        urlRole: searchParams.get('role'),
-        effectiveRole: effectiveUserRole,
-        fullURL: window.location.href
-      });
-    }
-  }, [isDemoMode, userRole, effectiveUserRole, searchParams]);
+  // Debug logging removed for performance
 
   const handleLogout = async () => {
     try {
@@ -288,46 +278,13 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   // 데모 모드에서는 항상 HRD 기능 숨김, 아니면 설정값 사용
   const hideHrdFeatures = isDemoMode ? true : (hrdSettings?.enabled ?? true);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[DashboardLayout] HRD Settings Debug:', {
-      isDemoMode,
-      hrdSettings,
-      hideHrdFeatures,
-      effectiveUserRole
-    });
-  }, [isDemoMode, hrdSettings, hideHrdFeatures, effectiveUserRole]);
 
   useEffect(() => {
     const items = getDefaultMenuItems();
-    
-    console.log('[DashboardLayout] Filtering menu items:', {
-      isDemoMode,
-      hideHrdFeatures,
-      totalItems: items.length,
-      hrdItems: items.filter(i => i.isHRD).length
-    });
-    
     const filteredItems = items.filter(item => {
-      const isHrdItem = item.isHRD === true;
-      const shouldShow = !hideHrdFeatures || !isHrdItem;
-      
-      if (isHrdItem) {
-        console.log(`[DashboardLayout] HRD Item "${item.label}":`, {
-          hideHrdFeatures,
-          shouldShow
-        });
-      }
-      
-      return shouldShow;
+      if (item.isHRD && hideHrdFeatures) return false;
+      return true;
     });
-    
-    console.log('[DashboardLayout] Filtered items:', {
-      before: items.length,
-      after: filteredItems.length,
-      removed: items.length - filteredItems.length
-    });
-    
     setMenuItems(filteredItems);
   }, [effectiveUserRole, isDemoMode, hideHrdFeatures]);
 
