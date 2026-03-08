@@ -107,7 +107,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
         .eq('user_id', user.id);
     } catch (error: any) {
       console.error('Error leaving session:', error);
-      toast.error('세션 종료 중 오류가 발생했습니다.');
+      toast({ title: '오류', description: '세션 종료 중 오류가 발생했습니다.', variant: 'destructive' });
     }
   };
 
