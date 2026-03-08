@@ -14,6 +14,7 @@ import { initWebVitals } from "./lib/analytics";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
+const HomePage = lazy(() => import("./pages/HomePage"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Auth = lazy(() => import("./pages/Auth"));
