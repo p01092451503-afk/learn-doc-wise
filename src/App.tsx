@@ -138,6 +138,7 @@ const AppRoutes = () => {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<FeaturesShowcase />} />
         <Route path="/main" element={<PublicMain />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/courses" element={<PublicCourses />} />
         <Route path="/courses/:id" element={<PublicCourseDetail />} />
         <Route path="/auth" element={<Auth />} />
