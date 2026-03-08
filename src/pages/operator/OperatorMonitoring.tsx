@@ -220,6 +220,7 @@ const OperatorMonitoring = () => {
             theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
           )}>
             <TabsTrigger value="health">시스템 헬스 체크</TabsTrigger>
+            <TabsTrigger value="vitals">Web Vitals</TabsTrigger>
             <TabsTrigger value="logs">시스템 로그</TabsTrigger>
           </TabsList>
 
