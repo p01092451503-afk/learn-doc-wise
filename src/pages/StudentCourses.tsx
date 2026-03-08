@@ -213,6 +213,7 @@ const StudentCourses = () => {
       setEnrollments(enrichedEnrollments);
     } catch (error) {
       console.error("Error fetching enrollments:", error);
+      toast.error("수강 목록을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
