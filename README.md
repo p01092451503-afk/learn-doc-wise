@@ -50,6 +50,20 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## 환경 설정 (Environment Setup)
+
+이 프로젝트는 Lovable Cloud를 사용하며, 로컬 개발 시 환경변수 설정이 필요합니다.
+
+```sh
+# .env.example을 복사하여 .env 파일 생성
+cp .env.example .env
+
+# .env 파일을 열고 실제 값으로 교체
+# VITE_SUPABASE_URL, VITE_SUPABASE_PROJECT_ID, VITE_SUPABASE_PUBLISHABLE_KEY
+```
+
+> **참고:** Lovable 플랫폼에서는 `.env`가 자동으로 구성되므로 별도 설정이 필요 없습니다.
+
 ## What technologies are used for this project?
 
 This project is built with:
