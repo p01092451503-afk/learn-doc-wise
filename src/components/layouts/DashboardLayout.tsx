@@ -105,7 +105,8 @@ const iconMap: { [key: string]: any } = {
 const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayoutProps) => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [userName, setUserName] = useState<string>("사용자");
