@@ -350,7 +350,44 @@ const AdminUsers = () => {
                 <CardTitle>사용자 목록 ({users.length}명)</CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
+                {/* Mobile Card View */}
+                <div className="block sm:hidden space-y-3">
+                  {users.map((user) => (
+                    <Card key={user.id} className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">{user.full_name || "이름 없음"}</span>
+                        {getStatusBadge(user.approval_status)}
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-1">{user.email}</p>
+                      <div className="flex items-center justify-between">
+                        {getRoleBadge(user.role)}
+                        <span className="text-xs text-muted-foreground">{new Date(user.created_at).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+                        <Button variant="ghost" size="sm" onClick={() => handleEditRole(user)}>
+                          <Edit className="h-4 w-4 mr-1" />권한
+                        </Button>
+                        {user.approval_status === "pending" && (
+                          <>
+                            <Button variant="ghost" size="sm" onClick={() => handleApproveUser(user.user_id)}>
+                              <CheckCircle className="h-4 w-4 mr-1 text-green-600" />승인
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => setSelectedUser(user)}>
+                              <XCircle className="h-4 w-4 mr-1 text-red-600" />거절
+                            </Button>
+                          </>
+                        )}
+                        {user.approval_status === "approved" && (
+                          <Button variant="ghost" size="sm" onClick={() => handleSuspendUser(user.user_id, 7)}>
+                            <Ban className="h-4 w-4 mr-1" />정지
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+                {/* Desktop Table View */}
+                <Table className="hidden sm:table">
                   <TableHeader>
                     <TableRow>
                       <TableHead>이름</TableHead>
@@ -371,43 +408,22 @@ const AdminUsers = () => {
                         <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleEditRole(user)}
-                              title="권한 편집"
-                            >
-                              <Edit className="h-4 w-4 mr-1" />
-                              권한
+                            <Button variant="ghost" size="sm" onClick={() => handleEditRole(user)} title="권한 편집">
+                              <Edit className="h-4 w-4 mr-1" />권한
                             </Button>
                             {user.approval_status === "pending" && (
                               <>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleApproveUser(user.user_id)}
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-1 text-green-600" />
-                                  승인
+                                <Button variant="ghost" size="sm" onClick={() => handleApproveUser(user.user_id)}>
+                                  <CheckCircle className="h-4 w-4 mr-1 text-green-600" />승인
                                 </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => setSelectedUser(user)}
-                                >
-                                  <XCircle className="h-4 w-4 mr-1 text-red-600" />
-                                  거절
+                                <Button variant="ghost" size="sm" onClick={() => setSelectedUser(user)}>
+                                  <XCircle className="h-4 w-4 mr-1 text-red-600" />거절
                                 </Button>
                               </>
                             )}
                             {user.approval_status === "approved" && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleSuspendUser(user.user_id, 7)}
-                              >
-                                <Ban className="h-4 w-4 mr-1" />
-                                정지
+                              <Button variant="ghost" size="sm" onClick={() => handleSuspendUser(user.user_id, 7)}>
+                                <Ban className="h-4 w-4 mr-1" />정지
                               </Button>
                             )}
                           </div>
