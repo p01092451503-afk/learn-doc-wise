@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, Server, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SystemHealthDashboard } from "@/components/admin/SystemHealthDashboard";
+import { WebVitalsCard } from "@/components/admin/WebVitalsCard";
 
 interface SystemLog {
   id: string;
