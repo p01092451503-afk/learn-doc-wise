@@ -14,6 +14,7 @@ import { initWebVitals } from "./lib/analytics";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
+const HomePage = lazy(() => import("./pages/HomePage"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -137,6 +138,7 @@ const AppRoutes = () => {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/features" element={<FeaturesShowcase />} />
         <Route path="/main" element={<PublicMain />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/courses" element={<PublicCourses />} />
         <Route path="/courses/:id" element={<PublicCourseDetail />} />
         <Route path="/auth" element={<Auth />} />
