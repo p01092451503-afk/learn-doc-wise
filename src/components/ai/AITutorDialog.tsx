@@ -74,7 +74,7 @@ export const AITutorDialog = ({ open, onOpenChange, courseContext }: AITutorDial
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto rounded-lg">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-lg sm:max-w-3xl max-sm:h-screen max-sm:max-h-screen max-sm:w-screen max-sm:rounded-none max-sm:m-0">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
