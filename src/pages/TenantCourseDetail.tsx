@@ -55,6 +55,7 @@ const TenantCourseDetail = () => {
       setCourse(data);
     } catch (error) {
       console.error("Error fetching course:", error);
+      toast.error("강좌 정보를 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
