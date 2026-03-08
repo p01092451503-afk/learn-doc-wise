@@ -228,6 +228,11 @@ const OperatorMonitoring = () => {
             <SystemHealthDashboard />
           </TabsContent>
 
+
+          <TabsContent value="vitals" className="space-y-6">
+            <WebVitalsCard theme={theme} />
+          </TabsContent>
+
           <TabsContent value="logs">
             {/* System Logs Table */}
             <Card className={cn(
