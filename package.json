@@ -1,7 +1,10 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "atomlms",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "AtomLMS - AI 기반 차세대 학습관리시스템",
+  "author": "Webheads",
+  "license": "UNLICENSED",
   "type": "module",
   "scripts": {
     "dev": "vite",
