@@ -278,15 +278,6 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
   // 데모 모드에서는 항상 HRD 기능 숨김, 아니면 설정값 사용
   const hideHrdFeatures = isDemoMode ? true : (hrdSettings?.enabled ?? true);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('[DashboardLayout] HRD Settings Debug:', {
-      isDemoMode,
-      hrdSettings,
-      hideHrdFeatures,
-      effectiveUserRole
-    });
-  }, [isDemoMode, hrdSettings, hideHrdFeatures, effectiveUserRole]);
 
   useEffect(() => {
     const items = getDefaultMenuItems();
