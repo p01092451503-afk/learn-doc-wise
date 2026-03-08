@@ -72,6 +72,7 @@ const PublicCourses = () => {
       setCourses(coursesWithThumbnails);
     } catch (error) {
       console.error("Error fetching courses:", error);
+      toast.error("강좌 목록을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
