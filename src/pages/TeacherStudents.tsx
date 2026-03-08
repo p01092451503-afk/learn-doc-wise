@@ -135,7 +135,47 @@ const TeacherStudents = () => {
             <CardDescription>학생들의 상세 학습 현황을 확인하세요</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            {/* Mobile Card View */}
+            <div className="block sm:hidden space-y-3">
+              {students.map((student) => (
+                <Card key={student.id} className="p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar>
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">{student.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-medium">{student.name}</p>
+                      <p className="text-xs text-muted-foreground">{student.email}</p>
+                    </div>
+                    <Badge variant={student.status === "active" ? "default" : "secondary"}>
+                      {student.status === "active" ? "활성" : "비활성"}
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                    <div>
+                      <p className="text-muted-foreground text-xs">수강</p>
+                      <p className="font-medium">{student.courses}개</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">진행률</p>
+                      <p className="font-medium">{student.progress}%</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">완료율</p>
+                      <Badge variant={student.completionRate >= 80 ? "default" : "secondary"} className="text-xs">{student.completionRate}%</Badge>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                    <span className="text-xs text-muted-foreground">{student.lastActive}</span>
+                    <Button size="sm" variant="ghost" onClick={() => navigate(`/teacher/students/${student.id}`)}>
+                      <Eye className="h-4 w-4 mr-1" />상세
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+            {/* Desktop Table View */}
+            <Table className="hidden sm:table">
               <TableHeader>
                 <TableRow>
                   <TableHead>학생</TableHead>
@@ -167,24 +207,15 @@ const TeacherStudents = () => {
                     <TableCell className="text-center">
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-16 bg-secondary rounded-full h-2">
-                          <div
-                            className="bg-primary h-2 rounded-full"
-                            style={{ width: `${student.progress}%` }}
-                          />
+                          <div className="bg-primary h-2 rounded-full" style={{ width: `${student.progress}%` }} />
                         </div>
                         <span className="text-xs text-muted-foreground">{student.progress}%</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge
-                        variant={student.completionRate >= 80 ? "default" : "secondary"}
-                      >
-                        {student.completionRate}%
-                      </Badge>
+                      <Badge variant={student.completionRate >= 80 ? "default" : "secondary"}>{student.completionRate}%</Badge>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {student.lastActive}
-                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{student.lastActive}</TableCell>
                     <TableCell>
                       <Badge variant={student.status === "active" ? "default" : "secondary"}>
                         {student.status === "active" ? "활성" : "비활성"}
