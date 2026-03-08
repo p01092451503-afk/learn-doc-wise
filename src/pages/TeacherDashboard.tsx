@@ -11,8 +11,10 @@ import { CourseFormDialog } from "@/components/teacher/CourseFormDialog";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useTeacherDashboardStats } from "@/hooks/useDashboardStats";
+import { usePageTiming } from "@/hooks/usePageTiming";
 
 const TeacherDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("TeacherDashboard");
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | undefined>();
   const { data: stats, isLoading } = useTeacherDashboardStats(userId);

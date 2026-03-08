@@ -16,8 +16,10 @@ import { AIUsageCard } from "@/components/admin/AIUsageCard";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminDashboardStats } from "@/hooks/useDashboardStats";
 import { useTenant } from "@/contexts/TenantContext";
+import { usePageTiming } from "@/hooks/usePageTiming";
 
 const AdminDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("AdminDashboard");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { tenant } = useTenant();

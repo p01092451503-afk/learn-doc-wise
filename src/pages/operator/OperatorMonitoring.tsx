@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, Server, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SystemHealthDashboard } from "@/components/admin/SystemHealthDashboard";
+import { WebVitalsCard } from "@/components/admin/WebVitalsCard";
 
 interface SystemLog {
   id: string;
@@ -219,11 +220,17 @@ const OperatorMonitoring = () => {
             theme === "dark" ? "bg-slate-900/50 border-slate-800" : "bg-slate-100/50 border-slate-300"
           )}>
             <TabsTrigger value="health">시스템 헬스 체크</TabsTrigger>
+            <TabsTrigger value="vitals">Web Vitals</TabsTrigger>
             <TabsTrigger value="logs">시스템 로그</TabsTrigger>
           </TabsList>
 
           <TabsContent value="health" className="space-y-6">
             <SystemHealthDashboard />
+          </TabsContent>
+
+
+          <TabsContent value="vitals" className="space-y-6">
+            <WebVitalsCard theme={theme} />
           </TabsContent>
 
           <TabsContent value="logs">

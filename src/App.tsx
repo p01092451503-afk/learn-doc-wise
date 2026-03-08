@@ -10,6 +10,7 @@ import { TenantProvider } from "./contexts/TenantContext";
 import { AtomLoader } from "./components/AtomLoader";
 import { ImpersonationBanner } from "./components/operator/ImpersonationBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { initWebVitals } from "./lib/analytics";
 
 // Lazy load all pages for better performance
 const Landing = lazy(() => import("./pages/Landing"));
@@ -244,8 +245,8 @@ const App = () => {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 30 * 60 * 1000,        // 30분 - 공격적 캐싱
-        gcTime: 60 * 60 * 1000,           // 1시간 - 더 긴 메모리 유지
+        staleTime: 30 * 60 * 1000,
+        gcTime: 60 * 60 * 1000,
         retry: (failureCount, error) => {
           const status = (error as any)?.status;
           if (status === 401 || status === 403) return false;
@@ -254,11 +255,15 @@ const App = () => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
-        networkMode: 'offlineFirst',      // 캐시 우선 사용
+        networkMode: 'offlineFirst',
       },
     },
   }));
 
+  // Web Vitals 측정 시작
+  useEffect(() => {
+    initWebVitals();
+  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <TenantProvider>

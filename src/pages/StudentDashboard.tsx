@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { useStudentDashboardStats } from "@/hooks/useDashboardStats";
+import { usePageTiming } from "@/hooks/usePageTiming";
 
 interface LiveSession {
   id: string;
@@ -33,6 +34,7 @@ interface LiveSession {
 }
 
 const StudentDashboard = ({ isDemo = false }: { isDemo?: boolean }) => {
+  usePageTiming("StudentDashboard");
   const { language } = useLanguage();
   const t = (key: string) => getTranslation(language, key);
   const navigate = useNavigate();
