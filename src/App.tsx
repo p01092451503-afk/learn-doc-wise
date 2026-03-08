@@ -246,7 +246,11 @@ const App = () => {
       queries: {
         staleTime: 30 * 60 * 1000,        // 30분 - 공격적 캐싱
         gcTime: 60 * 60 * 1000,           // 1시간 - 더 긴 메모리 유지
-        retry: 1,
+        retry: (failureCount, error) => {
+          const status = (error as any)?.status;
+          if (status === 401 || status === 403) return false;
+          return failureCount < 2;
+        },
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,

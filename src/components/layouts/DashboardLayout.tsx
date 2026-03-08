@@ -43,6 +43,7 @@ import {
 import logoIcon from "@/assets/logo-icon.png";
 import aiRobotBadge from "@/assets/ai-robot-badge.png";
 import { cn } from "@/lib/utils";
+import { OfflineBanner } from "@/components/OfflineBanner";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -393,6 +394,7 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
         <>{children}</>
       ) : (
       <div className="min-h-screen bg-background">
+      <OfflineBanner />
       {/* Top Navigation - Hidden in demo mode */}
       {!isDemoMode && (
         <header className="sticky top-0 z-40 border-b bg-background/98 backdrop-blur-xl supports-[backdrop-filter]:bg-background/95 shadow-sm">
