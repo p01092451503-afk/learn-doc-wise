@@ -84,6 +84,7 @@ const TenantCourseDetail = () => {
       }
     } catch (error) {
       console.error("Error fetching course contents:", error);
+      toast.error("강좌 콘텐츠를 불러오는 데 실패했습니다.");
     }
   };
 
