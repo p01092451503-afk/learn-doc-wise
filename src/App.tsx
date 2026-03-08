@@ -130,6 +130,7 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingFallback />} key={location.pathname}>
       <Routes location={location}>
+        {/* Public routes */}
         <Route path="/" element={<Auth />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/features-detail" element={<Features />} />
@@ -143,87 +144,96 @@ const AppRoutes = () => {
         <Route path="/demo" element={<DemoPreview />} />
         <Route path="/admin-demo" element={<AdminDemo />} />
         <Route path="/ai-showcase" element={<AIShowcase />} />
-        <Route path="/student" element={<StudentDashboard />} />
-        <Route path="/students" element={<StudentDashboard />} />
-        <Route path="/student/courses" element={<StudentCourses />} />
-        <Route path="/student/courses/:id" element={<StudentCourseDetail />} />
-        <Route path="/student/assignments" element={<StudentAssignments />} />
-        <Route path="/student/community" element={<StudentCommunity />} />
-        <Route path="/student/analytics" element={<StudentAnalytics />} />
-        <Route path="/student/gamification" element={<StudentGamification />} />
-        <Route path="/student/learning-path" element={<StudentLearningPath />} />
-        <Route path="/student/learning-path/:id" element={<StudentLearningPathDetail />} />
-        <Route path="/student/satisfaction-survey" element={<StudentSatisfactionSurvey />} />
-        <Route path="/student/counseling-log" element={<StudentCounselingLog />} />
-        <Route path="/student/cart" element={<StudentCart />} />
-        <Route path="/student/payment-history" element={<StudentPaymentHistory />} />
-        <Route path="/student/points" element={<StudentPoints />} />
-        <Route path="/student/settings" element={<StudentSettings />} />
-        <Route path="/student/live/:sessionId" element={<StudentLiveSession />} />
-        <Route path="/teacher" element={<TeacherDashboard />} />
-        <Route path="/teacher/courses" element={<TeacherCourses />} />
-        <Route path="/teacher/courses/:id" element={<TeacherCourseDetail />} />
-        <Route path="/teacher/students" element={<TeacherStudents />} />
-        <Route path="/teacher/students/:studentId" element={<TeacherStudentDetail />} />
-        <Route path="/teacher/revenue" element={<TeacherRevenue />} />
-        <Route path="/teacher/analytics" element={<TeacherAnalytics />} />
-        <Route path="/teacher/assignments" element={<TeacherAssignments />} />
-        <Route path="/teacher/attendance" element={<TeacherAttendance />} />
-        <Route path="/teacher/attendance-detail" element={<TeacherAttendanceDetail />} />
-        <Route path="/teacher/training-log" element={<TeacherTrainingLog />} />
-        <Route path="/teacher/satisfaction-survey" element={<TeacherSatisfactionSurvey />} />
-        <Route path="/teacher/counseling-log" element={<TeacherCounselingLog />} />
-        <Route path="/teacher/dropout-management" element={<TeacherDropoutManagement />} />
-        <Route path="/teacher/training-completion" element={<TeacherTrainingCompletion />} />
-        <Route path="/teacher/training-allowance" element={<TeacherTrainingAllowance />} />
-        <Route path="/teacher/training-report" element={<TeacherTrainingReport />} />
-        <Route path="/teacher/live/:sessionId" element={<TeacherLiveSession />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/operator" element={<OperatorDashboard />} />
-        <Route path="/operator/tenants" element={<OperatorTenants />} />
-        <Route path="/operator/contracts" element={<OperatorContracts />} />
-        <Route path="/operator/impersonation-logs" element={<OperatorImpersonationLogs />} />
-        <Route path="/operator/usage" element={<OperatorUsage />} />
-        <Route path="/operator/ai-logs" element={<OperatorAILogs />} />
-        <Route path="/operator/revenue" element={<OperatorRevenue />} />
-        <Route path="/operator/monitoring" element={<OperatorMonitoring />} />
-        <Route path="/operator/settings" element={<OperatorSettings />} />
-        <Route path="/operator/features" element={<OperatorFeatures />} />
-        <Route path="/operator/tech-stack" element={<OperatorTechStack />} />
-        <Route path="/operator/government-training" element={<OperatorGovernmentTraining />} />
-        <Route path="/operator/manual" element={<OperatorManual />} />
-        <Route path="/operator/onboarding-flow" element={<OperatorOnboardingFlow />} />
-        <Route path="/operator/system-diagram" element={<OperatorSystemDiagram />} />
-        <Route path="/operator/backup" element={<OperatorBackup />} />
-        <Route path="/operator/updates" element={<OperatorUpdates />} />
-        <Route path="/operator/license" element={<OperatorLicense />} />
-        <Route path="/operator/resources" element={<OperatorResources />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/courses" element={<AdminCoursesIntegrated />} />
-        <Route path="/admin/content" element={<AdminContent />} />
-        <Route path="/admin/attendance" element={<AdminAttendance />} />
-        <Route path="/admin/training-log" element={<AdminTrainingLog />} />
-        <Route path="/admin/satisfaction-survey" element={<AdminSatisfactionSurvey />} />
-        <Route path="/admin/counseling-log" element={<AdminCounselingLog />} />
-        <Route path="/admin/dropout-management" element={<AdminDropoutManagement />} />
-        <Route path="/admin/training-completion" element={<AdminTrainingCompletion />} />
-        <Route path="/admin/grades" element={<AdminGrades />} />
-        <Route path="/admin/training-allowance" element={<AdminTrainingAllowance />} />
-        <Route path="/admin/manual" element={<AdminManual />} />
-        <Route path="/admin/revenue" element={<AdminRevenue />} />
-        <Route path="/admin/monitoring" element={<AdminMonitoring />} />
-        <Route path="/admin/learning" element={<AdminLearning />} />
-        <Route path="/admin/ai-logs" element={<AdminAILogs />} />
-        <Route path="/admin/analytics" element={<AdminAnalytics />} />
-        <Route path="/admin/settings" element={<AdminSettings />} />
-        <Route path="/admin/tenant-settings" element={<AdminTenantSettings />} />
-        <Route path="/operator/homepage-settings" element={<OperatorHomepageSettings />} />
-        <Route path="/admin/live/:sessionId" element={<AdminLiveSession />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFail />} />
         <Route path="/tenant/:subdomain" element={<TenantHome />} />
         <Route path="/tenant/:subdomain/courses" element={<TenantCourses />} />
         <Route path="/tenant/:subdomain/courses/:courseSlug" element={<TenantCourseDetail />} />
+
+        {/* Student routes */}
+        <Route path="/student" element={<ErrorBoundary><StudentDashboard /></ErrorBoundary>} />
+        <Route path="/students" element={<ErrorBoundary><StudentDashboard /></ErrorBoundary>} />
+        <Route path="/student/courses" element={<ErrorBoundary><StudentCourses /></ErrorBoundary>} />
+        <Route path="/student/courses/:id" element={<ErrorBoundary><StudentCourseDetail /></ErrorBoundary>} />
+        <Route path="/student/assignments" element={<ErrorBoundary><StudentAssignments /></ErrorBoundary>} />
+        <Route path="/student/community" element={<ErrorBoundary><StudentCommunity /></ErrorBoundary>} />
+        <Route path="/student/analytics" element={<ErrorBoundary><StudentAnalytics /></ErrorBoundary>} />
+        <Route path="/student/gamification" element={<ErrorBoundary><StudentGamification /></ErrorBoundary>} />
+        <Route path="/student/learning-path" element={<ErrorBoundary><StudentLearningPath /></ErrorBoundary>} />
+        <Route path="/student/learning-path/:id" element={<ErrorBoundary><StudentLearningPathDetail /></ErrorBoundary>} />
+        <Route path="/student/satisfaction-survey" element={<ErrorBoundary><StudentSatisfactionSurvey /></ErrorBoundary>} />
+        <Route path="/student/counseling-log" element={<ErrorBoundary><StudentCounselingLog /></ErrorBoundary>} />
+        <Route path="/student/cart" element={<ErrorBoundary><StudentCart /></ErrorBoundary>} />
+        <Route path="/student/payment-history" element={<ErrorBoundary><StudentPaymentHistory /></ErrorBoundary>} />
+        <Route path="/student/points" element={<ErrorBoundary><StudentPoints /></ErrorBoundary>} />
+        <Route path="/student/settings" element={<ErrorBoundary><StudentSettings /></ErrorBoundary>} />
+        <Route path="/student/live/:sessionId" element={<ErrorBoundary><StudentLiveSession /></ErrorBoundary>} />
+
+        {/* Teacher routes */}
+        <Route path="/teacher" element={<ErrorBoundary><TeacherDashboard /></ErrorBoundary>} />
+        <Route path="/teacher/courses" element={<ErrorBoundary><TeacherCourses /></ErrorBoundary>} />
+        <Route path="/teacher/courses/:id" element={<ErrorBoundary><TeacherCourseDetail /></ErrorBoundary>} />
+        <Route path="/teacher/students" element={<ErrorBoundary><TeacherStudents /></ErrorBoundary>} />
+        <Route path="/teacher/students/:studentId" element={<ErrorBoundary><TeacherStudentDetail /></ErrorBoundary>} />
+        <Route path="/teacher/revenue" element={<ErrorBoundary><TeacherRevenue /></ErrorBoundary>} />
+        <Route path="/teacher/analytics" element={<ErrorBoundary><TeacherAnalytics /></ErrorBoundary>} />
+        <Route path="/teacher/assignments" element={<ErrorBoundary><TeacherAssignments /></ErrorBoundary>} />
+        <Route path="/teacher/attendance" element={<ErrorBoundary><TeacherAttendance /></ErrorBoundary>} />
+        <Route path="/teacher/attendance-detail" element={<ErrorBoundary><TeacherAttendanceDetail /></ErrorBoundary>} />
+        <Route path="/teacher/training-log" element={<ErrorBoundary><TeacherTrainingLog /></ErrorBoundary>} />
+        <Route path="/teacher/satisfaction-survey" element={<ErrorBoundary><TeacherSatisfactionSurvey /></ErrorBoundary>} />
+        <Route path="/teacher/counseling-log" element={<ErrorBoundary><TeacherCounselingLog /></ErrorBoundary>} />
+        <Route path="/teacher/dropout-management" element={<ErrorBoundary><TeacherDropoutManagement /></ErrorBoundary>} />
+        <Route path="/teacher/training-completion" element={<ErrorBoundary><TeacherTrainingCompletion /></ErrorBoundary>} />
+        <Route path="/teacher/training-allowance" element={<ErrorBoundary><TeacherTrainingAllowance /></ErrorBoundary>} />
+        <Route path="/teacher/training-report" element={<ErrorBoundary><TeacherTrainingReport /></ErrorBoundary>} />
+        <Route path="/teacher/live/:sessionId" element={<ErrorBoundary><TeacherLiveSession /></ErrorBoundary>} />
+
+        {/* Admin routes */}
+        <Route path="/admin" element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
+        <Route path="/admin/users" element={<ErrorBoundary><AdminUsers /></ErrorBoundary>} />
+        <Route path="/admin/courses" element={<ErrorBoundary><AdminCoursesIntegrated /></ErrorBoundary>} />
+        <Route path="/admin/content" element={<ErrorBoundary><AdminContent /></ErrorBoundary>} />
+        <Route path="/admin/attendance" element={<ErrorBoundary><AdminAttendance /></ErrorBoundary>} />
+        <Route path="/admin/training-log" element={<ErrorBoundary><AdminTrainingLog /></ErrorBoundary>} />
+        <Route path="/admin/satisfaction-survey" element={<ErrorBoundary><AdminSatisfactionSurvey /></ErrorBoundary>} />
+        <Route path="/admin/counseling-log" element={<ErrorBoundary><AdminCounselingLog /></ErrorBoundary>} />
+        <Route path="/admin/dropout-management" element={<ErrorBoundary><AdminDropoutManagement /></ErrorBoundary>} />
+        <Route path="/admin/training-completion" element={<ErrorBoundary><AdminTrainingCompletion /></ErrorBoundary>} />
+        <Route path="/admin/grades" element={<ErrorBoundary><AdminGrades /></ErrorBoundary>} />
+        <Route path="/admin/training-allowance" element={<ErrorBoundary><AdminTrainingAllowance /></ErrorBoundary>} />
+        <Route path="/admin/manual" element={<ErrorBoundary><AdminManual /></ErrorBoundary>} />
+        <Route path="/admin/revenue" element={<ErrorBoundary><AdminRevenue /></ErrorBoundary>} />
+        <Route path="/admin/monitoring" element={<ErrorBoundary><AdminMonitoring /></ErrorBoundary>} />
+        <Route path="/admin/learning" element={<ErrorBoundary><AdminLearning /></ErrorBoundary>} />
+        <Route path="/admin/ai-logs" element={<ErrorBoundary><AdminAILogs /></ErrorBoundary>} />
+        <Route path="/admin/analytics" element={<ErrorBoundary><AdminAnalytics /></ErrorBoundary>} />
+        <Route path="/admin/settings" element={<ErrorBoundary><AdminSettings /></ErrorBoundary>} />
+        <Route path="/admin/tenant-settings" element={<ErrorBoundary><AdminTenantSettings /></ErrorBoundary>} />
+        <Route path="/admin/live/:sessionId" element={<ErrorBoundary><AdminLiveSession /></ErrorBoundary>} />
+
+        {/* Operator routes */}
+        <Route path="/operator" element={<ErrorBoundary><OperatorDashboard /></ErrorBoundary>} />
+        <Route path="/operator/tenants" element={<ErrorBoundary><OperatorTenants /></ErrorBoundary>} />
+        <Route path="/operator/contracts" element={<ErrorBoundary><OperatorContracts /></ErrorBoundary>} />
+        <Route path="/operator/impersonation-logs" element={<ErrorBoundary><OperatorImpersonationLogs /></ErrorBoundary>} />
+        <Route path="/operator/usage" element={<ErrorBoundary><OperatorUsage /></ErrorBoundary>} />
+        <Route path="/operator/ai-logs" element={<ErrorBoundary><OperatorAILogs /></ErrorBoundary>} />
+        <Route path="/operator/revenue" element={<ErrorBoundary><OperatorRevenue /></ErrorBoundary>} />
+        <Route path="/operator/monitoring" element={<ErrorBoundary><OperatorMonitoring /></ErrorBoundary>} />
+        <Route path="/operator/settings" element={<ErrorBoundary><OperatorSettings /></ErrorBoundary>} />
+        <Route path="/operator/features" element={<ErrorBoundary><OperatorFeatures /></ErrorBoundary>} />
+        <Route path="/operator/tech-stack" element={<ErrorBoundary><OperatorTechStack /></ErrorBoundary>} />
+        <Route path="/operator/government-training" element={<ErrorBoundary><OperatorGovernmentTraining /></ErrorBoundary>} />
+        <Route path="/operator/manual" element={<ErrorBoundary><OperatorManual /></ErrorBoundary>} />
+        <Route path="/operator/onboarding-flow" element={<ErrorBoundary><OperatorOnboardingFlow /></ErrorBoundary>} />
+        <Route path="/operator/system-diagram" element={<ErrorBoundary><OperatorSystemDiagram /></ErrorBoundary>} />
+        <Route path="/operator/backup" element={<ErrorBoundary><OperatorBackup /></ErrorBoundary>} />
+        <Route path="/operator/updates" element={<ErrorBoundary><OperatorUpdates /></ErrorBoundary>} />
+        <Route path="/operator/license" element={<ErrorBoundary><OperatorLicense /></ErrorBoundary>} />
+        <Route path="/operator/resources" element={<ErrorBoundary><OperatorResources /></ErrorBoundary>} />
+        <Route path="/operator/homepage-settings" element={<ErrorBoundary><OperatorHomepageSettings /></ErrorBoundary>} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
