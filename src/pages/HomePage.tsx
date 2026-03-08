@@ -561,14 +561,25 @@ const TeacherHomeSection = ({ userId }: { userId: string }) => {
     queryFn: async () => {
       const courseIds = courses?.map(c => c.id) || [];
       if (courseIds.length === 0) return [];
+      // Get assignments for teacher's courses first
+      const { data: assignments } = await supabase
+        .from('assignments')
+        .select('id, title, course_id')
+        .in('course_id', courseIds);
+      if (!assignments || assignments.length === 0) return [];
+      const assignmentIds = assignments.map(a => a.id);
       const { data } = await supabase
         .from('assignment_submissions')
-        .select('*, assignments(title, course_id)')
-        .in('assignments.course_id' as any, courseIds)
+        .select('*')
+        .in('assignment_id', assignmentIds)
         .eq('status', 'submitted')
         .order('submitted_at', { ascending: false })
         .limit(5);
-      return (data || []).filter((s: any) => s.assignments);
+      // Attach assignment info
+      return (data || []).map((s: any) => ({
+        ...s,
+        assignments: assignments.find(a => a.id === s.assignment_id),
+      }));
     },
     enabled: !!courses && courses.length > 0,
     staleTime: 5 * 60 * 1000,
