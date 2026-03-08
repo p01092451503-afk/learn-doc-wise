@@ -534,138 +534,155 @@ const DashboardLayout = ({ children, userRole, isDemo = false }: DashboardLayout
       )}
 
       <div className="flex">
-        {/* Sidebar */}
-        <aside
-          className={cn(
-            "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
-            isDemoMode ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
-            sidebarCollapsed ? "w-16" : "w-64",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full",
-            "md:translate-x-0"
-          )}
-        >
-          {/* Collapse Toggle Button - Desktop Only */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="hidden md:flex absolute -right-3 top-6 z-50 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-primary/10"
-          >
-            {sidebarCollapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <ChevronLeft className="h-4 w-4" />
-            )}
-          </Button>
+        {/* Mobile Sidebar - Sheet */}
+        {isMobile && (
+          <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+            <SheetContent side="left" className="w-64 p-0">
+              <nav className="flex flex-col gap-1.5 overflow-y-auto h-full p-4 pt-8">
+                {menuItems
+                  .filter(item => {
+                    if (item.label === "디자인 템플릿" || item.label === "게이미피케이션") return false;
+                    if (isDemoMode) return item.enabled === true;
+                    return item.enabled !== false;
+                  })
+                  .map((item) => (
+                    (isDemoMode ? item.enabled : true) ? (
+                      <Link
+                        key={item.path}
+                        to={isDemoMode ? `${item.path}${item.path.includes('?') ? '&' : '?'}role=${effectiveUserRole}` : item.path}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        <Button
+                          variant="ghost"
+                          className="w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary transition-all justify-start gap-3 pr-2"
+                        >
+                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                            <item.icon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className="font-medium whitespace-nowrap">{item.label}</span>
+                            <div className="flex items-center gap-1.5">
+                              {item.hasAI && (
+                                <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">AI</Badge>
+                              )}
+                              {item.isHRD && (
+                                <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-blue-500/10 border-blue-500/20 text-blue-600 whitespace-nowrap">HRD</Badge>
+                              )}
+                            </div>
+                          </div>
+                        </Button>
+                      </Link>
+                    ) : (
+                      <div key={item.label} className="relative">
+                        <Button variant="ghost" className="w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed justify-start gap-3" disabled>
+                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <item.icon className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                          <span className="font-medium">{item.label}</span>
+                        </Button>
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">준비중</span>
+                      </div>
+                    )
+                  ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        )}
 
-          <nav className={cn(
+        {/* Desktop Sidebar */}
+        {!isMobile && (
+          <aside
+            className={cn(
+              "fixed z-30 border-r bg-background/98 backdrop-blur-xl transition-all duration-300 shadow-sm",
+              isDemoMode ? "left-0 top-[130px] h-[calc(100vh-130px)]" : "left-0 top-20 h-[calc(100vh-5rem)]",
+              sidebarCollapsed ? "w-16" : "w-64"
+            )}
+          >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden md:flex absolute -right-3 top-6 z-50 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-primary/10"
+            >
+              {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </Button>
+
+            <nav className={cn(
               "flex flex-col gap-1.5 overflow-y-auto h-full transition-all duration-300",
               sidebarCollapsed ? "p-2" : "p-4"
             )}>
               {menuItems
                 .filter(item => {
-                  // 디자인 템플릿 메뉴는 항상 제외
-                  if (item.label === "디자인 템플릿") {
-                    return false;
-                  }
-                  // 게이미피케이션 메뉴는 항상 제외
-                  if (item.label === "게이미피케이션") {
-                    return false;
-                  }
-                  // 데모 모드에서는 enabled가 true인 것만 표시
-                  if (isDemoMode) {
-                    return item.enabled === true;
-                  }
-                  // 일반 모드에서는 enabled가 false인 항목 제외
+                  if (item.label === "디자인 템플릿" || item.label === "게이미피케이션") return false;
+                  if (isDemoMode) return item.enabled === true;
                   return item.enabled !== false;
                 })
                 .map((item) => (
-                  // 일반 모드에서는 enabled 체크 안함, 데모 모드에서만 체크
                   (isDemoMode ? item.enabled : true) ? (
-                  <Tooltip key={item.path}>
-                    <TooltipTrigger asChild>
-                      <Link 
-                        to={isDemoMode ? `${item.path}${item.path.includes('?') ? '&' : '?'}role=${effectiveUserRole}` : item.path}
-                      >
-                        <Button
-                          variant="ghost"
-                          className={cn(
-                            "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group overflow-visible",
-                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 pr-2"
-                          )}
-                        >
-                          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
-                            <item.icon className="h-4 w-4 text-primary" />
-                          </div>
-                          {!sidebarCollapsed && (
-                            <div className="flex items-center gap-2 flex-1">
-                              <span className="font-medium whitespace-nowrap">{item.label}</span>
-                              <div className="flex items-center gap-1.5">
-                                {item.hasAI && (
-                                  <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">
-                                    AI
-                                  </Badge>
-                                )}
-                                {item.isHRD && (
-                                  <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-blue-500/10 border-blue-500/20 text-blue-600 whitespace-nowrap">
-                                    HRD
-                                  </Badge>
-                                )}
-                              </div>
+                    <Tooltip key={item.path}>
+                      <TooltipTrigger asChild>
+                        <Link to={isDemoMode ? `${item.path}${item.path.includes('?') ? '&' : '?'}role=${effectiveUserRole}` : item.path}>
+                          <Button
+                            variant="ghost"
+                            className={cn(
+                              "w-full h-11 text-sm rounded-xl hover:bg-primary/10 hover:text-primary hover:shadow-md transition-all duration-300 group overflow-visible",
+                              sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3 pr-2"
+                            )}
+                          >
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors flex-shrink-0">
+                              <item.icon className="h-4 w-4 text-primary" />
                             </div>
-                          )}
-                        </Button>
-                      </Link>
-                    </TooltipTrigger>
-                    {sidebarCollapsed && (
-                      <TooltipContent side="right">
-                        <p>{item.label}</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                ) : (
-                  <Tooltip key={item.label}>
-                    <TooltipTrigger asChild>
-                      <div className="relative">
-                        <Button
-                          variant="ghost"
-                          className={cn(
-                            "w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed",
-                            sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3"
-                          )}
-                          disabled
-                        >
-                          <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                            <item.icon className="h-4 w-4 text-muted-foreground" />
-                          </div>
+                            {!sidebarCollapsed && (
+                              <div className="flex items-center gap-2 flex-1">
+                                <span className="font-medium whitespace-nowrap">{item.label}</span>
+                                <div className="flex items-center gap-1.5">
+                                  {item.hasAI && (
+                                    <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-primary/10 border-primary/20 text-primary whitespace-nowrap">AI</Badge>
+                                  )}
+                                  {item.isHRD && (
+                                    <Badge variant="outline" className="px-1.5 py-0 h-5 text-[10px] font-bold bg-blue-500/10 border-blue-500/20 text-blue-600 whitespace-nowrap">HRD</Badge>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      {sidebarCollapsed && (
+                        <TooltipContent side="right"><p>{item.label}</p></TooltipContent>
+                      )}
+                    </Tooltip>
+                  ) : (
+                    <Tooltip key={item.label}>
+                      <TooltipTrigger asChild>
+                        <div className="relative">
+                          <Button variant="ghost" className={cn("w-full h-11 text-sm rounded-xl opacity-40 cursor-not-allowed", sidebarCollapsed ? "justify-center px-0" : "justify-start gap-3")} disabled>
+                            <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                              <item.icon className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            {!sidebarCollapsed && <span className="font-medium">{item.label}</span>}
+                          </Button>
                           {!sidebarCollapsed && (
-                            <span className="font-medium">{item.label}</span>
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">준비중</span>
                           )}
-                        </Button>
-                        {!sidebarCollapsed && (
-                          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
-                            준비중
-                          </span>
-                        )}
-                      </div>
-                    </TooltipTrigger>
-                    {sidebarCollapsed && (
-                      <TooltipContent side="right">
-                        <p>{item.label} (준비중)</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                )
-              ))}
+                        </div>
+                      </TooltipTrigger>
+                      {sidebarCollapsed && (
+                        <TooltipContent side="right"><p>{item.label} (준비중)</p></TooltipContent>
+                      )}
+                    </Tooltip>
+                  )
+                ))}
             </nav>
-        </aside>
+          </aside>
+        )}
 
         {/* Main Content */}
         <main
           className={cn(
             "flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300",
             isDemoMode && "pt-[130px]",
-            sidebarOpen && !sidebarCollapsed ? "md:ml-64" : sidebarCollapsed ? "md:ml-16" : "md:ml-0"
+            !isMobile && !sidebarCollapsed ? "md:ml-64" : !isMobile && sidebarCollapsed ? "md:ml-16" : ""
           )}
         >
           <div className="mx-auto max-w-7xl">{children}</div>
