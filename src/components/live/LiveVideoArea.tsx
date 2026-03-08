@@ -89,6 +89,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
       if (error) throw error;
     } catch (error: any) {
       console.error('Error joining session:', error);
+      toast({ title: '오류', description: '세션 참여 중 오류가 발생했습니다.', variant: 'destructive' });
     }
   };
 
@@ -106,6 +107,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
         .eq('user_id', user.id);
     } catch (error: any) {
       console.error('Error leaving session:', error);
+      toast({ title: '오류', description: '세션 종료 중 오류가 발생했습니다.', variant: 'destructive' });
     }
   };
 
@@ -131,6 +133,7 @@ export const LiveVideoArea = ({ sessionId, isInstructor = false }: LiveVideoArea
       setParticipants(participantsWithNames);
     } catch (error: any) {
       console.error('Error loading participants:', error);
+      toast({ title: '오류', description: '참가자 목록을 불러오는 데 실패했습니다.', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

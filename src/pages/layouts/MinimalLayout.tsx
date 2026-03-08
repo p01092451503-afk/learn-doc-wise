@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -76,6 +77,7 @@ const MinimalLayout = () => {
       setCourses(coursesWithThumbnails);
     } catch (error) {
       console.error("Error fetching courses:", error);
+      toast.error("강좌 목록을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }

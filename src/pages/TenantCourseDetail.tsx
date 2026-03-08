@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ const TenantCourseDetail = () => {
       setCourse(data);
     } catch (error) {
       console.error("Error fetching course:", error);
+      toast.error("강좌 정보를 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -83,6 +85,7 @@ const TenantCourseDetail = () => {
       }
     } catch (error) {
       console.error("Error fetching course contents:", error);
+      toast.error("강좌 콘텐츠를 불러오는 데 실패했습니다.");
     }
   };
 

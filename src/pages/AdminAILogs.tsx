@@ -87,6 +87,7 @@ const AdminAILogs = () => {
       });
     } catch (error) {
       console.error("Failed to fetch stats:", error);
+      toast({ title: "오류", description: "AI 통계를 불러오는 데 실패했습니다.", variant: "destructive" });
     }
   };
 

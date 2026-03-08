@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -72,6 +73,7 @@ const PublicCourses = () => {
       setCourses(coursesWithThumbnails);
     } catch (error) {
       console.error("Error fetching courses:", error);
+      toast.error("강좌 목록을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }
