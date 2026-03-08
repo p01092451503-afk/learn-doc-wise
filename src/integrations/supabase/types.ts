@@ -3700,6 +3700,44 @@ export type Database = {
           },
         ]
       }
+      performance_logs: {
+        Row: {
+          created_at: string | null
+          id: string
+          metric_name: string
+          metric_value: number | null
+          page_url: string | null
+          tenant_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metric_name: string
+          metric_value?: number | null
+          page_url?: string | null
+          tenant_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metric_name?: string
+          metric_value?: number | null
+          page_url?: string | null
+          tenant_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       personalized_recommendations: {
         Row: {
           acted_at: string | null
